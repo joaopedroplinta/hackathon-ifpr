@@ -9,16 +9,12 @@ use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class JoinTeamByCode
 {
     /**
      * Resolve a equipe pelo código de convite e grava a participação ativa.
-     *
-     * As duas coisas na mesma transação: resolver a equipe e criar o membro
-     * separados deixaria uma janela em que a equipe lotou ou foi apagada
-     * entre uma coisa e outra. O índice parcial do Postgres em
-     * team_members ainda segura a corrida de duplo clique por cima disto.
      *
      * @return Team|null Null quando o código não resolve para uma equipe
      *                   deste evento -- quem chama decide como reagir.
@@ -26,10 +22,29 @@ class JoinTeamByCode
     public function handle(Event $event, User $user, string $inviteCode): ?Team
     {
         return DB::transaction(function () use ($event, $user, $inviteCode) {
-            $team = Team::forEvent($event)->withInviteCode($inviteCode)->first();
+            // lockForUpdate segura a linha da equipe até o fim da transação.
+            //
+            // Sem isso existe uma corrida real: a Policy checa isFull() e a
+            // gravação acontece depois. Duas pessoas usando o mesmo código
+            // com uma vaga sobrando passam as duas, e a equipe estoura o
+            // máximo. O índice parcial de team_members não pega este caso --
+            // ele impede a MESMA pessoa em duas equipes, não duas pessoas
+            // na mesma vaga.
+            $team = Team::forEvent($event)
+                ->withInviteCode($inviteCode)
+                ->lockForUpdate()
+                ->first();
 
             if (! $team) {
                 return null;
+            }
+
+            // Recontagem já sob o lock: é este número que decide, não o que
+            // a Policy viu alguns milissegundos atrás.
+            if ($team->isFull()) {
+                throw ValidationException::withMessages([
+                    'invite_code' => 'Esta equipe acabou de lotar. Peça o código de outra.',
+                ]);
             }
 
             $membership = new TeamMember;

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Actions\Teams\JoinTeamByCode;
 use App\Enums\TeamMemberRole;
 use App\Enums\TeamMemberStatus;
 use App\Models\Event;
@@ -11,6 +12,7 @@ use App\Models\TeamMember;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class JoinTeamTest extends TestCase
@@ -195,5 +197,55 @@ class JoinTeamTest extends TestCase
         $this->actingAs($this->inscrito($event))
             ->get(route('teams.join.create'))
             ->assertOk();
+    }
+
+    public function test_the_policy_refuses_a_full_team_over_http(): void
+    {
+        $event = Event::factory()->aberto()->create(['max_team_size' => 2]);
+        $lider = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create(['leader_id' => $lider->id]);
+        TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
+
+        $primeiro = $this->inscrito($event);
+        $this->actingAs($primeiro)
+            ->post(route('teams.join.store'), ['invite_code' => $team->invite_code])
+            ->assertRedirect(route('teams.show'));
+
+        $this->actingAs($this->inscrito($event))
+            ->post(route('teams.join.store'), ['invite_code' => $team->invite_code])
+            ->assertForbidden();
+
+        $this->assertSame(2, $team->fresh()->activeMemberCount());
+    }
+
+    /**
+     * A Policy roda antes de qualquer gravacao, entao duas pessoas usando o
+     * mesmo codigo ao mesmo tempo podem passar as duas por ela. A recontagem
+     * sob lockForUpdate, dentro da transacao, e a ultima linha de defesa --
+     * e um teste sequencial nao consegue provocar a concorrencia, entao aqui
+     * a Action e chamada direto, no estado em que a corrida a deixaria.
+     */
+    public function test_the_action_refuses_to_overflow_the_team_even_if_the_policy_passed(): void
+    {
+        $event = Event::factory()->aberto()->create(['max_team_size' => 2]);
+        $lider = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create(['leader_id' => $lider->id]);
+
+        TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
+        TeamMember::factory()->for($event)->for($team)->for($this->inscrito($event))->create();
+
+        $atrasado = $this->inscrito($event);
+
+        $this->expectException(ValidationException::class);
+
+        try {
+            app(JoinTeamByCode::class)->handle($event, $atrasado, $team->invite_code);
+        } finally {
+            $this->assertSame(
+                2,
+                $team->fresh()->activeMemberCount(),
+                'A equipe nao pode ultrapassar max_team_size.'
+            );
+        }
     }
 }

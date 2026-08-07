@@ -27,6 +27,7 @@
 Thumbs.db
 
 .claude/settings.local.json
+.claude/worktrees
 
 # Plano B: dumps e planilhas do dia do evento nunca vão pro repositório
 /backups

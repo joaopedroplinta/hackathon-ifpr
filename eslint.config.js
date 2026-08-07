@@ -38,7 +38,17 @@ export default [
         },
     },
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+            // Worktrees de agentes vivem dentro do repositorio e contem
+            // copias completas do projeto. Sem isto o eslint varre tudo de
+            // novo, node_modules incluso.
+            '.claude/worktrees',
+        ],
     },
     prettier, // Turn off all rules that might conflict with Prettier
 ];
