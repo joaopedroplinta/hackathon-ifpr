@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\TeamMemberStatus;
+use App\Enums\TeamStatus;
 use App\Models\Event;
 use App\Models\Team;
 use App\Models\TeamMember;
@@ -26,6 +27,39 @@ class TeamPolicy
 
         if ($this->alreadyInATeam($user, $event)) {
             return Response::deny('Você já faz parte de uma equipe neste evento.');
+        }
+
+        return Response::allow();
+    }
+
+    /**
+     * Entrar em uma equipe existente pelo código de convite. A equipe já
+     * chega resolvida -- o código em si é validado no Form Request, que
+     * não distingue "não existe" de "é de outro evento" para não dar pista
+     * de que um código alheio existe.
+     */
+    public function join(User $user, Team $team): Response
+    {
+        $event = $team->event;
+
+        if (! $event->isRegistered($user)) {
+            return Response::deny('Inscreva-se no evento antes de entrar em uma equipe.');
+        }
+
+        if (! $event->registrationIsOpen()) {
+            return Response::deny('O prazo para entrar em uma equipe já encerrou.');
+        }
+
+        if ($this->alreadyInATeam($user, $event)) {
+            return Response::deny('Você já faz parte de uma equipe neste evento.');
+        }
+
+        if ($team->isFull()) {
+            return Response::deny('Esta equipe já atingiu o número máximo de integrantes.');
+        }
+
+        if ($team->status === TeamStatus::Disqualified) {
+            return Response::deny('Esta equipe foi desclassificada e não pode receber novos integrantes.');
         }
 
         return Response::allow();
