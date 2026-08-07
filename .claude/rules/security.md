@@ -25,7 +25,8 @@ O sistema decide quem ganha um prêmio. Furo aqui não é bug, é contestação.
 - Limite de tamanho explícito na Form Request.
 - Nome do arquivo **gerado pelo sistema**. Nome original só guardado como
   metadado, nunca usado no caminho do disco.
-- Storage em `storage/app/private/`, servido por rota autorizada. Nunca em
+- Storage em `storage/app/private/` — que é o disco `local` do Laravel 12,
+  não um disco chamado `private`. Servido por rota autorizada, nunca em
   `public/`.
 
 ## Dados

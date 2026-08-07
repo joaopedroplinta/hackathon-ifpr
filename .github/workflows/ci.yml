@@ -37,8 +37,13 @@ jobs:
       - name: Pint (formatação PHP)
         run: ./vendor/bin/pint --test
 
+      # lint:check, não lint — `npm run lint` roda eslint --fix, corrige em
+      # silêncio e sai com 0. Em CI isso aprova qualquer coisa.
       - name: ESLint
-        run: npm run lint
+        run: npm run lint:check
+
+      - name: Prettier
+        run: npm run format:check
 
       - name: TypeScript
         run: npx tsc --noEmit
