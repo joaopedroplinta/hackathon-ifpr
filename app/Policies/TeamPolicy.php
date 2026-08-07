@@ -93,6 +93,27 @@ class TeamPolicy
         return Response::allow();
     }
 
+    /**
+     * Passar a liderança adiante. Só o líder atual, e só enquanto o prazo
+     * de formação de equipes permite mexer na composição.
+     */
+    public function transferLeadership(User $user, Team $team): Response
+    {
+        if (! $team->isLeader($user)) {
+            return Response::deny('Apenas o líder pode passar a liderança adiante.');
+        }
+
+        if (! $team->event->registrationIsOpen()) {
+            return Response::deny('O prazo para mudar a equipe já encerrou. Procure a organização.');
+        }
+
+        if ($team->activeMemberships()->where('user_id', '!=', $user->id)->doesntExist()) {
+            return Response::deny('Não há outro integrante para receber a liderança.');
+        }
+
+        return Response::allow();
+    }
+
     private function alreadyInATeam(User $user, Event $event): bool
     {
         return TeamMember::query()

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Participant;
 
 use App\Actions\Teams\JoinTeamByCode;
+use App\Actions\Teams\LeaveTeam;
+use App\Actions\Teams\RemoveTeamMember;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Participant\JoinTeamRequest;
 use App\Models\Event;
 use App\Models\Team;
+use App\Models\TeamMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -48,6 +51,37 @@ class TeamMembershipController extends Controller
 
         return to_route('teams.show')
             ->with('sucesso', "Você entrou na equipe {$team->name}.");
+    }
+
+    /**
+     * Sair da propria equipe.
+     */
+    public function destroy(TeamMember $membership, LeaveTeam $leaveTeam): RedirectResponse
+    {
+        $this->authorize('leave', $membership);
+
+        $dissolvida = $leaveTeam->handle($membership);
+
+        return to_route('teams.show')->with(
+            'sucesso',
+            $dissolvida
+                ? 'Voce saiu da equipe. Como nao restou ninguem, ela foi desfeita.'
+                : 'Voce saiu da equipe.'
+        );
+    }
+
+    /**
+     * O lider tira alguem da equipe.
+     */
+    public function remove(TeamMember $membership, RemoveTeamMember $removeMember): RedirectResponse
+    {
+        $this->authorize('remove', $membership);
+
+        $nome = $membership->user->name;
+
+        $removeMember->handle($membership);
+
+        return to_route('teams.show')->with('sucesso', "{$nome} saiu da equipe.");
     }
 
     private function currentEventOrFail(): Event
