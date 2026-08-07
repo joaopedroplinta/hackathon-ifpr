@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -18,6 +19,13 @@ Route::middleware('guest')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+
+    // Login com Google. O state e verificado pelo proprio Socialite.
+    Route::get('auth/google/redirect', [GoogleController::class, 'redirect'])
+        ->name('google.redirect');
+
+    Route::get('auth/google/callback', [GoogleController::class, 'callback'])
+        ->name('google.callback');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
