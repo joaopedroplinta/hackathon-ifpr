@@ -58,6 +58,33 @@ class Event extends Model
         return $this->hasMany(Track::class);
     }
 
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+
+    /**
+     * O evento em foco agora. O sistema é multi-edição no banco, mas a
+     * interface trabalha com um evento por vez: o mais recente que já saiu
+     * do rascunho.
+     */
+    public static function current(): ?self
+    {
+        return static::query()
+            ->public()
+            ->orderByDesc('edition')
+            ->first();
+    }
+
+    public function isRegistered(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return $this->registrations()->where('user_id', $user->id)->exists();
+    }
+
     /**
      * Janela aberta = agora está entre as duas pontas.
      * Ponta nula significa "sem limite deste lado".
