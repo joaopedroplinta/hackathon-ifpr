@@ -97,7 +97,7 @@ public function index(Event $event): Response
 {
     $this->authorize('viewAny', [Team::class, $event]);
 
-    return Inertia::render('Teams/Index', [
+    return Inertia::render('teams/index', [
         'teams' => TeamResource::collection(
             Team::forEvent($event)
                 ->with(['members.user:id,name,avatar_url', 'track:id,name'])
@@ -135,8 +135,9 @@ URL em português, nome da rota em inglês.
 ## 6. Tipo
 
 ```ts
-// resources/js/types/team.ts
-export interface Team {
+// resources/js/types/team.ts  (minúsculo com hífen, como o starter kit)
+// `type`, não `interface`: useForm do Inertia v2 exige index signature
+export type Team = {
   id: number
   name: string
   status: 'draft' | 'confirmed' | 'disqualified'
@@ -167,7 +168,9 @@ export default function Index({ teams }: { teams: Paginated<Team> }) {
 Formulário:
 
 ```tsx
-const { data, setData, post, processing, errors } = useForm({
+type EquipeForm = { name: string; track_id: string; description: string }
+
+const { data, setData, post, processing, errors } = useForm<EquipeForm>({
   name: '', track_id: '', description: '',
 })
 
@@ -224,7 +227,9 @@ publicação.
 ```
 
 ```php
-$path = $request->file('arquivo')->store("submissions/{$submission->id}", 'private');
+// O disco 'local' do Laravel 12 já aponta para storage/app/private.
+// Não existe disco chamado 'private' — usar 'local'.
+$path = $request->file('arquivo')->store("submissions/{$submission->id}", 'local');
 // nome no disco é gerado pelo Laravel; o original vira metadado
 ```
 

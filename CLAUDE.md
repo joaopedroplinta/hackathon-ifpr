@@ -4,9 +4,9 @@ Sistema de apoio ao 1º Hackathon do curso de tecnologia — IFPR Campus Pinhais
 
 ## Estado atual
 
-**O projeto ainda não foi inicializado.** Só existem `PLANO.md` e `.claude/`.
-O primeiro passo é a semana 0 do cronograma. Até lá, os comandos abaixo não
-funcionam — não tente rodá-los antes do `laravel new`.
+**Semana 0 concluída.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
+Postgres via Docker, Pest verde, CI passando. Ainda não existe nenhuma tabela
+de domínio do hackathon — a próxima etapa é a semana 1 (autenticação).
 
 ## Leia o PLANO.md primeiro
 
@@ -60,9 +60,14 @@ comparado com `now()` no servidor — nunca confiar em horário vindo do cliente
 
 **Dinheiro/nota:** nota é `decimal`, não `float`.
 
-**Estrutura React:** `resources/js/Pages/` espelha a estrutura de rotas.
-Componentes compartilhados em `resources/js/Components/`. Props tipadas em
-`resources/js/types/`.
+**Estrutura React:** tudo em **minúsculo com hífen**, como o starter kit já
+faz — `resources/js/pages/` espelha a estrutura de rotas, componentes
+compartilhados em `resources/js/components/` (ex.: `app-header.tsx`), tipos em
+`resources/js/types/index.d.ts`. Não misturar com `PascalCase`.
+
+**Formulário tipado:** use `type`, não `interface`, para o tipo do `useForm`.
+O Inertia v2 exige `T extends FormDataType` e só o `type` ganha index
+signature implícita — com `interface` o `tsc` reprova.
 
 **Migrations:** uma tabela por migration, com `down()` funcionando de verdade.
 
