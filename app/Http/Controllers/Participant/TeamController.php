@@ -8,9 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Participant\StoreTeamRequest;
 use App\Models\Event;
 use App\Models\Team;
+use App\Models\TeamInvite;
 use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -63,7 +65,40 @@ class TeamController extends Controller
                 'atual' => $team->activeMemberships->count(),
             ],
             'pode_editar' => request()->user()->can('update', $team),
+            'convites' => $this->invitesPayload($team),
         ]);
+    }
+
+    /**
+     * Dados do painel de convite: se o líder pode convidar agora (com o
+     * motivo quando não pode) e a lista de convites ainda pendentes.
+     *
+     * Gate::inspect em vez de can() porque o front precisa do motivo da
+     * recusa (prazo encerrado, equipe cheia etc.), não só do booleano --
+     * Response::deny já carrega esse texto em português.
+     *
+     * @return array{pode_convidar: bool, motivo_bloqueio: string|null, pendentes: array<int, array{id: int, email: string, expira_em: string, expirado: bool}>}
+     */
+    private function invitesPayload(Team $team): array
+    {
+        $check = Gate::inspect('invite', [$team]);
+
+        return [
+            'pode_convidar' => $check->allowed(),
+            'motivo_bloqueio' => $check->message(),
+            'pendentes' => $team->invites()
+                ->whereNull('accepted_at')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn (TeamInvite $invite) => [
+                    'id' => $invite->id,
+                    'email' => $invite->email,
+                    'expira_em' => $invite->expires_at->toIso8601String(),
+                    'expirado' => $invite->isExpired(),
+                ])
+                ->values()
+                ->all(),
+        ];
     }
 
     public function create(): Response

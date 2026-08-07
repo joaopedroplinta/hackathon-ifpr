@@ -2,6 +2,7 @@ import { Head, usePage } from '@inertiajs/react';
 import { Check, Copy, Crown } from 'lucide-react';
 import { useState } from 'react';
 
+import PainelConvites from '@/components/hackathon/painel-convites';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { SharedData } from '@/types';
@@ -129,6 +130,8 @@ export default function MinhaEquipe({ equipe, limites }: Props) {
                         ))}
                     </ul>
                 </section>
+
+                <PainelConvites />
             </div>
         </AppLayout>
     );

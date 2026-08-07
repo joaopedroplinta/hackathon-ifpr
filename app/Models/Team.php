@@ -62,6 +62,11 @@ class Team extends Model
         return $this->memberships()->where('status', TeamMemberStatus::Active);
     }
 
+    public function invites(): HasMany
+    {
+        return $this->hasMany(TeamInvite::class);
+    }
+
     public function hasMember(?User $user): bool
     {
         if (! $user) {
