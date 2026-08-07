@@ -48,6 +48,7 @@ class TeamController extends Controller
                 'status_label' => $team->status->label(),
                 'trilha' => $team->track?->only(['id', 'name', 'color']),
                 'sou_lider' => $team->isLeader(request()->user()),
+                'slug' => $team->slug,
                 'membros' => $team->activeMemberships->map(fn (TeamMember $m) => [
                     'id' => $m->id,
                     'nome' => $m->user->name,
@@ -55,6 +56,11 @@ class TeamController extends Controller
                     'avatar' => $m->user->avatar_url,
                     'papel' => $m->role->label(),
                     'e_lider' => $m->user_id === $team->leader_id,
+                    'sou_eu' => $m->user_id === request()->user()->id,
+                    // Cada botao aparece so para quem a Policy autoriza.
+                    // A tela nao repete a regra: ela pergunta.
+                    'pode_remover' => request()->user()->can('remove', $m),
+                    'pode_sair' => request()->user()->can('leave', $m),
                 ])->values(),
             ],
             'limites' => [
@@ -63,6 +69,7 @@ class TeamController extends Controller
                 'atual' => $team->activeMemberships->count(),
             ],
             'pode_editar' => request()->user()->can('update', $team),
+            'pode_transferir' => request()->user()->can('transferLeadership', $team),
         ]);
     }
 

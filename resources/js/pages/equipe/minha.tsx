@@ -1,5 +1,5 @@
-import { Head, usePage } from '@inertiajs/react';
-import { Check, Copy, Crown } from 'lucide-react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Check, Copy, Crown, LogOut, UserMinus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,9 @@ type Membro = {
     avatar: string | null;
     papel: string;
     e_lider: boolean;
+    sou_eu: boolean;
+    pode_remover: boolean;
+    pode_sair: boolean;
 };
 
 interface Props {
@@ -24,10 +27,12 @@ interface Props {
         status_label: string;
         trilha: { id: number; name: string; color: string | null } | null;
         sou_lider: boolean;
+        slug: string;
         membros: Membro[];
     };
     limites: { minimo: number; maximo: number; atual: number };
     pode_editar: boolean;
+    pode_transferir: boolean;
 }
 
 function CodigoConvite({ codigo }: { codigo: string }) {
@@ -62,7 +67,54 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     );
 }
 
-export default function MinhaEquipe({ equipe, limites }: Props) {
+function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
+    const [destino, setDestino] = useState('');
+    const [enviando, setEnviando] = useState(false);
+    const candidatos = equipe.membros.filter((m) => !m.e_lider);
+
+    if (candidatos.length === 0) {
+        return null;
+    }
+
+    const transferir = () => {
+        setEnviando(true);
+        router.patch(
+            route('teams.leadership.update', equipe.slug),
+            { membership_id: Number(destino) },
+            { onFinish: () => setEnviando(false), preserveScroll: true },
+        );
+    };
+
+    return (
+        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+            <h2 className="font-medium">Passar a liderança</h2>
+            <p className="text-muted-foreground mt-1 text-sm">
+                Quem receber a liderança passa a poder convidar, editar e submeter pela equipe. Você continua na equipe como integrante.
+            </p>
+
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+                <select
+                    aria-label="Novo líder"
+                    value={destino}
+                    onChange={(e) => setDestino(e.target.value)}
+                    className="border-input bg-background rounded-md border px-3 py-2 text-sm"
+                >
+                    <option value="">Selecione um integrante</option>
+                    {candidatos.map((m) => (
+                        <option key={m.id} value={m.id}>
+                            {m.nome}
+                        </option>
+                    ))}
+                </select>
+                <Button variant="outline" disabled={!destino || enviando} onClick={transferir}>
+                    {enviando ? 'Transferindo…' : 'Transferir liderança'}
+                </Button>
+            </div>
+        </section>
+    );
+}
+
+export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props) {
     const { flash } = usePage<SharedData>().props;
     const faltam = limites.minimo - limites.atual;
 
@@ -125,10 +177,50 @@ export default function MinhaEquipe({ equipe, limites }: Props) {
                                         Líder
                                     </span>
                                 )}
+                                {membro.pode_remover && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        aria-label={`Remover ${membro.nome} da equipe`}
+                                        onClick={() =>
+                                            router.delete(route('teams.members.remove', membro.id), {
+                                                preserveScroll: true,
+                                            })
+                                        }
+                                    >
+                                        <UserMinus className="h-4 w-4" aria-hidden="true" />
+                                    </Button>
+                                )}
                             </li>
                         ))}
                     </ul>
                 </section>
+
+                {pode_transferir && <Lideranca equipe={equipe} />}
+
+                {(() => {
+                    const eu = equipe.membros.find((m) => m.sou_eu);
+                    if (!eu?.pode_sair) {
+                        return null;
+                    }
+
+                    const sozinho = equipe.membros.length === 1;
+
+                    return (
+                        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+                            <h2 className="font-medium">Sair da equipe</h2>
+                            <p className="text-muted-foreground mt-1 text-sm">
+                                {sozinho
+                                    ? 'Você é a única pessoa na equipe. Ao sair, ela será desfeita.'
+                                    : 'Você poderá entrar em outra equipe depois, enquanto o prazo permitir.'}
+                            </p>
+                            <Button variant="outline" className="mt-4" onClick={() => router.delete(route('teams.leave', eu.id))}>
+                                <LogOut className="h-4 w-4" aria-hidden="true" />
+                                Sair da equipe
+                            </Button>
+                        </section>
+                    );
+                })()}
             </div>
         </AppLayout>
     );
