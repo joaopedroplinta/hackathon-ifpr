@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Participant\EventRegistrationController;
+use App\Http\Controllers\Participant\TeamController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,6 +23,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('inscricao', [EventRegistrationController::class, 'store'])
         ->name('registration.store');
+
+    Route::get('equipe', [TeamController::class, 'show'])->name('teams.show');
+    Route::get('equipe/criar', [TeamController::class, 'create'])->name('teams.create');
+    Route::post('equipe', [TeamController::class, 'store'])->name('teams.store');
 });
 
 require __DIR__.'/settings.php';

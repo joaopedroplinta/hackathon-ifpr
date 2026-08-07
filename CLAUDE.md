@@ -96,6 +96,29 @@ Invariantes do projeto, carregados junto com este arquivo:
 - `revisor-regras` — caça violação de prazo, autorização, upload e nota
 - `testador` — escreve testes Pest de uma feature já pronta
 
+## Testar no navegador
+
+Complementa os testes, não substitui: o CI não roda navegador, então nada
+verificado só ali protege contra regressão. Serve para o que o Pest não vê —
+texto na tela, layout, erro de console.
+
+```bash
+docker compose up -d && php artisan serve   # :8000
+npm run dev                                  # outro terminal
+```
+
+Três armadilhas, todas já cobradas caro aqui:
+
+- **Não use `form_input` em tela React.** Ele altera o DOM sem o React saber,
+  o estado do formulário fica vazio e o POST vai sem dados. Pior: digitar por
+  cima mistura o valor antigo com o novo.
+- **Clique por referência de elemento (`ref`), não por coordenada.** A janela
+  muda de tamanho entre capturas e a coordenada fura. `read_page` com filtro
+  `interactive` devolve os refs.
+- **A validação nativa do Chrome barra o envio antes do servidor.** Para
+  exercitar regra de servidor, os dados precisam passar pelo HTML5 e falhar
+  só no PHP.
+
 ## Definição de pronto
 
 Feature não está pronta sem: Policy, Form Request, teste Pest do caminho feliz
