@@ -21,10 +21,20 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface EventoAtual {
+    nome: string;
+    slug: string;
+    inscricoes_abertas: boolean;
+    inscrito: boolean;
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
+    /** Evento em foco. Nulo quando nenhum evento saiu do rascunho. */
+    evento: EventoAtual | null;
+    flash: { sucesso?: string; erro?: string };
     [key: string]: unknown;
 }
 
