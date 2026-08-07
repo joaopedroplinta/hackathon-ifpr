@@ -21,6 +21,7 @@ direto do controller via Inertia.
 | [`PLANO.md`](PLANO.md) | Escopo, modelo de dados, telas, cronograma e decisões |
 | [`PLANO.md` § Anexo A](PLANO.md) | Plano B para o dia do evento |
 | [`CLAUDE.md`](CLAUDE.md) | Convenções de código e ferramentas do projeto |
+| [`docs/google-oauth.md`](docs/google-oauth.md) | Configurar o login com Google (~10 min) |
 
 ## Começando
 
