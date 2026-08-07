@@ -4,7 +4,7 @@ Sistema de apoio ao 1º Hackathon do curso de tecnologia — IFPR Campus Pinhais
 
 ## Estado atual
 
-**Semana 0 concluída.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
+**Semana 0 concluída, estrutura de pastas definida.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
 Postgres via Docker, Pest verde, CI passando. Ainda não existe nenhuma tabela
 de domínio do hackathon — a próxima etapa é a semana 1 (autenticação).
 
@@ -60,10 +60,11 @@ comparado com `now()` no servidor — nunca confiar em horário vindo do cliente
 
 **Dinheiro/nota:** nota é `decimal`, não `float`.
 
-**Estrutura React:** tudo em **minúsculo com hífen**, como o starter kit já
-faz — `resources/js/pages/` espelha a estrutura de rotas, componentes
-compartilhados em `resources/js/components/` (ex.: `app-header.tsx`), tipos em
-`resources/js/types/index.d.ts`. Não misturar com `PascalCase`.
+**Estrutura de pastas:** ver `.claude/rules/estrutura.md`. Em resumo:
+controllers agrupados por público (`Public`, `Participant`, `Judge`,
+`Organizer`), escrita com regra de negócio em `app/Actions/`, e
+`resources/js/pages/` espelhando essa mesma divisão. Arquivos do front em
+minúsculo com hífen.
 
 **Formulário tipado:** use `type`, não `interface`, para o tipo do `useForm`.
 O Inertia v2 exige `T extends FormDataType` e só o `type` ganha index
@@ -75,6 +76,7 @@ signature implícita — com `interface` o `tsc` reprova.
 
 Invariantes do projeto, carregados junto com este arquivo:
 
+@.claude/rules/estrutura.md
 @.claude/rules/database.md
 @.claude/rules/security.md
 @.claude/rules/frontend.md
