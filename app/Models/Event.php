@@ -73,6 +73,10 @@ class Event extends Model
         return static::query()
             ->public()
             ->orderByDesc('edition')
+            // Desempate por id: sem isto, duas edições com o mesmo número
+            // devolvem um evento arbitrário, e partes diferentes do sistema
+            // podem resolver "o evento atual" de formas diferentes.
+            ->orderByDesc('id')
             ->first();
     }
 
