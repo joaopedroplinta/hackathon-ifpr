@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Team extends Model
 {
@@ -93,6 +94,20 @@ class Team extends Model
     public function scopeForEvent(Builder $query, Event $event): Builder
     {
         return $query->where('event_id', $event->id);
+    }
+
+    /**
+     * Filtra pelo código de convite ignorando maiúsculas/minúsculas e
+     * espaço nas pontas -- quem digita "as3dyp " também consegue entrar.
+     * O código é sempre gravado em maiúsculas, então a comparação normaliza
+     * o mesmo jeito.
+     *
+     * @param  Builder<Team>  $query
+     * @return Builder<Team>
+     */
+    public function scopeWithInviteCode(Builder $query, string $code): Builder
+    {
+        return $query->where('invite_code', Str::of($code)->trim()->upper()->toString());
     }
 
     public function getRouteKeyName(): string

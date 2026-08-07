@@ -25,9 +25,14 @@ export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
                             <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
                                 Crie uma equipe e compartilhe o código de convite, ou peça o código de quem já criou a sua.
                             </p>
-                            <Button asChild className="mt-6">
-                                <Link href={route('teams.create')}>Criar equipe</Link>
-                            </Button>
+                            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+                                <Button asChild>
+                                    <Link href={route('teams.create')}>Criar equipe</Link>
+                                </Button>
+                                <Button asChild variant="outline">
+                                    <Link href={route('teams.join.create')}>Entrar com um código</Link>
+                                </Button>
+                            </div>
                         </>
                     ) : (
                         <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
