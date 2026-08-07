@@ -5,11 +5,14 @@ namespace Tests\Unit;
 use App\Enums\CertificateType;
 use App\Enums\CheckpointType;
 use App\Enums\EvaluationStatus;
+use App\Enums\EventStatus;
 use App\Enums\IncidentKind;
 use App\Enums\Role;
 use App\Enums\ScheduleItemType;
 use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
+use App\Enums\TeamMemberRole;
+use App\Enums\TeamMemberStatus;
 use App\Enums\TeamStatus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +39,9 @@ class EnumLabelsTest extends TestCase
             'CertificateType' => [CertificateType::class],
             'CheckpointType' => [CheckpointType::class],
             'IncidentKind' => [IncidentKind::class],
+            'EventStatus' => [EventStatus::class],
+            'TeamMemberRole' => [TeamMemberRole::class],
+            'TeamMemberStatus' => [TeamMemberStatus::class],
         ];
     }
 
