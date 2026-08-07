@@ -5,9 +5,11 @@
 /public/storage
 /storage/*.key
 /storage/pail
-/storage/app/private
-/storage/app/public
-/bootstrap/cache/*.php
+/bootstrap/ssr
+# storage/ e bootstrap/cache/ têm .gitignore próprios ("*" + "!.gitignore"),
+# que preservam os diretórios vazios no repositório. Não ignorar aqui: uma
+# regra de diretório impede o git de descer e os .gitignore internos somem —
+# aí o deploy quebra com "bootstrap/cache must be present and writable".
 
 .env
 .env.backup
