@@ -51,6 +51,16 @@ class SubmitSubmission
                 'status' => $submission->status->value,
                 'source' => SubmissionSource::Web->value,
                 'submitted_at' => $sentAt->toIso8601String(),
+                // Quais arquivos valiam neste envio. Sem isto o histórico
+                // diria o que a equipe escreveu, mas não o que ela entregou.
+                'files' => $submission->files()->get()
+                    ->map(fn ($file) => [
+                        'id' => $file->id,
+                        'original_name' => $file->original_name,
+                        'mime' => $file->mime,
+                        'size' => $file->size,
+                    ])
+                    ->all(),
             ];
             $version->save();
 

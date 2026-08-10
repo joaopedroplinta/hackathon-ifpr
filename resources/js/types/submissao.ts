@@ -18,6 +18,20 @@ export type Submissao = {
     fora_do_prazo: boolean;
 };
 
+export type ArquivoSubmissao = {
+    id: number;
+    nome: string;
+    /** Já formatado pelo servidor: "512 KB". Byte cru não diz nada. */
+    tamanho: string;
+    versao: number;
+    pode_remover: boolean;
+};
+
+export type ArquivosSubmissao = {
+    limite: number;
+    itens: ArquivoSubmissao[];
+};
+
 export type PrazoSubmissao = {
     /** ISO 8601. Só para exibição -- quem decide o prazo é o servidor. */
     encerra_em: string | null;

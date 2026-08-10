@@ -18,6 +18,12 @@ class Submission extends Model
     use HasFactory, SoftDeletes;
 
     /**
+     * Teto de arquivos por submissão. Não é capricho: sem limite, uma equipe
+     * sobe 40 arquivos e o organizador não consegue conferir nada no dia.
+     */
+    public const MAX_FILES = 5;
+
+    /**
      * status, submitted_at, current_version, source, recorded_by e
      * original_submitted_at ficam de fora: quem decide se um envio está no
      * prazo é o servidor, nunca o formulário -- .claude/rules/security.md.
@@ -56,6 +62,12 @@ class Submission extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(SubmissionVersion::class)->orderByDesc('version');
+    }
+
+    /** Arquivos anexados que ainda valem — os removidos ficam no soft delete. */
+    public function files(): HasMany
+    {
+        return $this->hasMany(SubmissionFile::class)->orderBy('id');
     }
 
     /** Organizador que lançou a submissão no lugar da equipe, se houve. */

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\SubmissionController;
+use App\Http\Controllers\Participant\SubmissionFileController;
 use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
@@ -54,6 +55,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('submissao', [SubmissionController::class, 'show'])->name('submissions.show');
     Route::post('submissao', [SubmissionController::class, 'save'])->name('submissions.save');
     Route::post('submissao/enviar', [SubmissionController::class, 'submit'])->name('submissions.submit');
+
+    // Arquivos da submissao. O download passa por rota autorizada porque o
+    // storage fica fora do webroot -- nunca ha link direto pro disco.
+    Route::post('submissao/arquivos', [SubmissionFileController::class, 'store'])
+        ->name('submission-files.store');
+    Route::get('submissao/arquivos/{file}', [SubmissionFileController::class, 'download'])
+        ->name('submission-files.download');
+    Route::delete('submissao/arquivos/{file}', [SubmissionFileController::class, 'destroy'])
+        ->name('submission-files.destroy');
 });
 
 require __DIR__.'/settings.php';

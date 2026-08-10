@@ -11,6 +11,7 @@ use App\Http\Requests\Participant\SaveSubmissionRequest;
 use App\Http\Requests\Participant\SubmitSubmissionRequest;
 use App\Models\Event;
 use App\Models\Submission;
+use App\Models\SubmissionFile;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -60,6 +61,7 @@ class SubmissionController extends Controller
                 'foi_enviada' => $submission->isSubmitted(),
                 'fora_do_prazo' => $submission->status === SubmissionStatus::Late,
             ] : null,
+            'arquivos' => $this->filesPayload($submission),
             'prazo' => $this->deadlinePayload($event),
             // A tela não repete a regra de prazo: ela pergunta à Policy e
             // mostra o motivo quando a resposta é não.
@@ -109,6 +111,32 @@ class SubmissionController extends Controller
     }
 
     /**
+     * Arquivos anexados, com a permissão de remoção decidida pela Policy —
+     * a tela não repete a regra, ela pergunta.
+     *
+     * @return array{limite: int, itens: array<int, array{id: int, nome: string, tamanho: string, versao: int, pode_remover: bool}>}
+     */
+    private function filesPayload(?Submission $submission): array
+    {
+        if (! $submission) {
+            return ['limite' => Submission::MAX_FILES, 'itens' => []];
+        }
+
+        return [
+            'limite' => Submission::MAX_FILES,
+            'itens' => $submission->files()->get()
+                ->map(fn (SubmissionFile $file) => [
+                    'id' => $file->id,
+                    'nome' => $file->original_name,
+                    'tamanho' => $file->humanSize(),
+                    'versao' => $file->version,
+                    'pode_remover' => request()->user()->can('delete', $file),
+                ])
+                ->all(),
+        ];
+    }
+
+    /**
      * Criar e editar passam por Policies diferentes: criar olha a equipe,
      * editar olha a submissão que já existe (e o prazo, quando ela já foi
      * enviada).
@@ -124,14 +152,6 @@ class SubmissionController extends Controller
         }
 
         $this->authorize('create', [Submission::class, $team]);
-    }
-
-    private function teamOrFail(): Team
-    {
-        $event = $this->currentEventOrFail();
-
-        return $this->teamOf(request()->user(), $event)
-            ?? abort(403, 'Você precisa fazer parte de uma equipe antes de enviar um projeto.');
     }
 
     /**
