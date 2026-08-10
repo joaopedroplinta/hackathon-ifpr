@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\SubmissionFileController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
+use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -64,6 +66,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('submission-files.download');
     Route::delete('submissao/arquivos/{file}', [SubmissionFileController::class, 'destroy'])
         ->name('submission-files.destroy');
+});
+
+// Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
+// rota garante que ninguém chega ao controller sem passar por
+// SubmissionPolicy::viewAny.
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
+        ->can('viewAny', Submission::class)
+        ->name('admin.submissions.index');
 });
 
 require __DIR__.'/settings.php';
