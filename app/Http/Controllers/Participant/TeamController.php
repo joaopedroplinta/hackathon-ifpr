@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Participant;
 
 use App\Actions\Teams\CreateTeam;
-use App\Enums\TeamMemberStatus;
+use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Participant\StoreTeamRequest;
-use App\Models\Event;
 use App\Models\Team;
 use App\Models\TeamInvite;
 use App\Models\TeamMember;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TeamController extends Controller
 {
+    use ResolvesParticipation;
+
     /**
      * A equipe do usuário no evento atual — ou o convite para criar uma.
      */
@@ -135,21 +134,5 @@ class TeamController extends Controller
             'sucesso',
             "Equipe criada. Compartilhe o código {$team->invite_code} com quem for entrar."
         );
-    }
-
-    private function teamOf(User $user, Event $event): ?Team
-    {
-        $membership = TeamMember::query()
-            ->where('event_id', $event->id)
-            ->where('user_id', $user->id)
-            ->where('status', TeamMemberStatus::Active)
-            ->first();
-
-        return $membership?->team;
-    }
-
-    private function currentEventOrFail(): Event
-    {
-        return Event::current() ?? throw new NotFoundHttpException('Nenhum evento publicado no momento.');
     }
 }

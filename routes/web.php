@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Participant\EventRegistrationController;
+use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
@@ -46,6 +47,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // TeamInviteController.
     Route::post('equipe/convites', [TeamInviteController::class, 'store'])->name('team-invites.store');
     Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->name('team-invites.accept');
+
+    // Submissao do projeto. Salvar rascunho e enviar sao rotas separadas
+    // porque as exigencias sao outras: rascunho aceita campo em branco, o
+    // envio nao -- ver SaveSubmissionRequest e SubmitSubmissionRequest.
+    Route::get('submissao', [SubmissionController::class, 'show'])->name('submissions.show');
+    Route::post('submissao', [SubmissionController::class, 'save'])->name('submissions.save');
+    Route::post('submissao/enviar', [SubmissionController::class, 'submit'])->name('submissions.submit');
 });
 
 require __DIR__.'/settings.php';

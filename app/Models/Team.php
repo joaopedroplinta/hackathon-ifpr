@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -66,6 +67,12 @@ class Team extends Model
     public function invites(): HasMany
     {
         return $this->hasMany(TeamInvite::class);
+    }
+
+    /** Uma submissão por equipe -- índice submissions_one_per_team. */
+    public function submission(): HasOne
+    {
+        return $this->hasOne(Submission::class);
     }
 
     public function hasMember(?User $user): bool
