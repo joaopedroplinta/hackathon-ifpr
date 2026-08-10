@@ -8,13 +8,12 @@ use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
+use App\Http\Controllers\Public\LandingController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::get('/', [LandingController::class, 'show'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
