@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\TeamController;
+use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('teams.members.remove');
     Route::patch('equipe/{team}/lideranca', [TeamLeadershipController::class, 'update'])
         ->name('teams.leadership.update');
+
+    // Convite por e-mail. 'aceitar' fica fora de /equipe porque o link vem
+    // de fora (e-mail) e o token já identifica o convite -- ver
+    // TeamInviteController.
+    Route::post('equipe/convites', [TeamInviteController::class, 'store'])->name('team-invites.store');
+    Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->name('team-invites.accept');
 });
 
 require __DIR__.'/settings.php';

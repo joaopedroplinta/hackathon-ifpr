@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Str;
 
 class TeamPolicy
 {
@@ -120,6 +121,56 @@ class TeamPolicy
             ->where('event_id', $event->id)
             ->where('user_id', $user->id)
             ->where('status', TeamMemberStatus::Active)
+            ->exists();
+    }
+
+    /**
+     * Convidar alguém por e-mail. Só o líder convida, só enquanto o prazo
+     * de formação de equipes permitir, e nunca pra quem já está na equipe
+     * ou já tem outra equipe ativa neste evento.
+     *
+     * $email fica opcional: sem ele, a checagem serve só pra decidir se o
+     * formulário de convite aparece na tela (equipe cheia, prazo etc.) --
+     * as regras específicas de quem está sendo convidado só entram quando
+     * o e-mail é conhecido, no momento do envio de verdade.
+     */
+    public function invite(User $user, Team $team, ?string $email = null): Response
+    {
+        if (! $team->isLeader($user)) {
+            return Response::deny('Apenas o líder pode convidar novos integrantes.');
+        }
+
+        if (! $team->event->registrationIsOpen()) {
+            return Response::deny('O prazo para formar equipes já encerrou.');
+        }
+
+        if ($team->isFull()) {
+            return Response::deny('A equipe já atingiu o número máximo de integrantes.');
+        }
+
+        if ($email === null) {
+            return Response::allow();
+        }
+
+        $email = Str::lower($email);
+
+        if ($team->activeMemberships()->whereHas('user', fn ($q) => $q->where('email', $email))->exists()) {
+            return Response::deny('Essa pessoa já faz parte da equipe.');
+        }
+
+        if ($this->hasActiveTeamInEvent($email, $team->event)) {
+            return Response::deny('Essa pessoa já tem uma equipe ativa neste evento.');
+        }
+
+        return Response::allow();
+    }
+
+    private function hasActiveTeamInEvent(string $email, Event $event): bool
+    {
+        return TeamMember::query()
+            ->where('event_id', $event->id)
+            ->where('status', TeamMemberStatus::Active)
+            ->whereHas('user', fn ($q) => $q->where('email', $email))
             ->exists();
     }
 }
