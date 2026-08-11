@@ -3,11 +3,13 @@
 use App\Http\Controllers\Judge\EvaluationController;
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
+use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\EventRegistrationController;
+use App\Http\Controllers\Participant\PopularVoteController;
 use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\SubmissionFileController;
 use App\Http\Controllers\Participant\TeamController;
@@ -16,7 +18,9 @@ use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
+use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
+use App\Http\Controllers\Public\SubmissionShowcaseController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +35,14 @@ Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
 // Rubrica pública -- .claude/rules do Anexo A: reduz disputa sobre nota
 // deixar os critérios visíveis desde antes do evento.
 Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.show');
+
+// Resultado público. Só mostra algo se results_published_at não for nulo
+// -- checado no servidor, ver Public\ResultController.
+Route::get('resultados', [PublicResultController::class, 'show'])->name('resultados.show');
+
+// Vitrine dos projetos enviados. É daqui que o voto popular acontece --
+// quem pode votar é decidido no servidor (PopularVotePolicy), não aqui.
+Route::get('projetos', [SubmissionShowcaseController::class, 'index'])->name('projetos.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -104,6 +116,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('jurado/avaliar/{submission}', [EvaluationController::class, 'show'])->name('jurado.avaliar.show');
     Route::post('jurado/avaliar/{submission}/rascunho', [EvaluationController::class, 'autosave'])->name('jurado.avaliar.autosave');
     Route::post('jurado/avaliar/{submission}/enviar', [EvaluationController::class, 'submit'])->name('jurado.avaliar.enviar');
+
+    // Voto popular. Autorização (inscrito + dentro da janela) é da
+    // PopularVotePolicy -- ver Participant\PopularVoteController.
+    Route::post('votos', [PopularVoteController::class, 'store'])->name('votos.store');
 });
 
 // Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
@@ -161,6 +177,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('admin.jurados.conflicts.store');
     Route::delete('jurados/conflitos/{conflict}', [JudgeAssignmentController::class, 'destroyConflict'])->name('admin.jurados.conflicts.destroy');
+
+    // Resultados. Calcular nunca publica sozinho -- ver ResultController.
+    Route::get('resultados', [ResultController::class, 'index'])->name('admin.resultados.index');
+    Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('admin.resultados.recompute');
+    Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('admin.resultados.publish');
 });
 
 require __DIR__.'/settings.php';
