@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\SubmissionFileController;
@@ -36,6 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('inscricao', [EventRegistrationController::class, 'store'])
         ->name('registration.store');
+
+    // Crachá digital. Qualquer autenticado -- jurado e organizador também
+    // passam por checkpoint no dia do evento, não é só participante.
+    Route::get('credencial', [CredentialController::class, 'show'])->name('credencial.show');
 
     Route::get('equipe', [TeamController::class, 'show'])->name('teams.show');
     Route::get('equipe/criar', [TeamController::class, 'create'])->name('teams.create');
