@@ -26,6 +26,9 @@ export default function CabecalhoPublico() {
                 <Link href={route('rubrica.show')} className="text-muted-foreground hover:text-foreground text-sm">
                     Rubrica
                 </Link>
+                <Link href={route('resultados.show')} className="text-muted-foreground hover:text-foreground text-sm">
+                    Resultados
+                </Link>
 
                 {auth.user ? (
                     <Button asChild size="sm">

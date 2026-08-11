@@ -17,6 +17,7 @@ use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
+use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,10 @@ Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
 // Rubrica pública -- .claude/rules do Anexo A: reduz disputa sobre nota
 // deixar os critérios visíveis desde antes do evento.
 Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.show');
+
+// Resultado público. Só mostra algo se results_published_at não for nulo
+// -- checado no servidor, ver Public\ResultController.
+Route::get('resultados', [PublicResultController::class, 'show'])->name('resultados.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
