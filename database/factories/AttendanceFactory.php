@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\AttendanceMethod;
 use App\Models\Attendance;
 use App\Models\Checkpoint;
 use App\Models\User;
@@ -24,12 +25,12 @@ class AttendanceFactory extends Factory
             'user_id' => User::factory(),
             'checked_in_at' => now(),
             'checked_by' => User::factory(),
-            'method' => 'manual',
+            'method' => AttendanceMethod::Manual,
         ];
     }
 
     public function viaQrCode(): static
     {
-        return $this->state(['method' => 'qr']);
+        return $this->state(['method' => AttendanceMethod::Qr]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AttendanceMethod;
 use Database\Factories\AttendanceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ class Attendance extends Model
     {
         return [
             'checked_in_at' => 'datetime',
+            'method' => AttendanceMethod::class,
         ];
     }
 

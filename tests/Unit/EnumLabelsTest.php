@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\AttendanceMethod;
 use App\Enums\CertificateType;
 use App\Enums\CheckpointType;
 use App\Enums\EvaluationStatus;
@@ -42,6 +43,7 @@ class EnumLabelsTest extends TestCase
             'EventStatus' => [EventStatus::class],
             'TeamMemberRole' => [TeamMemberRole::class],
             'TeamMemberStatus' => [TeamMemberStatus::class],
+            'AttendanceMethod' => [AttendanceMethod::class],
         ];
     }
 
