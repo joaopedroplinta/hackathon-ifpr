@@ -156,6 +156,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::post('jurados', [JudgeAssignmentController::class, 'store'])->name('admin.jurados.store');
     Route::delete('jurados/{assignment}', [JudgeAssignmentController::class, 'destroy'])->name('admin.jurados.destroy');
     Route::post('jurados/{assignment}/reatribuir', [JudgeAssignmentController::class, 'reassign'])->name('admin.jurados.reassign');
+    Route::post('jurados/{assignment}/reabrir-avaliacao', [JudgeAssignmentController::class, 'reopenEvaluation'])->name('admin.jurados.reopen-evaluation');
     Route::patch('jurados/configuracao', [JudgeAssignmentController::class, 'updateJudgesPerSubmission'])->name('admin.jurados.config');
 
     Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('admin.jurados.conflicts.store');

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\EvaluationStatus;
 use App\Models\JudgeAssignment;
 use App\Models\User;
 
@@ -26,5 +27,11 @@ class JudgeAssignmentPolicy
     public function delete(User $user, JudgeAssignment $assignment): bool
     {
         return $user->isStaff();
+    }
+
+    /** Só uma avaliação enviada pode ser reaberta -- reabrir um rascunho não faz sentido. */
+    public function reopen(User $user, JudgeAssignment $assignment): bool
+    {
+        return $user->isStaff() && $assignment->evaluation?->status === EvaluationStatus::Submitted;
     }
 }

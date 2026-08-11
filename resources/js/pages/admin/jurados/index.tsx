@@ -1,5 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
-import { LoaderCircle, RefreshCw, Scale, Shuffle, Trash2, Users } from 'lucide-react';
+import { History, LoaderCircle, RefreshCw, Scale, Shuffle, Trash2, Users } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -22,10 +22,12 @@ const campo =
 export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_por_submissao, opcoes }: Props) {
     const [distribuindo, setDistribuindo] = useState(false);
     const [emAndamento, setEmAndamento] = useState<number | null>(null);
+    const [reabrindoId, setReabrindoId] = useState<number | null>(null);
 
     const configForm = useForm({ judges_per_submission: String(jurados_por_submissao) });
     const atribuirForm = useForm({ judge_id: '', submission_id: '' });
     const conflitoForm = useForm({ judge_id: '', team_id: '', reason: '' });
+    const reabrirForm = useForm({ reason: '' });
 
     const distribuir = () => {
         setDistribuindo(true);
@@ -60,6 +62,22 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
     const removerConflito = (conflitoId: number) => {
         setEmAndamento(conflitoId);
         router.delete(route('admin.jurados.conflicts.destroy', conflitoId), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+    };
+
+    const abrirReabertura = (atribuicaoId: number) => {
+        reabrirForm.reset();
+        reabrirForm.clearErrors();
+        setReabrindoId(atribuicaoId);
+    };
+
+    const confirmarReabertura: FormEventHandler = (e) => {
+        e.preventDefault();
+        if (reabrindoId === null) return;
+
+        reabrirForm.post(route('admin.jurados.reopen-evaluation', reabrindoId), {
+            preserveScroll: true,
+            onSuccess: () => setReabrindoId(null),
+        });
     };
 
     return (
@@ -182,6 +200,17 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                             >
                                                 {jurado.nome}
                                                 <span className="text-muted-foreground">· {jurado.status_label}</span>
+                                                {jurado.avaliacao_enviada && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => abrirReabertura(jurado.atribuicao_id)}
+                                                        aria-label={`Reabrir avaliação de ${jurado.nome} para correção`}
+                                                        className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1"
+                                                        title="Reabrir avaliação enviada para correção"
+                                                    >
+                                                        <History className="h-3 w-3" aria-hidden="true" />
+                                                    </button>
+                                                )}
                                                 <button
                                                     type="button"
                                                     onClick={() => reatribuir(jurado.atribuicao_id)}
@@ -205,6 +234,38 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                         ))}
                                     </ul>
                                 )}
+
+                                {submissao.jurados
+                                    .filter((jurado) => jurado.atribuicao_id === reabrindoId)
+                                    .map((jurado) => (
+                                        <form
+                                            key={jurado.atribuicao_id}
+                                            onSubmit={confirmarReabertura}
+                                            className="border-sidebar-border/70 dark:border-sidebar-border mt-3 flex flex-col gap-2 rounded-lg border p-3"
+                                        >
+                                            <Label htmlFor={`motivo-reabertura-${jurado.atribuicao_id}`}>
+                                                Motivo da correção na avaliação de {jurado.nome}
+                                            </Label>
+                                            <textarea
+                                                id={`motivo-reabertura-${jurado.atribuicao_id}`}
+                                                value={reabrirForm.data.reason}
+                                                onChange={(e) => reabrirForm.setData('reason', e.target.value)}
+                                                placeholder="Ex.: Jurado pediu pra revisar a nota do critério de impacto."
+                                                rows={2}
+                                                className={campo}
+                                            />
+                                            {reabrirForm.errors.reason && <p className="text-sm text-red-600">{reabrirForm.errors.reason}</p>}
+                                            <div className="flex gap-2">
+                                                <Button type="submit" size="sm" disabled={reabrirForm.processing}>
+                                                    {reabrirForm.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                                    Confirmar reabertura
+                                                </Button>
+                                                <Button type="button" size="sm" variant="ghost" onClick={() => setReabrindoId(null)}>
+                                                    Cancelar
+                                                </Button>
+                                            </div>
+                                        </form>
+                                    ))}
                             </li>
                         ))}
                     </ul>
