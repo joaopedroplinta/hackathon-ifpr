@@ -70,6 +70,11 @@ class Submission extends Model
         return $this->hasMany(SubmissionFile::class)->orderBy('id');
     }
 
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(JudgeAssignment::class);
+    }
+
     /** Organizador que lançou a submissão no lugar da equipe, se houve. */
     public function recorder(): BelongsTo
     {

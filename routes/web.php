@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Organizer\CheckinController;
+use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
@@ -140,6 +141,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::post('rubrica/{rubric}/criterios', [OrganizerRubricController::class, 'storeCriterion'])->name('admin.rubrica.criteria.store');
     Route::patch('criterios/{criterion}', [OrganizerRubricController::class, 'updateCriterion'])->name('admin.rubrica.criteria.update');
     Route::delete('criterios/{criterion}', [OrganizerRubricController::class, 'destroyCriterion'])->name('admin.rubrica.criteria.destroy');
+
+    // Atribuição de jurados. Autorização em cada método -- ver JudgeAssignmentController.
+    Route::get('jurados', [JudgeAssignmentController::class, 'index'])->name('admin.jurados.index');
+    Route::post('jurados/distribuir', [JudgeAssignmentController::class, 'distribute'])->name('admin.jurados.distribute');
+    Route::post('jurados', [JudgeAssignmentController::class, 'store'])->name('admin.jurados.store');
+    Route::delete('jurados/{assignment}', [JudgeAssignmentController::class, 'destroy'])->name('admin.jurados.destroy');
+    Route::post('jurados/{assignment}/reatribuir', [JudgeAssignmentController::class, 'reassign'])->name('admin.jurados.reassign');
+    Route::patch('jurados/configuracao', [JudgeAssignmentController::class, 'updateJudgesPerSubmission'])->name('admin.jurados.config');
+
+    Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('admin.jurados.conflicts.store');
+    Route::delete('jurados/conflitos/{conflict}', [JudgeAssignmentController::class, 'destroyConflict'])->name('admin.jurados.conflicts.destroy');
 });
 
 require __DIR__.'/settings.php';
