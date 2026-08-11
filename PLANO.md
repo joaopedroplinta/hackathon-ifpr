@@ -385,6 +385,88 @@ Feature só está pronta com:
 
 ---
 
+## 11. Identidade visual
+
+O sistema nasceu com a aparência padrão do starter kit: ícone do Laravel no
+favicon e no header, paleta cinza neutra do shadcn. Esta seção documenta uma
+identidade própria do evento, puxando pro verde institucional do IFPR, antes
+de espalhar a mudança pelo código.
+
+### Ponto de partida
+
+Verde institucional do IFPR, **Pantone 362 C** (`#509E2F`), extraído do manual
+oficial de aplicação da marca:
+<https://ifpr.edu.br/wp-content/uploads/2016/04/manual-aplicacao-marca-ifpr.pdf>.
+
+A cor do manual é a referência — a interface usa uma versão ajustada pra
+contraste de acessibilidade (tabela abaixo). **O símbolo institucional do IF
+não é reaproveitado**: uso da marca oficial é regulado pelo manual, então o
+evento tem um símbolo próprio, só compartilhando a família de verde.
+
+### Paleta
+
+| Token | Hex | Uso |
+|---|---|---|
+| `verde-ifpr` | `#3F8F2E` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA com texto branco |
+| `verde-mata` | `#163C1B` | Fundo do painel "terminal" (hero) e base do modo escuro |
+| `verde-brilho` | `#8FD14F` | Destaque, sucesso, linha "adicionada" no terminal, gráfico |
+| `grafite` | `#1B1B1D` | Texto e superfícies escuras — troca o cinza neutro do shadcn |
+| `papel` | `#F5F7F3` | Fundo claro — branco com leve viés esverdeado, não o creme genérico de template de IA |
+| `amarelo-sinal` | `#E8B93F` | Urgência — prazo perto do fim, aviso. Usado só em pontos de sinal, não decoração |
+
+Gráficos (`chart-1..5` do shadcn) usam a rampa: `verde-ifpr`, `verde-brilho`,
+`amarelo-sinal`, `verde-mata`, e um cinza quente `#6B6E68` pra série neutra —
+sem introduzir matiz fora da paleta.
+
+Modo escuro: fundo `#14170F` (grafite com viés verde, não cinza puro),
+texto `#F5F7F3`, primária clareada pra `#5CB84A` pra manter contraste em
+fundo escuro.
+
+### Tipografia
+
+| Papel | Fonte | Por quê |
+|---|---|---|
+| Título/display | Space Grotesk | Geométrica, caráter técnico, números desenhados pra se destacar (contagem regressiva de prazo) |
+| Texto/corpo | Public Sans | Fonte do padrão de serviços digitais públicos (USWDS) — reforça "instituição pública", ótima legibilidade em PT-BR |
+| Dado/utilitário | JetBrains Mono | Prazos, código de convite, `qr_token`, status — qualquer lugar que hoje mostra um dado bruto |
+
+Servidas via Bunny Fonts, mesmo provedor já usado pro Instrument Sans atual —
+sem cookie/tracking do Google Fonts.
+
+### Conceito de layout — "log de build"
+
+A landing pública ganha um painel estilo terminal como elemento de
+assinatura: um log mostrando o fluxo real do evento (equipe formada → projeto
+enviado → avaliado) em JetBrains Mono, com timestamp e cursor piscando. É o
+único momento visualmente ousado da interface — o resto (formulários, tabelas
+do admin, painel do jurado) fica disciplinado, herdando só paleta e
+tipografia, sem repetir o efeito.
+
+Rótulos de seção usam prefixo de prompt (`$ como_participar`) em vez de
+uppercase genérico — só faz sentido porque o produto inteiro já fala a
+língua de terminal/versionamento (deadline, commit, log). Badges de status
+(`Enviado`, `Pendente`, `Desqualificado`) passam a render em `JetBrains Mono`
+com colchete (`[enviado]`), o mesmo vocabulário aplicado no sistema inteiro,
+não só na landing.
+
+### Ícone e favicon
+
+`AppLogoIcon` (hoje o "L" do Laravel) é substituído por um símbolo próprio:
+prompt de terminal (`>_`) num quadrado arredondado em `verde-ifpr`. Simples o
+bastante pra continuar legível em 16px de favicon.
+
+### Onde mexe (quando for implementar)
+
+- `resources/css/app.css` — tokens de cor claro/escuro e import de fonte
+- `components/app-logo-icon.tsx`, `public/favicon.ico`, `public/logo.svg`
+- `components/hackathon/cabecalho-publico.tsx`, `pages/publico/*.tsx`
+- Badges de status em `components/hackathon/` (rubrica, submissão, avaliação)
+
+**Pendente de implementação** — esta seção é a referência de decisão; a
+aplicação no código entra como sprint separado (ver `/sprint`).
+
+---
+
 # Anexo A — Plano B
 
 Premissa: **no deadline, o que importa é carimbar o tempo e guardar o link do
