@@ -78,6 +78,7 @@ Toda regra de acesso vive em **Policies**, nunca espalhada em `if` no controller
 ```
 events
   id, name, slug, edition, status
+  description                 # o tema/desafio da edição, texto livre por ora
   registration_opens_at, registration_closes_at
   starts_at, ends_at
   submission_deadline
@@ -88,6 +89,18 @@ events
 tracks                        # trilhas/categorias
   id, event_id, name, description, color
 ```
+
+**Tema x trilha — não confundir.** O tema (`events.description`) é o desafio
+geral da edição: o problema específico que toda equipe precisa resolver com
+uma solução inovadora (ex.: "mobilidade urbana", "acesso à saúde"). É o que
+justifica a inscrição — sem ele, o hackathon não tem norte. Trilha (`tracks`)
+é a categoria da solução dentro desse tema (Saúde, Educação, Cidade
+Inteligente), usada pra agrupar submissões e gerar um pódio por categoria.
+Um evento tem um tema só; pode ter várias trilhas.
+
+Leitura de apoio sobre organização de hackathon (etapas, papel do desafio,
+formato competitivo x colaborativo):
+<https://liga.ventures/insights/artigos/entenda-o-que-e-e-como-organizar-um-hackathon/>
 
 `event_id` em tudo desde o começo. Custa uma coluna agora e permite a 2ª edição
 sem migração dolorosa depois.
@@ -286,7 +299,11 @@ e carga horária. Carga horária vem das presenças registradas.
 ### Organizador
 - `/admin` — painel: inscritos, equipes sem submissão, jurados atrasados,
   presença do dia
-- `/admin/evento` — datas, limites, abrir/fechar fases
+- `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
+  **Pendente**: nunca foi implementada em nenhuma sprint (semanas 0–6). Hoje
+  esses campos só existem via seed/tinker — a organização não tem como editar
+  nada disso pela interface. Tema precisa aparecer também na landing pública
+  e/ou inscrição, é o que atrai o participante.
 - `/admin/equipes` — listar, editar, desqualificar, forçar membro
 - `/admin/submissoes` — todas, filtro por trilha/status, download em lote
 - `/admin/rubrica` — critérios, pesos, escala
