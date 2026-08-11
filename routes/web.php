@@ -1,16 +1,19 @@
 <?php
 
+use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\EventRegistrationController;
+use App\Http\Controllers\Participant\SubmissionController;
+use App\Http\Controllers\Participant\SubmissionFileController;
 use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
+use App\Http\Controllers\Public\LandingController;
+use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::get('/', [LandingController::class, 'show'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -46,6 +49,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // TeamInviteController.
     Route::post('equipe/convites', [TeamInviteController::class, 'store'])->name('team-invites.store');
     Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->name('team-invites.accept');
+
+    // Submissao do projeto. Salvar rascunho e enviar sao rotas separadas
+    // porque as exigencias sao outras: rascunho aceita campo em branco, o
+    // envio nao -- ver SaveSubmissionRequest e SubmitSubmissionRequest.
+    Route::get('submissao', [SubmissionController::class, 'show'])->name('submissions.show');
+    Route::post('submissao', [SubmissionController::class, 'save'])->name('submissions.save');
+    Route::post('submissao/enviar', [SubmissionController::class, 'submit'])->name('submissions.submit');
+
+    // Arquivos da submissao. O download passa por rota autorizada porque o
+    // storage fica fora do webroot -- nunca ha link direto pro disco.
+    Route::post('submissao/arquivos', [SubmissionFileController::class, 'store'])
+        ->name('submission-files.store');
+    Route::get('submissao/arquivos/{file}', [SubmissionFileController::class, 'download'])
+        ->name('submission-files.download');
+    Route::delete('submissao/arquivos/{file}', [SubmissionFileController::class, 'destroy'])
+        ->name('submission-files.destroy');
+});
+
+// Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
+// rota garante que ninguém chega ao controller sem passar por
+// SubmissionPolicy::viewAny.
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
+        ->can('viewAny', Submission::class)
+        ->name('admin.submissions.index');
+
+    // Antes de '{submission}': senão o binding implícito tenta achar uma
+    // submissão com id "exportar" e devolve 404 no lugar do zip.
+    Route::get('submissoes/exportar', [OrganizerSubmissionController::class, 'export'])
+        ->can('viewAny', Submission::class)
+        ->name('admin.submissions.export');
+
+    Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
+        ->can('view', 'submission')
+        ->name('admin.submissions.show');
 });
 
 require __DIR__.'/settings.php';

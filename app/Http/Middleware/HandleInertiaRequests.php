@@ -49,6 +49,10 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+                // Só decide o que a navegação mostra. Cada rota do painel
+                // continua passando pela Policy -- esconder o link nunca é
+                // controle de acesso (.claude/rules/security.md).
+                'is_staff' => (bool) $request->user()?->isStaff(),
             ],
             // Evento em foco: usado pela navegação e pelo dashboard em toda
             // tela autenticada, então vive aqui e não em cada controller.

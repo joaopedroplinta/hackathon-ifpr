@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Event extends Model
 {
@@ -120,12 +121,25 @@ class Event extends Model
     }
 
     /**
+     * O prazo que vale de fato agora. Hoje é só a coluna, mas quando os
+     * incidentes entrarem (PLANO.md, Anexo A.3) a extensão vale para todas
+     * as equipes e será somada aqui -- em um lugar só, não espalhada por
+     * cada controller que precisa saber se o prazo virou.
+     */
+    public function effectiveSubmissionDeadline(): ?Carbon
+    {
+        return $this->submission_deadline;
+    }
+
+    /**
      * Prazo de submissão comparado com now() do servidor. Data vinda do
      * cliente nunca decide isto -- .claude/rules/security.md.
      */
     public function submissionIsOpen(): bool
     {
-        return $this->submission_deadline === null || now()->lte($this->submission_deadline);
+        $deadline = $this->effectiveSubmissionDeadline();
+
+        return $deadline === null || now()->lte($deadline);
     }
 
     public function resultsArePublished(): bool

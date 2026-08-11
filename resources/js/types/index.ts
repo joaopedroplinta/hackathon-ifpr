@@ -2,6 +2,8 @@ import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
     user: User;
+    /** Organizador ou admin. Decide navegação, não acesso — quem decide é a Policy. */
+    is_staff: boolean;
 }
 
 export interface BreadcrumbItem {
@@ -19,6 +21,17 @@ export interface NavItem {
     url: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+}
+
+/** Página do `paginate()` do Laravel, já passada por `through()`. */
+export interface Paginated<T> {
+    data: T[];
+    links: { url: string | null; label: string; active: boolean }[];
+    current_page: number;
+    last_page: number;
+    from: number | null;
+    to: number | null;
+    total: number;
 }
 
 export interface EventoAtual {
