@@ -5,6 +5,7 @@ export type JuradoAtribuido = {
     jurado_id: number;
     nome: string;
     status_label: string;
+    avaliacao_enviada: boolean;
 };
 
 export type LinhaSubmissaoJurados = {

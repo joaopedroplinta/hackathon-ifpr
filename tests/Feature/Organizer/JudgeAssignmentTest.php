@@ -3,8 +3,11 @@
 namespace Tests\Feature\Organizer;
 
 use App\Actions\Judging\DistributeJudges;
+use App\Enums\EvaluationStatus;
+use App\Enums\JudgeAssignmentStatus;
 use App\Enums\Role;
 use App\Models\ConflictOfInterest;
+use App\Models\Evaluation;
 use App\Models\Event;
 use App\Models\JudgeAssignment;
 use App\Models\Submission;
@@ -12,6 +15,7 @@ use App\Models\Team;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
 class JudgeAssignmentTest extends TestCase
@@ -303,6 +307,125 @@ class JudgeAssignmentTest extends TestCase
 
         $this->actingAs($jurado)
             ->post(route('admin.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
+            ->assertForbidden();
+    }
+
+    /**
+     * @return array{0: Submission, 1: JudgeAssignment, 2: Evaluation}
+     */
+    private function avaliacaoEnviada(Event $event, User $jurado): array
+    {
+        $submissao = $this->submissaoEnviada($event);
+        $team = $submissao->team;
+
+        $assignment = new JudgeAssignment;
+        $assignment->event_id = $event->id;
+        $assignment->judge_id = $jurado->id;
+        $assignment->submission_id = $submissao->id;
+        $assignment->status = JudgeAssignmentStatus::Done;
+        $assignment->assigned_at = now();
+        $assignment->save();
+
+        $evaluation = new Evaluation;
+        $evaluation->assignment_id = $assignment->id;
+        $evaluation->status = EvaluationStatus::Submitted;
+        $evaluation->submitted_at = now();
+        $evaluation->save();
+
+        return [$submissao, $assignment->fresh(), $evaluation];
+    }
+
+    public function test_staff_reopens_a_submitted_evaluation_with_a_reason(): void
+    {
+        $event = Event::factory()->create();
+        $jurado = $this->jurado();
+        [, $assignment, $evaluation] = $this->avaliacaoEnviada($event, $jurado);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+                'reason' => 'Jurado percebeu que trocou a nota de dois critérios sem querer.',
+            ])
+            ->assertRedirect(route('admin.jurados.index'));
+
+        $evaluation->refresh();
+        $this->assertSame(EvaluationStatus::Draft, $evaluation->status);
+        $this->assertNull($evaluation->submitted_at);
+        $this->assertSame(JudgeAssignmentStatus::InProgress, $assignment->fresh()->status);
+
+        $log = Activity::latest()->first();
+        $this->assertNotNull($log);
+        $this->assertSame($organizador->id, $log->causer_id);
+        $this->assertSame($evaluation->id, $log->subject_id);
+        $this->assertSame('Jurado percebeu que trocou a nota de dois critérios sem querer.', $log->properties['motivo']);
+    }
+
+    public function test_reopening_requires_a_reason_with_enough_detail(): void
+    {
+        $event = Event::factory()->create();
+        $jurado = $this->jurado();
+        [, $assignment] = $this->avaliacaoEnviada($event, $jurado);
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.jurados.reopen-evaluation', $assignment), ['reason' => 'curto'])
+            ->assertSessionHasErrors('reason');
+    }
+
+    public function test_a_judge_cannot_reopen_an_evaluation(): void
+    {
+        $event = Event::factory()->create();
+        $jurado = $this->jurado();
+        [, $assignment] = $this->avaliacaoEnviada($event, $jurado);
+
+        $this->actingAs($jurado)
+            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+                'reason' => 'Motivo qualquer com mais de dez caracteres.',
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_a_draft_evaluation_cannot_be_reopened(): void
+    {
+        $event = Event::factory()->create();
+        $submissao = $this->submissaoEnviada($event);
+        $jurado = $this->jurado();
+
+        $assignment = new JudgeAssignment;
+        $assignment->event_id = $event->id;
+        $assignment->judge_id = $jurado->id;
+        $assignment->submission_id = $submissao->id;
+        $assignment->assigned_at = now();
+        $assignment->save();
+
+        $evaluation = new Evaluation;
+        $evaluation->assignment_id = $assignment->id;
+        $evaluation->status = EvaluationStatus::Draft;
+        $evaluation->save();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+                'reason' => 'Motivo qualquer com mais de dez caracteres.',
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_an_assignment_without_any_evaluation_cannot_be_reopened(): void
+    {
+        $event = Event::factory()->create();
+        $submissao = $this->submissaoEnviada($event);
+        $jurado = $this->jurado();
+
+        $assignment = new JudgeAssignment;
+        $assignment->event_id = $event->id;
+        $assignment->judge_id = $jurado->id;
+        $assignment->submission_id = $submissao->id;
+        $assignment->assigned_at = now();
+        $assignment->save();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+                'reason' => 'Motivo qualquer com mais de dez caracteres.',
+            ])
             ->assertForbidden();
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Evaluation\ReopenEvaluation;
 use App\Actions\Judging\DistributeJudges;
+use App\Enums\EvaluationStatus;
 use App\Enums\Role;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Organizer\ReopenEvaluationRequest;
 use App\Http\Requests\Organizer\StoreConflictOfInterestRequest;
 use App\Http\Requests\Organizer\StoreJudgeAssignmentRequest;
 use App\Models\ConflictOfInterest;
@@ -35,7 +38,7 @@ class JudgeAssignmentController extends Controller
         $event = $this->currentEventOrFail();
 
         $submissoes = Submission::forEvent($event)
-            ->with(['team:id,name', 'assignments' => fn ($q) => $q->with('judge:id,name')])
+            ->with(['team:id,name', 'assignments' => fn ($q) => $q->with(['judge:id,name', 'evaluation'])])
             ->get()
             ->filter(fn (Submission $s) => $s->status->countsForEvaluation())
             ->map(fn (Submission $submissao) => [
@@ -48,6 +51,7 @@ class JudgeAssignmentController extends Controller
                         'jurado_id' => $a->judge_id,
                         'nome' => $a->judge->name,
                         'status_label' => $a->status->label(),
+                        'avaliacao_enviada' => $a->evaluation?->status === EvaluationStatus::Submitted,
                     ])
                     ->all(),
             ])
@@ -154,6 +158,16 @@ class JudgeAssignmentController extends Controller
         });
 
         return to_route('admin.jurados.index')->with('sucesso', 'Vaga reatribuída.');
+    }
+
+    /** Nota já enviada só volta a ser editável com motivo -- fica no activity log. */
+    public function reopenEvaluation(ReopenEvaluationRequest $request, JudgeAssignment $assignment): RedirectResponse
+    {
+        $this->authorize('reopen', $assignment);
+
+        app(ReopenEvaluation::class)->handle($assignment, $request->validated('reason'), $request->user());
+
+        return to_route('admin.jurados.index')->with('sucesso', 'Avaliação reaberta para correção.');
     }
 
     public function storeConflict(StoreConflictOfInterestRequest $request): RedirectResponse

@@ -189,10 +189,16 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                         <InputError message={form.errors.scores} />
 
                         {!somenteLeitura && (
-                            <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} className="w-full">
-                                {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                                Enviar avaliação
-                            </Button>
+                            <>
+                                <p className="text-muted-foreground -mb-2 text-right text-xs" aria-live="polite">
+                                    {form.processing ? 'Salvando rascunho…' : form.recentlySuccessful ? 'Rascunho salvo.' : ''}
+                                </p>
+
+                                <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} className="w-full">
+                                    {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                    Enviar avaliação
+                                </Button>
+                            </>
                         )}
 
                         <Link href={route('jurado.index')} className="text-muted-foreground text-center text-sm hover:underline">
