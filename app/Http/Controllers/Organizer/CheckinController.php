@@ -8,6 +8,7 @@ use App\Enums\CheckpointType;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\ConfirmAttendanceRequest;
+use App\Http\Requests\Organizer\StoreCheckpointRequest;
 use App\Models\Attendance;
 use App\Models\Checkpoint;
 use App\Models\Event;
@@ -50,18 +51,13 @@ class CheckinController extends Controller
     }
 
     /** Criação rápida: sem checkpoint nenhum, o check-in inteiro não funciona. */
-    public function storeCheckpoint(Request $request): RedirectResponse
+    public function storeCheckpoint(StoreCheckpointRequest $request): RedirectResponse
     {
         $this->authorize('create', Checkpoint::class);
 
         $event = $this->currentEventOrFail();
 
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
-            'type' => ['required', 'string', 'in:'.implode(',', array_column(CheckpointType::cases(), 'value'))],
-        ]);
-
-        $checkpoint = new Checkpoint($data);
+        $checkpoint = new Checkpoint($request->validated());
         $checkpoint->event_id = $event->id;
         $checkpoint->save();
 

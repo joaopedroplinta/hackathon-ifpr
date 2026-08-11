@@ -1,5 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { CalendarDays, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { CalendarDays, LoaderCircle, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
@@ -18,12 +19,18 @@ function formatarHorario(inicioIso: string, fimIso: string): string {
 }
 
 export default function ListaAgenda({ itens }: Props) {
+    // Duplo clique não pode disparar a ação duas vezes -- em "despublicar"
+    // isso alternaria de volta pra "publicado" sem querer.
+    const [emAndamento, setEmAndamento] = useState<number | null>(null);
+
     const alternarPublicacao = (item: LinhaItemAgenda) => {
-        router.patch(route('admin.agenda.publish', item.id), {}, { preserveScroll: true });
+        setEmAndamento(item.id);
+        router.patch(route('admin.agenda.publish', item.id), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const remover = (item: LinhaItemAgenda) => {
-        router.delete(route('admin.agenda.destroy', item.id), { preserveScroll: true });
+        setEmAndamento(item.id);
+        router.delete(route('admin.agenda.destroy', item.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     return (
@@ -94,7 +101,13 @@ export default function ListaAgenda({ itens }: Props) {
                                     </div>
 
                                     <div className="flex shrink-0 items-center gap-1">
-                                        <Button variant="outline" size="sm" onClick={() => alternarPublicacao(item)}>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={emAndamento === item.id}
+                                            onClick={() => alternarPublicacao(item)}
+                                        >
+                                            {emAndamento === item.id && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
                                             {item.publicado ? 'Despublicar' : 'Publicar'}
                                         </Button>
                                         <Button asChild variant="ghost" size="icon" aria-label={`Editar ${item.titulo}`}>
@@ -106,6 +119,7 @@ export default function ListaAgenda({ itens }: Props) {
                                             variant="ghost"
                                             size="icon"
                                             aria-label={`Remover ${item.titulo}`}
+                                            disabled={emAndamento === item.id}
                                             onClick={() => remover(item)}
                                             className="hover:text-destructive"
                                         >

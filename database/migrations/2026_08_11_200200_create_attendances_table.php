@@ -27,10 +27,14 @@ return new class extends Migration
 
             $table->timestampsTz();
 
-            $table->index('checkpoint_id');
+            // user_id sozinho: carga horária do certificado busca por pessoa,
+            // não por checkpoint -- o índice único abaixo não cobre essa
+            // ordem de busca (.claude/rules/database.md).
+            $table->index('user_id');
 
             // Um check-in por pessoa por checkpoint -- reler o QR duas vezes
-            // não pode duplicar a presença.
+            // não pode duplicar a presença. Já serve de índice pra busca por
+            // checkpoint_id sozinho, então não precisa de outro.
             $table->unique(['checkpoint_id', 'user_id']);
         });
     }

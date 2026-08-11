@@ -193,6 +193,17 @@ class CheckinTest extends TestCase
         $this->assertSame(1, Checkpoint::count());
     }
 
+    public function test_an_invalid_checkpoint_type_is_rejected(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'tipo-inventado'])
+            ->assertSessionHasErrors('type');
+
+        $this->assertSame(0, Checkpoint::count());
+    }
+
     public function test_a_participant_cannot_create_a_checkpoint(): void
     {
         Event::factory()->create();
