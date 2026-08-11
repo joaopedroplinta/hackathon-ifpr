@@ -3,6 +3,7 @@ import { CircleAlert, FileText, LoaderCircle, Lock, TriangleAlert } from 'lucide
 import { FormEventHandler } from 'react';
 
 import ContadorPrazo from '@/components/hackathon/contador-prazo';
+import HistoricoEnvios from '@/components/hackathon/historico-envios';
 import PainelArquivos from '@/components/hackathon/painel-arquivos';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -10,12 +11,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { SharedData } from '@/types';
-import { ArquivosSubmissao, PrazoSubmissao, Submissao, SubmissaoForm } from '@/types/submissao';
+import { ArquivosSubmissao, PrazoSubmissao, Submissao, SubmissaoForm, VersaoEnvio } from '@/types/submissao';
 
 interface Props {
     equipe: { nome: string; slug: string };
     submissao: Submissao | null;
     arquivos: ArquivosSubmissao;
+    versoes: VersaoEnvio[];
     prazo: PrazoSubmissao;
     pode_editar: boolean;
     motivo_bloqueio: string | null;
@@ -24,7 +26,7 @@ interface Props {
 const areaTexto =
     'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 
-export default function MinhaSubmissao({ equipe, submissao, arquivos, prazo, pode_editar, motivo_bloqueio }: Props) {
+export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, prazo, pode_editar, motivo_bloqueio }: Props) {
     const { flash } = usePage<SharedData>().props;
 
     const { data, setData, post, processing, errors } = useForm<SubmissaoForm>({
@@ -205,6 +207,10 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, prazo, pod
                     aninhamento de um jeito imprevisível. */}
                 <div className="mt-8">
                     <PainelArquivos arquivos={arquivos} podeAnexar={pode_editar} />
+                </div>
+
+                <div className="mt-8">
+                    <HistoricoEnvios versoes={versoes} />
                 </div>
             </div>
         </AppLayout>

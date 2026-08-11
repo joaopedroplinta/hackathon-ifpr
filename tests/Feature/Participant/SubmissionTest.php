@@ -336,4 +336,47 @@ class SubmissionTest extends TestCase
 
         $this->assertSame(SubmissionStatus::Late, $team->submission()->firstOrFail()->status);
     }
+
+    public function test_the_page_lists_the_team_own_version_history_newest_first(): void
+    {
+        $event = Event::factory()->aberto()->create(['submission_deadline' => now()->addDay()]);
+        [$team, $leader] = $this->equipeComLider($event);
+
+        $this->actingAs($leader)->post(route('submissions.submit'), $this->projetoValido());
+        $this->actingAs($leader)->post(route('submissions.submit'), $this->projetoValido(['title' => 'Versão final']));
+
+        $this->actingAs($leader)
+            ->get(route('submissions.show'))
+            ->assertInertia(fn ($page) => $page
+                ->has('versoes', 2)
+                ->where('versoes.0.versao', 2)
+                ->where('versoes.0.autor', $leader->name)
+                ->where('versoes.1.versao', 1)
+            );
+    }
+
+    /** Sem envio nenhum, a lista vem vazia -- é o estado que o componente trata. */
+    public function test_the_version_history_is_empty_before_any_submission(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [, $leader] = $this->equipeComLider($event);
+
+        $this->actingAs($leader)
+            ->get(route('submissions.show'))
+            ->assertInertia(fn ($page) => $page->has('versoes', 0));
+    }
+
+    /** Escopo por equipe: uma equipe nunca vê o histórico de envio de outra. */
+    public function test_a_team_never_sees_another_team_version_history(): void
+    {
+        $event = Event::factory()->aberto()->create(['submission_deadline' => now()->addDay()]);
+        [, $liderA] = $this->equipeComLider($event);
+        [, $liderB] = $this->equipeComLider($event);
+
+        $this->actingAs($liderA)->post(route('submissions.submit'), $this->projetoValido());
+
+        $this->actingAs($liderB)
+            ->get(route('submissions.show'))
+            ->assertInertia(fn ($page) => $page->has('versoes', 0));
+    }
 }

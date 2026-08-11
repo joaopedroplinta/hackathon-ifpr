@@ -38,6 +38,13 @@ export type PrazoSubmissao = {
     aberto: boolean;
 };
 
+export type VersaoEnvio = {
+    versao: number;
+    autor: string;
+    /** ISO 8601, exibido em America/Sao_Paulo. */
+    criado_em: string;
+};
+
 /** Os campos que o formulário manda. Espelha as duas Form Requests. */
 export type SubmissaoForm = {
     title: string;

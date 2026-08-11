@@ -12,6 +12,7 @@ use App\Http\Requests\Participant\SubmitSubmissionRequest;
 use App\Models\Event;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
+use App\Models\SubmissionVersion;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -62,6 +63,7 @@ class SubmissionController extends Controller
                 'fora_do_prazo' => $submission->status === SubmissionStatus::Late,
             ] : null,
             'arquivos' => $this->filesPayload($submission),
+            'versoes' => $this->versionsPayload($submission),
             'prazo' => $this->deadlinePayload($event),
             // A tela não repete a regra de prazo: ela pergunta à Policy e
             // mostra o motivo quando a resposta é não.
@@ -134,6 +136,31 @@ class SubmissionController extends Controller
                 ])
                 ->all(),
         ];
+    }
+
+    /**
+     * Cada envio, do mais recente para o mais antigo. Só o essencial para a
+     * equipe conferir "quem mandou e quando" -- o retrato completo de cada
+     * versão é o painel do organizador (Organizer\SubmissionController),
+     * que também decide sobre envio fora do prazo.
+     *
+     * @return array<int, array{versao: int, autor: string, criado_em: string}>
+     */
+    private function versionsPayload(?Submission $submission): array
+    {
+        if (! $submission) {
+            return [];
+        }
+
+        return $submission->versions()
+            ->with('author:id,name')
+            ->get()
+            ->map(fn (SubmissionVersion $version) => [
+                'versao' => $version->version,
+                'autor' => $version->author?->name ?? 'Conta removida',
+                'criado_em' => $version->created_at->toIso8601String(),
+            ])
+            ->all();
     }
 
     /**
