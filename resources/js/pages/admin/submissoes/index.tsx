@@ -200,9 +200,11 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                             </thead>
                             <tbody>
                                 {submissoes.data.map((linha) => (
-                                    <tr key={linha.id} className="border-t">
+                                    <tr key={linha.id} className="hover:bg-muted/30 border-t">
                                         <td className="p-3 font-medium">
-                                            {linha.equipe.nome}
+                                            <Link href={route('admin.submissions.show', linha.id)} className="hover:underline">
+                                                {linha.equipe.nome}
+                                            </Link>
                                             {linha.precisa_conferencia && (
                                                 <span className="mt-1 block text-xs font-normal text-amber-700 dark:text-amber-400">
                                                     {linha.origem_label} — conferir

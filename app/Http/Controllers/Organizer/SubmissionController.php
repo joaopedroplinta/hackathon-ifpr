@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
@@ -9,6 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\ListSubmissionsRequest;
 use App\Models\Event;
 use App\Models\Submission;
+use App\Models\SubmissionFile;
+use App\Models\SubmissionVersion;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
@@ -99,6 +102,89 @@ class SubmissionController extends Controller
             ],
             'resumo' => $this->resumo($event),
         ]);
+    }
+
+    /**
+     * Detalhe de uma submissão: o retrato completo de cada envio (não só o
+     * estado atual) e os arquivos que valem hoje. `view` é a mesma Policy que
+     * a equipe usa para ver a própria submissão -- staff sempre passa.
+     */
+    public function show(Submission $submission): Response
+    {
+        $this->authorize('view', $submission);
+
+        $submission->load(['team:id,name,slug,track_id', 'team.track:id,name,color']);
+
+        return Inertia::render('admin/submissoes/mostrar', [
+            'submissao' => [
+                'id' => $submission->id,
+                'titulo' => $submission->title,
+                'resumo' => $submission->summary,
+                'descricao' => $submission->description,
+                'repo_url' => $submission->repo_url,
+                'video_url' => $submission->video_url,
+                'deploy_url' => $submission->deploy_url,
+                'status' => $submission->status->value,
+                'status_label' => $submission->status->label(),
+                'origem_label' => $submission->source->label(),
+                'precisa_conferencia' => $submission->source->needsReview(),
+                'enviado_em' => $submission->submitted_at?->toIso8601String(),
+                'versao_atual' => $submission->current_version,
+                'equipe' => [
+                    'nome' => $submission->team->name,
+                    'slug' => $submission->team->slug,
+                ],
+                'trilha' => $submission->team->track ? [
+                    'nome' => $submission->team->track->name,
+                    'cor' => $submission->team->track->color,
+                ] : null,
+            ],
+            'versoes' => $submission->versions()
+                ->with('author:id,name')
+                ->get()
+                ->map(fn (SubmissionVersion $version) => [
+                    'versao' => $version->version,
+                    'autor' => $version->author?->name ?? 'Conta removida',
+                    'criado_em' => $version->created_at->toIso8601String(),
+                    'payload' => $this->traduzirPayload($version->payload),
+                ])
+                ->all(),
+            'arquivos' => $submission->files()
+                ->get()
+                ->map(fn (SubmissionFile $file) => [
+                    'id' => $file->id,
+                    'nome' => $file->original_name,
+                    'tamanho' => $file->humanSize(),
+                    'versao' => $file->version,
+                ])
+                ->all(),
+        ]);
+    }
+
+    /**
+     * O payload é o retrato gravado no momento do envio -- ele guarda o
+     * *valor* do enum, não o rótulo, porque o rótulo pode mudar de texto no
+     * futuro e o retrato histórico não deveria mudar com ele. A tradução
+     * para português acontece aqui, na saída, nunca no que fica gravado.
+     * `tryFrom` em vez de `from`: um envio antigo não pode quebrar a tela
+     * só porque um valor não bate mais com o enum atual.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function traduzirPayload(array $payload): array
+    {
+        if (isset($payload['status']) && is_string($payload['status'])) {
+            $status = SubmissionStatus::tryFrom($payload['status']);
+            $payload['status'] = $status?->label() ?? $payload['status'];
+        }
+
+        if (isset($payload['source']) && is_string($payload['source'])) {
+            $source = SubmissionSource::tryFrom($payload['source']);
+            $payload['source'] = $source?->label() ?? $payload['source'];
+        }
+
+        return $payload;
     }
 
     /**

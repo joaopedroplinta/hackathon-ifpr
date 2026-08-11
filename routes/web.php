@@ -74,6 +74,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
         ->can('viewAny', Submission::class)
         ->name('admin.submissions.index');
+
+    Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
+        ->can('view', 'submission')
+        ->name('admin.submissions.show');
 });
 
 require __DIR__.'/settings.php';
