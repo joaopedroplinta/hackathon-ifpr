@@ -23,6 +23,9 @@ export default function CabecalhoPublico() {
                 <Link href={route('agenda.index')} className="text-muted-foreground hover:text-foreground text-sm">
                     Agenda
                 </Link>
+                <Link href={route('rubrica.show')} className="text-muted-foreground hover:text-foreground text-sm">
+                    Rubrica
+                </Link>
 
                 {auth.user ? (
                     <Button asChild size="sm">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Organizer\CheckinController;
+use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\CredentialController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
+use App\Http\Controllers\Public\RubricController as PublicRubricController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +25,10 @@ Route::get('/', [LandingController::class, 'show'])->name('home');
 // (PLANO.md, seção 3) -- ver agenda de novo/oficinas antes mesmo de se inscrever.
 Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
 Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
+
+// Rubrica pública -- .claude/rules do Anexo A: reduz disputa sobre nota
+// deixar os critérios visíveis desde antes do evento.
+Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -123,6 +129,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // ser lido (PLANO.md, Anexo A).
     Route::get('checkin', [CheckinController::class, 'index'])->name('admin.checkin.index');
     Route::post('checkin/checkpoints', [CheckinController::class, 'storeCheckpoint'])->name('admin.checkin.checkpoints.store');
+
+    // CRUD da rubrica. Autorização em cada método -- ver RubricController.
+    Route::get('rubrica', [OrganizerRubricController::class, 'index'])->name('admin.rubrica.index');
+    Route::post('rubrica', [OrganizerRubricController::class, 'store'])->name('admin.rubrica.store');
+    Route::get('rubrica/{rubric}', [OrganizerRubricController::class, 'show'])->name('admin.rubrica.show');
+    Route::patch('rubrica/{rubric}/ativar', [OrganizerRubricController::class, 'activate'])->name('admin.rubrica.activate');
+    Route::delete('rubrica/{rubric}', [OrganizerRubricController::class, 'destroy'])->name('admin.rubrica.destroy');
+
+    Route::post('rubrica/{rubric}/criterios', [OrganizerRubricController::class, 'storeCriterion'])->name('admin.rubrica.criteria.store');
+    Route::patch('criterios/{criterion}', [OrganizerRubricController::class, 'updateCriterion'])->name('admin.rubrica.criteria.update');
+    Route::delete('criterios/{criterion}', [OrganizerRubricController::class, 'destroyCriterion'])->name('admin.rubrica.criteria.destroy');
 });
 
 require __DIR__.'/settings.php';
