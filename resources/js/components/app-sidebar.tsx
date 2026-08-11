@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, CalendarDays, FileText, Folder, LayoutGrid, QrCode, ScanLine } from 'lucide-react';
+import { BookOpen, CalendarDays, ClipboardCheck, ClipboardList, FileText, Folder, LayoutGrid, QrCode, Scale, ScanLine } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -17,6 +17,15 @@ const mainNavItems: NavItem[] = [
         title: 'Crachá',
         url: '/credencial',
         icon: QrCode,
+    },
+];
+
+/** Só aparece para quem tem o papel de jurado. O acesso em si é da Policy. */
+const judgeNavItems: NavItem[] = [
+    {
+        title: 'Avaliar',
+        url: '/jurado',
+        icon: ClipboardCheck,
     },
 ];
 
@@ -37,6 +46,16 @@ const staffNavItems: NavItem[] = [
         url: '/admin/checkin',
         icon: ScanLine,
     },
+    {
+        title: 'Rubrica',
+        url: '/admin/rubrica',
+        icon: ClipboardList,
+    },
+    {
+        title: 'Jurados',
+        url: '/admin/jurados',
+        icon: Scale,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -54,7 +73,7 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
-    const navItems = auth?.is_staff ? [...mainNavItems, ...staffNavItems] : mainNavItems;
+    const navItems = [...mainNavItems, ...(auth?.is_judge ? judgeNavItems : []), ...(auth?.is_staff ? staffNavItems : [])];
 
     return (
         <Sidebar collapsible="icon" variant="inset">

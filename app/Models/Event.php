@@ -16,8 +16,10 @@ class Event extends Model
     use HasFactory;
 
     /**
-     * results_published_at fica de fora de propósito: publicar resultado é
-     * ação explícita do organizador, nunca efeito colateral de um update().
+     * results_published_at e judges_per_submission ficam de fora de
+     * propósito: publicar resultado e mudar quantos jurados avaliam cada
+     * submissão são decisões do organizador, nunca efeito colateral de um
+     * update() qualquer -- .claude/rules/security.md.
      */
     protected $fillable = [
         'name',
@@ -51,12 +53,18 @@ class Event extends Model
             'edition' => 'integer',
             'min_team_size' => 'integer',
             'max_team_size' => 'integer',
+            'judges_per_submission' => 'integer',
         ];
     }
 
     public function tracks(): HasMany
     {
         return $this->hasMany(Track::class);
+    }
+
+    public function judgeAssignments(): HasMany
+    {
+        return $this->hasMany(JudgeAssignment::class);
     }
 
     public function registrations(): HasMany

@@ -83,6 +83,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Attendance::class);
     }
 
+    public function judgeAssignments(): HasMany
+    {
+        return $this->hasMany(JudgeAssignment::class, 'judge_id');
+    }
+
     /**
      * Acesso ao painel administrativo. Papéis acumulam, então a checagem é
      * "tem algum dos papéis de staff", não "o papel é X".
@@ -93,5 +98,10 @@ class User extends Authenticatable implements MustVerifyEmail
             Role::Organizador->value,
             Role::Admin->value,
         ]);
+    }
+
+    public function isJudge(): bool
+    {
+        return $this->hasRole(Role::Jurado->value);
     }
 }

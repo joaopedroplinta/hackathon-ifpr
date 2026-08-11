@@ -53,6 +53,7 @@ class HandleInertiaRequests extends Middleware
                 // continua passando pela Policy -- esconder o link nunca é
                 // controle de acesso (.claude/rules/security.md).
                 'is_staff' => (bool) $request->user()?->isStaff(),
+                'is_judge' => (bool) $request->user()?->isJudge(),
             ],
             // Evento em foco: usado pela navegação e pelo dashboard em toda
             // tela autenticada, então vive aqui e não em cada controller.

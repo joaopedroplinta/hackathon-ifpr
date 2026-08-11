@@ -8,6 +8,7 @@ use App\Enums\CheckpointType;
 use App\Enums\EvaluationStatus;
 use App\Enums\EventStatus;
 use App\Enums\IncidentKind;
+use App\Enums\JudgeAssignmentStatus;
 use App\Enums\Role;
 use App\Enums\ScheduleItemType;
 use App\Enums\SubmissionSource;
@@ -40,6 +41,7 @@ class EnumLabelsTest extends TestCase
             'CertificateType' => [CertificateType::class],
             'CheckpointType' => [CheckpointType::class],
             'IncidentKind' => [IncidentKind::class],
+            'JudgeAssignmentStatus' => [JudgeAssignmentStatus::class],
             'EventStatus' => [EventStatus::class],
             'TeamMemberRole' => [TeamMemberRole::class],
             'TeamMemberStatus' => [TeamMemberStatus::class],
