@@ -3,6 +3,7 @@
 use App\Http\Controllers\Judge\EvaluationController;
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
+use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
@@ -161,6 +162,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('admin.jurados.conflicts.store');
     Route::delete('jurados/conflitos/{conflict}', [JudgeAssignmentController::class, 'destroyConflict'])->name('admin.jurados.conflicts.destroy');
+
+    // Resultados. Calcular nunca publica sozinho -- ver ResultController.
+    Route::get('resultados', [ResultController::class, 'index'])->name('admin.resultados.index');
+    Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('admin.resultados.recompute');
+    Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('admin.resultados.publish');
 });
 
 require __DIR__.'/settings.php';
