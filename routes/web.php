@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Judge\EvaluationController;
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
@@ -96,6 +97,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // token só inválido merece.
     Route::get('checkin/{user:qr_token}', [CheckinController::class, 'show'])->name('checkin.show')->whereUuid('user');
     Route::post('checkin/{user:qr_token}', [CheckinController::class, 'store'])->name('checkin.store')->whereUuid('user');
+
+    // Painel do jurado. Autorização em cada método -- ver
+    // Judge\EvaluationController e EvaluationPolicy.
+    Route::get('jurado', [EvaluationController::class, 'index'])->name('jurado.index');
+    Route::get('jurado/avaliar/{submission}', [EvaluationController::class, 'show'])->name('jurado.avaliar.show');
+    Route::post('jurado/avaliar/{submission}/rascunho', [EvaluationController::class, 'autosave'])->name('jurado.avaliar.autosave');
+    Route::post('jurado/avaliar/{submission}/enviar', [EvaluationController::class, 'submit'])->name('jurado.avaliar.enviar');
 });
 
 // Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na

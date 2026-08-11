@@ -146,10 +146,11 @@ class JudgeAssignmentController extends Controller
 
         $event = $assignment->event;
         $submission = $assignment->submission;
+        $juradoRemovido = $assignment->judge_id;
 
-        DB::transaction(function () use ($assignment, $event, $submission) {
+        DB::transaction(function () use ($assignment, $event, $submission, $juradoRemovido) {
             $assignment->delete();
-            app(DistributeJudges::class)->handle($event, collect([$submission]));
+            app(DistributeJudges::class)->handle($event, collect([$submission]), $juradoRemovido);
         });
 
         return to_route('admin.jurados.index')->with('sucesso', 'Vaga reatribuída.');

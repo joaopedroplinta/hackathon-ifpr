@@ -47,7 +47,7 @@ class JudgeAssignment extends Model
 
     public function evaluation(): HasOne
     {
-        return $this->hasOne(Evaluation::class);
+        return $this->hasOne(Evaluation::class, 'assignment_id');
     }
 
     /**

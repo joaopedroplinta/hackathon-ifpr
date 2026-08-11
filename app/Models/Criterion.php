@@ -6,6 +6,7 @@ use Database\Factories\CriterionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Criterion extends Model
 {
@@ -32,5 +33,10 @@ class Criterion extends Model
     public function rubric(): BelongsTo
     {
         return $this->belongsTo(Rubric::class);
+    }
+
+    public function scores(): HasMany
+    {
+        return $this->hasMany(EvaluationScore::class);
     }
 }

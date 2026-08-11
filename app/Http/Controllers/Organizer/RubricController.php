@@ -136,6 +136,14 @@ class RubricController extends Controller
         $this->authorize('update', $criterion->rubric);
 
         $rubric = $criterion->rubric;
+
+        // Nota já lançada é registro histórico -- apagar o critério não pode
+        // apagar em silêncio a nota que um jurado já deu nele
+        // (.claude/rules/database.md).
+        if ($criterion->scores()->exists()) {
+            return back()->with('erro', "Critério \"{$criterion->name}\" já tem nota lançada e não pode ser removido.");
+        }
+
         $criterion->delete();
 
         return to_route('admin.rubrica.show', $rubric)->with('sucesso', "Critério \"{$criterion->name}\" removido.");

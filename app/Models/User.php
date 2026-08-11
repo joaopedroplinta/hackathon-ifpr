@@ -99,4 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
             Role::Admin->value,
         ]);
     }
+
+    public function isJudge(): bool
+    {
+        return $this->hasRole(Role::Jurado->value);
+    }
 }

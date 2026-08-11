@@ -4,6 +4,8 @@ export interface Auth {
     user: User;
     /** Organizador ou admin. Decide navegação, não acesso — quem decide é a Policy. */
     is_staff: boolean;
+    /** Papel de jurado. Mesma ressalva do is_staff: só decide o link, não o acesso. */
+    is_judge: boolean;
 }
 
 export interface BreadcrumbItem {

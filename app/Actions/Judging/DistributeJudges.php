@@ -29,9 +29,12 @@ class DistributeJudges
      * @param  Collection<int, Submission>|null  $apenasSubmissoes  Restringe a
      *                                                              distribuição a um subconjunto -- usado pra reatribuir a vaga de
      *                                                              um jurado ausente sem reprocessar o evento inteiro.
+     * @param  int|null  $juradoExcluido  O jurado que acabou de ser removido por
+     *                                    estar ausente. Sem isto, um empate de carga pode devolver a vaga
+     *                                    pra ele mesmo -- "reatribuir" deixaria de trocar alguém.
      * @return array{criadas: int, sem_jurado_elegivel: array<int, string>}
      */
-    public function handle(Event $event, ?Collection $apenasSubmissoes = null): array
+    public function handle(Event $event, ?Collection $apenasSubmissoes = null, ?int $juradoExcluido = null): array
     {
         $porSubmissao = $event->judges_per_submission;
 
@@ -39,7 +42,15 @@ class DistributeJudges
             ->get()
             ->filter(fn (Submission $s) => $s->status->countsForEvaluation());
 
-        $jurados = User::role(Role::Jurado->value)->get();
+        // orderBy explícito: sem isto o empate de carga entre dois jurados
+        // depende da ordem física que o Postgres devolve as linhas, que não
+        // é garantida -- o desempate vira não determinístico de execução
+        // pra execução.
+        $jurados = User::role(Role::Jurado->value)
+            ->orderBy('id')
+            ->get()
+            ->reject(fn (User $j) => $j->id === $juradoExcluido)
+            ->values();
 
         if ($jurados->isEmpty() || $submissoes->isEmpty()) {
             return ['criadas' => 0, 'sem_jurado_elegivel' => []];
