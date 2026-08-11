@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Submissions\ExportSubmissions;
 use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
@@ -14,8 +15,10 @@ use App\Models\SubmissionFile;
 use App\Models\SubmissionVersion;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Painel de submissões do organizador. Só leitura: conferir o que chegou,
@@ -34,26 +37,9 @@ class SubmissionController extends Controller
         $event = $this->currentEventOrFail();
         $filtros = $request->filtros();
 
-        $submissions = Submission::query()
-            ->forEvent($event)
+        $submissions = $this->filteredQuery($event, $filtros)
             ->with(['team:id,name,slug,track_id', 'team.track:id,name,color'])
             ->withCount('files')
-            ->when($filtros['status'], fn (Builder $query, SubmissionStatus $status) => $query->where('status', $status))
-            ->when(
-                $filtros['track_id'],
-                fn (Builder $query, int $trackId) => $query->whereHas('team', fn (Builder $team) => $team->where('track_id', $trackId))
-            )
-            ->when($filtros['busca'], function (Builder $query, string $busca) {
-                // Buscar pelo nome da equipe e pelo título: no dia do evento o
-                // organizador ouve um dos dois, nunca sabe qual.
-                $termo = '%'.str_replace('%', '\%', $busca).'%';
-
-                return $query->where(
-                    fn (Builder $inner) => $inner
-                        ->where('title', 'ilike', $termo)
-                        ->orWhereHas('team', fn (Builder $team) => $team->where('name', 'ilike', $termo))
-                );
-            })
             // Sem envio primeiro é a ordem errada aqui: o que o organizador
             // confere é o que chegou, e o mais recente é o que ele ainda não viu.
             ->orderByRaw('submitted_at desc nulls last')
@@ -102,6 +88,64 @@ class SubmissionController extends Controller
             ],
             'resumo' => $this->resumo($event),
         ]);
+    }
+
+    /**
+     * Zip com os arquivos de cada equipe e uma planilha de metadados --
+     * respeita os mesmos filtros da tela, para o organizador baixar
+     * exatamente o que está vendo. Autorização e filtros são os mesmos do
+     * `index`: quem vê a lista pode exportar o que está filtrado nela.
+     */
+    public function export(ListSubmissionsRequest $request, ExportSubmissions $export): BinaryFileResponse
+    {
+        $this->authorize('viewAny', Submission::class);
+
+        $event = $this->currentEventOrFail();
+
+        $submissions = $this->filteredQuery($event, $request->filtros())
+            ->with(['team:id,name,track_id', 'team.track:id,name', 'files'])
+            ->orderBy('id')
+            ->get();
+
+        $path = $export->handle($submissions);
+        $nomeArquivo = 'submissoes-'.$event->slug.'-'.now()->format('Y-m-d-His').'.zip';
+
+        // response()->download(), não Storage::download(): o disco 'local'
+        // devolve um StreamedResponse, que não sabe apagar o próprio arquivo
+        // depois de enviado. O zip é temporário -- .claude/rules/security.md
+        // pede storage fora do webroot, mas não pede acúmulo eterno nele.
+        return response()
+            ->download(Storage::disk('local')->path($path), $nomeArquivo)
+            ->deleteFileAfterSend();
+    }
+
+    /**
+     * Os três filtros da tela, num só lugar -- `index` e `export` precisam
+     * baixar exatamente a mesma lista que a tela mostra.
+     *
+     * @param  array{status: SubmissionStatus|null, track_id: int|null, busca: string|null}  $filtros
+     * @return Builder<Submission>
+     */
+    private function filteredQuery(Event $event, array $filtros): Builder
+    {
+        return Submission::query()
+            ->forEvent($event)
+            ->when($filtros['status'], fn (Builder $query, SubmissionStatus $status) => $query->where('status', $status))
+            ->when(
+                $filtros['track_id'],
+                fn (Builder $query, int $trackId) => $query->whereHas('team', fn (Builder $team) => $team->where('track_id', $trackId))
+            )
+            ->when($filtros['busca'], function (Builder $query, string $busca) {
+                // Buscar pelo nome da equipe e pelo título: no dia do evento o
+                // organizador ouve um dos dois, nunca sabe qual.
+                $termo = '%'.str_replace('%', '\%', $busca).'%';
+
+                return $query->where(
+                    fn (Builder $inner) => $inner
+                        ->where('title', 'ilike', $termo)
+                        ->orWhereHas('team', fn (Builder $team) => $team->where('name', 'ilike', $termo))
+                );
+            });
     }
 
     /**

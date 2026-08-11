@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
+import { Download, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -70,16 +70,35 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
 
     const temFiltro = filtros.status !== null || filtros.track_id !== null || filtros.busca !== null;
 
+    // Mesmos filtros da tela, pro zip trazer exatamente o que está na lista.
+    const parametrosDoFiltro: Record<string, string> = {};
+    Object.entries({ status: filtros.status, track_id: filtros.track_id, busca: filtros.busca }).forEach(([chave, valor]) => {
+        if (valor !== null) {
+            parametrosDoFiltro[chave] = String(valor);
+        }
+    });
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('admin.submissions.index') }]}>
             <Head title="Submissões" />
 
             <div className="mx-auto w-full max-w-6xl p-4">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Submissões</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
-                    </p>
+                <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">Submissões</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">
+                            {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
+                        </p>
+                    </div>
+
+                    {submissoes.total > 0 && (
+                        <Button asChild variant="outline">
+                            <a href={route('admin.submissions.export', parametrosDoFiltro)}>
+                                <Download className="h-4 w-4" aria-hidden="true" />
+                                {temFiltro ? 'Baixar filtrados (.zip)' : 'Baixar tudo (.zip)'}
+                            </a>
+                        </Button>
+                    )}
                 </header>
 
                 <section aria-label="Resumo" className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">

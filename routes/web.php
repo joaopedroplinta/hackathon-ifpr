@@ -75,6 +75,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         ->can('viewAny', Submission::class)
         ->name('admin.submissions.index');
 
+    // Antes de '{submission}': senão o binding implícito tenta achar uma
+    // submissão com id "exportar" e devolve 404 no lugar do zip.
+    Route::get('submissoes/exportar', [OrganizerSubmissionController::class, 'export'])
+        ->can('viewAny', Submission::class)
+        ->name('admin.submissions.export');
+
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
         ->can('view', 'submission')
         ->name('admin.submissions.show');
