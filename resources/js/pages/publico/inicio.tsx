@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 
 import AppLogoIcon from '@/components/app-logo-icon';
+import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import ContadorEvento from '@/components/hackathon/contador-evento';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
@@ -36,29 +37,7 @@ export default function Inicio({ evento }: Props) {
         <div className="bg-background text-foreground min-h-svh">
             <Head title="Início" />
 
-            <header className="mx-auto flex w-full max-w-5xl items-center justify-between p-4 sm:p-6">
-                <span className="flex items-center gap-2 font-medium">
-                    <AppLogoIcon className="size-7 fill-current" />
-                    Hackathon IFPR
-                </span>
-
-                <nav className="flex items-center gap-3">
-                    {auth.user ? (
-                        <Button asChild size="sm">
-                            <Link href={route('dashboard')}>Meu painel</Link>
-                        </Button>
-                    ) : (
-                        <>
-                            <Button asChild variant="ghost" size="sm">
-                                <Link href={route('login')}>Entrar</Link>
-                            </Button>
-                            <Button asChild size="sm">
-                                <Link href={route('register')}>Criar conta</Link>
-                            </Button>
-                        </>
-                    )}
-                </nav>
-            </header>
+            <CabecalhoPublico />
 
             <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 p-4 pb-24 sm:p-6">
                 {evento ? (

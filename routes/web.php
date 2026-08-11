@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Organizer\CheckinController;
+use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\SubmissionFileController;
@@ -8,12 +11,18 @@ use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
+use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [LandingController::class, 'show'])->name('home');
+
+// Agenda pública. Sem 'auth': é o que a tabela de papéis promete pro guest
+// (PLANO.md, seção 3) -- ver agenda de novo/oficinas antes mesmo de se inscrever.
+Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
+Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -29,6 +38,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('inscricao', [EventRegistrationController::class, 'store'])
         ->name('registration.store');
+
+    // Crachá digital. Qualquer autenticado -- jurado e organizador também
+    // passam por checkpoint no dia do evento, não é só participante.
+    Route::get('credencial', [CredentialController::class, 'show'])->name('credencial.show');
 
     Route::get('equipe', [TeamController::class, 'show'])->name('teams.show');
     Route::get('equipe/criar', [TeamController::class, 'create'])->name('teams.create');
@@ -65,6 +78,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('submission-files.download');
     Route::delete('submissao/arquivos/{file}', [SubmissionFileController::class, 'destroy'])
         ->name('submission-files.destroy');
+
+    // Destino do QR do crachá. Fora do prefixo /admin de propósito: é a URL
+    // que a câmera do celular abre direto, igual o crachá promete -- ver
+    // Support\CheckinQrCode. AttendancePolicy barra quem não é staff.
+    //
+    // whereUuid(): qr_token é coluna uuid no Postgres. Sem restringir o
+    // formato aqui, um token mal formado ("abc") chega cru na query e o
+    // Postgres estoura erro de sintaxe -- 500 em vez do 404 limpo que um
+    // token só inválido merece.
+    Route::get('checkin/{user:qr_token}', [CheckinController::class, 'show'])->name('checkin.show')->whereUuid('user');
+    Route::post('checkin/{user:qr_token}', [CheckinController::class, 'store'])->name('checkin.store')->whereUuid('user');
 });
 
 // Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
@@ -84,6 +108,21 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
         ->can('view', 'submission')
         ->name('admin.submissions.show');
+
+    // CRUD da agenda. Autorização em cada método do controller, não aqui --
+    // ver ScheduleItemController.
+    Route::get('agenda', [ScheduleItemController::class, 'index'])->name('admin.agenda.index');
+    Route::get('agenda/criar', [ScheduleItemController::class, 'create'])->name('admin.agenda.create');
+    Route::post('agenda', [ScheduleItemController::class, 'store'])->name('admin.agenda.store');
+    Route::get('agenda/{item}/editar', [ScheduleItemController::class, 'edit'])->name('admin.agenda.edit');
+    Route::patch('agenda/{item}', [ScheduleItemController::class, 'update'])->name('admin.agenda.update');
+    Route::patch('agenda/{item}/publicar', [ScheduleItemController::class, 'publish'])->name('admin.agenda.publish');
+    Route::delete('agenda/{item}', [ScheduleItemController::class, 'destroy'])->name('admin.agenda.destroy');
+
+    // Busca manual do check-in -- fallback de quando o crachá não tem como
+    // ser lido (PLANO.md, Anexo A).
+    Route::get('checkin', [CheckinController::class, 'index'])->name('admin.checkin.index');
+    Route::post('checkin/checkpoints', [CheckinController::class, 'storeCheckpoint'])->name('admin.checkin.checkpoints.store');
 });
 
 require __DIR__.'/settings.php';
