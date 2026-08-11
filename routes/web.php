@@ -8,12 +8,18 @@ use App\Http\Controllers\Participant\TeamController;
 use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
+use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [LandingController::class, 'show'])->name('home');
+
+// Agenda pública. Sem 'auth': é o que a tabela de papéis promete pro guest
+// (PLANO.md, seção 3) -- ver agenda de novo/oficinas antes mesmo de se inscrever.
+Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
+Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
