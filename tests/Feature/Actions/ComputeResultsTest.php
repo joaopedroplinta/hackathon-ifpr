@@ -12,6 +12,7 @@ use App\Models\Evaluation;
 use App\Models\EvaluationScore;
 use App\Models\Event;
 use App\Models\JudgeAssignment;
+use App\Models\PopularVote;
 use App\Models\Result;
 use App\Models\Rubric;
 use App\Models\Submission;
@@ -256,5 +257,19 @@ class ComputeResultsTest extends TestCase
         app(ComputeResults::class)->handle($event);
 
         $this->assertSame(0, Result::forEvent($event)->where('submission_id', $rascunho->id)->count());
+    }
+
+    public function test_popular_vote_counts_come_from_the_popular_votes_table(): void
+    {
+        $event = Event::factory()->create();
+        $this->rubricaComPesos($event, [1]);
+        $submissao = $this->submissaoEnviada($event);
+        PopularVote::factory()->for($event)->for($submissao)->create();
+        PopularVote::factory()->for($event)->for($submissao)->create();
+
+        app(ComputeResults::class)->handle($event);
+
+        $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
+        $this->assertSame(2, $result->popular_votes_count);
     }
 }

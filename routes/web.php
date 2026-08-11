@@ -9,6 +9,7 @@ use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\EventRegistrationController;
+use App\Http\Controllers\Participant\PopularVoteController;
 use App\Http\Controllers\Participant\SubmissionController;
 use App\Http\Controllers\Participant\SubmissionFileController;
 use App\Http\Controllers\Participant\TeamController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
+use App\Http\Controllers\Public\SubmissionShowcaseController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +39,10 @@ Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.sh
 // Resultado público. Só mostra algo se results_published_at não for nulo
 // -- checado no servidor, ver Public\ResultController.
 Route::get('resultados', [PublicResultController::class, 'show'])->name('resultados.show');
+
+// Vitrine dos projetos enviados. É daqui que o voto popular acontece --
+// quem pode votar é decidido no servidor (PopularVotePolicy), não aqui.
+Route::get('projetos', [SubmissionShowcaseController::class, 'index'])->name('projetos.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -110,6 +116,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('jurado/avaliar/{submission}', [EvaluationController::class, 'show'])->name('jurado.avaliar.show');
     Route::post('jurado/avaliar/{submission}/rascunho', [EvaluationController::class, 'autosave'])->name('jurado.avaliar.autosave');
     Route::post('jurado/avaliar/{submission}/enviar', [EvaluationController::class, 'submit'])->name('jurado.avaliar.enviar');
+
+    // Voto popular. Autorização (inscrito + dentro da janela) é da
+    // PopularVotePolicy -- ver Participant\PopularVoteController.
+    Route::post('votos', [PopularVoteController::class, 'store'])->name('votos.store');
 });
 
 // Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na

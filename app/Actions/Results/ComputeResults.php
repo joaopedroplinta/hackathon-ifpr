@@ -5,6 +5,7 @@ namespace App\Actions\Results;
 use App\Enums\EvaluationStatus;
 use App\Models\Evaluation;
 use App\Models\Event;
+use App\Models\PopularVote;
 use App\Models\Result;
 use App\Models\Rubric;
 use App\Models\Submission;
@@ -55,6 +56,11 @@ class ComputeResults
             $ranksPorTrilha += $this->atribuirRanks($grupo->values(), $rubricaAtiva);
         }
 
+        $votosPorSubmissao = PopularVote::forEvent($event)
+            ->selectRaw('submission_id, count(*) as total')
+            ->groupBy('submission_id')
+            ->pluck('total', 'submission_id');
+
         foreach ($ordenadas as $linha) {
             $submissao = $linha['submissao'];
 
@@ -69,9 +75,7 @@ class ComputeResults
             $result->criteria_breakdown = $linha['breakdown'];
             $result->rank_overall = $ranksGerais[$submissao->id] ?? null;
             $result->rank_track = $ranksPorTrilha[$submissao->id] ?? null;
-            // popular_votes_count fica em 0 até a tabela popular_votes existir
-            // (voto popular é o próximo slice desta sprint).
-            $result->popular_votes_count = $result->popular_votes_count ?? 0;
+            $result->popular_votes_count = (int) ($votosPorSubmissao[$submissao->id] ?? 0);
             $result->computed_at = $agora;
             $result->save();
         }
