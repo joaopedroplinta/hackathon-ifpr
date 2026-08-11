@@ -4,9 +4,11 @@ Sistema de apoio ao 1º Hackathon do curso de tecnologia — IFPR Campus Pinhais
 
 ## Estado atual
 
-**Semana 0 concluída, estrutura de pastas definida.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
-Postgres via Docker, Pest verde, CI passando. Ainda não existe nenhuma tabela
-de domínio do hackathon — a próxima etapa é a semana 1 (autenticação).
+**Semanas 0 a 6 concluídas.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
+Postgres via Docker, Pest verde, CI passando. Auth (Google + e-mail/senha),
+equipes, submissões, agenda, check-in por QR, avaliação por jurados,
+resultados e voto popular já funcionam de ponta a ponta. Faltam certificados
+em PDF e notificações por fila (semana 7) e o ensaio geral (semana 8).
 
 ## Leia o PLANO.md primeiro
 

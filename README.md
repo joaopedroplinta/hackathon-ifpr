@@ -15,10 +15,10 @@ Projeto acadêmico do curso de Tecnologia em Análise e Desenvolvimento de
 Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização do
 1º Hackathon do curso.
 
-> **Status:** Semana 0 concluída. Aplicação no ar (Laravel 12 + Inertia v2 +
-> React 19), Postgres via Docker, Pest verde, CI passando. Ainda não existe
-> nenhuma tabela de domínio do hackathon — a próxima etapa é a autenticação
-> (Semana 1). Cronograma completo em [`PLANO.md`](PLANO.md#6-cronograma--8-semanas).
+> **Status:** Semanas 0 a 6 concluídas — auth, equipes, submissões, agenda,
+> check-in, avaliação por jurados, resultados e voto popular já funcionam de
+> ponta a ponta. Faltam certificados/notificações (semana 7) e o ensaio geral
+> (semana 8). Cronograma completo em [`PLANO.md`](PLANO.md#6-cronograma--8-semanas).
 
 ---
 
@@ -245,12 +245,12 @@ Sprint de 1 semana, 8 semanas ao todo. Detalhes de cada entrega em
 | Semana | Entrega |
 |---|---|
 | 0 ✅ | Setup: Laravel + Inertia + React, Docker, CI, papéis, layout base |
-| 1 | Autenticação: Google + e-mail/senha, perfil, inscrição no evento |
-| 2 | Equipes: criar, convidar, entrar, travas de tamanho e prazo |
-| 3 | Submissões: formulário, upload, versionamento, deadline no servidor |
-| 4 | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
-| 5 | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
-| 6 | Cálculo de resultados, publicação controlada, voto popular |
+| 1 ✅ | Autenticação: Google + e-mail/senha, perfil, inscrição no evento |
+| 2 ✅ | Equipes: criar, convidar, entrar, travas de tamanho e prazo |
+| 3 ✅ | Submissões: formulário, upload, versionamento, deadline no servidor |
+| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
+| 5 ✅ | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
+| 6 ✅ | Cálculo de resultados, publicação controlada, voto popular |
 | 7 | Certificados em PDF, notificações por e-mail em fila |
 | 8 | Ensaio geral: carga, acessibilidade, responsivo, deploy, plano B |
 
