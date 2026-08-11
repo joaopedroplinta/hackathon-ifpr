@@ -27,9 +27,7 @@ export default function HistoricoEnvios({ versoes }: Props) {
             </h2>
 
             {versoes.length === 0 ? (
-                <p className="text-muted-foreground mt-2 text-sm">
-                    Nenhum envio ainda. Preencham o formulário acima e cliquem em "Enviar projeto".
-                </p>
+                <p className="text-muted-foreground mt-2 text-sm">Nenhum envio ainda. Preencham o formulário acima e cliquem em "Enviar projeto".</p>
             ) : (
                 <ol className="mt-4 divide-y">
                     {versoes.map((versao) => (

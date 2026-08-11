@@ -93,10 +93,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     </div>
 
                     {submissao.precisa_conferencia && (
-                        <p
-                            role="status"
-                            className="mt-3 flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400"
-                        >
+                        <p role="status" className="mt-3 flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
                             <TriangleAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
                             {submissao.origem_label} — ainda não conferido.
                         </p>
@@ -125,7 +122,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                                 href={link.href ?? undefined}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="border-sidebar-border/70 dark:border-sidebar-border inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted"
+                                className="border-sidebar-border/70 dark:border-sidebar-border hover:bg-muted inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
                             >
                                 <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 {link.rotulo}

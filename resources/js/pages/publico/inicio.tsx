@@ -1,8 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 
-import ContadorEvento from '@/components/hackathon/contador-evento';
 import AppLogoIcon from '@/components/app-logo-icon';
+import ContadorEvento from '@/components/hackathon/contador-evento';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 import { EventoPublico } from '@/types/publico';

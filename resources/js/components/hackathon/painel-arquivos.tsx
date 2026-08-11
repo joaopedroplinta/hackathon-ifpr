@@ -89,9 +89,7 @@ export default function PainelArquivos({ arquivos, podeAnexar }: Props) {
 
             {podeAnexar &&
                 (cheio ? (
-                    <p className="text-muted-foreground mt-4 text-sm">
-                        Limite de {arquivos.limite} arquivos atingido. Remova um para anexar outro.
-                    </p>
+                    <p className="text-muted-foreground mt-4 text-sm">Limite de {arquivos.limite} arquivos atingido. Remova um para anexar outro.</p>
                 ) : (
                     <form onSubmit={enviar} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
                         <div className="grid flex-1 gap-2">
