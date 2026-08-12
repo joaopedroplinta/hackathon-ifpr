@@ -566,10 +566,25 @@ até ser conferida. Transparência aqui evita acusação de favorecimento depois
 
 ## A.5 Backup durante o evento
 
-- `pg_dump` a cada 15 min pra disco local + cópia em nuvem, durante todo o evento
-- Snapshot manual nomeado **imediatamente antes e depois do deadline**
-- `rsync` dos uploads junto — banco sem os arquivos não restaura nada
-- Testar a **restauração** na semana 8. Backup não testado é fé, não backup
+`scripts/backup.sh [rótulo]` e `scripts/restore.sh <pasta>` -- funcionam com
+Postgres nativo ou via `docker compose`, sem depender de qual hospedagem for
+escolhida (ainda em aberto, seção 10).
+
+- `scripts/backup.sh` a cada 15 min pra `backups/` local (cron, ver comentário
+  no topo do script) + cópia em nuvem, durante todo o evento. A cópia em nuvem
+  fica como passo manual documentado no próprio script até a hospedagem ser
+  decidida — sem provedor, não tem pra onde mandar
+- Snapshot manual nomeado **imediatamente antes e depois do deadline**:
+  `scripts/backup.sh antes-do-prazo` / `scripts/backup.sh depois-do-prazo`
+- `tar` dos uploads (`storage/app/private`) junto — banco sem os arquivos não
+  restaura nada
+- **Restauração testada** (2026-08-12): ciclo completo local — backup, equipe
+  alterada de propósito pra provar que não é no-op, restore, equipe de volta
+  ao nome original, suíte de teste inteira verde depois. Backup+restore leva
+  ~1s no dataset de ensaio (30 equipes); crescer o dataset muda a escala, mas
+  o mecanismo está testado. Falta rodar isso **na hospedagem real**, uma vez
+  que ela for decidida — ambiente local não prova tempo de restauração em
+  produção
 
 ## A.6 Jurados sem sistema
 
