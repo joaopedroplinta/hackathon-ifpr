@@ -50,6 +50,8 @@ class Event extends Model
             'voting_opens_at' => 'datetime',
             'voting_closes_at' => 'datetime',
             'results_published_at' => 'datetime',
+            'reminder_24h_sent_at' => 'datetime',
+            'reminder_1h_sent_at' => 'datetime',
             'edition' => 'integer',
             'min_team_size' => 'integer',
             'max_team_size' => 'integer',

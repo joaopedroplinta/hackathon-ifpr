@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Organizer;
 
 use App\Actions\Results\ComputeResults;
 use App\Actions\Results\FindResultPendencies;
+use App\Actions\Results\PublishResults;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\PublishResultsRequest;
@@ -78,8 +79,7 @@ class ResultController extends Controller
             return back()->with('erro', 'Há pendências antes de publicar -- confira a lista e confirme se quer publicar mesmo assim.');
         }
 
-        $event->results_published_at = now();
-        $event->save();
+        app(PublishResults::class)->handle($event);
 
         return to_route('admin.resultados.index')->with('sucesso', 'Resultado publicado.');
     }
