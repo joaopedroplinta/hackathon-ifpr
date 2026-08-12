@@ -7,6 +7,7 @@ use App\Http\Controllers\Organizer\DashboardController;
 use App\Http\Controllers\Organizer\EventController;
 use App\Http\Controllers\Organizer\IncidentController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
+use App\Http\Controllers\Organizer\ManualSubmissionController;
 use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
@@ -167,6 +168,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('submissoes/exportar', [OrganizerSubmissionController::class, 'export'])
         ->can('viewAny', Submission::class)
         ->name('admin.submissions.export');
+
+    // Lançamento manual (plano B, degraus 3 e 4) -- mesmo motivo do
+    // 'exportar' acima, precisa vir antes de '{submission}'.
+    Route::get('submissoes/lancar', [ManualSubmissionController::class, 'create'])->name('admin.submissions.record.create');
+    Route::post('submissoes/lancar', [ManualSubmissionController::class, 'store'])->name('admin.submissions.record.store');
 
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
         ->can('view', 'submission')

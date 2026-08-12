@@ -26,6 +26,16 @@ class SubmissionPolicy
         return $user->isStaff();
     }
 
+    /**
+     * Lançar submissão em nome de uma equipe -- degraus 3 e 4 do plano B,
+     * quando a equipe não conseguiu usar o formulário web de jeito nenhum
+     * (PLANO.md, Anexo A.2/A.4).
+     */
+    public function recordManually(User $user): bool
+    {
+        return $user->isStaff();
+    }
+
     public function view(User $user, Submission $submission): bool
     {
         return $user->isStaff() || $submission->team->hasMember($user);
