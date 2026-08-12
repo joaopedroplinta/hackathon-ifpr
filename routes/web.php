@@ -3,6 +3,7 @@
 use App\Http\Controllers\Judge\EvaluationController;
 use App\Http\Controllers\Organizer\CertificateController as OrganizerCertificateController;
 use App\Http\Controllers\Organizer\CheckinController;
+use App\Http\Controllers\Organizer\DashboardController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
@@ -142,6 +143,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // rota garante que ninguém chega ao controller sem passar por
 // SubmissionPolicy::viewAny.
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
         ->can('viewAny', Submission::class)
         ->name('admin.submissions.index');

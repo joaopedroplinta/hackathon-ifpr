@@ -8,6 +8,12 @@ use Illuminate\Auth\Access\Response;
 
 class EventPolicy
 {
+    /** Painel geral do organizador (/admin). */
+    public function viewAny(User $user): bool
+    {
+        return $user->isStaff();
+    }
+
     /**
      * Inscrever-se no evento.
      *

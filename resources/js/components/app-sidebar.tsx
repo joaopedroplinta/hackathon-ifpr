@@ -50,6 +50,11 @@ const judgeNavItems: NavItem[] = [
 /** Só aparece para organizador e admin. O acesso em si é da Policy. */
 const staffNavItems: NavItem[] = [
     {
+        title: 'Painel',
+        url: '/admin',
+        icon: LayoutGrid,
+    },
+    {
         title: 'Submissões',
         url: '/admin/submissoes',
         icon: FileText,
