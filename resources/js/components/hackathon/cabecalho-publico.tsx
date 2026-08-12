@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 
 import AppLogoIcon from '@/components/app-logo-icon';
+import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 
@@ -49,6 +50,8 @@ export default function CabecalhoPublico() {
                         </Button>
                     </>
                 )}
+
+                <AppearanceToggleDropdown />
             </nav>
         </header>
     );
