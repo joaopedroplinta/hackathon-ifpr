@@ -34,7 +34,7 @@ type ConviteForm = { email: string };
  * arquivo em paralelo.
  */
 export default function PainelConvites() {
-    const { convites, flash } = usePage<SharedData & ConvitesProps>().props;
+    const { convites } = usePage<SharedData & ConvitesProps>().props;
     const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm<ConviteForm>({
         email: '',
     });
@@ -49,12 +49,6 @@ export default function PainelConvites() {
 
     return (
         <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
-            {flash?.erro && (
-                <div role="alert" className="mb-4 rounded-xl border border-red-600/30 bg-red-600/10 p-4 text-sm text-red-800 dark:text-red-300">
-                    {flash.erro}
-                </div>
-            )}
-
             <h2 className="font-medium">Convidar por e-mail</h2>
             <p className="text-muted-foreground mt-1 text-sm">Manda um link de convite para quem ainda não tem o código da equipe.</p>
 

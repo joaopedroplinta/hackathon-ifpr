@@ -1,11 +1,10 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Check, Copy, Crown, LogOut, UserMinus } from 'lucide-react';
 import { useState } from 'react';
 
 import PainelConvites from '@/components/hackathon/painel-convites';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { SharedData } from '@/types';
 
 type Membro = {
     id: number;
@@ -116,7 +115,6 @@ function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
 }
 
 export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props) {
-    const { flash } = usePage<SharedData>().props;
     const faltam = limites.minimo - limites.atual;
 
     return (
@@ -124,15 +122,6 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
             <Head title={equipe.nome} />
 
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4">
-                {flash?.sucesso && (
-                    <div
-                        role="status"
-                        className="rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm text-green-800 dark:text-green-300"
-                    >
-                        {flash.sucesso}
-                    </div>
-                )}
-
                 <header>
                     <h1 className="text-2xl font-semibold">{equipe.nome}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">

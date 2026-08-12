@@ -1,11 +1,10 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { CheckCircle2, LoaderCircle, UserRound } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { SharedData } from '@/types';
 import { CheckpointOpcao, ParticipanteCheckin } from '@/types/checkin';
 
 interface Props {
@@ -40,8 +39,6 @@ export default function ConfirmarCheckin({
     via,
     confirmar_url,
 }: Props) {
-    const { flash } = usePage<SharedData>().props;
-
     const { data, setData, post, processing } = useForm({
         checkpoint_id: checkpoint_selecionado_id ? String(checkpoint_selecionado_id) : '',
         via: via ?? '',
@@ -57,15 +54,6 @@ export default function ConfirmarCheckin({
             <Head title={`Check-in — ${participante.nome}`} />
 
             <div className="mx-auto w-full max-w-sm p-4">
-                {flash?.sucesso && (
-                    <div
-                        role="status"
-                        className="mb-4 rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm text-green-800 dark:text-green-300"
-                    >
-                        {flash.sucesso}
-                    </div>
-                )}
-
                 <div className="flex flex-col items-center gap-3 rounded-xl border p-6 text-center">
                     {participante.avatar_url ? (
                         <img src={participante.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
