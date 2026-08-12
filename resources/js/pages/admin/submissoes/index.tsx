@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Download, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
+import { Download, FilePlus2, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -91,14 +91,23 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                         </p>
                     </div>
 
-                    {submissoes.total > 0 && (
+                    <div className="flex flex-wrap gap-2">
                         <Button asChild variant="outline">
-                            <a href={route('admin.submissions.export', parametrosDoFiltro)}>
-                                <Download className="h-4 w-4" aria-hidden="true" />
-                                {temFiltro ? 'Baixar filtrados (.zip)' : 'Baixar tudo (.zip)'}
-                            </a>
+                            <Link href={route('admin.submissions.record.create')}>
+                                <FilePlus2 className="h-4 w-4" aria-hidden="true" />
+                                Lançar manualmente
+                            </Link>
                         </Button>
-                    )}
+
+                        {submissoes.total > 0 && (
+                            <Button asChild variant="outline">
+                                <a href={route('admin.submissions.export', parametrosDoFiltro)}>
+                                    <Download className="h-4 w-4" aria-hidden="true" />
+                                    {temFiltro ? 'Baixar filtrados (.zip)' : 'Baixar tudo (.zip)'}
+                                </a>
+                            </Button>
+                        )}
+                    </div>
                 </header>
 
                 <section aria-label="Resumo" className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
