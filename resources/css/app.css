@@ -93,6 +93,12 @@
 }
 
 :root {
+    /* Sem isto, o navegador não sabe que a página está em modo escuro e
+       desenha o ícone do datetime-local, a scrollbar etc. como se fosse
+       clara -- ícone preto quase invisível sobre fundo escuro. .dark
+       sobrescreve pra "dark" logo abaixo. */
+    color-scheme: light;
+
     /* Paleta institucional -- PLANO.md §11. Pantone 362C (#509E2F) escurecido
        pra dar contraste AA com texto branco (4.05:1 com #3F8F2E não bate os
        4.5:1 exigidos pra texto normal -- #357724 dá 5.5:1); papel é branco
@@ -140,6 +146,8 @@
 }
 
 .dark {
+    color-scheme: dark;
+
     --verde-ifpr: #5cb84a;
     --verde-mata: #163c1b;
     --verde-brilho: #8fd14f;
