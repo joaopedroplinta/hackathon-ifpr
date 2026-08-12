@@ -407,7 +407,7 @@ evento tem um símbolo próprio, só compartilhando a família de verde.
 
 | Token | Hex | Uso |
 |---|---|---|
-| `verde-ifpr` | `#3F8F2E` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA com texto branco |
+| `verde-ifpr` | `#357724` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA (4.5:1) com texto branco — `#3F8F2E` batia só 4.05:1 |
 | `verde-mata` | `#163C1B` | Fundo do painel "terminal" (hero) e base do modo escuro |
 | `verde-brilho` | `#8FD14F` | Destaque, sucesso, linha "adicionada" no terminal, gráfico |
 | `grafite` | `#1B1B1D` | Texto e superfícies escuras — troca o cinza neutro do shadcn |

@@ -94,9 +94,10 @@
 
 :root {
     /* Paleta institucional -- PLANO.md §11. Pantone 362C (#509E2F) escurecido
-       pra dar contraste AA com texto branco; papel é branco com viés verde,
-       não o creme genérico de template de IA. */
-    --verde-ifpr: #3f8f2e;
+       pra dar contraste AA com texto branco (4.05:1 com #3F8F2E não bate os
+       4.5:1 exigidos pra texto normal -- #357724 dá 5.5:1); papel é branco
+       com leve viés esverdeado, não o creme genérico de template de IA. */
+    --verde-ifpr: #357724;
     --verde-mata: #163c1b;
     --verde-brilho: #8fd14f;
     --grafite: #1b1b1d;
