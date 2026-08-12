@@ -5,6 +5,7 @@ use App\Http\Controllers\Organizer\CertificateController as OrganizerCertificate
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\DashboardController;
 use App\Http\Controllers\Organizer\EventController;
+use App\Http\Controllers\Organizer\IncidentController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
@@ -151,6 +152,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // vez (PLANO.md, seção 5).
     Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
     Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
+
+    // Incidentes do dia do evento. Extensão de prazo vale pra todo mundo --
+    // ver IncidentController e Event::effectiveSubmissionDeadline().
+    Route::get('incidentes', [IncidentController::class, 'index'])->name('admin.incidentes.index');
+    Route::post('incidentes', [IncidentController::class, 'store'])->name('admin.incidentes.store');
 
     Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
         ->can('viewAny', Submission::class)

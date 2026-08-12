@@ -74,6 +74,11 @@ class Event extends Model
         return $this->hasMany(EventRegistration::class);
     }
 
+    public function incidents(): HasMany
+    {
+        return $this->hasMany(Incident::class);
+    }
+
     /**
      * O evento em foco agora. O sistema é multi-edição no banco, mas a
      * interface trabalha com um evento por vez: o mais recente que já saiu
@@ -131,14 +136,22 @@ class Event extends Model
     }
 
     /**
-     * O prazo que vale de fato agora. Hoje é só a coluna, mas quando os
-     * incidentes entrarem (PLANO.md, Anexo A.3) a extensão vale para todas
-     * as equipes e será somada aqui -- em um lugar só, não espalhada por
-     * cada controller que precisa saber se o prazo virou.
+     * O prazo que vale de fato agora: a coluna mais a soma de todo minuto de
+     * extensão declarado em `incidents` (PLANO.md, Anexo A.3). A extensão
+     * vale para todas as equipes -- é por isso que soma aqui, num lugar só,
+     * em vez de gravada por equipe.
      */
     public function effectiveSubmissionDeadline(): ?Carbon
     {
-        return $this->submission_deadline;
+        if ($this->submission_deadline === null) {
+            return null;
+        }
+
+        $minutosDeExtensao = $this->incidents()->sum('deadline_extension_minutes');
+
+        return $minutosDeExtensao > 0
+            ? $this->submission_deadline->clone()->addMinutes($minutosDeExtensao)
+            : $this->submission_deadline;
     }
 
     /**

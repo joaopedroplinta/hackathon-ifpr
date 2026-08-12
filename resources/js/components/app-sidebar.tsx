@@ -5,6 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
+    AlertTriangle,
     Award,
     BookOpen,
     CalendarDays,
@@ -74,6 +75,11 @@ const staffNavItems: NavItem[] = [
         title: 'Check-in',
         url: '/admin/checkin',
         icon: ScanLine,
+    },
+    {
+        title: 'Incidentes',
+        url: '/admin/incidentes',
+        icon: AlertTriangle,
     },
     {
         title: 'Rubrica',
