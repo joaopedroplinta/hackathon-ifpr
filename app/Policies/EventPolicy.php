@@ -15,6 +15,16 @@ class EventPolicy
     }
 
     /**
+     * Editar nome, tema, datas e limites do evento. `results_published_at`
+     * e `judges_per_submission` ficam fora deste form de propósito -- cada
+     * um já tem a própria Action/rota (.claude/rules/security.md).
+     */
+    public function update(User $user): bool
+    {
+        return $user->isStaff();
+    }
+
+    /**
      * Inscrever-se no evento.
      *
      * A regra de prazo mora aqui, não num if do controller: prazo é

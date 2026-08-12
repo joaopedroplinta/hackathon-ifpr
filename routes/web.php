@@ -4,6 +4,7 @@ use App\Http\Controllers\Judge\EvaluationController;
 use App\Http\Controllers\Organizer\CertificateController as OrganizerCertificateController;
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\DashboardController;
+use App\Http\Controllers\Organizer\EventController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
@@ -144,6 +145,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // SubmissionPolicy::viewAny.
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Edição do evento -- nome, tema/desafio, datas, limites, fase. Sempre o
+    // evento atual, sem {event} na URL: só existe uma edição em cartaz por
+    // vez (PLANO.md, seção 5).
+    Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
+    Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
 
     Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
         ->can('viewAny', Submission::class)

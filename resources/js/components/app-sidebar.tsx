@@ -16,6 +16,7 @@ import {
     QrCode,
     Scale,
     ScanLine,
+    Settings,
     Trophy,
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -53,6 +54,11 @@ const staffNavItems: NavItem[] = [
         title: 'Painel',
         url: '/admin',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Evento',
+        url: '/admin/evento',
+        icon: Settings,
     },
     {
         title: 'Submissões',
