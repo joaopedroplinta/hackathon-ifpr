@@ -20,7 +20,7 @@ export default function Rubrica({ evento, criterios }: Props) {
 
             <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-semibold">Rubrica de avaliação</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Rubrica de avaliação</h1>
                     {evento && <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>}
                     <p className="text-muted-foreground mt-2 text-sm">
                         Cada jurado avalia com estes critérios. A nota da avaliação é a média ponderada pelos pesos abaixo.
@@ -42,7 +42,7 @@ export default function Rubrica({ evento, criterios }: Props) {
                                         <p className="font-medium">
                                             {indice + 1}. {criterio.nome}
                                         </p>
-                                        <span className="text-muted-foreground flex items-center gap-1 text-xs">
+                                        <span className="text-muted-foreground flex items-center gap-1 font-mono text-xs">
                                             <Scale className="h-3 w-3 shrink-0" aria-hidden="true" />
                                             peso {criterio.peso} · nota até {criterio.nota_maxima}
                                         </span>

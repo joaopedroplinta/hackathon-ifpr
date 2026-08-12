@@ -13,7 +13,7 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
 
             <main className="mx-auto flex w-full max-w-md flex-col gap-6 p-4 pb-24 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-semibold">Validar certificado</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Validar certificado</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Confirma se um certificado foi mesmo emitido por este evento.</p>
                 </header>
 
@@ -25,12 +25,12 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                     </div>
                 ) : (
                     <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
-                        <div className="mb-4 flex items-center gap-2 text-green-700 dark:text-green-500">
+                        <div className="text-primary mb-4 flex items-center gap-2">
                             <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
                             <p className="font-medium">Certificado válido</p>
                         </div>
 
-                        <dl className="flex flex-col gap-3 text-sm">
+                        <dl className="flex flex-col gap-3 font-mono text-sm">
                             <div>
                                 <dt className="text-muted-foreground">Nome</dt>
                                 <dd className="font-medium">{props.nome}</dd>

@@ -6,9 +6,25 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes cursor-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
 @theme {
-    --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Space Grotesk', 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+    --color-verde-brilho: var(--verde-brilho);
+    --color-verde-mata: var(--verde-mata);
+    --color-amarelo-sinal: var(--amarelo-sinal);
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -77,74 +93,90 @@
 }
 
 :root {
-    --background: hsl(0, 0%, 100%);
-    --foreground: hsl(0, 0%, 3.9%);
-    --card: hsl(0, 0%, 100%);
-    --card-foreground: hsl(0, 0%, 3.9%);
-    --popover: hsl(0, 0%, 100%);
-    --popover-foreground: hsl(0, 0%, 3.9%);
-    --primary: hsl(0, 0%, 9%);
-    --primary-foreground: hsl(0, 0%, 98%);
-    --secondary: hsl(0, 0%, 96.1%);
-    --secondary-foreground: hsl(0, 0%, 9%);
-    --muted: hsl(0, 0%, 96.1%);
-    --muted-foreground: hsl(0, 0%, 45.1%);
-    --accent: hsl(0, 0%, 96.1%);
-    --accent-foreground: hsl(0, 0%, 9%);
-    --destructive: hsl(0, 84.2%, 60.2%);
-    --destructive-foreground: hsl(0, 0%, 98%);
-    --border: hsl(0, 0%, 92.8%);
-    --input: hsl(0, 0%, 89.8%);
-    --ring: hsl(0, 0%, 3.9%);
-    --chart-1: hsl(12, 76%, 61%);
-    --chart-2: hsl(173, 58%, 39%);
-    --chart-3: hsl(197, 37%, 24%);
-    --chart-4: hsl(43, 74%, 66%);
-    --chart-5: hsl(27, 87%, 67%);
+    /* Paleta institucional -- PLANO.md §11. Pantone 362C (#509E2F) escurecido
+       pra dar contraste AA com texto branco; papel é branco com viés verde,
+       não o creme genérico de template de IA. */
+    --verde-ifpr: #3f8f2e;
+    --verde-mata: #163c1b;
+    --verde-brilho: #8fd14f;
+    --grafite: #1b1b1d;
+    --papel: #f5f7f3;
+    --amarelo-sinal: #e8b93f;
+
+    --background: var(--papel);
+    --foreground: var(--grafite);
+    --card: #ffffff;
+    --card-foreground: var(--grafite);
+    --popover: #ffffff;
+    --popover-foreground: var(--grafite);
+    --primary: var(--verde-ifpr);
+    --primary-foreground: #ffffff;
+    --secondary: #e6ece1;
+    --secondary-foreground: var(--grafite);
+    --muted: #edf1e8;
+    --muted-foreground: #5b6157;
+    --accent: #e2f0d9;
+    --accent-foreground: var(--grafite);
+    --destructive: #c1402f;
+    --destructive-foreground: #ffffff;
+    --border: #dbe2d3;
+    --input: #dbe2d3;
+    --ring: var(--verde-ifpr);
+    --chart-1: var(--verde-ifpr);
+    --chart-2: var(--verde-brilho);
+    --chart-3: var(--amarelo-sinal);
+    --chart-4: var(--verde-mata);
+    --chart-5: #6b6e68;
     --radius: 0.5rem;
-    --sidebar-background: hsl(0, 0%, 98%);
-    --sidebar-foreground: hsl(240, 5.3%, 30%);
-    --sidebar-primary: hsl(0, 0%, 10%);
-    --sidebar-primary-foreground: hsl(0, 0%, 98%);
-    --sidebar-accent: hsl(0, 0%, 94%);
-    --sidebar-accent-foreground: hsl(0, 0%, 30%);
-    --sidebar-border: hsl(0, 0%, 91%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+    --sidebar-background: #eff3ea;
+    --sidebar-foreground: var(--grafite);
+    --sidebar-primary: var(--verde-ifpr);
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e2f0d9;
+    --sidebar-accent-foreground: var(--grafite);
+    --sidebar-border: #dbe2d3;
+    --sidebar-ring: var(--verde-ifpr);
 }
 
 .dark {
-    --background: hsl(0, 0%, 3.9%);
-    --foreground: hsl(0, 0%, 98%);
-    --card: hsl(0, 0%, 3.9%);
-    --card-foreground: hsl(0, 0%, 98%);
-    --popover: hsl(0, 0%, 3.9%);
-    --popover-foreground: hsl(0, 0%, 98%);
-    --primary: hsl(0, 0%, 98%);
-    --primary-foreground: hsl(0, 0%, 9%);
-    --secondary: hsl(0, 0%, 14.9%);
-    --secondary-foreground: hsl(0, 0%, 98%);
-    --muted: hsl(0, 0%, 6.9%);
-    --muted-foreground: hsl(0, 0%, 63.9%);
-    --accent: hsl(0, 0%, 14.9%);
-    --accent-foreground: hsl(0, 0%, 98%);
-    --destructive: hsl(0, 84%, 60%);
-    --destructive-foreground: hsl(0, 0%, 98%);
-    --border: hsl(0, 0%, 14.9%);
-    --input: hsl(0, 0%, 14.9%);
-    --ring: hsl(0, 0%, 83.1%);
-    --chart-1: hsl(220, 70%, 50%);
-    --chart-2: hsl(160, 60%, 45%);
-    --chart-3: hsl(30, 80%, 55%);
-    --chart-4: hsl(280, 65%, 60%);
-    --chart-5: hsl(340, 75%, 55%);
-    --sidebar-background: hsl(0, 0%, 7%);
-    --sidebar-foreground: hsl(0, 0%, 80%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0, 0%, 100%);
-    --sidebar-accent: hsl(0, 0%, 15.9%);
-    --sidebar-accent-foreground: hsl(240, 4.8%, 95.9%);
-    --sidebar-border: hsl(0, 0%, 15.9%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+    --verde-ifpr: #5cb84a;
+    --verde-mata: #163c1b;
+    --verde-brilho: #8fd14f;
+    --amarelo-sinal: #e8b93f;
+
+    /* Grafite com viés verde -- nunca cinza puro. */
+    --background: #14170f;
+    --foreground: #f5f7f3;
+    --card: #1b1f16;
+    --card-foreground: #f5f7f3;
+    --popover: #1b1f16;
+    --popover-foreground: #f5f7f3;
+    --primary: var(--verde-ifpr);
+    --primary-foreground: #0e1309;
+    --secondary: #232922;
+    --secondary-foreground: #f5f7f3;
+    --muted: #1f241b;
+    --muted-foreground: #9aa394;
+    --accent: #232922;
+    --accent-foreground: #f5f7f3;
+    --destructive: #e05a4a;
+    --destructive-foreground: #14170f;
+    --border: #2a3024;
+    --input: #2a3024;
+    --ring: var(--verde-ifpr);
+    --chart-1: var(--verde-ifpr);
+    --chart-2: var(--verde-brilho);
+    --chart-3: var(--amarelo-sinal);
+    --chart-4: #3f8f2e;
+    --chart-5: #8a8f82;
+    --sidebar-background: var(--verde-mata);
+    --sidebar-foreground: #f5f7f3;
+    --sidebar-primary: var(--verde-brilho);
+    --sidebar-primary-foreground: #0e1309;
+    --sidebar-accent: #1f4a26;
+    --sidebar-accent-foreground: #f5f7f3;
+    --sidebar-border: #234a29;
+    --sidebar-ring: var(--verde-ifpr);
 }
 
 @layer base {

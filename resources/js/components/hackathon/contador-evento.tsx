@@ -39,7 +39,7 @@ export default function ContadorEvento({ alvo, rotulo }: Props) {
             <div className="flex gap-3 sm:gap-4">
                 {partes.map((parte) => (
                     <div key={parte.rotulo} className="bg-card flex w-16 flex-col items-center rounded-xl border py-3 sm:w-20">
-                        <span className="text-2xl font-semibold tabular-nums sm:text-3xl">{String(parte.valor).padStart(2, '0')}</span>
+                        <span className="font-display text-2xl font-semibold tabular-nums sm:text-3xl">{String(parte.valor).padStart(2, '0')}</span>
                         <span className="text-muted-foreground text-xs">{parte.rotulo}</span>
                     </div>
                 ))}

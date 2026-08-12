@@ -59,7 +59,7 @@ export default function Agenda({ evento, itens }: Props) {
             <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 p-4 pb-24 sm:p-6">
                 <header className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Agenda</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Agenda</h1>
                         {evento && <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>}
                     </div>
 
@@ -96,11 +96,11 @@ export default function Agenda({ evento, itens }: Props) {
                                             className={`rounded-xl border p-4 ${emAndamento ? 'border-primary bg-primary/5' : item.destaque ? 'bg-card' : ''}`}
                                         >
                                             <div className="flex flex-wrap items-center gap-2">
-                                                <span className="text-muted-foreground text-sm tabular-nums">
+                                                <span className="text-muted-foreground font-mono text-sm tabular-nums">
                                                     {formatarHora(item.inicia_em)}–{formatarHora(item.termina_em)}
                                                 </span>
-                                                <span className={`inline-block rounded-full border px-2 py-0.5 text-xs ${corDoTipo[item.tipo]}`}>
-                                                    {item.tipo_label}
+                                                <span className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoTipo[item.tipo]}`}>
+                                                    [{item.tipo_label.toLowerCase()}]
                                                 </span>
                                                 {item.trilha && (
                                                     <span

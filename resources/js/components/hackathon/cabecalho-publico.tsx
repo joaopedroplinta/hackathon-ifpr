@@ -14,8 +14,10 @@ export default function CabecalhoPublico() {
 
     return (
         <header className="mx-auto flex w-full max-w-5xl items-center justify-between p-4 sm:p-6">
-            <Link href={route('home')} className="flex items-center gap-2 font-medium">
-                <AppLogoIcon className="size-7 fill-current" />
+            <Link href={route('home')} className="font-display flex items-center gap-2 font-semibold tracking-tight">
+                <span className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-md">
+                    <AppLogoIcon className="size-5 fill-current" />
+                </span>
                 Hackathon IFPR
             </Link>
 
