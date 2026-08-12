@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Judge\EvaluationController;
+use App\Http\Controllers\Organizer\CertificateController as OrganizerCertificateController;
 use App\Http\Controllers\Organizer\CheckinController;
 use App\Http\Controllers\Organizer\JudgeAssignmentController;
 use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Participant\CertificateController;
 use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\PopularVoteController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Participant\TeamInviteController;
 use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
+use App\Http\Controllers\Public\CertificateValidationController;
 use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
@@ -43,6 +46,13 @@ Route::get('resultados', [PublicResultController::class, 'show'])->name('resulta
 // Vitrine dos projetos enviados. É daqui que o voto popular acontece --
 // quem pode votar é decidido no servidor (PopularVotePolicy), não aqui.
 Route::get('projetos', [SubmissionShowcaseController::class, 'index'])->name('projetos.index');
+
+// Validação pública de certificado. whereUuid: código mal formado devolve
+// 404 de rota, não erro de sintaxe do Postgres -- mesmo motivo do
+// checkin/{user:qr_token} (ver comentário lá embaixo).
+Route::get('validar/{code}', [CertificateValidationController::class, 'show'])
+    ->name('certificates.validate')
+    ->whereUuid('code');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -120,6 +130,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Voto popular. Autorização (inscrito + dentro da janela) é da
     // PopularVotePolicy -- ver Participant\PopularVoteController.
     Route::post('votos', [PopularVoteController::class, 'store'])->name('votos.store');
+
+    // Certificados da própria pessoa. Sem Policy no index -- a query já
+    // filtra por request()->user(), igual credencial.show. O download passa
+    // por CertificatePolicy porque a rota recebe {certificate} de fora.
+    Route::get('certificados', [CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('certificados/{certificate}/baixar', [CertificateController::class, 'download'])->name('certificates.download');
 });
 
 // Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
@@ -182,6 +198,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('resultados', [ResultController::class, 'index'])->name('admin.resultados.index');
     Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('admin.resultados.recompute');
     Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('admin.resultados.publish');
+
+    // Certificados. Emissão em lote é o comando hackathon:issue-certificates;
+    // aqui só a emissão avulsa (mentor, correção pontual) -- ver CertificateController.
+    Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('admin.certificados.index');
+    Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('admin.certificados.store');
 });
 
 require __DIR__.'/settings.php';
