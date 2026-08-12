@@ -379,9 +379,21 @@ Feature só está pronta com:
 
 ## 10. Próximos passos
 
-1. Rodar o setup da semana 0
-2. Escrever as migrations do núcleo (event, team, submission)
-3. Seeder com dados realistas — trabalhar com banco vazio esconde problema
+Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta é
+operacional, não é mais escrever feature:
+
+1. **Decidir e configurar o deploy** — nunca foi definido onde/como hospedar.
+   Não existe workflow de CD, só o CI de teste/lint.
+2. **Implementar a estratégia de backup do Anexo A.5** — hoje é só o runbook
+   em texto, sem `pg_dump` automatizado nem script de restauração.
+3. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — usar o
+   `EnsaioSeeder`, testar os degraus do plano B ao vivo, derrubar o app com
+   equipes "submetendo" de verdade, importar CSV com conflito proposital,
+   restaurar backup cronometrado, declarar incidente com extensão, lançar
+   submissão manual, ler o runbook em voz alta com a organização.
+4. **Auditoria formal de acessibilidade e responsivo** — feito ad-hoc até
+   aqui (revisões pontuais, checagem de contraste da paleta nova), nunca
+   como uma passada dedicada.
 
 ---
 
