@@ -455,15 +455,17 @@ não só na landing.
 prompt de terminal (`>_`) num quadrado arredondado em `verde-ifpr`. Simples o
 bastante pra continuar legível em 16px de favicon.
 
-### Onde mexe (quando for implementar)
+### Onde mexeu
 
 - `resources/css/app.css` — tokens de cor claro/escuro e import de fonte
-- `components/app-logo-icon.tsx`, `public/favicon.ico`, `public/logo.svg`
-- `components/hackathon/cabecalho-publico.tsx`, `pages/publico/*.tsx`
-- Badges de status em `components/hackathon/` (rubrica, submissão, avaliação)
+- `components/app-logo-icon.tsx` (prompt `>_`), `public/favicon.svg`
+- `components/hackathon/cabecalho-publico.tsx`, `components/hackathon/log-de-build.tsx`
+  (painel de assinatura), `pages/publico/*.tsx`
+- Badges de status em `pages/admin/{submissoes,rubrica,agenda}/*.tsx` e
+  `pages/publico/agenda.tsx` — `[enviado]` em JetBrains Mono
 
-**Pendente de implementação** — esta seção é a referência de decisão; a
-aplicação no código entra como sprint separado (ver `/sprint`).
+**Implementado.** Aplicado em todo o admin (herda os tokens globais sem
+mexer arquivo por arquivo) e nas páginas públicas listadas acima.
 
 ---
 
