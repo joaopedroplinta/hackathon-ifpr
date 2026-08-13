@@ -31,7 +31,7 @@ const rightNavItems: NavItem[] = [
     },
     {
         title: 'Regulamento',
-        url: '#',
+        url: '/regulamento',
         icon: BookOpen,
     },
 ];
@@ -75,18 +75,25 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
-                                            {rightNavItems.map((item) => (
-                                                <a
-                                                    key={item.title}
-                                                    href={item.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center space-x-2 font-medium"
-                                                >
-                                                    {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                                    <span>{item.title}</span>
-                                                </a>
-                                            ))}
+                                            {rightNavItems.map((item) =>
+                                                item.url.startsWith('http') ? (
+                                                    <a
+                                                        key={item.title}
+                                                        href={item.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center space-x-2 font-medium"
+                                                    >
+                                                        {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                        <span>{item.title}</span>
+                                                    </a>
+                                                ) : (
+                                                    <Link key={item.title} href={item.url} className="flex items-center space-x-2 font-medium">
+                                                        {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                        <span>{item.title}</span>
+                                                    </Link>
+                                                ),
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -130,26 +137,33 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 <Search className="!size-5 opacity-80 group-hover:opacity-100" />
                             </Button>
                             <div className="hidden lg:flex">
-                                {rightNavItems.map((item) => (
+                                {rightNavItems.map((item) => {
+                                    const classeIcone =
+                                        'group text-accent-foreground ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
+
+                                    return (
                                     <TooltipProvider key={item.title} delayDuration={0}>
                                         <Tooltip>
                                             <TooltipTrigger>
-                                                <a
-                                                    href={item.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="group text-accent-foreground ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                                                >
-                                                    <span className="sr-only">{item.title}</span>
-                                                    {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
-                                                </a>
+                                                {item.url.startsWith('http') ? (
+                                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className={classeIcone}>
+                                                        <span className="sr-only">{item.title}</span>
+                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
+                                                    </a>
+                                                ) : (
+                                                    <Link href={item.url} className={classeIcone}>
+                                                        <span className="sr-only">{item.title}</span>
+                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
+                                                    </Link>
+                                                )}
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p>{item.title}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                         <DropdownMenu>

@@ -8,6 +8,8 @@ use App\Models\Event;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class EventTest extends TestCase
@@ -19,6 +21,9 @@ class EventTest extends TestCase
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
+
+        // O disco 'local' do Laravel 12 é storage/app/private.
+        Storage::fake('local');
     }
 
     private function organizador(): User
@@ -138,5 +143,66 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->get(route('admin.evento.edit'))->assertRedirect(route('login'));
+    }
+
+    public function test_staff_uploads_the_regulation_pdf(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.regulamento.upload'), [
+                'regulamento' => UploadedFile::fake()->create('edital-2026.pdf', 200, 'application/pdf'),
+            ])
+            ->assertRedirect(route('admin.evento.edit'))
+            ->assertSessionHas('sucesso');
+
+        $fresh = $event->fresh();
+        $this->assertSame('edital-2026.pdf', $fresh->regulation_original_name);
+        $this->assertNotNull($fresh->regulation_updated_at);
+        Storage::disk('local')->assertExists($fresh->regulation_path);
+    }
+
+    /** Substituir troca o arquivo e apaga o antigo do disco -- não empilha lixo. */
+    public function test_uploading_again_replaces_the_previous_file(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->actingAs($this->organizador())->post(route('admin.evento.regulamento.upload'), [
+            'regulamento' => UploadedFile::fake()->create('primeira-versao.pdf', 100, 'application/pdf'),
+        ]);
+        $caminhoAntigo = $event->fresh()->regulation_path;
+
+        $this->actingAs($this->organizador())->post(route('admin.evento.regulamento.upload'), [
+            'regulamento' => UploadedFile::fake()->create('versao-final.pdf', 100, 'application/pdf'),
+        ]);
+
+        $fresh = $event->fresh();
+        $this->assertSame('versao-final.pdf', $fresh->regulation_original_name);
+        Storage::disk('local')->assertMissing($caminhoAntigo);
+        Storage::disk('local')->assertExists($fresh->regulation_path);
+    }
+
+    public function test_a_file_type_outside_the_allowlist_is_refused(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.regulamento.upload'), [
+                'regulamento' => UploadedFile::fake()->create('edital.docx', 100, 'application/msword'),
+            ])
+            ->assertSessionHasErrors('regulamento');
+
+        $this->assertNull(Event::current()->regulation_path);
+    }
+
+    public function test_a_participant_cannot_upload_the_regulation(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->participante())
+            ->post(route('admin.evento.regulamento.upload'), [
+                'regulamento' => UploadedFile::fake()->create('edital.pdf', 100, 'application/pdf'),
+            ])
+            ->assertForbidden();
     }
 }

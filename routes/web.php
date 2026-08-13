@@ -25,6 +25,7 @@ use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\CertificateValidationController;
 use App\Http\Controllers\Public\LandingController;
+use App\Http\Controllers\Public\RegulationController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
 use App\Http\Controllers\Public\SubmissionShowcaseController;
@@ -42,6 +43,12 @@ Route::get('agenda.ics', [AgendaController::class, 'ics'])->name('agenda.ics');
 // Rubrica pública -- .claude/rules do Anexo A: reduz disputa sobre nota
 // deixar os critérios visíveis desde antes do evento.
 Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.show');
+
+// Regulamento público -- mesmo motivo da rubrica acima: critério de
+// desempate e regra do Degrau 0 (plano B) precisam estar visíveis antes da
+// inscrição, não só espalhados no plano interno.
+Route::get('regulamento', [RegulationController::class, 'show'])->name('regulamento.show');
+Route::get('regulamento/download', [RegulationController::class, 'download'])->name('regulamento.download');
 
 // Resultado público. Só mostra algo se results_published_at não for nulo
 // -- checado no servidor, ver Public\ResultController.
@@ -153,6 +160,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // vez (PLANO.md, seção 5).
     Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
     Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
+    Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('admin.evento.regulamento.upload');
 
     // Incidentes do dia do evento. Extensão de prazo vale pra todo mundo --
     // ver IncidentController e Event::effectiveSubmissionDeadline().

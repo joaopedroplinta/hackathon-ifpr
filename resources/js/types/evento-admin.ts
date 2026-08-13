@@ -31,3 +31,5 @@ export type EventoForm = {
 };
 
 export type OpcaoStatusEvento = { value: string; label: string };
+
+export type RegulamentoEvento = { nome_arquivo: string | null; atualizado_em: string | null };

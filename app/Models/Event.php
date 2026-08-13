@@ -52,6 +52,7 @@ class Event extends Model
             'results_published_at' => 'datetime',
             'reminder_24h_sent_at' => 'datetime',
             'reminder_1h_sent_at' => 'datetime',
+            'regulation_updated_at' => 'datetime',
             'edition' => 'integer',
             'min_team_size' => 'integer',
             'max_team_size' => 'integer',
@@ -168,6 +169,11 @@ class Event extends Model
     public function resultsArePublished(): bool
     {
         return $this->results_published_at !== null;
+    }
+
+    public function hasRegulationFile(): bool
+    {
+        return $this->regulation_path !== null;
     }
 
     /**

@@ -274,14 +274,14 @@ e carga horária. Carga horária vem das presenças registradas.
 
 ### Regulamento
 
-**Pendente — ainda não implementado.** Hoje as regras que decidem prêmio
-existem só em prosa espalhada pelo plano: o critério de desempate (seção
-"Resultados" acima, também repetido na skill `regras-avaliacao`) e o
-Degrau 0 — "vale o horário do último commit" — no Anexo A ("Escada de
-degradação"). Nenhuma das duas tem uma página pública que a equipe possa
-ler antes de se inscrever. "Regulamento" no menu do organizador
-(`app-sidebar.tsx`, `footerNavItems`) já existe como link morto
-(`href: '#'`) esperando esta tela.
+**Implementado.** Até aqui as regras que decidem prêmio existiam só em
+prosa espalhada pelo plano: o critério de desempate (seção "Resultados"
+acima, também repetido na skill `regras-avaliacao`) e o Degrau 0 — "vale o
+horário do último commit" — no Anexo A ("Escada de degradação"). Agora as
+duas aparecem formalizadas em `/regulamento`, pública, junto com tamanho de
+equipe e prazo tirados de `events`. O link "Regulamento" no menu do
+organizador (`app-sidebar.tsx`, `app-header.tsx`) e no cabeçalho público
+(`cabecalho-publico.tsx`) aponta pra lá.
 
 **O que o regulamento formaliza** (conteúdo mínimo, texto livre por ora):
 - Critério de desempate, na ordem exata da seção "Resultados" acima
@@ -320,6 +320,12 @@ mostrar nome do arquivo atual e data, com opção de substituir). Sem Policy
 nova — mesma regra de "organizador edita evento" que já vale pro resto da
 tela.
 
+**O que não entrou:** o "espaço livre pro organizador colar regra
+específica da edição" citado acima não virou campo de texto no banco — o
+PDF já cobre esse caso, e um campo a mais sem pedido concreto seria
+escopo por antecipação. Se aparecer necessidade real de editar essa prosa
+pela tela em vez de sempre trocar o PDF, aí sim vira coluna.
+
 ---
 
 ## 5. Telas
@@ -331,7 +337,9 @@ tela.
 - `/projetos/{slug}` — página do projeto: descrição, repo, vídeo, equipe
 - `/resultados` — pódio geral, pódio por trilha, prêmio popular
 - `/validar/{code}` — validação de certificado
-- `/regulamento` — **pendente**, ver seção "Regulamento" logo abaixo
+- `/regulamento` — critério de desempate, Degrau 0, tamanho de equipe e
+  prazo em prosa, mais "Baixar PDF" quando o organizador anexou o edital.
+  Ver seção "Regulamento" acima.
 
 ### Participante
 - `/dashboard` — próximo item da agenda, status da equipe, deadline, pendências
@@ -350,8 +358,8 @@ tela.
   presença do dia
 - `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
   Implementada na semana 8. Tema já aparece na landing pública
-  (`publico/inicio.tsx`). **Falta**: upload do regulamento (ver abaixo) —
-  quando entrar, provavelmente é um campo a mais nesta mesma tela.
+  (`publico/inicio.tsx`). Também recebe o upload do PDF do regulamento
+  (ver seção "Regulamento" acima).
 - `/admin/equipes` — listar, editar, desqualificar, forçar membro
 - `/admin/submissoes` — todas, filtro por trilha/status, download em lote
 - `/admin/rubrica` — critérios, pesos, escala

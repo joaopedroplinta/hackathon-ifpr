@@ -2,16 +2,18 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import PainelRegulamento from '@/components/hackathon/painel-regulamento';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { EventoExistente, EventoForm, OpcaoStatusEvento } from '@/types/evento-admin';
+import { EventoExistente, EventoForm, OpcaoStatusEvento, RegulamentoEvento } from '@/types/evento-admin';
 
 interface Props {
     evento: EventoExistente;
     status_opcoes: OpcaoStatusEvento[];
+    regulamento: RegulamentoEvento;
 }
 
 const campo =
@@ -41,7 +43,7 @@ function deIsoParaDatetimeLocal(iso: string | null): string {
     return new Date(iso).toLocaleString('sv-SE', { timeZone: 'America/Sao_Paulo' }).slice(0, 16).replace(' ', 'T');
 }
 
-export default function EditarEvento({ evento, status_opcoes }: Props) {
+export default function EditarEvento({ evento, status_opcoes, regulamento }: Props) {
     const { data, setData, transform, patch, processing, errors } = useForm<EventoForm>({
         name: evento.name,
         description: evento.description ?? '',
@@ -256,6 +258,10 @@ export default function EditarEvento({ evento, status_opcoes }: Props) {
                         </Button>
                     </div>
                 </form>
+
+                <div className="mt-6">
+                    <PainelRegulamento regulamento={regulamento} />
+                </div>
             </div>
         </AppLayout>
     );

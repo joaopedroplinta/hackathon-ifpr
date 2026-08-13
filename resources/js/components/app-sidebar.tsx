@@ -115,7 +115,7 @@ const footerNavItems: NavItem[] = [
     },
     {
         title: 'Regulamento',
-        url: '#',
+        url: '/regulamento',
         icon: BookOpen,
     },
 ];

@@ -12,6 +12,7 @@ import { SharedData } from '@/types';
 const linksPublicos = [
     { href: 'agenda.index', label: 'Agenda' },
     { href: 'rubrica.show', label: 'Rubrica' },
+    { href: 'regulamento.show', label: 'Regulamento' },
     { href: 'projetos.index', label: 'Projetos' },
     { href: 'resultados.show', label: 'Resultados' },
 ];
