@@ -379,21 +379,39 @@ Feature só está pronta com:
 
 ## 10. Próximos passos
 
-Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta é
-operacional, não é mais escrever feature:
+Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
 
-1. **Decidir e configurar o deploy** — nunca foi definido onde/como hospedar.
-   Não existe workflow de CD, só o CI de teste/lint.
-2. **Implementar a estratégia de backup do Anexo A.5** — hoje é só o runbook
-   em texto, sem `pg_dump` automatizado nem script de restauração.
-3. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — usar o
-   `EnsaioSeeder`, testar os degraus do plano B ao vivo, derrubar o app com
-   equipes "submetendo" de verdade, importar CSV com conflito proposital,
-   restaurar backup cronometrado, declarar incidente com extensão, lançar
-   submissão manual, ler o runbook em voz alta com a organização.
-4. **Auditoria formal de acessibilidade e responsivo** — feito ad-hoc até
-   aqui (revisões pontuais, checagem de contraste da paleta nova), nunca
-   como uma passada dedicada.
+1. **Decidir e configurar o deploy.** Critério novo, definido em conversa:
+   **dado tem que ficar no Brasil** (instituição federal, LGPD — Railway/Render
+   não têm região no país). Opções levantadas, nenhuma escolhida ainda:
+   - Servidor da própria IFPR/RNP, se houver acesso
+   - Vultr São Paulo (VPS, região confirmada, exige configurar
+     nginx/php-fpm/postgres/systemd na mão)
+   - AWS `sa-east-1` ou GCP `southamerica-east1` (mais robusto, mais complexo)
+
+   Sem isso decidido, `scripts/backup.sh`'s "cópia em nuvem" continua um
+   placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
+
+2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
+   plano B já existe e tem teste automatizado, mas ninguém ainda:
+   - Rodou `EnsaioSeeder` e derrubou o app com equipes "submetendo" de verdade
+     (teste de carga)
+   - Importou um CSV com 1 conflito proposital pelo `hackathon:import-submissions`
+   - Lançou uma submissão manual pela tela e conferiu a marcação no painel
+   - Leu o runbook em voz alta com a equipe de organização
+
+3. **Terminar a auditoria de acessibilidade e responsivo.** Parte já feita:
+   contraste da paleta nova corrigido (verde principal não batia AA — ver
+   §11), foco de teclado e landmarks conferidos na landing, cabeçalho mobile
+   corrigido depois de um teste real no celular ter achado que tudo
+   espremia numa linha só. Falta testar em celular de verdade (não só o
+   `resize_window` da automação, que não é confiável neste ambiente) as
+   telas mais usadas no dia: avaliação do jurado, check-in, submissão.
+
+4. **Terminar o polimento visual geral.** Toast de verdade (sonner) já
+   entrou no lugar do banner fixo. Falta: loading de botão mais suave,
+   transição entre páginas, outras microinterações — o pedido original era
+   "deixar o sistema bonito e profissional" style createui.co, mas de graça.
 
 ---
 
