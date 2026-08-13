@@ -29,9 +29,14 @@ class DashboardController extends Controller
             ->filter(fn (Team $team) => ! $team->submission || $team->submission->isDraft())
             ->count();
 
+        $hojeEmSaoPaulo = now()->timezone('America/Sao_Paulo');
+
         $presencaHoje = Attendance::query()
             ->whereHas('checkpoint', fn ($q) => $q->where('event_id', $event->id))
-            ->whereDate('checked_in_at', now()->timezone('America/Sao_Paulo')->toDateString())
+            ->whereBetween('checked_in_at', [
+                $hojeEmSaoPaulo->clone()->startOfDay()->utc(),
+                $hojeEmSaoPaulo->clone()->endOfDay()->utc(),
+            ])
             ->count();
 
         return Inertia::render('admin/index', [
