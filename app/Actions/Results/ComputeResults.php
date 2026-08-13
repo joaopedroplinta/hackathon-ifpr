@@ -47,12 +47,13 @@ class ComputeResults
         $ordenadas = $this->ordenarComDesempate($linhas, $rubricaAtiva);
         $ranksGerais = $this->atribuirRanks($ordenadas, $rubricaAtiva);
 
+        // Filtra antes de agrupar: chave de array não existe como null de
+        // verdade em PHP, groupBy(null) vira a chave string "" -- um
+        // "if ($trilhaId === null)" depois do groupBy nunca dispara, e
+        // equipe sem trilha ganhava rank_track como se pertencesse a uma.
         $ranksPorTrilha = [];
-        foreach ($ordenadas->groupBy(fn (array $linha) => $linha['submissao']->team->track_id) as $trilhaId => $grupo) {
-            if ($trilhaId === null) {
-                continue;
-            }
-
+        $comTrilha = $ordenadas->filter(fn (array $linha) => $linha['submissao']->team->track_id !== null);
+        foreach ($comTrilha->groupBy(fn (array $linha) => $linha['submissao']->team->track_id) as $grupo) {
             $ranksPorTrilha += $this->atribuirRanks($grupo->values(), $rubricaAtiva);
         }
 

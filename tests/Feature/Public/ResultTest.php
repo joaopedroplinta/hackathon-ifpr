@@ -89,6 +89,29 @@ class ResultTest extends TestCase
         );
     }
 
+    /**
+     * Achado no ensaio geral: uma linha de Result com rank_track preenchido
+     * mas equipe sem trilha (team->track nulo) derrubava a página inteira
+     * com 500 -- team->track->name em cima de null. ComputeResults não
+     * deveria mais gerar essa linha, mas a tela não pode confiar só nisso.
+     */
+    public function test_a_result_with_a_track_rank_but_no_track_never_crashes_the_page(): void
+    {
+        $event = Event::factory()->create(['results_published_at' => now()]);
+        $semTrilha = $this->submissao($event, track: null);
+
+        Result::factory()->for($event)->for($semTrilha)->create([
+            'final_score' => '9.00',
+            'rank_overall' => 1,
+            'rank_track' => 1,
+        ]);
+
+        $response = $this->get(route('resultados.show'));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page->where('podio_por_trilha', []));
+    }
+
     public function test_the_popular_award_is_hidden_while_voting_is_open(): void
     {
         $event = Event::factory()->create([

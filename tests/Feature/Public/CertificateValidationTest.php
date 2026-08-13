@@ -3,7 +3,9 @@
 namespace Tests\Feature\Public;
 
 use App\Enums\CertificateType;
+use App\Models\Attendance;
 use App\Models\Certificate;
+use App\Models\Checkpoint;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,6 +31,35 @@ class CertificateValidationTest extends TestCase
             ->where('encontrado', true)
             ->where('nome', 'Ana Souza')
             ->where('evento', '1º Hackathon IFPR')
+        );
+    }
+
+    /**
+     * Achado no ensaio geral: o formulário rápido de criar checkpoint
+     * (admin/checkin) só pede nome e tipo -- checkpoint sem starts_at/ends_at
+     * é o caso comum, não a exceção. AttendanceHours::forUser() quebrava a
+     * página inteira de validação com "Call to a member function
+     * diffInMinutes() on null" pra qualquer pessoa que tivesse feito check-in
+     * num checkpoint desses.
+     */
+    public function test_validation_never_crashes_when_the_checkpoint_has_no_time_window(): void
+    {
+        $event = Event::factory()->create();
+        $user = User::factory()->create(['name' => 'Ana Souza']);
+        $checkpoint = Checkpoint::factory()->for($event)->create(['starts_at' => null, 'ends_at' => null]);
+        Attendance::factory()->for($checkpoint)->for($user)->create();
+
+        $certificate = Certificate::factory()
+            ->for($event)
+            ->for($user)
+            ->create(['type' => CertificateType::Participacao]);
+
+        $response = $this->get(route('certificates.validate', $certificate->code));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->where('encontrado', true)
+            ->where('carga_horaria', 0)
         );
     }
 

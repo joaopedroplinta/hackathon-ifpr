@@ -57,7 +57,13 @@ class ImportSubmissionsFromCsv
             }
 
             $enviadoEmBruto = trim($linha[$indice['enviado_em']] ?? '');
-            $enviadoEm = $enviadoEmBruto !== '' ? Carbon::parse($enviadoEmBruto) : now();
+            // ->utc() explícito: Carbon::parse() com offset diferente de UTC
+            // (ex.: "-03:00" do formulário de emergência) mantém esse fuso
+            // como o "lar" do objeto -- ao gravar, o cast do Eloquent
+            // formata a hora de parede daquele fuso sem o offset junto, e o
+            // Postgres lê como se já fosse UTC. Sem isto, um horário do
+            // formulário chegava até 3h errado no banco (.claude/rules/database.md).
+            $enviadoEm = $enviadoEmBruto !== '' ? Carbon::parse($enviadoEmBruto)->utc() : now();
 
             $submission = $this->record->handle(
                 $team,
