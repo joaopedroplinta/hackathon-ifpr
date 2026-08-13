@@ -143,26 +143,30 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         'group text-accent-foreground ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
 
                                     return (
-                                    <TooltipProvider key={item.title} delayDuration={0}>
-                                        <Tooltip>
-                                            <TooltipTrigger>
-                                                {item.url.startsWith('http') ? (
-                                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className={classeIcone}>
-                                                        <span className="sr-only">{item.title}</span>
-                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
-                                                    </a>
-                                                ) : (
-                                                    <Link href={item.url} className={classeIcone}>
-                                                        <span className="sr-only">{item.title}</span>
-                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
-                                                    </Link>
-                                                )}
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p>{item.title}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
+                                        <TooltipProvider key={item.title} delayDuration={0}>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    {item.url.startsWith('http') ? (
+                                                        <a href={item.url} target="_blank" rel="noopener noreferrer" className={classeIcone}>
+                                                            <span className="sr-only">{item.title}</span>
+                                                            {item.icon && (
+                                                                <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />
+                                                            )}
+                                                        </a>
+                                                    ) : (
+                                                        <Link href={item.url} className={classeIcone}>
+                                                            <span className="sr-only">{item.title}</span>
+                                                            {item.icon && (
+                                                                <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />
+                                                            )}
+                                                        </Link>
+                                                    )}
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>{item.title}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     );
                                 })}
                             </div>

@@ -33,9 +33,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         <Download className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium">Baixar PDF do edital</p>
-                            {regulamento.atualizado_em && (
-                                <p className="text-muted-foreground text-xs">Atualizado em {regulamento.atualizado_em}</p>
-                            )}
+                            {regulamento.atualizado_em && <p className="text-muted-foreground text-xs">Atualizado em {regulamento.atualizado_em}</p>}
                         </div>
                     </a>
                 )}
@@ -52,8 +50,8 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         <li>Submissão enviada mais cedo</li>
                     </ol>
                     <p className="text-muted-foreground mt-2 text-xs">
-                        Empate que sobrevive aos três critérios é empate de verdade: a organização mostra a mesma colocação para as
-                        equipes envolvidas.
+                        Empate que sobrevive aos três critérios é empate de verdade: a organização mostra a mesma colocação para as equipes
+                        envolvidas.
                     </p>
                 </section>
 
@@ -63,8 +61,8 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         Se o sistema cair no dia
                     </h2>
                     <p className="text-muted-foreground mt-2 text-sm">
-                        Vale o horário do último commit no repositório informado pela equipe, feito até o prazo. A submissão no sistema
-                        pode ser regularizada depois pela organização.
+                        Vale o horário do último commit no repositório informado pela equipe, feito até o prazo. A submissão no sistema pode ser
+                        regularizada depois pela organização.
                     </p>
                 </section>
 

@@ -76,7 +76,11 @@ export default function PainelRegulamento({ regulamento }: Props) {
                     )}
                 </div>
                 <Button type="submit" disabled={processing || !data.regulamento} className="shrink-0">
-                    {processing ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Upload className="h-4 w-4" aria-hidden="true" />}
+                    {processing ? (
+                        <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    ) : (
+                        <Upload className="h-4 w-4" aria-hidden="true" />
+                    )}
                     {processing ? 'Enviando…' : regulamento.nome_arquivo ? 'Substituir' : 'Anexar'}
                 </Button>
             </form>
