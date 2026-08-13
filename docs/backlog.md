@@ -5,9 +5,11 @@ Derivado do Canvas de Definição do Problema
 e das decisões registradas em `PLANO.md`. Organizado por épico, na ordem em
 que foi construído (cronograma de 8 semanas).
 
-Sem quadro Kanban: o desenvolvimento já aconteceu, então este documento
+Sem quadro Kanban aqui: o desenvolvimento já aconteceu, então este documento
 registra o backlog **como executado** — cada história marcada com o status
-real, não uma previsão.
+real, não uma previsão. Cada uma virou uma issue no GitHub, fechada como
+concluída ou aberta como pendente, agrupadas no projeto:
+<https://github.com/users/joaopedroplinta/projects/9>.
 
 Legenda: ✅ Concluído · 🔜 Pendente
 
