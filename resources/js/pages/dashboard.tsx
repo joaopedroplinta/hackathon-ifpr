@@ -68,22 +68,11 @@ function CartaoInscricao() {
 }
 
 export default function Dashboard() {
-    const { flash } = usePage<SharedData>().props;
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Início" />
 
             <div className="flex flex-col gap-4 p-4">
-                {flash?.sucesso && (
-                    <div
-                        role="status"
-                        className="rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm text-green-800 dark:text-green-300"
-                    >
-                        {flash.sucesso}
-                    </div>
-                )}
-
                 <CartaoInscricao />
             </div>
         </AppLayout>

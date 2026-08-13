@@ -85,8 +85,8 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     <p className="text-muted-foreground mt-1 text-sm">Equipe {submissao.equipe.nome}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <span className={`inline-block rounded-full border px-2 py-0.5 text-xs ${corDoStatus[submissao.status]}`}>
-                            {submissao.status_label}
+                        <span className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoStatus[submissao.status]}`}>
+                            [{submissao.status_label}]
                         </span>
                         <span className="text-muted-foreground text-xs">Versão atual: {submissao.versao_atual}</span>
                         <span className="text-muted-foreground text-xs">Enviado em {formatarData(submissao.enviado_em)}</span>

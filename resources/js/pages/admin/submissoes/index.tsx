@@ -253,8 +253,10 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                                         </td>
                                         <td className="text-muted-foreground p-3">{linha.trilha?.nome ?? '—'}</td>
                                         <td className="p-3">
-                                            <span className={`inline-block rounded-full border px-2 py-0.5 text-xs ${corDoStatus[linha.status]}`}>
-                                                {linha.status_label}
+                                            <span
+                                                className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoStatus[linha.status]}`}
+                                            >
+                                                [{linha.status_label}]
                                             </span>
                                         </td>
                                         <td className="text-muted-foreground p-3 whitespace-nowrap">{formatarData(linha.enviado_em)}</td>

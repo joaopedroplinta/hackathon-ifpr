@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
+import AppToaster from './components/app-toaster';
 import { initializeTheme } from './hooks/use-appearance';
 
 declare global {
@@ -18,10 +19,16 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <>
+                <App {...props} />
+                <AppToaster />
+            </>,
+        );
     },
+    // Verde-ifpr, não o cinza padrão do starter kit -- PLANO.md §11.
     progress: {
-        color: '#4B5563',
+        color: '#357724',
     },
 });
 

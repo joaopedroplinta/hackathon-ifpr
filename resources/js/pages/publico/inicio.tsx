@@ -4,6 +4,7 @@ import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import ContadorEvento from '@/components/hackathon/contador-evento';
+import LogDeBuild from '@/components/hackathon/log-de-build';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 import { EventoPublico } from '@/types/publico';
@@ -44,10 +45,11 @@ export default function Inicio({ evento }: Props) {
                     <>
                         <section className="flex flex-col items-center gap-8 pt-8 text-center sm:pt-16">
                             <div>
-                                <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
+                                <p className="text-muted-foreground font-mono text-sm">
+                                    <span aria-hidden="true">$ </span>
                                     {evento.edicao}ª edição — {evento.situacao_label}
                                 </p>
-                                <h1 className="mt-2 text-3xl font-semibold sm:text-5xl">{evento.nome}</h1>
+                                <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">{evento.nome}</h1>
                                 {evento.descricao && <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-balance">{evento.descricao}</p>}
                             </div>
 
@@ -87,20 +89,26 @@ export default function Inicio({ evento }: Props) {
                             {!evento.inscricoes_abertas && evento.situacao === 'published' && (
                                 <p className="text-muted-foreground text-sm">As inscrições ainda não abriram ou já encerraram.</p>
                             )}
+
+                            <div className="mx-auto w-full max-w-lg">
+                                <LogDeBuild />
+                            </div>
                         </section>
 
                         <section aria-labelledby="como-participar" className="flex flex-col gap-8">
-                            <h2 id="como-participar" className="text-center text-2xl font-semibold">
-                                Como participar
+                            <h2 id="como-participar" className="font-display text-center text-2xl font-semibold tracking-tight">
+                                <span aria-hidden="true">
+                                    <span className="text-muted-foreground font-mono text-lg font-normal">$ </span>
+                                    como_participar
+                                </span>
+                                <span className="sr-only">Como participar</span>
                             </h2>
                             <div className="grid gap-6 sm:grid-cols-3">
                                 {passos.map((passo, indice) => (
                                     <div key={passo.titulo} className="bg-card flex flex-col gap-3 rounded-xl border p-5">
-                                        <div className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
-                                            <span>Passo {indice + 1}</span>
-                                        </div>
+                                        <div className="text-primary font-mono text-xs">[passo {indice + 1}]</div>
                                         <passo.icone className="h-6 w-6 shrink-0" aria-hidden="true" />
-                                        <h3 className="font-medium">{passo.titulo}</h3>
+                                        <h3 className="font-display font-medium">{passo.titulo}</h3>
                                         <p className="text-muted-foreground text-sm">{passo.texto}</p>
                                     </div>
                                 ))}
@@ -109,8 +117,10 @@ export default function Inicio({ evento }: Props) {
                     </>
                 ) : (
                     <section className="flex flex-col items-center gap-4 pt-24 text-center">
-                        <AppLogoIcon className="size-10 fill-current" />
-                        <h1 className="text-2xl font-semibold">Nenhum evento publicado no momento</h1>
+                        <span className="bg-primary text-primary-foreground flex size-14 items-center justify-center rounded-xl">
+                            <AppLogoIcon className="size-8 fill-current" />
+                        </span>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Nenhum evento publicado no momento</h1>
                         <p className="text-muted-foreground max-w-md">Assim que uma edição do hackathon for aberta, ela aparece aqui.</p>
                     </section>
                 )}

@@ -32,7 +32,7 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
 
             <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-semibold">Projetos</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Projetos</h1>
                     {evento && <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>}
                 </header>
 

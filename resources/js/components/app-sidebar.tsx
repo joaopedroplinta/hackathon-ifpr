@@ -97,7 +97,11 @@ const staffNavItems: NavItem[] = [
         icon: Trophy,
     },
     {
-        title: 'Certificados',
+        // "Certificados" sozinho colidiria com o item de mainNavItems (o
+        // participante vê os dois quando também é staff) -- NavMain usa o
+        // título como key, então precisa ser distinto de verdade, não só
+        // a URL.
+        title: 'Emitir certificados',
         url: '/admin/certificados',
         icon: Award,
     },

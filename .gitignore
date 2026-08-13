@@ -33,4 +33,5 @@ Thumbs.db
 /backups
 *.dump
 *.sql.gz
+*.tar.gz
 submissoes-*.csv

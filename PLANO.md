@@ -272,6 +272,54 @@ certificates
 PDF gerado em fila. Página pública `/validar/{code}` mostra nome, tipo, evento
 e carga horária. Carga horária vem das presenças registradas.
 
+### Regulamento
+
+**Pendente — ainda não implementado.** Hoje as regras que decidem prêmio
+existem só em prosa espalhada pelo plano: o critério de desempate (seção
+"Resultados" acima, também repetido na skill `regras-avaliacao`) e o
+Degrau 0 — "vale o horário do último commit" — no Anexo A ("Escada de
+degradação"). Nenhuma das duas tem uma página pública que a equipe possa
+ler antes de se inscrever. "Regulamento" no menu do organizador
+(`app-sidebar.tsx`, `footerNavItems`) já existe como link morto
+(`href: '#'`) esperando esta tela.
+
+**O que o regulamento formaliza** (conteúdo mínimo, texto livre por ora):
+- Critério de desempate, na ordem exata da seção "Resultados" acima
+- Regra do Degrau 0 (commit vale como horário de submissão no plano B)
+- Tamanho mín/máx de equipe, prazos — já existem em `events`, só precisam
+  aparecer em prosa e não só em contador regressivo
+- Espaço livre pro organizador colar regra específica da edição (uso de IA,
+  originalidade, o que desclassifica)
+
+**Upload de arquivo — o pedido concreto.** Além do texto acima renderizado
+na página, o organizador precisa poder anexar um PDF do regulamento oficial
+(o documento que normalmente já existe fora do sistema, em edital). Modelo
+mínimo, sem tabela nova — mais duas colunas em `events`:
+
+```
+events
+  ...
+  regulation_path             # nullable, gerado pelo Laravel no disco local
+  regulation_original_name    # nullable, só metadado — nunca usado no caminho
+  regulation_updated_at       # nullable
+```
+
+Segue a mesma regra de upload do resto do sistema
+(`.claude/rules/security.md`): allowlist de mime (`pdf`), limite de tamanho
+na Form Request, nome gerado pelo sistema, arquivo em
+`storage/app/private/` (disco `local`), nunca em `public/`. Download só por
+rota autorizada (`GET /regulamento/download`, sem `auth` — é público, mas
+passa pelo controller, nunca link direto pro disco) que dá 404 se
+`regulation_path` for nulo.
+
+**Tela nova:** `/regulamento` — pública, mostra o texto formalizado acima
+mais um botão "Baixar PDF" quando `regulation_path` existir; sem arquivo
+ainda, mostra só o texto e nenhum botão quebrado. **Tela existente que
+ganha um campo:** `/admin/evento` recebe o upload (input de arquivo +
+mostrar nome do arquivo atual e data, com opção de substituir). Sem Policy
+nova — mesma regra de "organizador edita evento" que já vale pro resto da
+tela.
+
 ---
 
 ## 5. Telas
@@ -283,6 +331,7 @@ e carga horária. Carga horária vem das presenças registradas.
 - `/projetos/{slug}` — página do projeto: descrição, repo, vídeo, equipe
 - `/resultados` — pódio geral, pódio por trilha, prêmio popular
 - `/validar/{code}` — validação de certificado
+- `/regulamento` — **pendente**, ver seção "Regulamento" logo abaixo
 
 ### Participante
 - `/dashboard` — próximo item da agenda, status da equipe, deadline, pendências
@@ -300,10 +349,9 @@ e carga horária. Carga horária vem das presenças registradas.
 - `/admin` — painel: inscritos, equipes sem submissão, jurados atrasados,
   presença do dia
 - `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
-  **Pendente**: nunca foi implementada em nenhuma sprint (semanas 0–6). Hoje
-  esses campos só existem via seed/tinker — a organização não tem como editar
-  nada disso pela interface. Tema precisa aparecer também na landing pública
-  e/ou inscrição, é o que atrai o participante.
+  Implementada na semana 8. Tema já aparece na landing pública
+  (`publico/inicio.tsx`). **Falta**: upload do regulamento (ver abaixo) —
+  quando entrar, provavelmente é um campo a mais nesta mesma tela.
 - `/admin/equipes` — listar, editar, desqualificar, forçar membro
 - `/admin/submissoes` — todas, filtro por trilha/status, download em lote
 - `/admin/rubrica` — critérios, pesos, escala
@@ -379,9 +427,39 @@ Feature só está pronta com:
 
 ## 10. Próximos passos
 
-1. Rodar o setup da semana 0
-2. Escrever as migrations do núcleo (event, team, submission)
-3. Seeder com dados realistas — trabalhar com banco vazio esconde problema
+Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
+
+1. **Decidir e configurar o deploy.** Critério novo, definido em conversa:
+   **dado tem que ficar no Brasil** (instituição federal, LGPD — Railway/Render
+   não têm região no país). Opções levantadas, nenhuma escolhida ainda:
+   - Servidor da própria IFPR/RNP, se houver acesso
+   - Vultr São Paulo (VPS, região confirmada, exige configurar
+     nginx/php-fpm/postgres/systemd na mão)
+   - AWS `sa-east-1` ou GCP `southamerica-east1` (mais robusto, mais complexo)
+
+   Sem isso decidido, `scripts/backup.sh`'s "cópia em nuvem" continua um
+   placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
+
+2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
+   plano B já existe e tem teste automatizado, mas ninguém ainda:
+   - Rodou `EnsaioSeeder` e derrubou o app com equipes "submetendo" de verdade
+     (teste de carga)
+   - Importou um CSV com 1 conflito proposital pelo `hackathon:import-submissions`
+   - Lançou uma submissão manual pela tela e conferiu a marcação no painel
+   - Leu o runbook em voz alta com a equipe de organização
+
+3. **Terminar a auditoria de acessibilidade e responsivo.** Parte já feita:
+   contraste da paleta nova corrigido (verde principal não batia AA — ver
+   §11), foco de teclado e landmarks conferidos na landing, cabeçalho mobile
+   corrigido depois de um teste real no celular ter achado que tudo
+   espremia numa linha só. Falta testar em celular de verdade (não só o
+   `resize_window` da automação, que não é confiável neste ambiente) as
+   telas mais usadas no dia: avaliação do jurado, check-in, submissão.
+
+4. **Terminar o polimento visual geral.** Toast de verdade (sonner) já
+   entrou no lugar do banner fixo. Falta: loading de botão mais suave,
+   transição entre páginas, outras microinterações — o pedido original era
+   "deixar o sistema bonito e profissional" style createui.co, mas de graça.
 
 ---
 
@@ -407,7 +485,7 @@ evento tem um símbolo próprio, só compartilhando a família de verde.
 
 | Token | Hex | Uso |
 |---|---|---|
-| `verde-ifpr` | `#3F8F2E` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA com texto branco |
+| `verde-ifpr` | `#357724` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA (4.5:1) com texto branco — `#3F8F2E` batia só 4.05:1 |
 | `verde-mata` | `#163C1B` | Fundo do painel "terminal" (hero) e base do modo escuro |
 | `verde-brilho` | `#8FD14F` | Destaque, sucesso, linha "adicionada" no terminal, gráfico |
 | `grafite` | `#1B1B1D` | Texto e superfícies escuras — troca o cinza neutro do shadcn |
@@ -455,15 +533,17 @@ não só na landing.
 prompt de terminal (`>_`) num quadrado arredondado em `verde-ifpr`. Simples o
 bastante pra continuar legível em 16px de favicon.
 
-### Onde mexe (quando for implementar)
+### Onde mexeu
 
 - `resources/css/app.css` — tokens de cor claro/escuro e import de fonte
-- `components/app-logo-icon.tsx`, `public/favicon.ico`, `public/logo.svg`
-- `components/hackathon/cabecalho-publico.tsx`, `pages/publico/*.tsx`
-- Badges de status em `components/hackathon/` (rubrica, submissão, avaliação)
+- `components/app-logo-icon.tsx` (prompt `>_`), `public/favicon.svg`
+- `components/hackathon/cabecalho-publico.tsx`, `components/hackathon/log-de-build.tsx`
+  (painel de assinatura), `pages/publico/*.tsx`
+- Badges de status em `pages/admin/{submissoes,rubrica,agenda}/*.tsx` e
+  `pages/publico/agenda.tsx` — `[enviado]` em JetBrains Mono
 
-**Pendente de implementação** — esta seção é a referência de decisão; a
-aplicação no código entra como sprint separado (ver `/sprint`).
+**Implementado.** Aplicado em todo o admin (herda os tokens globais sem
+mexer arquivo por arquivo) e nas páginas públicas listadas acima.
 
 ---
 
@@ -552,10 +632,25 @@ até ser conferida. Transparência aqui evita acusação de favorecimento depois
 
 ## A.5 Backup durante o evento
 
-- `pg_dump` a cada 15 min pra disco local + cópia em nuvem, durante todo o evento
-- Snapshot manual nomeado **imediatamente antes e depois do deadline**
-- `rsync` dos uploads junto — banco sem os arquivos não restaura nada
-- Testar a **restauração** na semana 8. Backup não testado é fé, não backup
+`scripts/backup.sh [rótulo]` e `scripts/restore.sh <pasta>` -- funcionam com
+Postgres nativo ou via `docker compose`, sem depender de qual hospedagem for
+escolhida (ainda em aberto, seção 10).
+
+- `scripts/backup.sh` a cada 15 min pra `backups/` local (cron, ver comentário
+  no topo do script) + cópia em nuvem, durante todo o evento. A cópia em nuvem
+  fica como passo manual documentado no próprio script até a hospedagem ser
+  decidida — sem provedor, não tem pra onde mandar
+- Snapshot manual nomeado **imediatamente antes e depois do deadline**:
+  `scripts/backup.sh antes-do-prazo` / `scripts/backup.sh depois-do-prazo`
+- `tar` dos uploads (`storage/app/private`) junto — banco sem os arquivos não
+  restaura nada
+- **Restauração testada** (2026-08-12): ciclo completo local — backup, equipe
+  alterada de propósito pra provar que não é no-op, restore, equipe de volta
+  ao nome original, suíte de teste inteira verde depois. Backup+restore leva
+  ~1s no dataset de ensaio (30 equipes); crescer o dataset muda a escala, mas
+  o mecanismo está testado. Falta rodar isso **na hospedagem real**, uma vez
+  que ela for decidida — ambiente local não prova tempo de restauração em
+  produção
 
 ## A.6 Jurados sem sistema
 

@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { CircleAlert, FileText, LoaderCircle, Lock, TriangleAlert } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { SharedData } from '@/types';
 import { ArquivosSubmissao, PrazoSubmissao, Submissao, SubmissaoForm, VersaoEnvio } from '@/types/submissao';
 
 interface Props {
@@ -27,8 +26,6 @@ const areaTexto =
     'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 
 export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, prazo, pode_editar, motivo_bloqueio }: Props) {
-    const { flash } = usePage<SharedData>().props;
-
     const { data, setData, post, processing, errors } = useForm<SubmissaoForm>({
         title: submissao?.title ?? '',
         summary: submissao?.summary ?? '',
@@ -66,21 +63,6 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                         <ContadorPrazo prazo={prazo} envioAindaAceito={pode_editar} />
                     </div>
                 </header>
-
-                {flash?.sucesso && (
-                    <div
-                        role="status"
-                        className="mb-4 rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm text-green-800 dark:text-green-300"
-                    >
-                        {flash.sucesso}
-                    </div>
-                )}
-
-                {flash?.erro && (
-                    <div role="alert" className="mb-4 rounded-xl border border-red-600/30 bg-red-600/10 p-4 text-sm text-red-800 dark:text-red-300">
-                        {flash.erro}
-                    </div>
-                )}
 
                 <EstadoDoEnvio submissao={submissao} />
 

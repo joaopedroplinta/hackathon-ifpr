@@ -77,13 +77,13 @@ export default function ListaRubricas({ rubricas }: Props) {
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span
-                                                className={`inline-block rounded-full border px-2 py-0.5 text-xs ${
+                                                className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${
                                                     rubrica.ativa
                                                         ? 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
                                                         : 'border-muted-foreground/30 text-muted-foreground'
                                                 }`}
                                             >
-                                                {rubrica.ativa ? 'Ativa' : 'Inativa'}
+                                                [{rubrica.ativa ? 'ativa' : 'inativa'}]
                                             </span>
                                         </div>
                                         <Link href={route('admin.rubrica.show', rubrica.id)} className="mt-1 block font-medium hover:underline">

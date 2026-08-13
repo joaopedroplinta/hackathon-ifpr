@@ -36,7 +36,7 @@ function ListaPodio({ linhas }: { linhas: LinhaPodio[] }) {
                             {linha.trilha && ` · ${linha.trilha}`}
                         </p>
                     </div>
-                    <span className="shrink-0 text-sm font-medium">{linha.nota_final.toFixed(2)}</span>
+                    <span className="shrink-0 font-mono text-sm font-medium">{linha.nota_final.toFixed(2)}</span>
                 </li>
             ))}
         </ol>
@@ -52,7 +52,7 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
             <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 pb-24 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-semibold">Resultados</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Resultados</h1>
                     {evento && <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>}
                 </header>
 

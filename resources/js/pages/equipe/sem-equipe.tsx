@@ -1,9 +1,8 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { SharedData } from '@/types';
 
 interface Props {
     pode_criar: boolean;
@@ -11,22 +10,11 @@ interface Props {
 }
 
 export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
-    const { flash } = usePage<SharedData>().props;
-
     return (
         <AppLayout breadcrumbs={[{ title: 'Equipe', href: route('teams.show') }]}>
             <Head title="Equipe" />
 
             <div className="mx-auto w-full max-w-2xl p-4">
-                {/* Cobre, entre outros casos, o convite recusado ao aceitar
-                    (expirado, já aceito, e-mail trocado) -- quem clica no
-                    link do e-mail cai aqui se ainda não tem equipe. */}
-                {flash?.erro && (
-                    <div role="alert" className="mb-4 rounded-xl border border-red-600/30 bg-red-600/10 p-4 text-sm text-red-800 dark:text-red-300">
-                        {flash.erro}
-                    </div>
-                )}
-
                 <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-8 text-center">
                     <Users className="text-muted-foreground mx-auto h-10 w-10" aria-hidden="true" />
 
