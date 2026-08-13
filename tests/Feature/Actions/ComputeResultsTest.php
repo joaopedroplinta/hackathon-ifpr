@@ -247,6 +247,28 @@ class ComputeResultsTest extends TestCase
         $this->assertSame(1, $resultTrilhaB->rank_track);
     }
 
+    /**
+     * groupBy(null) vira a chave string "" em PHP -- um "if ($id === null)"
+     * depois do groupBy nunca dispara. Sem o filtro antes de agrupar, uma
+     * equipe sem trilha ganhava rank_track como se todas as equipes sem
+     * trilha do evento fossem, juntas, "a trilha delas".
+     */
+    public function test_a_team_without_a_track_never_gets_a_track_rank(): void
+    {
+        $event = Event::factory()->create();
+        $criterios = $this->rubricaComPesos($event, [1]);
+
+        $semTrilha = $this->submissaoEnviada($event, track: null);
+        $this->avaliacaoSubmetida($event, $semTrilha, $this->jurado(), $criterios, [9]);
+
+        app(ComputeResults::class)->handle($event);
+
+        $result = Result::forEvent($event)->where('submission_id', $semTrilha->id)->firstOrFail();
+
+        $this->assertNotNull($result->rank_overall);
+        $this->assertNull($result->rank_track);
+    }
+
     public function test_a_draft_submission_is_excluded_from_the_computation(): void
     {
         $event = Event::factory()->create();

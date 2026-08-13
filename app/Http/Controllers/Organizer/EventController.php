@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Events\UploadRegulation;
 use App\Enums\EventStatus;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\UpdateEventRequest;
+use App\Http\Requests\Organizer\UploadRegulationRequest;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -40,6 +42,10 @@ class EventController extends Controller
                 fn (EventStatus $s) => ['value' => $s->value, 'label' => $s->label()],
                 EventStatus::cases(),
             ),
+            'regulamento' => [
+                'nome_arquivo' => $event->regulation_original_name,
+                'atualizado_em' => $event->regulation_updated_at?->timezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i'),
+            ],
         ]);
     }
 
@@ -52,5 +58,15 @@ class EventController extends Controller
         $event->save();
 
         return to_route('admin.evento.edit')->with('sucesso', 'Evento atualizado.');
+    }
+
+    public function uploadRegulation(UploadRegulationRequest $request, UploadRegulation $action): RedirectResponse
+    {
+        $this->authorize('update', Event::class);
+
+        $event = $this->currentEventOrFail();
+        $action->handle($event, $request->file('regulamento'));
+
+        return to_route('admin.evento.edit')->with('sucesso', 'Regulamento atualizado.');
     }
 }

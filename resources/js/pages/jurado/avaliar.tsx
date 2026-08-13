@@ -82,6 +82,12 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
     const todasPreenchidas = form.data.scores.every((s) => s.score !== null);
 
+    // O Laravel devolve erro de item de array como "scores.0.score", mas o
+    // tipo de InertiaFormProps só indexa por chave direta do form -- daí o
+    // cast. Sem isto, rejeição de nota (ex.: acima do máximo do critério)
+    // falha em silêncio: nenhuma mensagem chega ao jurado.
+    const errosPorIndice = form.errors as unknown as Record<string, string | undefined>;
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -132,8 +138,9 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                 Nenhuma rubrica ativa para este evento. Fale com o organizador antes de avaliar.
                             </div>
                         ) : (
-                            criterios.map((criterio) => {
+                            criterios.map((criterio, indice) => {
                                 const nota = form.data.scores.find((s) => s.criterion_id === criterio.id);
+                                const erroNota = errosPorIndice[`scores.${indice}.score`];
 
                                 return (
                                     <div key={criterio.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
@@ -157,8 +164,10 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                             value={nota?.score ?? ''}
                                             disabled={somenteLeitura}
                                             onChange={(e) => atualizarNota(criterio.id, e.target.value === '' ? null : Number(e.target.value))}
+                                            aria-describedby={erroNota ? `score-${criterio.id}-erro` : undefined}
                                             className="border-input bg-background focus-visible:ring-ring mt-3 h-12 w-24 rounded-md border px-3 text-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
                                         />
+                                        <InputError id={`score-${criterio.id}-erro`} message={erroNota} />
 
                                         <textarea
                                             value={nota?.comment ?? ''}

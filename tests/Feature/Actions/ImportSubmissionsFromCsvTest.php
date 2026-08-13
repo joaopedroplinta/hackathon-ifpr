@@ -82,6 +82,35 @@ class ImportSubmissionsFromCsvTest extends TestCase
         $this->assertSame('Original', $submissaoOriginal->fresh()->title);
     }
 
+    /**
+     * Achado no ensaio geral: Carbon::parse() com offset explícito diferente
+     * de UTC (ex.: "-03:00" do formulário de emergência) mantém esse fuso
+     * como o "lar" do objeto -- o cast do Eloquent grava a hora de parede
+     * sem o offset, e o Postgres lê como se já fosse UTC. Um teste que só
+     * compara prazo x envio não pega isto: se os dois lados vierem com o
+     * mesmo offset, o erro se cancela na comparação relativa. Este teste
+     * confere o valor absoluto gravado.
+     */
+    public function test_the_stored_timestamp_is_the_correct_utc_instant_not_the_local_wall_clock(): void
+    {
+        $event = Event::factory()->create();
+        $lider = User::factory()->create(['email' => 'lider@example.com']);
+        Team::factory()->for($event)->create(['leader_id' => $lider->id]);
+
+        $csv = $this->csv(
+            "email_lider,titulo,resumo,repo_url,video_url,enviado_em\n".
+            "lider@example.com,Título,Resumo,https://github.com/x/y,,2026-08-20T20:00:00-03:00\n"
+        );
+
+        app(ImportSubmissionsFromCsv::class)->handle($event, $csv, SubmissionSource::Form);
+
+        $submission = Submission::forEvent($event)->firstOrFail();
+
+        // 20:00 em -03:00 é 23:00 em UTC -- nunca "20:00 UTC" (o que
+        // aconteceria se o offset fosse descartado ao gravar).
+        $this->assertSame('2026-08-20 23:00:00', $submission->original_submitted_at->utc()->format('Y-m-d H:i:s'));
+    }
+
     public function test_marks_as_late_when_submitted_after_the_deadline(): void
     {
         $event = Event::factory()->create(['submission_deadline' => '2026-08-20T12:00:00-03:00']);

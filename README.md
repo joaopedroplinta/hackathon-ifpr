@@ -15,10 +15,13 @@ Projeto acadêmico do curso de Tecnologia em Análise e Desenvolvimento de
 Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização do
 1º Hackathon do curso.
 
-> **Status:** Semanas 0 a 6 concluídas — auth, equipes, submissões, agenda,
-> check-in, avaliação por jurados, resultados e voto popular já funcionam de
-> ponta a ponta. Faltam certificados/notificações (semana 7) e o ensaio geral
-> (semana 8). Cronograma completo em [`PLANO.md`](PLANO.md#6-cronograma--8-semanas).
+> **Status:** Semanas 0 a 8 concluídas — auth, equipes, submissões, agenda,
+> check-in, avaliação por jurados, resultados, voto popular, certificados,
+> regulamento, identidade visual e o ensaio geral (30 equipes, carga, plano B)
+> já funcionam de ponta a ponta. Falta decidir a hospedagem (dado precisa
+> ficar no Brasil, LGPD) e o polimento visual final — backlog completo em
+> [`docs/`](docs) e no
+> [GitHub Project](https://github.com/users/joaopedroplinta/projects/9).
 
 ---
 
@@ -75,6 +78,8 @@ pelo celular são o cenário normal, não a exceção — por isso existe um
 - Voto popular com uma vitrine pública de projetos
 - Check-in por QR code com fallback de busca manual
 - Certificados em PDF com página pública de validação
+- Regulamento público com critério de desempate, regra de contingência e
+  upload do edital oficial em PDF
 - Auditoria (`activity log`) de toda alteração sensível: nota, desqualificação,
   publicação de resultado
 
@@ -170,8 +175,8 @@ Filas (e-mails e PDFs) rodam fora do request:
 php artisan queue:work
 ```
 
-Login com Google é opcional em dev — ver
-[`docs/google-oauth.md`](docs/google-oauth.md) (~10 min de configuração).
+Login com Google é opcional em dev — guia de configuração (~10 min) em
+[`docs/`](docs).
 
 ### Comandos de domínio
 
@@ -235,7 +240,7 @@ tests/
 | [`PLANO.md` § Anexo A](PLANO.md#anexo-a--plano-b) | Plano B para o dia do evento |
 | [`CLAUDE.md`](CLAUDE.md) | Convenções de código e ferramentas do projeto |
 | [`.claude/rules/`](.claude/rules) | Invariantes de estrutura, banco, segurança e frontend |
-| [`docs/google-oauth.md`](docs/google-oauth.md) | Configurar o login com Google (~10 min) |
+| [`docs/`](docs) | Guias de configuração (Google OAuth), canvas de descoberta e backlog do projeto |
 
 ## Cronograma
 
@@ -251,8 +256,8 @@ Sprint de 1 semana, 8 semanas ao todo. Detalhes de cada entrega em
 | 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
 | 5 ✅ | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
 | 6 ✅ | Cálculo de resultados, publicação controlada, voto popular |
-| 7 | Certificados em PDF, notificações por e-mail em fila |
-| 8 | Ensaio geral: carga, acessibilidade, responsivo, deploy, plano B |
+| 7 ✅ | Certificados em PDF, notificações por e-mail em fila |
+| 8 ✅ | Ensaio geral: carga, acessibilidade, responsivo, plano B — deploy segue pendente (decisão de hospedagem) |
 
 ## Plano B — dia do evento
 

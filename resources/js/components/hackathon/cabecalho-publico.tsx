@@ -6,12 +6,13 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import FlashMessages from '@/components/flash-messages';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SharedData } from '@/types';
 
 const linksPublicos = [
     { href: 'agenda.index', label: 'Agenda' },
     { href: 'rubrica.show', label: 'Rubrica' },
+    { href: 'regulamento.show', label: 'Regulamento' },
     { href: 'projetos.index', label: 'Projetos' },
     { href: 'resultados.show', label: 'Resultados' },
 ];
@@ -82,6 +83,7 @@ export default function CabecalhoPublico() {
                         </SheetTrigger>
                         <SheetContent side="right" className="flex w-72 flex-col gap-6">
                             <SheetTitle className="font-display text-left">Menu</SheetTitle>
+                            <SheetDescription className="sr-only">Links de navegação do site</SheetDescription>
 
                             <nav className="flex flex-col gap-1">
                                 {linksPublicos.map((link) => (

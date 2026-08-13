@@ -274,14 +274,14 @@ e carga horária. Carga horária vem das presenças registradas.
 
 ### Regulamento
 
-**Pendente — ainda não implementado.** Hoje as regras que decidem prêmio
-existem só em prosa espalhada pelo plano: o critério de desempate (seção
-"Resultados" acima, também repetido na skill `regras-avaliacao`) e o
-Degrau 0 — "vale o horário do último commit" — no Anexo A ("Escada de
-degradação"). Nenhuma das duas tem uma página pública que a equipe possa
-ler antes de se inscrever. "Regulamento" no menu do organizador
-(`app-sidebar.tsx`, `footerNavItems`) já existe como link morto
-(`href: '#'`) esperando esta tela.
+**Implementado.** Até aqui as regras que decidem prêmio existiam só em
+prosa espalhada pelo plano: o critério de desempate (seção "Resultados"
+acima, também repetido na skill `regras-avaliacao`) e o Degrau 0 — "vale o
+horário do último commit" — no Anexo A ("Escada de degradação"). Agora as
+duas aparecem formalizadas em `/regulamento`, pública, junto com tamanho de
+equipe e prazo tirados de `events`. O link "Regulamento" no menu do
+organizador (`app-sidebar.tsx`, `app-header.tsx`) e no cabeçalho público
+(`cabecalho-publico.tsx`) aponta pra lá.
 
 **O que o regulamento formaliza** (conteúdo mínimo, texto livre por ora):
 - Critério de desempate, na ordem exata da seção "Resultados" acima
@@ -320,6 +320,12 @@ mostrar nome do arquivo atual e data, com opção de substituir). Sem Policy
 nova — mesma regra de "organizador edita evento" que já vale pro resto da
 tela.
 
+**O que não entrou:** o "espaço livre pro organizador colar regra
+específica da edição" citado acima não virou campo de texto no banco — o
+PDF já cobre esse caso, e um campo a mais sem pedido concreto seria
+escopo por antecipação. Se aparecer necessidade real de editar essa prosa
+pela tela em vez de sempre trocar o PDF, aí sim vira coluna.
+
 ---
 
 ## 5. Telas
@@ -331,7 +337,9 @@ tela.
 - `/projetos/{slug}` — página do projeto: descrição, repo, vídeo, equipe
 - `/resultados` — pódio geral, pódio por trilha, prêmio popular
 - `/validar/{code}` — validação de certificado
-- `/regulamento` — **pendente**, ver seção "Regulamento" logo abaixo
+- `/regulamento` — critério de desempate, Degrau 0, tamanho de equipe e
+  prazo em prosa, mais "Baixar PDF" quando o organizador anexou o edital.
+  Ver seção "Regulamento" acima.
 
 ### Participante
 - `/dashboard` — próximo item da agenda, status da equipe, deadline, pendências
@@ -350,8 +358,8 @@ tela.
   presença do dia
 - `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
   Implementada na semana 8. Tema já aparece na landing pública
-  (`publico/inicio.tsx`). **Falta**: upload do regulamento (ver abaixo) —
-  quando entrar, provavelmente é um campo a mais nesta mesma tela.
+  (`publico/inicio.tsx`). Também recebe o upload do PDF do regulamento
+  (ver seção "Regulamento" acima).
 - `/admin/equipes` — listar, editar, desqualificar, forçar membro
 - `/admin/submissoes` — todas, filtro por trilha/status, download em lote
 - `/admin/rubrica` — critérios, pesos, escala
@@ -452,9 +460,38 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    contraste da paleta nova corrigido (verde principal não batia AA — ver
    §11), foco de teclado e landmarks conferidos na landing, cabeçalho mobile
    corrigido depois de um teste real no celular ter achado que tudo
-   espremia numa linha só. Falta testar em celular de verdade (não só o
-   `resize_window` da automação, que não é confiável neste ambiente) as
-   telas mais usadas no dia: avaliação do jurado, check-in, submissão.
+   espremia numa linha só. Auditoria de código nas três telas mais usadas
+   no dia (avaliação do jurado, check-in, submissão) achou e corrigiu dois
+   problemas reais, não só cosméticos:
+   - `jurado/avaliar.tsx` nunca mostrava o erro de nota acima do máximo do
+     critério — o Laravel devolve em `scores.0.score`, a tela só lia
+     `errors.scores`. Jurado clicava "Enviar" e nada acontecia, sem
+     mensagem nenhuma. Corrigido, com teste (`EvaluationTest`) travando a
+     chave indexada.
+   - `admin/checkin/index.tsx`: botão "Confirmar" usava `size="sm"` (36px),
+     abaixo do alvo de toque que este mesmo documento pede nominalmente
+     para check-in. Corrigido pro tamanho padrão.
+
+   Testado depois com emulação real de Pixel 7 (não o `resize_window` da
+   automação — DevTools do próprio navegador), o que achou mais dois
+   problemas fora do escopo original das três telas:
+   - Os três menus mobile (`components/ui/sidebar.tsx`,
+     `app-header.tsx`, `cabecalho-publico.tsx`) abriam um `Sheet` do Radix
+     sem `SheetDescription` — warning de acessibilidade real no console
+     ("Missing `Description`... for `DialogContent`"), leitor de tela
+     anuncia o menu sem explicação. Corrigido nos três, e de quebra
+     trocado `aria-label`/`title`/texto `sr-only` que ainda estavam em
+     inglês ("Toggle Sidebar", "Navigation Menu") — mesmo texto
+     inglês encontrado em `dialog.tsx`/`sheet.tsx` (botão fechar "Close").
+   - `/settings/profile`, `/settings/password` e o diálogo de excluir
+     conta (`delete-user.tsx`) estavam **inteiros em inglês** — sobra do
+     starter kit nunca traduzida, ao contrário de `appearance.tsx` que já
+     estava certo. Traduzidos os três; de quebra corrigido
+     `password.tsx` que tinha `<Head title="Profile settings" />` colado
+     da tela errada.
+   Auditoria de mobile físico encerrada — as três telas prioritárias e a
+   navegação/settings em volta delas foram conferidas de verdade num
+   viewport de celular real, não só no code review.
 
 4. **Terminar o polimento visual geral.** Toast de verdade (sonner) já
    entrou no lugar do banner fixo. Falta: loading de botão mais suave,

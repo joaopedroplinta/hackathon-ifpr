@@ -64,7 +64,11 @@ class ManualSubmissionController extends Controller
             ],
             $source,
             $request->user(),
-            Carbon::parse($request->string('original_submitted_at')->value()),
+            // ->utc(): mesma cautela de ImportSubmissionsFromCsv -- Carbon
+            // com fuso diferente de UTC perde o offset ao ser gravado pelo
+            // cast do Eloquent. O front sempre manda ISO em UTC, mas não é
+            // o único chamador possível deste endpoint.
+            Carbon::parse($request->string('original_submitted_at')->value())->utc(),
         );
 
         if ($submission === null) {

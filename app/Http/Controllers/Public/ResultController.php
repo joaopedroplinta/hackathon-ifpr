@@ -39,7 +39,10 @@ class ResultController extends Controller
             ->all();
 
         $podioPorTrilha = $resultados
-            ->filter(fn (Result $r) => $r->rank_track !== null && $r->rank_track <= 3)
+            // team->track pode ser nulo mesmo com rank_track preenchido --
+            // ComputeResults já não deveria gerar isso, mas a tela não pode
+            // cair por causa de uma linha velha/inconsistente.
+            ->filter(fn (Result $r) => $r->rank_track !== null && $r->rank_track <= 3 && $r->submission->team->track !== null)
             ->sortBy('rank_track')
             ->groupBy(fn (Result $r) => $r->submission->team->track->name)
             ->map(fn ($grupo) => $grupo->map(fn (Result $r) => $this->linhaPodio($r, $r->rank_track, comTrilha: false))->values()->all())
