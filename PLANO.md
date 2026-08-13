@@ -272,6 +272,54 @@ certificates
 PDF gerado em fila. Página pública `/validar/{code}` mostra nome, tipo, evento
 e carga horária. Carga horária vem das presenças registradas.
 
+### Regulamento
+
+**Pendente — ainda não implementado.** Hoje as regras que decidem prêmio
+existem só em prosa espalhada pelo plano: o critério de desempate (seção
+"Resultados" acima, também repetido na skill `regras-avaliacao`) e o
+Degrau 0 — "vale o horário do último commit" — no Anexo A ("Escada de
+degradação"). Nenhuma das duas tem uma página pública que a equipe possa
+ler antes de se inscrever. "Regulamento" no menu do organizador
+(`app-sidebar.tsx`, `footerNavItems`) já existe como link morto
+(`href: '#'`) esperando esta tela.
+
+**O que o regulamento formaliza** (conteúdo mínimo, texto livre por ora):
+- Critério de desempate, na ordem exata da seção "Resultados" acima
+- Regra do Degrau 0 (commit vale como horário de submissão no plano B)
+- Tamanho mín/máx de equipe, prazos — já existem em `events`, só precisam
+  aparecer em prosa e não só em contador regressivo
+- Espaço livre pro organizador colar regra específica da edição (uso de IA,
+  originalidade, o que desclassifica)
+
+**Upload de arquivo — o pedido concreto.** Além do texto acima renderizado
+na página, o organizador precisa poder anexar um PDF do regulamento oficial
+(o documento que normalmente já existe fora do sistema, em edital). Modelo
+mínimo, sem tabela nova — mais duas colunas em `events`:
+
+```
+events
+  ...
+  regulation_path             # nullable, gerado pelo Laravel no disco local
+  regulation_original_name    # nullable, só metadado — nunca usado no caminho
+  regulation_updated_at       # nullable
+```
+
+Segue a mesma regra de upload do resto do sistema
+(`.claude/rules/security.md`): allowlist de mime (`pdf`), limite de tamanho
+na Form Request, nome gerado pelo sistema, arquivo em
+`storage/app/private/` (disco `local`), nunca em `public/`. Download só por
+rota autorizada (`GET /regulamento/download`, sem `auth` — é público, mas
+passa pelo controller, nunca link direto pro disco) que dá 404 se
+`regulation_path` for nulo.
+
+**Tela nova:** `/regulamento` — pública, mostra o texto formalizado acima
+mais um botão "Baixar PDF" quando `regulation_path` existir; sem arquivo
+ainda, mostra só o texto e nenhum botão quebrado. **Tela existente que
+ganha um campo:** `/admin/evento` recebe o upload (input de arquivo +
+mostrar nome do arquivo atual e data, com opção de substituir). Sem Policy
+nova — mesma regra de "organizador edita evento" que já vale pro resto da
+tela.
+
 ---
 
 ## 5. Telas
@@ -283,6 +331,7 @@ e carga horária. Carga horária vem das presenças registradas.
 - `/projetos/{slug}` — página do projeto: descrição, repo, vídeo, equipe
 - `/resultados` — pódio geral, pódio por trilha, prêmio popular
 - `/validar/{code}` — validação de certificado
+- `/regulamento` — **pendente**, ver seção "Regulamento" logo abaixo
 
 ### Participante
 - `/dashboard` — próximo item da agenda, status da equipe, deadline, pendências
@@ -300,10 +349,9 @@ e carga horária. Carga horária vem das presenças registradas.
 - `/admin` — painel: inscritos, equipes sem submissão, jurados atrasados,
   presença do dia
 - `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
-  **Pendente**: nunca foi implementada em nenhuma sprint (semanas 0–6). Hoje
-  esses campos só existem via seed/tinker — a organização não tem como editar
-  nada disso pela interface. Tema precisa aparecer também na landing pública
-  e/ou inscrição, é o que atrai o participante.
+  Implementada na semana 8. Tema já aparece na landing pública
+  (`publico/inicio.tsx`). **Falta**: upload do regulamento (ver abaixo) —
+  quando entrar, provavelmente é um campo a mais nesta mesma tela.
 - `/admin/equipes` — listar, editar, desqualificar, forçar membro
 - `/admin/submissoes` — todas, filtro por trilha/status, download em lote
 - `/admin/rubrica` — critérios, pesos, escala
