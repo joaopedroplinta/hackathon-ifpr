@@ -107,6 +107,31 @@ class EvaluationTest extends TestCase
         $this->assertSame(0, Evaluation::where('status', EvaluationStatus::Submitted)->count());
     }
 
+    /**
+     * A nota acima do máximo cai no índice do item (ex.: "scores.0.score"),
+     * não na chave "scores" -- a tela em avaliar.tsx lê exatamente essa
+     * chave indexada pra mostrar o erro embaixo do campo certo.
+     */
+    public function test_a_score_above_the_criterion_maximum_is_refused_with_an_indexed_error(): void
+    {
+        $event = Event::factory()->create();
+        [, $inovacao, $execucao] = $this->rubricaAtiva($event);
+        $jurado = $this->jurado();
+        [$submission] = $this->submissaoAtribuida($event, $jurado);
+
+        $this->actingAs($jurado)
+            ->post(route('jurado.avaliar.enviar', $submission), [
+                'scores' => [
+                    ['criterion_id' => $inovacao->id, 'score' => 20, 'comment' => null],
+                    ['criterion_id' => $execucao->id, 'score' => 8, 'comment' => null],
+                ],
+                'overall_comment' => null,
+            ])
+            ->assertSessionHasErrors('scores.0.score');
+
+        $this->assertSame(0, Evaluation::where('status', EvaluationStatus::Submitted)->count());
+    }
+
     public function test_submitting_with_every_criterion_scored_marks_the_evaluation_as_submitted(): void
     {
         $event = Event::factory()->create();

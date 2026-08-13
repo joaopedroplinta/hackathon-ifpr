@@ -140,7 +140,10 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                                         <p className="text-muted-foreground text-xs">{pessoa.email}</p>
                                                     </div>
                                                 </div>
-                                                <Button asChild size="sm">
+                                                {/* Tamanho default, não "sm": é o botão de ação do check-in, no
+                                                    celular, em pé -- alvo de toque precisa ser confortável
+                                                    (.claude/rules/frontend.md). */}
+                                                <Button asChild>
                                                     <Link href={pessoa.confirmar_href}>Confirmar</Link>
                                                 </Button>
                                             </li>

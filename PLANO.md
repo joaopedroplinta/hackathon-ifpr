@@ -460,9 +460,38 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    contraste da paleta nova corrigido (verde principal não batia AA — ver
    §11), foco de teclado e landmarks conferidos na landing, cabeçalho mobile
    corrigido depois de um teste real no celular ter achado que tudo
-   espremia numa linha só. Falta testar em celular de verdade (não só o
-   `resize_window` da automação, que não é confiável neste ambiente) as
-   telas mais usadas no dia: avaliação do jurado, check-in, submissão.
+   espremia numa linha só. Auditoria de código nas três telas mais usadas
+   no dia (avaliação do jurado, check-in, submissão) achou e corrigiu dois
+   problemas reais, não só cosméticos:
+   - `jurado/avaliar.tsx` nunca mostrava o erro de nota acima do máximo do
+     critério — o Laravel devolve em `scores.0.score`, a tela só lia
+     `errors.scores`. Jurado clicava "Enviar" e nada acontecia, sem
+     mensagem nenhuma. Corrigido, com teste (`EvaluationTest`) travando a
+     chave indexada.
+   - `admin/checkin/index.tsx`: botão "Confirmar" usava `size="sm"` (36px),
+     abaixo do alvo de toque que este mesmo documento pede nominalmente
+     para check-in. Corrigido pro tamanho padrão.
+
+   Testado depois com emulação real de Pixel 7 (não o `resize_window` da
+   automação — DevTools do próprio navegador), o que achou mais dois
+   problemas fora do escopo original das três telas:
+   - Os três menus mobile (`components/ui/sidebar.tsx`,
+     `app-header.tsx`, `cabecalho-publico.tsx`) abriam um `Sheet` do Radix
+     sem `SheetDescription` — warning de acessibilidade real no console
+     ("Missing `Description`... for `DialogContent`"), leitor de tela
+     anuncia o menu sem explicação. Corrigido nos três, e de quebra
+     trocado `aria-label`/`title`/texto `sr-only` que ainda estavam em
+     inglês ("Toggle Sidebar", "Navigation Menu") — mesmo texto
+     inglês encontrado em `dialog.tsx`/`sheet.tsx` (botão fechar "Close").
+   - `/settings/profile`, `/settings/password` e o diálogo de excluir
+     conta (`delete-user.tsx`) estavam **inteiros em inglês** — sobra do
+     starter kit nunca traduzida, ao contrário de `appearance.tsx` que já
+     estava certo. Traduzidos os três; de quebra corrigido
+     `password.tsx` que tinha `<Head title="Profile settings" />` colado
+     da tela errada.
+   Auditoria de mobile físico encerrada — as três telas prioritárias e a
+   navegação/settings em volta delas foram conferidas de verdade num
+   viewport de celular real, não só no code review.
 
 4. **Terminar o polimento visual geral.** Toast de verdade (sonner) já
    entrou no lugar do banner fixo. Falta: loading de botão mais suave,
