@@ -24,6 +24,7 @@ use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\CertificateValidationController;
+use App\Http\Controllers\Public\CookiePolicyController;
 use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\RegulationController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
@@ -49,6 +50,9 @@ Route::get('rubrica', [PublicRubricController::class, 'show'])->name('rubrica.sh
 // inscrição, não só espalhados no plano interno.
 Route::get('regulamento', [RegulationController::class, 'show'])->name('regulamento.show');
 Route::get('regulamento/download', [RegulationController::class, 'download'])->name('regulamento.download');
+
+// Destino do link "Saiba quais" do aviso de cookies (issue #73).
+Route::get('cookies', [CookiePolicyController::class, 'show'])->name('cookies.show');
 
 // Resultado público. Só mostra algo se results_published_at não for nulo
 // -- checado no servidor, ver Public\ResultController.
