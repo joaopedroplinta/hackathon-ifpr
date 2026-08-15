@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Cookie, KeyRound, ShieldCheck } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
@@ -47,6 +47,14 @@ export default function Cookies() {
                         Nenhum cookie de analytics ou de terceiro. As fontes da interface vêm da Bunny Fonts, sem rastreamento.
                     </p>
                 </section>
+
+                <p className="text-muted-foreground text-center text-xs">
+                    Veja também a{' '}
+                    <Link href={route('privacidade.show')} className="text-foreground underline underline-offset-2">
+                        política de privacidade
+                    </Link>
+                    .
+                </p>
             </main>
         </div>
     );

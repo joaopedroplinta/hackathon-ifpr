@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -15,11 +16,17 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * Verificação de e-mail é obrigatória: sem ela, qualquer endereço inventado
  * vira membro de equipe e o organizador não consegue contatar ninguém.
+ *
+ * SoftDeletes: certificados, atribuições de jurado e liderança de equipe
+ * referenciam user_id com restrictOnDelete() de propósito (registro
+ * histórico). Sem soft delete, excluir a conta de qualquer pessoa com
+ * histórico quebra com violação de foreign key -- ver
+ * App\Actions\Users\AnonymizeUser.
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     /**
      * @var list<string>

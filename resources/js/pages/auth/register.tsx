@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -124,6 +124,14 @@ export default function Register() {
                         Entrar
                     </TextLink>
                 </div>
+
+                <p className="text-muted-foreground text-center text-xs">
+                    Ao criar conta, você concorda com a{' '}
+                    <Link href={route('privacidade.show')} className="underline underline-offset-2">
+                        Política de Privacidade
+                    </Link>
+                    .
+                </p>
             </form>
         </AuthLayout>
     );
