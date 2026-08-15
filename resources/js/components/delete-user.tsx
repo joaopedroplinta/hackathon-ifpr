@@ -1,4 +1,5 @@
 import { useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 // Components...
@@ -78,7 +79,10 @@ export default function DeleteUser() {
                                 </DialogClose>
 
                                 <Button variant="destructive" disabled={processing} asChild>
-                                    <button type="submit">Excluir conta</button>
+                                    <button type="submit">
+                                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                        {processing ? 'Excluindo…' : 'Excluir conta'}
+                                    </button>
                                 </Button>
                             </DialogFooter>
                         </form>
