@@ -117,6 +117,7 @@ spatie/laravel-permission         # papéis e permissões
 barryvdh/laravel-dompdf           # certificados em PDF (PHP puro, sem Chromium)
 bacon/bacon-qr-code               # QR em SVG, sem dependência de imagick
 spatie/laravel-activitylog        # auditoria de notas e mudanças sensíveis
+resend/resend-php                 # e-mail transacional em produção
 ```
 
 Decisões de stack, modelo de dados completo e telas planejadas estão em

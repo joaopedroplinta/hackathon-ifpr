@@ -17,6 +17,7 @@
         "laravel/socialite": "^5.29",
         "laravel/tinker": "^2.10.1",
         "predis/predis": "^3.5",
+        "resend/resend-php": "^1.9",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-permission": "^8.3",
         "tightenco/ziggy": "^2.4"
