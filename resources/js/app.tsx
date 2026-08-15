@@ -5,6 +5,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
 import AppToaster from './components/app-toaster';
+import AvisoCookies from './components/hackathon/aviso-cookies';
 import { initializeTheme } from './hooks/use-appearance';
 
 declare global {
@@ -23,6 +24,7 @@ createInertiaApp({
             <>
                 <App {...props} />
                 <AppToaster />
+                <AvisoCookies />
             </>,
         );
     },
