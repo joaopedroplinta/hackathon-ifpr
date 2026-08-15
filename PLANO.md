@@ -460,7 +460,7 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
 
    Checklist completo do que falta pra produção — o que já está pronto e o
    que só se resolve depois desta decisão — no
-   [Anexo A.7](#a7-checklist-de-deploy-em-produção).
+   [Anexo A.10](#a10-checklist-de-deploy-em-produção).
 
 2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
    plano B já existe e tem teste automatizado, mas ninguém ainda:
@@ -709,7 +709,40 @@ Rubrica impressa, uma folha por projeto avaliado, com nome e assinatura do
 jurado. Digitação posterior com `source` equivalente. As folhas ficam arquivadas
 como comprovante até o fim do prazo de recurso.
 
-## A.7 Checklist de deploy em produção
+## A.7 Kit físico de contingência
+
+- Roteador 4G ou celular com hotspot configurado e testado (não descobrir a
+  senha do hotspot às 23h50)
+- Notebook do organizador com o projeto rodando local e o banco restaurado
+- Pendrive pra receber arquivo de equipe sem rede
+- Prancheta, folhas de submissão e rubricas impressas
+- Cartão A4 com o runbook, colado na mesa da organização
+
+## A.8 Runbook — uma página, impressa
+
+| Sintoma | Ação imediata | Quem |
+|---|---|---|
+| Site não abre pra ninguém | Declarar incidente → divulgar Degrau 2 → avisar no grupo/microfone | Coord. técnico |
+| Site abre, upload falha | Orientar Degrau 1 (só o link) | Monitor |
+| 1 equipe sem acesso | Pendrive ou hotspot; se falhar, Degrau 4 | Monitor |
+| Rede caiu perto do deadline | Declarar incidente **com extensão** e anunciar em voz alta | Coordenação |
+| Banco corrompido | Parar o app, restaurar último dump, reprocessar imports | Coord. técnico |
+| Jurado sem acesso | Entregar rubrica impressa | Coordenação |
+
+Regra que evita 90% do caos: **uma pessoa** declara incidente e anuncia. Se três
+pessoas dão instruções diferentes ao mesmo tempo, o problema técnico vira
+problema de confiança.
+
+## A.9 O que testar na semana 8
+
+- [ ] Derrubar o app com 5 equipes submetendo — todas caem no Degrau 2 sem ajuda
+- [ ] Importar CSV do Forms com 1 conflito proposital
+- [ ] Restaurar backup completo (banco + arquivos) do zero, cronometrado
+- [ ] Declarar incidente com extensão e conferir que valeu pra todos
+- [ ] Lançar submissão manual e confirmar a marcação no painel
+- [ ] Ler o runbook em voz alta com a equipe de organização
+
+## A.10 Checklist de deploy em produção
 
 Levantado ao revisar #71/#78. Metade destes itens só se resolve depois de
 escolher a hospedagem (seção 10) — o resto já está pronto pra usar em
@@ -754,35 +787,31 @@ qualquer host escolhido.
       no host escolhido — VPS com disco próprio é tranquilo, PaaS com
       container efêmero perde arquivo a cada deploy sem volume dedicado
 
-## A.7 Kit físico de contingência
+## A.11 LGPD — o que foi resolvido
 
-- Roteador 4G ou celular com hotspot configurado e testado (não descobrir a
-  senha do hotspot às 23h50)
-- Notebook do organizador com o projeto rodando local e o banco restaurado
-- Pendrive pra receber arquivo de equipe sem rede
-- Prancheta, folhas de submissão e rubricas impressas
-- Cartão A4 com o runbook, colado na mesa da organização
+O canvas de descoberta (Semana 2) perguntava "que dado pessoal dos
+participantes é sensível o bastante pra exigir cuidado extra de LGPD?" e
+nunca tinha sido respondido. Resolvido nesta revisão:
 
-## A.8 Runbook — uma página, impressa
+- [x] `dietary_notes` (restrição alimentar) identificado como **dado
+      sensível** (art. 5º, II — pode revelar condição de saúde/religião).
+      Já era opcional (`nullable`); documentado como tal na política de
+      privacidade e apagado quando a conta é excluída
+- [x] Página `/privacidade` — o que é coletado, por quê, com quem é
+      compartilhado, quanto tempo fica guardado, e contato do encarregado
+      (`hackathon@ifpr.edu.br`). Linkada em `/cookies` e na tela de cadastro
+- [x] Aviso de cookies com consentimento (issue #73, já fechada)
+- [x] **Bug achado e corrigido:** "Excluir conta" quebrava com violação de
+      foreign key pra qualquer jurado, líder de equipe ou dono de
+      certificado -- `certificates`/`judge_assignments`/`teams.leader_id`
+      usam `restrictOnDelete()` de propósito (registro histórico). Solução:
+      `users` ganhou soft delete e `App\Actions\Users\AnonymizeUser`
+      anonimiza nome/e-mail/foto (e telefone/curso/restrição alimentar da
+      inscrição) em vez de excluir a linha -- mantém avaliação e certificado
+      como histórico, mas sem identificar a pessoa. Direito de eliminação
+      (art. 18) agora funciona de verdade
 
-| Sintoma | Ação imediata | Quem |
-|---|---|---|
-| Site não abre pra ninguém | Declarar incidente → divulgar Degrau 2 → avisar no grupo/microfone | Coord. técnico |
-| Site abre, upload falha | Orientar Degrau 1 (só o link) | Monitor |
-| 1 equipe sem acesso | Pendrive ou hotspot; se falhar, Degrau 4 | Monitor |
-| Rede caiu perto do deadline | Declarar incidente **com extensão** e anunciar em voz alta | Coordenação |
-| Banco corrompido | Parar o app, restaurar último dump, reprocessar imports | Coord. técnico |
-| Jurado sem acesso | Entregar rubrica impressa | Coordenação |
-
-Regra que evita 90% do caos: **uma pessoa** declara incidente e anuncia. Se três
-pessoas dão instruções diferentes ao mesmo tempo, o problema técnico vira
-problema de confiança.
-
-## A.9 O que testar na semana 8
-
-- [ ] Derrubar o app com 5 equipes submetendo — todas caem no Degrau 2 sem ajuda
-- [ ] Importar CSV do Forms com 1 conflito proposital
-- [ ] Restaurar backup completo (banco + arquivos) do zero, cronometrado
-- [ ] Declarar incidente com extensão e conferir que valeu pra todos
-- [ ] Lançar submissão manual e confirmar a marcação no painel
-- [ ] Ler o runbook em voz alta com a equipe de organização
+**Ainda falta:** nomear formalmente o Encarregado/DPO num documento
+institucional (hoje só existe publicado na página `/privacidade`), e RoPA
+(mapeamento completo de tratamento de dados) como artefato de governança —
+esse segundo é mais processo organizacional do que código.

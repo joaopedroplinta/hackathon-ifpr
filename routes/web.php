@@ -26,6 +26,7 @@ use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\CertificateValidationController;
 use App\Http\Controllers\Public\CookiePolicyController;
 use App\Http\Controllers\Public\LandingController;
+use App\Http\Controllers\Public\PrivacyPolicyController;
 use App\Http\Controllers\Public\RegulationController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
@@ -53,6 +54,9 @@ Route::get('regulamento/download', [RegulationController::class, 'download'])->n
 
 // Destino do link "Saiba quais" do aviso de cookies (issue #73).
 Route::get('cookies', [CookiePolicyController::class, 'show'])->name('cookies.show');
+
+// LGPD exige acesso fácil, sem login (issue #78).
+Route::get('privacidade', [PrivacyPolicyController::class, 'show'])->name('privacidade.show');
 
 // Resultado público. Só mostra algo se results_published_at não for nulo
 // -- checado no servidor, ver Public\ResultController.
