@@ -1,0 +1,14 @@
+[Unit]
+Description=Hackathon IFPR - queue worker (e-mails, PDFs de certificado)
+After=network.target redis.service
+
+[Service]
+User=www-data
+# TODO: ajustar pro caminho real depois que a hospedagem for decidida (PLANO.md secao 10 / issue #71)
+WorkingDirectory=/var/www/hackathon-ifpr
+ExecStart=/usr/bin/php artisan queue:work --tries=3 --max-time=3600 --sleep=3
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

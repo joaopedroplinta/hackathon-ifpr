@@ -1,0 +1,16 @@
+[Unit]
+Description=Hackathon IFPR - agendador (lembrete de prazo de submissao, a cada 5 min)
+After=network.target postgresql.service
+
+[Service]
+User=www-data
+# TODO: ajustar pro caminho real depois que a hospedagem for decidida (PLANO.md secao 10 / issue #71)
+WorkingDirectory=/var/www/hackathon-ifpr
+# schedule:work roda em primeiro plano e chama schedule:run a cada minuto --
+# alternativa ao cron, mais simples de supervisionar com systemd.
+ExecStart=/usr/bin/php artisan schedule:work
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
