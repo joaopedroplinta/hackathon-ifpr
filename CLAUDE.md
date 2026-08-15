@@ -26,7 +26,7 @@ props via `Inertia::render()`.
 ## Comandos
 
 ```bash
-docker compose up -d              # Postgres + Mailpit
+docker compose up -d              # Postgres + Redis + Mailpit
 php artisan migrate               # migrations
 npm run dev                       # Vite (front)
 php artisan serve                 # app em :8000
