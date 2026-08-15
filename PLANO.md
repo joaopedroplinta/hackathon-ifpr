@@ -448,6 +448,13 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    Sem isso decidido, `scripts/backup.sh`'s "cópia em nuvem" continua um
    placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
 
+   Decisão separada, mas do mesmo pacote de "o que só existe em dev" (issue
+   #78): `.env.example` só tem SMTP local (Mailpit) configurado. Sem um
+   provedor de e-mail transacional real (Resend, Mailgun, SES, Postmark,
+   Brevo ou SMTP institucional do IFPR), verificação de conta, reset de
+   senha, convite de equipe, lembrete de prazo e resultado publicado
+   falham silenciosamente em produção.
+
 2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
    plano B já existe e tem teste automatizado, mas ninguém ainda:
    - Rodou `EnsaioSeeder` e derrubou o app com equipes "submetendo" de verdade
