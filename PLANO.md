@@ -38,6 +38,7 @@ spatie/laravel-permission         # papéis e permissões
 barryvdh/laravel-dompdf           # certificados em PDF (PHP puro, sem Chromium)
 bacon/bacon-qr-code               # QR em SVG, sem dependência de imagick
 spatie/laravel-activitylog        # auditoria de notas e mudanças sensíveis
+resend/resend-php                 # e-mail transacional em produção (issue #78)
 ```
 
 Comando de criação:
@@ -449,11 +450,13 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
 
    Decisão separada, mas do mesmo pacote de "o que só existe em dev" (issue
-   #78): `.env.example` só tem SMTP local (Mailpit) configurado. Sem um
-   provedor de e-mail transacional real (Resend, Mailgun, SES, Postmark,
-   Brevo ou SMTP institucional do IFPR), verificação de conta, reset de
-   senha, convite de equipe, lembrete de prazo e resultado publicado
-   falham silenciosamente em produção.
+   #78): provedor de e-mail transacional escolhido é o **Resend** — suporte
+   nativo no Laravel 12 (`config/mail.php`/`config/services.php` já vêm
+   prontos), só faltava o pacote `resend/resend-php` e a variável
+   `RESEND_KEY`. Falta ainda: criar a conta, gerar a chave real, configurar
+   SPF/DKIM do domínio remetente e trocar `MAIL_MAILER=resend` no ambiente
+   de produção — a chave em si não entra em código, seed ou commit
+   (`.claude/rules/security.md`).
 
 2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
    plano B já existe e tem teste automatizado, mas ninguém ainda:
