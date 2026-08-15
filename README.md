@@ -106,7 +106,7 @@ de acesso vive em **Policies** — nunca em `if` espalhado no controller. Ver
 | Frontend | React 19 + TypeScript | Tipagem nas props vindas do controller |
 | Estilo | Tailwind v4 + shadcn/ui | Starter kit oficial já entrega isso configurado |
 | Banco | PostgreSQL 17 (Docker) | Mesmo banco em dev e prod — sem surpresa de tipo no deploy |
-| Filas | Driver `database` | E-mails e PDFs fora do request |
+| Filas | Redis (predis) | E-mails e PDFs fora do request, sem competir com o Postgres no pico do evento |
 | Testes | Pest 3 | Sintaxe enxuta, feature tests cobrem o fluxo real |
 
 **Pacotes de domínio:**
@@ -157,7 +157,7 @@ Pré-requisitos: PHP 8.2+, Composer, Node 20+, Docker.
 git clone https://github.com/joaopedroplinta/hackathon-ifpr.git
 cd hackathon-ifpr
 
-docker compose up -d      # Postgres 17 + Mailpit
+docker compose up -d      # Postgres 17 + Redis + Mailpit
 composer install
 npm install
 
