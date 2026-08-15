@@ -27,7 +27,7 @@ cenário normal, não a exceção.
 | Frontend | React + TypeScript | Tipagem nas props vindas do controller |
 | Estilo | Tailwind v4 + shadcn/ui | Starter kit oficial já entrega isso configurado |
 | Banco | PostgreSQL 17 (Docker) | Mesmo banco em dev e prod — sem surpresa de tipo no deploy |
-| Filas | Driver `database` | E-mails e PDFs fora do request. Redis só se sobrar tempo |
+| Filas | Redis (predis), via Docker | E-mails e PDFs fora do request. Trocado de `database` (issue #74): mesma carga sintética de 500 jobs usa ~92% de CPU no worker com `database` contra ~13% com `redis`, e tira a fila de dentro do Postgres no pico de submissões |
 | Testes | Pest | Sintaxe enxuta, feature tests cobrem o fluxo real |
 
 ### Pacotes
