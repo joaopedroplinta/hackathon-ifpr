@@ -725,6 +725,10 @@ qualquer host escolhido.
       e reiniciarem se caírem. Ver `deploy/README.md`
 - [x] `resend/resend-php` instalado e `config/mail.php`/`config/services.php`
       já resolvem `MAIL_MAILER=resend` (issue #78)
+- [x] Conta Resend criada, chave `Hackathon IFPR` gerada com permissão
+      "Sending access" (menor privilégio — só envia, não gerencia domínio
+      nem outras chaves). Envio de teste confirmado ponta a ponta: Laravel
+      → Resend → `Delivered` na caixa real, fora do Mailpit
 
 **Só depois da hospedagem decidida (issue #71):**
 
@@ -734,9 +738,11 @@ qualquer host escolhido.
 - [ ] Cadastrar a URL real de callback (`https://…/auth/google/callback`) nas
       "Authorized redirect URIs" do Google Cloud Console — sem isso, login
       com Google quebra mesmo com `APP_URL` certo no `.env`
-- [ ] Criar a conta Resend, gerar `RESEND_KEY` real, configurar SPF/DKIM do
-      domínio remetente (issue #78) — sem isso, e-mail cai em spam ou é
-      rejeitado
+- [ ] Verificar um domínio de verdade no Resend e configurar SPF/DKIM (issue
+      #78) — hoje o remetente é `onboarding@resend.dev`, domínio de teste do
+      próprio Resend, só serve pra validar o fluxo. `ifpr.edu.br` (o domínio
+      institucional) não está verificado nesta conta e exigiria acesso ao
+      DNS que, até aqui, ninguém confirmou ter
 - [ ] Instalar as units de `deploy/` no servidor escolhido
       (`sudo systemctl enable --now hackathon-queue hackathon-schedule`)
 - [ ] Agendar `scripts/backup.sh` via cron a cada 15 min + decidir pra onde
