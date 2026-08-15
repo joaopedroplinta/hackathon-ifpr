@@ -6,6 +6,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+#app {
+    transition: opacity 150ms ease-in-out;
+}
+
 @keyframes cursor-blink {
     0%,
     49% {

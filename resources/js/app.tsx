@@ -1,6 +1,6 @@
 import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
@@ -34,3 +34,8 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// Transição suave entre páginas: o conteúdo esmaece durante a navegação
+// em vez de trocar de forma abrupta.
+router.on('start', () => document.getElementById('app')?.classList.add('opacity-60'));
+router.on('finish', () => document.getElementById('app')?.classList.remove('opacity-60'));

@@ -1,6 +1,7 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import DeleteUser from '@/components/delete-user';
@@ -98,7 +99,10 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Salvar</Button>
+                            <Button disabled={processing}>
+                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                {processing ? 'Salvando…' : 'Salvar'}
+                            </Button>
 
                             <Transition
                                 show={recentlySuccessful}
