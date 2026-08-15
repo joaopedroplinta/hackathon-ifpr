@@ -458,6 +458,10 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    de produção — a chave em si não entra em código, seed ou commit
    (`.claude/rules/security.md`).
 
+   Checklist completo do que falta pra produção — o que já está pronto e o
+   que só se resolve depois desta decisão — no
+   [Anexo A.7](#a7-checklist-de-deploy-em-produção).
+
 2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
    plano B já existe e tem teste automatizado, mas ninguém ainda:
    - Rodou `EnsaioSeeder` e derrubou o app com equipes "submetendo" de verdade
@@ -704,6 +708,45 @@ escolhida (ainda em aberto, seção 10).
 Rubrica impressa, uma folha por projeto avaliado, com nome e assinatura do
 jurado. Digitação posterior com `source` equivalente. As folhas ficam arquivadas
 como comprovante até o fim do prazo de recurso.
+
+## A.7 Checklist de deploy em produção
+
+Levantado ao revisar #71/#78. Metade destes itens só se resolve depois de
+escolher a hospedagem (seção 10) — o resto já está pronto pra usar em
+qualquer host escolhido.
+
+**Já pronto, independente da hospedagem:**
+
+- [x] Redis com persistência (`appendonly yes` + volume) — sem isso, um job
+      na fila (e-mail, PDF) enfileirado entre dois snapshots se perde se o
+      container cair
+- [x] `deploy/hackathon-queue.service` e `deploy/hackathon-schedule.service` —
+      units systemd prontas pra fila e pro lembrete de prazo rodarem sozinhos
+      e reiniciarem se caírem. Ver `deploy/README.md`
+- [x] `resend/resend-php` instalado e `config/mail.php`/`config/services.php`
+      já resolvem `MAIL_MAILER=resend` (issue #78)
+
+**Só depois da hospedagem decidida (issue #71):**
+
+- [ ] Trocar `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://…` —
+      `APP_DEBUG=true` em produção vaza stack trace com dado sensível pra
+      qualquer visitante que cause um erro
+- [ ] Cadastrar a URL real de callback (`https://…/auth/google/callback`) nas
+      "Authorized redirect URIs" do Google Cloud Console — sem isso, login
+      com Google quebra mesmo com `APP_URL` certo no `.env`
+- [ ] Criar a conta Resend, gerar `RESEND_KEY` real, configurar SPF/DKIM do
+      domínio remetente (issue #78) — sem isso, e-mail cai em spam ou é
+      rejeitado
+- [ ] Instalar as units de `deploy/` no servidor escolhido
+      (`sudo systemctl enable --now hackathon-queue hackathon-schedule`)
+- [ ] Agendar `scripts/backup.sh` via cron a cada 15 min + decidir pra onde
+      vai a cópia em nuvem (Anexo A.5 — hoje é placeholder, sem provedor
+      escolhido não tem pra onde mandar)
+- [ ] Rodar `php artisan migrate --force` no primeiro deploy — não existe
+      CD ainda, só CI de teste/lint
+- [ ] Confirmar se o disco de upload (`storage/app/private`) é persistente
+      no host escolhido — VPS com disco próprio é tranquilo, PaaS com
+      container efêmero perde arquivo a cada deploy sem volume dedicado
 
 ## A.7 Kit físico de contingência
 

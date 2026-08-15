@@ -21,8 +21,14 @@ services:
   redis:
     image: redis:7-alpine
     container_name: hackathon-redis
+    # appendonly: sem isso, um job na fila (e-mail, PDF) enfileirado entre dois
+    # snapshots do Redis se perde se o container cair -- fila é em memória por
+    # padrão, ao contrário do driver `database` que gravava direto no Postgres.
+    command: redis-server --appendonly yes
     ports:
       - '6379:6379'
+    volumes:
+      - redis-data:/data
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
@@ -40,3 +46,4 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
