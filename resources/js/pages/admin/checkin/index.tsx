@@ -2,6 +2,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { LoaderCircle, MapPin, Search, UserRound } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import LeitorQr from '@/components/hackathon/leitor-qr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +37,23 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
     const criarCheckpoint: FormEventHandler = (e) => {
         e.preventDefault();
         checkpointForm.post(route('admin.checkin.checkpoints.store'), { preserveScroll: true });
+    };
+
+    // O QR carrega a URL absoluta gerada pelo crachá (ver CheckinQrCode). Mesma
+    // origem vira navegação Inertia; qualquer outra coisa cai pro fallback de
+    // navegador puro em vez de travar numa URL que o router não reconhece.
+    const lerQrCode = (texto: string) => {
+        try {
+            const destino = new URL(texto);
+            if (destino.origin === window.location.origin) {
+                router.visit(destino.pathname + destino.search);
+                return;
+            }
+        } catch {
+            // não era uma URL válida -- cai no fallback abaixo
+        }
+
+        window.location.href = texto;
     };
 
     return (
@@ -102,6 +120,16 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 </span>
                             ))}
                         </section>
+
+                        <div className="mb-6">
+                            <LeitorQr onDecode={lerQrCode} />
+                        </div>
+
+                        <div className="text-muted-foreground mb-6 flex items-center gap-3 text-xs">
+                            <span className="bg-border h-px flex-1" />
+                            ou busque pelo nome
+                            <span className="bg-border h-px flex-1" />
+                        </div>
 
                         <form onSubmit={buscar} className="mb-6 flex gap-3">
                             <div className="flex-1">
