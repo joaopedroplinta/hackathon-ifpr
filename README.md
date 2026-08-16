@@ -254,7 +254,7 @@ Sprint de 1 semana, 8 semanas ao todo. Detalhes de cada entrega em
 | 1 ✅ | Autenticação: Google + e-mail/senha, perfil, inscrição no evento |
 | 2 ✅ | Equipes: criar, convidar, entrar, travas de tamanho e prazo |
 | 3 ✅ | Submissões: formulário, upload, versionamento, deadline no servidor |
-| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
+| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual — leitor de QR pela câmera só ficou pronto de fato no PR #89, semanas depois; até lá só a busca manual existia |
 | 5 ✅ | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
 | 6 ✅ | Cálculo de resultados, publicação controlada, voto popular |
 | 7 ✅ | Certificados em PDF, notificações por e-mail em fila |

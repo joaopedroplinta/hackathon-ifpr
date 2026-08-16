@@ -515,6 +515,15 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    era "deixar o sistema bonito e profissional" style createui.co, de graça —
    feito com o que o Inertia já expõe, sem biblioteca de animação nova.
 
+5. **Check-in por QR pela câmera — concluído de fato agora (issue #42).**
+   A issue tinha sido fechada como "Concluído" já na importação inicial do
+   backlog, mas só existiam a rota `/checkin/{token}` e a busca manual — o
+   leitor de QR nunca tinha sido implementado. Corrigido no PR #89:
+   `resources/js/components/hackathon/leitor-qr.tsx`, com fallback tratado
+   para contexto inseguro (câmera exige HTTPS ou `localhost`), permissão
+   negada e ausência de câmera no aparelho. Testado ponta a ponta com
+   câmera real.
+
 ---
 
 ## 11. Identidade visual
