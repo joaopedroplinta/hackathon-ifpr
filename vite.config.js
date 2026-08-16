@@ -18,4 +18,12 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    server: {
+        // permite abrir o dev server pelo IP da rede local (celular no
+        // mesmo wi-fi), não só localhost.
+        host: '0.0.0.0',
+        // script type="module" exige CORS mesmo em rede local -- sem isso os
+        // módulos carregam via curl (200) mas o browser bloqueia a execução
+        cors: true,
+    },
 });
