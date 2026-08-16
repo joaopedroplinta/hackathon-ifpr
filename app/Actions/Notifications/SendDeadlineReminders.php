@@ -47,10 +47,20 @@ class SendDeadlineReminders
             return false;
         }
 
+        // effectiveSubmissionDeadline(), não a coluna crua: um incidente que
+        // estende o prazo (Anexo A.3) empurra a janela do lembrete junto --
+        // senão o "falta 1h" dispara cedo demais, ou nunca mais dispara pro
+        // prazo de verdade porque a coluna de dedupe já foi marcada.
+        $prazo = $event->effectiveSubmissionDeadline();
+
+        if ($prazo === null) {
+            return false;
+        }
+
         $agora = now();
 
-        return $agora->greaterThanOrEqualTo($event->submission_deadline->clone()->subHours($horasAntes))
-            && $agora->lessThan($event->submission_deadline);
+        return $agora->greaterThanOrEqualTo($prazo->clone()->subHours($horasAntes))
+            && $agora->lessThan($prazo);
     }
 
     private function notificarEquipesPendentes(Event $event, int $horasRestantes): int
