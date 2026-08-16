@@ -743,16 +743,15 @@ populado com `EnsaioSeeder` (30 equipes, 5 jurados) e os fluxos reais
 exercitados — achou e corrigiu 3 bugs que só apareciam sob dado real
 (resultado sem trilha, fuso no import de emergência, certificado sem
 checkpoint). Cobre uma pessoa sozinha via CLI/seeder; os dois itens que
-exigem gente de verdade continuam em aberto (issue #86).
+exigem gente de verdade continuam em aberto (issue #86) — roteiro pronto
+em `docs/roteiro-ensaio-com-equipe.md`.
 
 - [ ] Derrubar o app com 5 equipes submetendo — todas caem no Degrau 2 sem
       ajuda. O que rodou até aqui foi inserção de 30 submissões via
       seeder/CLI, não uma falha real com múltiplos usuários e o Degrau 2
       efetivamente divulgado e usado — issue #86
-- [ ] Importar CSV do Forms com 1 conflito proposital. A lógica existe
-      (`ImportSubmissionsCommand`), mas nem o teste automatizado nem o
-      rehearsal exercitaram o caminho de conflito, só o caminho feliz —
-      issue #85
+- [x] Importar CSV do Forms com 1 conflito proposital — coberto em
+      `ImportSubmissionsCommandTest` (issue #85, fechada)
 - [x] Restaurar backup completo (banco + arquivos) do zero, cronometrado —
       testado localmente em 2026-08-12 (Anexo A.5), ~1s no dataset de
       ensaio. Falta só rodar de novo na hospedagem real, depois da #71
@@ -762,7 +761,8 @@ exigem gente de verdade continuam em aberto (issue #86).
 - [x] Lançar submissão manual e confirmar a marcação no painel — rodado no
       rehearsal de 2026-08-13 (commit `bce1c8b`)
 - [ ] Ler o runbook em voz alta com a equipe de organização — exercício
-      social, não dá pra fazer sozinho nem por código — issue #86
+      social, não dá pra fazer sozinho nem por código — issue #86, roteiro
+      em `docs/roteiro-ensaio-com-equipe.md`
 
 ## A.10 Checklist de deploy em produção
 
@@ -835,7 +835,7 @@ nunca tinha sido respondido. Resolvido nesta revisão:
 
 **Ainda falta:** nomear formalmente o Encarregado/DPO num documento
 institucional (hoje só existe publicado na página `/privacidade`) — issue
-#83 — e montar o RoPA (mapeamento completo de tratamento de dados) como
-artefato de governança — issue #84. O primeiro é decisão organizacional,
-não código; o segundo pode virar um doc em `docs/` consolidando o que já
-está espalhado em prosa.
+#83, minuta pronta em `docs/termo-designacao-dpo.md`, só falta o nome de
+quem assume o papel e a assinatura da autoridade competente do campus.
+RoPA (mapeamento completo de tratamento de dados) como artefato de
+governança já está feito em `docs/ropa.md` — issue #84, fechada.
