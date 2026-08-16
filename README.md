@@ -17,9 +17,10 @@ Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização d
 
 > **Status:** Semanas 0 a 8 concluídas — auth, equipes, submissões, agenda,
 > check-in, avaliação por jurados, resultados, voto popular, certificados,
-> regulamento, identidade visual e o ensaio geral (30 equipes, carga, plano B)
-> já funcionam de ponta a ponta. Falta decidir a hospedagem (dado precisa
-> ficar no Brasil, LGPD) e o polimento visual final — backlog completo em
+> regulamento, identidade visual e o ensaio geral automatizado (30 equipes,
+> carga, plano B) já funcionam de ponta a ponta. Falta decidir a hospedagem
+> (dado precisa ficar no Brasil, LGPD) e rodar o ensaio ao vivo com a equipe
+> de organização (roteiro pronto, issue #86) — backlog completo em
 > [`docs/`](docs) e no
 > [GitHub Project](https://github.com/users/joaopedroplinta/projects/9).
 
@@ -254,7 +255,7 @@ Sprint de 1 semana, 8 semanas ao todo. Detalhes de cada entrega em
 | 1 ✅ | Autenticação: Google + e-mail/senha, perfil, inscrição no evento |
 | 2 ✅ | Equipes: criar, convidar, entrar, travas de tamanho e prazo |
 | 3 ✅ | Submissões: formulário, upload, versionamento, deadline no servidor |
-| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual — leitor de QR pela câmera só ficou pronto de fato no PR #89, semanas depois; até lá só a busca manual existia |
+| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
 | 5 ✅ | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
 | 6 ✅ | Cálculo de resultados, publicação controlada, voto popular |
 | 7 ✅ | Certificados em PDF, notificações por e-mail em fila |
