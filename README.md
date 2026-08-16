@@ -17,9 +17,10 @@ Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização d
 
 > **Status:** Semanas 0 a 8 concluídas — auth, equipes, submissões, agenda,
 > check-in, avaliação por jurados, resultados, voto popular, certificados,
-> regulamento, identidade visual e o ensaio geral (30 equipes, carga, plano B)
-> já funcionam de ponta a ponta. Falta decidir a hospedagem (dado precisa
-> ficar no Brasil, LGPD) e o polimento visual final — backlog completo em
+> regulamento, identidade visual e o ensaio geral automatizado (30 equipes,
+> carga, plano B) já funcionam de ponta a ponta. Falta decidir a hospedagem
+> (dado precisa ficar no Brasil, LGPD) e rodar o ensaio ao vivo com a equipe
+> de organização (roteiro pronto, issue #86) — backlog completo em
 > [`docs/`](docs) e no
 > [GitHub Project](https://github.com/users/joaopedroplinta/projects/9).
 

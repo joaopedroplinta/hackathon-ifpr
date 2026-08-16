@@ -69,7 +69,7 @@ confirmado.
 | 4.1 | Como visitante, quero ver a agenda pública com "acontecendo agora" destacado, para não perder atividade. | ✅ |
 | 4.2 | Como visitante, quero exportar a agenda pro meu calendário (`.ics`), para ser avisado sem depender de olhar o site toda hora. | ✅ |
 | 4.3 | Como organizador, quero cadastrar e editar itens da agenda, para manter tudo atualizado sem mexer em código. | ✅ |
-| 4.4 | Como organizador, quero registrar presença escaneando o QR code do crachá, para o check-in ser rápido na entrada. | ✅ |
+| 4.4 | Como organizador, quero registrar presença escaneando o QR code do crachá, para o check-in ser rápido na entrada. | ✅ — marcada como concluída antes da hora na importação do backlog (só existiam a rota e a busca manual); leitor de QR pela câmera implementado de fato no PR #89 |
 | 4.5 | Como organizador, quero confirmar presença por busca manual de nome, para o check-in funcionar mesmo se o QR falhar, o celular descarregar ou o crachá sumir. | ✅ |
 
 **Critério de pronto do sprint:** escanear crachá registra presença —
