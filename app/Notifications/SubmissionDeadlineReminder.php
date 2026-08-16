@@ -31,7 +31,9 @@ class SubmissionDeadlineReminder extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $prazo = $this->team->event->submission_deadline->timezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i');
+        // effectiveSubmissionDeadline(): incidente com extensão (Anexo A.3)
+        // muda o prazo real -- o e-mail não pode anunciar o horário antigo.
+        $prazo = $this->team->event->effectiveSubmissionDeadline()->timezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i');
         $urgente = $this->horasRestantes <= 1;
 
         return (new MailMessage)

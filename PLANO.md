@@ -507,10 +507,13 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
    navegação/settings em volta delas foram conferidas de verdade num
    viewport de celular real, não só no code review.
 
-4. **Terminar o polimento visual geral.** Toast de verdade (sonner) já
-   entrou no lugar do banner fixo. Falta: loading de botão mais suave,
-   transição entre páginas, outras microinterações — o pedido original era
-   "deixar o sistema bonito e profissional" style createui.co, mas de graça.
+4. **Polimento visual geral — concluído (issue #72).** Toast de verdade
+   (sonner) no lugar do banner fixo, loading de botão (`LoaderCircle` +
+   `animate-spin`) em todo formulário que usa `processing` do `useForm`
+   (29 arquivos) e transição suave entre páginas (fade de opacidade em
+   `router.on('start'/'finish')`, `resources/js/app.tsx`). O pedido original
+   era "deixar o sistema bonito e profissional" style createui.co, de graça —
+   feito com o que o Inertia já expõe, sem biblioteca de animação nova.
 
 ---
 
@@ -735,12 +738,31 @@ problema de confiança.
 
 ## A.9 O que testar na semana 8
 
-- [ ] Derrubar o app com 5 equipes submetendo — todas caem no Degrau 2 sem ajuda
-- [ ] Importar CSV do Forms com 1 conflito proposital
-- [ ] Restaurar backup completo (banco + arquivos) do zero, cronometrado
-- [ ] Declarar incidente com extensão e conferir que valeu pra todos
-- [ ] Lançar submissão manual e confirmar a marcação no painel
-- [ ] Ler o runbook em voz alta com a equipe de organização
+Rehearsal técnico rodado em 2026-08-13 (issue #70, commit `bce1c8b`): banco
+populado com `EnsaioSeeder` (30 equipes, 5 jurados) e os fluxos reais
+exercitados — achou e corrigiu 3 bugs que só apareciam sob dado real
+(resultado sem trilha, fuso no import de emergência, certificado sem
+checkpoint). Cobre uma pessoa sozinha via CLI/seeder; os dois itens que
+exigem gente de verdade continuam em aberto (issue #86).
+
+- [ ] Derrubar o app com 5 equipes submetendo — todas caem no Degrau 2 sem
+      ajuda. O que rodou até aqui foi inserção de 30 submissões via
+      seeder/CLI, não uma falha real com múltiplos usuários e o Degrau 2
+      efetivamente divulgado e usado — issue #86
+- [ ] Importar CSV do Forms com 1 conflito proposital. A lógica existe
+      (`ImportSubmissionsCommand`), mas nem o teste automatizado nem o
+      rehearsal exercitaram o caminho de conflito, só o caminho feliz —
+      issue #85
+- [x] Restaurar backup completo (banco + arquivos) do zero, cronometrado —
+      testado localmente em 2026-08-12 (Anexo A.5), ~1s no dataset de
+      ensaio. Falta só rodar de novo na hospedagem real, depois da #71
+- [x] Declarar incidente com extensão e conferir que valeu pra todos —
+      rodado no rehearsal de 2026-08-13 e coberto por teste automatizado
+      (`IncidentTest::test_extension_applies_to_every_team_not_just_one`)
+- [x] Lançar submissão manual e confirmar a marcação no painel — rodado no
+      rehearsal de 2026-08-13 (commit `bce1c8b`)
+- [ ] Ler o runbook em voz alta com a equipe de organização — exercício
+      social, não dá pra fazer sozinho nem por código — issue #86
 
 ## A.10 Checklist de deploy em produção
 
@@ -812,6 +834,8 @@ nunca tinha sido respondido. Resolvido nesta revisão:
       (art. 18) agora funciona de verdade
 
 **Ainda falta:** nomear formalmente o Encarregado/DPO num documento
-institucional (hoje só existe publicado na página `/privacidade`), e RoPA
-(mapeamento completo de tratamento de dados) como artefato de governança —
-esse segundo é mais processo organizacional do que código.
+institucional (hoje só existe publicado na página `/privacidade`) — issue
+#83 — e montar o RoPA (mapeamento completo de tratamento de dados) como
+artefato de governança — issue #84. O primeiro é decisão organizacional,
+não código; o segundo pode virar um doc em `docs/` consolidando o que já
+está espalhado em prosa.

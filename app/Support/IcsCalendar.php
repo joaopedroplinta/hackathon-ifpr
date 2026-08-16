@@ -81,6 +81,12 @@ class IcsCalendar
      * começa com espaço. Sem isto, alguns validadores rejeitam a descrição
      * mais longa.
      *
+     * Corte em 75 é em octeto, não caractere -- e título/descrição em
+     * português tem acento, que ocupa mais de 1 byte em UTF-8. Cortar no
+     * offset exato pode partir um caractere ao meio e corromper a
+     * codificação (ex.: "não" virando bytes inválidos), o que faz alguns
+     * clientes de calendário rejeitar o arquivo inteiro.
+     *
      * @return array<int, string>
      */
     private function dobrar(string $linha): array
@@ -93,8 +99,17 @@ class IcsCalendar
         $restante = $linha;
 
         while (strlen($restante) > 75) {
-            $partes[] = substr($restante, 0, 75);
-            $restante = ' '.substr($restante, 75);
+            $corte = 75;
+
+            // Byte de continuação UTF-8 tem os bits mais altos "10" --
+            // recuar até cair no início de um caractere (ASCII ou byte
+            // líder de sequência multibyte) evita partir um caractere.
+            while ($corte > 0 && (ord($restante[$corte]) & 0xC0) === 0x80) {
+                $corte--;
+            }
+
+            $partes[] = substr($restante, 0, $corte);
+            $restante = ' '.substr($restante, $corte);
         }
 
         $partes[] = $restante;
