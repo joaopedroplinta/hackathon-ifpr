@@ -446,6 +446,14 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
      nginx/php-fpm/postgres/systemd na mão)
    - AWS `sa-east-1` ou GCP `southamerica-east1` (mais robusto, mais complexo)
 
+   **Demo temporária (2026-08-17):** pra mostrar o sistema rodando fora do
+   localhost pra professora, subiu uma instância em Render + Supabase
+   (`render.yaml`, `Dockerfile`, roteiro em `deploy/render-supabase.md`) —
+   Supabase criado em `sa-east-1`, mas a Render não tem região no Brasil.
+   **Isso não é a decisão de hospedagem acima, nem serve pra ela**: só dado
+   de ensaio (`EnsaioSeeder`) roda ali, nenhuma inscrição real. A escolha
+   entre IFPR/RNP, Vultr ou AWS/GCP continua em aberto pro evento de verdade.
+
    Sem isso decidido, `scripts/backup.sh`'s "cópia em nuvem" continua um
    placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
 
