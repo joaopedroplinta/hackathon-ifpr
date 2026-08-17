@@ -82,8 +82,8 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /up
-    envVarGroups:
-      - hackathon-demo-env
+    envVars:
+      - fromGroup: hackathon-demo-env
 
   - type: worker
     name: hackathon-demo-queue
@@ -91,8 +91,8 @@ services:
     dockerfilePath: ./Dockerfile
     dockerCommand: php artisan queue:work --tries=3 --max-time=3300
     plan: free
-    envVarGroups:
-      - hackathon-demo-env
+    envVars:
+      - fromGroup: hackathon-demo-env
 
   - type: cron
     name: hackathon-demo-schedule
@@ -101,8 +101,8 @@ services:
     dockerCommand: php artisan schedule:run
     schedule: "* * * * *"
     plan: free
-    envVarGroups:
-      - hackathon-demo-env
+    envVars:
+      - fromGroup: hackathon-demo-env
 
   - type: keyvalue
     name: hackathon-demo-redis
