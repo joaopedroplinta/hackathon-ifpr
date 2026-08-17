@@ -121,7 +121,7 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, app_version } = usePage<SharedData>().props;
     const navItems = [...mainNavItems, ...(auth?.is_judge ? judgeNavItems : []), ...(auth?.is_staff ? staffNavItems : [])];
 
     return (
@@ -145,6 +145,7 @@ export function AppSidebar() {
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
+                <span className="px-2 pb-1 text-xs text-neutral-400 group-data-[collapsible=icon]:hidden dark:text-neutral-600">{app_version}</span>
             </SidebarFooter>
         </Sidebar>
     );
