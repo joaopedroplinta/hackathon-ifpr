@@ -48,9 +48,7 @@ envVarGroups:
       - key: CACHE_STORE
         value: database
       - key: QUEUE_CONNECTION
-        value: redis
-      - key: REDIS_CLIENT
-        value: predis
+        value: sync
       - key: MAIL_MAILER
         value: resend
       - key: MAIL_FROM_ADDRESS
@@ -79,27 +77,3 @@ services:
     healthCheckPath: /up
     envVars:
       - fromGroup: hackathon-demo-env
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: hackathon-demo-redis
-          property: connectionString
-
-  - type: worker
-    name: hackathon-demo-queue
-    runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerCommand: php artisan queue:work --tries=3 --max-time=3300
-    plan: free
-    envVars:
-      - fromGroup: hackathon-demo-env
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: hackathon-demo-redis
-          property: connectionString
-
-  - type: keyvalue
-    name: hackathon-demo-redis
-    plan: free
-    ipAllowList: []
