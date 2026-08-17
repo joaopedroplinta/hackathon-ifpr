@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { Award, CircleAlert, ShieldCheck } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { ValidacaoCertificado } from '@/types/validacao-certificado';
 
 export default function ValidarCertificado(props: ValidacaoCertificado) {
@@ -58,6 +59,8 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                     </div>
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

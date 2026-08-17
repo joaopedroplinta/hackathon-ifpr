@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { Medal, Trophy, Users } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { LinhaPodio, PremioPopular } from '@/types/resultado-publico';
 
 interface Props {
@@ -105,6 +106,8 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                     </>
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

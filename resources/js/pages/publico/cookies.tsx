@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Cookie, KeyRound, ShieldCheck } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 
 export default function Cookies() {
     return (
@@ -56,6 +57,8 @@ export default function Cookies() {
                     .
                 </p>
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { CalendarClock, CalendarX2, Download, MapPin, Mic } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Button } from '@/components/ui/button';
 import { EventoPublico, ItemAgenda, TipoItemAgenda } from '@/types/publico';
 
@@ -150,6 +151,8 @@ export default function Agenda({ evento, itens }: Props) {
                     ))
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

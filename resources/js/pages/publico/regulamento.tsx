@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { Download, GitCommitVertical, ScrollText, Trophy, Users } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { ArquivoRegulamento, EventoRegulamento } from '@/types/regulamento';
 
 interface Props {
@@ -94,6 +95,8 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     </p>
                 </section>
             </main>
+
+            <RodapePublico />
         </div>
     );
 }
