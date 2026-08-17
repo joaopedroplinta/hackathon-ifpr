@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { ClipboardList, Scale } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Criterio } from '@/types/rubrica';
 
 interface Props {
@@ -56,6 +57,8 @@ export default function Rubrica({ evento, criterios }: Props) {
                     </>
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

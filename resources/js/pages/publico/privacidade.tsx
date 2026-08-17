@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { AlertTriangle, Clock, Database, Mail, Share2, ShieldCheck } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 
 export default function Privacidade() {
     return (
@@ -113,6 +114,8 @@ export default function Privacidade() {
                     .
                 </p>
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

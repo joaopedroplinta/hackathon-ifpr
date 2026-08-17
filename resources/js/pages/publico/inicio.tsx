@@ -5,6 +5,7 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import ContadorEvento from '@/components/hackathon/contador-evento';
 import LogDeBuild from '@/components/hackathon/log-de-build';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 import { EventoPublico } from '@/types/publico';
@@ -125,6 +126,8 @@ export default function Inicio({ evento }: Props) {
                     </section>
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }

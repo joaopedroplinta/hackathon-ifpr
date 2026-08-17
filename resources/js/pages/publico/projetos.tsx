@@ -3,6 +3,7 @@ import { CheckCircle2, LoaderCircle, Rocket, Vote } from 'lucide-react';
 import { useState } from 'react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
+import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 import { SubmissaoVitrine } from '@/types/projeto';
@@ -98,6 +99,8 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
                     </ul>
                 )}
             </main>
+
+            <RodapePublico />
         </div>
     );
 }
