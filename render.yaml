@@ -1,0 +1,110 @@
+# Blueprint de demo para a Render — ver deploy/render-supabase.md antes de
+# usar. Não é a hospedagem final do evento (PLANO.md §10 exige dado no
+# Brasil; Render não tem região no país). Serve só pra mostrar o sistema
+# rodando de verdade, fora do localhost, com dado de ensaio.
+#
+# Postgres é externo (Supabase, projeto "hackathon-ifpr-demo", sa-east-1) --
+# a Render não tem banco gerenciado na região, então o Postgres pelo menos
+# fica no Brasil mesmo a Render não ficando.
+
+envVarGroups:
+  - name: hackathon-demo-env
+    envVars:
+      - key: APP_NAME
+        value: "Hackathon IFPR"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_TIMEZONE
+        value: UTC
+      - key: APP_LOCALE
+        value: pt_BR
+      - key: APP_FALLBACK_LOCALE
+        value: en
+      # Gerado com `php artisan key:generate --show` e colado à mão no
+      # dashboard -- nunca commitado (.claude/rules/security.md).
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false # preenchido depois que a Render gera a URL do serviço web
+      - key: DB_CONNECTION
+        value: pgsql
+      # Host, porta, usuário e senha do connection string do Supabase
+      # (Project Settings → Database → Connection string, modo "Session
+      # pooler" -- IPv4, recomendado pra serviço de longa duração como este).
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: redis
+      - key: REDIS_CLIENT
+        value: predis
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hackathon-demo-redis
+          property: connectionString
+      - key: MAIL_MAILER
+        value: resend
+      - key: MAIL_FROM_ADDRESS
+        value: "hackathon@ifpr.edu.br"
+      - key: MAIL_FROM_NAME
+        value: "${APP_NAME}"
+      - key: RESEND_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false # https://<serviço>.onrender.com/auth/google/callback
+      - key: GOOGLE_ALLOWED_DOMAIN
+        value: ""
+      - key: FILESYSTEM_DISK
+        value: local
+
+services:
+  - type: web
+    name: hackathon-demo-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /up
+    envVarGroups:
+      - hackathon-demo-env
+
+  - type: worker
+    name: hackathon-demo-queue
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: php artisan queue:work --tries=3 --max-time=3300
+    plan: free
+    envVarGroups:
+      - hackathon-demo-env
+
+  - type: cron
+    name: hackathon-demo-schedule
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: php artisan schedule:run
+    schedule: "* * * * *"
+    plan: free
+    envVarGroups:
+      - hackathon-demo-env
+
+  - type: keyvalue
+    name: hackathon-demo-redis
+    plan: free
+    ipAllowList: []
