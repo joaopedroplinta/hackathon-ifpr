@@ -30,10 +30,15 @@ Repositório já tem `render.yaml` + `Dockerfile` na raiz.
 
 1. **New → Blueprint**, conectar o repositório GitHub
    `joaopedroplinta/hackathon-ifpr`, branch `main`.
-2. A Render lê `render.yaml` e propõe 4 serviços: `hackathon-demo-web`
-   (site), `hackathon-demo-queue` (worker da fila), `hackathon-demo-schedule`
-   (cron do lembrete de prazo) e `hackathon-demo-redis` (fila/cache). Aceitar
-   a criação dos 4.
+2. A Render lê `render.yaml` e propõe 3 serviços, todos no free tier:
+   `hackathon-demo-web` (site), `hackathon-demo-queue` (worker da fila) e
+   `hackathon-demo-redis` (fila/cache). Aceitar a criação dos 3.
+   - **Sem cron nessa demo.** `hackathon-demo-schedule` (`php artisan
+     schedule:run`, o lembrete de prazo) não entrou no blueprint porque cron
+     job não tem free tier na Render (mínimo $1/mês, cobrado por segundo
+     rodando) — decisão de não gastar nisso numa demo temporária. Se algum
+     dia precisar do agendador aqui, criar o serviço à mão com `plan:
+     starter`.
 3. Preencher no grupo de variáveis `hackathon-demo-env` (as marcadas
    `sync: false` no `render.yaml`, pedidas na criação do blueprint):
    - `APP_KEY` — gerar local com `php artisan key:generate --show` e colar

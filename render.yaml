@@ -51,11 +51,6 @@ envVarGroups:
         value: redis
       - key: REDIS_CLIENT
         value: predis
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: hackathon-demo-redis
-          property: connectionString
       - key: MAIL_MAILER
         value: resend
       - key: MAIL_FROM_ADDRESS
@@ -84,6 +79,11 @@ services:
     healthCheckPath: /up
     envVars:
       - fromGroup: hackathon-demo-env
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hackathon-demo-redis
+          property: connectionString
 
   - type: worker
     name: hackathon-demo-queue
@@ -93,16 +93,11 @@ services:
     plan: free
     envVars:
       - fromGroup: hackathon-demo-env
-
-  - type: cron
-    name: hackathon-demo-schedule
-    runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerCommand: php artisan schedule:run
-    schedule: "* * * * *"
-    plan: free
-    envVars:
-      - fromGroup: hackathon-demo-env
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hackathon-demo-redis
+          property: connectionString
 
   - type: keyvalue
     name: hackathon-demo-redis
