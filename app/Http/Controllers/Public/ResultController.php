@@ -15,14 +15,19 @@ use Inertia\Response;
  */
 class ResultController extends Controller
 {
-    public function show(): Response
+    /**
+     * Sem `$event` (rota `resultados`), mostra a edição atual. Com slug
+     * (rota `resultados/{event:slug}`), mostra aquela edição especificamente
+     * -- mesma checagem de publicação nos dois casos.
+     */
+    public function show(?Event $event = null): Response
     {
-        $event = Event::current();
+        $event ??= Event::current();
 
         if (! $event || ! $event->resultsArePublished()) {
             return Inertia::render('publico/resultados', [
                 'publicado' => false,
-                'evento' => $event ? ['nome' => $event->name] : null,
+                'evento' => $event ? ['nome' => $event->name, 'edicao' => $event->edition] : null,
                 'podio_geral' => [],
                 'podio_por_trilha' => [],
                 'premio_popular' => null,
@@ -68,7 +73,7 @@ class ResultController extends Controller
 
         return Inertia::render('publico/resultados', [
             'publicado' => true,
-            'evento' => ['nome' => $event->name],
+            'evento' => ['nome' => $event->name, 'edicao' => $event->edition],
             'podio_geral' => $podioGeral,
             'podio_por_trilha' => $podioPorTrilha,
             'premio_popular' => $premioPopular,

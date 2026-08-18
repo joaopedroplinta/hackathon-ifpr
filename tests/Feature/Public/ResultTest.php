@@ -144,4 +144,41 @@ class ResultTest extends TestCase
             ->where('premio_popular.votos', 10)
         );
     }
+
+    public function test_a_specific_past_edition_shows_its_own_results_not_the_current_ones(): void
+    {
+        $atual = Event::factory()->create(['edition' => 2, 'results_published_at' => null]);
+        $passada = Event::factory()->create(['edition' => 1, 'results_published_at' => now()]);
+        $submissaoPassada = $this->submissao($passada);
+        Result::factory()->for($passada)->for($submissaoPassada)->create([
+            'final_score' => '9.20',
+            'rank_overall' => 1,
+        ]);
+
+        $response = $this->get(route('resultados.show.edicao', $passada));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->where('publicado', true)
+            ->where('evento.nome', $passada->name)
+            ->where('podio_geral.0.titulo', $submissaoPassada->title)
+        );
+
+        // A rota sem slug continua mostrando a atual, não a passada.
+        $this->get(route('resultados.show'))
+            ->assertInertia(fn ($page) => $page->where('evento.nome', $atual->name));
+    }
+
+    public function test_a_draft_edition_via_slug_shows_the_not_published_state(): void
+    {
+        $rascunho = Event::factory()->draft()->create(['results_published_at' => null]);
+
+        $response = $this->get(route('resultados.show.edicao', $rascunho));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->where('publicado', false)
+            ->where('podio_geral', [])
+        );
+    }
 }
