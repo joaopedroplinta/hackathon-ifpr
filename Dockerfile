@@ -45,10 +45,13 @@ COPY --from=assets /app/public/build ./public/build
 
 RUN composer dump-autoload --optimize --no-dev
 
-# storage:link roda no start, não no build -- nesse ponto o container ainda
-# não tem as env vars de runtime (APP_KEY, DB_*) que o Render só injeta ao
-# subir o serviço, e bootar o framework sem elas pode falhar.
+# storage:link e migrate rodam no start, não no build -- nesse ponto o
+# container ainda não tem as env vars de runtime (APP_KEY, DB_*) que o Render
+# só injeta ao subir o serviço, e bootar o framework sem elas pode falhar.
+# migrate --force roda em todo boot: é idempotente (só aplica o que falta) e
+# essa demo não tem Shell nem One-Off Jobs disponível no free tier pra rodar
+# à mão -- ver deploy/render-supabase.md.
 RUN chmod -R a+w storage bootstrap/cache
 
 EXPOSE 8080
-CMD ["sh", "-c", "php artisan storage:link --force; php artisan serve --host 0.0.0.0 --port ${PORT:-8080}"]
+CMD ["sh", "-c", "php artisan storage:link --force; php artisan migrate --force; php artisan serve --host 0.0.0.0 --port ${PORT:-8080}"]

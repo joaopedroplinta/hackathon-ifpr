@@ -65,18 +65,19 @@ Repositório já tem `render.yaml` + `Dockerfile` na raiz.
 
 ## 3. Primeiro boot do banco
 
-Não existe CD além do CI de teste/lint (mesma lacuna do Anexo A.10) — migrar
-e semear é manual, pelo **Shell** do serviço `hackathon-demo-web` no painel
-da Render:
+**Migration roda sozinha.** O `Dockerfile` executa `php artisan migrate
+--force` em todo boot do container (é idempotente, só aplica o que falta) —
+decisão tomada porque o free tier da Render não dá Shell nem One-Off Jobs
+pra rodar comando à mão.
 
-```bash
-php artisan migrate --force
-php artisan db:seed --class=EnsaioSeeder --force
-```
-
-`EnsaioSeeder` gera as 30 equipes e 5 jurados fictícios do ensaio geral —
-dado suficiente pra mostrar todo o fluxo sem depender de ninguém se
-cadastrar de verdade.
+**Seed continua manual.** `EnsaioSeeder` gera as 30 equipes e 5 jurados
+fictícios do ensaio geral — dado suficiente pra mostrar todo o fluxo sem
+depender de ninguém se cadastrar de verdade. Sem Shell disponível no free
+tier, rodar via **Manual Deploy → Deploy commit específico** não serve (isso
+reconstrói a imagem, não abre um shell); a alternativa é fazer upgrade
+temporário pro plano pago só pra essa tarefa, ou rodar contra o Supabase
+direto de fora (com um cliente Postgres qualquer, usando a mesma connection
+string do passo 1) rodando os seeders localmente com `DB_*` apontando pra lá.
 
 ## Limitações conhecidas dessa demo (aceitas de propósito)
 
