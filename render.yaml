@@ -16,6 +16,10 @@ envVarGroups:
         value: production
       - key: APP_DEBUG
         value: "false"
+      # sem isso o Laravel loga em storage/logs/laravel.log, um arquivo
+      # dentro do container efêmero que a Render nunca vê no painel de logs.
+      - key: LOG_CHANNEL
+        value: stderr
       - key: APP_TIMEZONE
         value: UTC
       - key: APP_LOCALE
