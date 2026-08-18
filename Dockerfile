@@ -10,6 +10,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+# Sem .env neste estágio (.dockerignore exclui .env* de propósito), então o
+# Vite não acha VITE_APP_NAME e o título da aba cai no fallback "Laravel" --
+# passar direto como build arg evita depender de um .env que nunca deveria
+# estar na imagem.
+ARG VITE_APP_NAME="Hackathon IFPR"
+ENV VITE_APP_NAME=$VITE_APP_NAME
 RUN npm run build
 
 FROM php:8.5-cli-alpine AS app
