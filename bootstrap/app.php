@@ -20,6 +20,14 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+
+        // A Render (e qualquer PaaS atrás de proxy reverso) termina o HTTPS na
+        // borda e encaminha HTTP puro pro container com X-Forwarded-Proto.
+        // Sem confiar nesse header, o Laravel gera link de asset e URL
+        // absoluta em http://, causando mixed content no navegador. O
+        // container só é alcançável através do proxy da plataforma, então
+        // confiar em qualquer IP aqui é seguro.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Sem isto o participante que erra a URL cai na página padrão do
