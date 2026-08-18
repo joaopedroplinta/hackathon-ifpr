@@ -70,14 +70,29 @@ Repositório já tem `render.yaml` + `Dockerfile` na raiz.
 decisão tomada porque o free tier da Render não dá Shell nem One-Off Jobs
 pra rodar comando à mão.
 
-**Seed continua manual.** `EnsaioSeeder` gera as 30 equipes e 5 jurados
-fictícios do ensaio geral — dado suficiente pra mostrar todo o fluxo sem
-depender de ninguém se cadastrar de verdade. Sem Shell disponível no free
+**Seed continua manual.** `DemoSeeder` cria um evento passado (encerrado,
+resultado publicado, 15 equipes) e o evento atual (inscrições abertas, 8
+equipes já formadas) — dado suficiente pra mostrar as duas fases do sistema
+sem depender de ninguém se cadastrar de verdade. Sem Shell disponível no free
 tier, rodar via **Manual Deploy → Deploy commit específico** não serve (isso
-reconstrói a imagem, não abre um shell); a alternativa é fazer upgrade
-temporário pro plano pago só pra essa tarefa, ou rodar contra o Supabase
-direto de fora (com um cliente Postgres qualquer, usando a mesma connection
-string do passo 1) rodando os seeders localmente com `DB_*` apontando pra lá.
+reconstrói a imagem, não abre um shell); a alternativa é rodar contra o
+Supabase direto de fora (com um cliente Postgres qualquer, usando a mesma
+connection string do passo 1), passando `DB_*` na linha de comando:
+
+```bash
+DB_CONNECTION=pgsql DB_HOST=aws-0-sa-east-1.pooler.supabase.com DB_PORT=5432 \
+DB_DATABASE=postgres DB_USERNAME=postgres.rnbsokakhrhuawophyhq \
+DB_PASSWORD='<senha do passo 1>' \
+php artisan db:seed --class=DemoSeeder --force
+```
+
+## 4. CD
+
+Auto-Deploy do `hackathon-demo-web` está em **"After CI Checks Pass"** (Settings
+→ Deploy), não no padrão "On Commit" — a Render só builda depois que o
+workflow `ci.yml` (Pint, ESLint, Prettier, tsc, Pest) reportar sucesso pro
+commit no GitHub. Um push que quebra o CI nunca chega a virar deploy quebrado
+na demo.
 
 ## Limitações conhecidas dessa demo (aceitas de propósito)
 
