@@ -16,6 +16,9 @@ export default function RodapePublico() {
                 <Link href={route('regulamento.show')} className="text-muted-foreground hover:text-foreground">
                     Regulamento
                 </Link>
+                <Link href={route('edicoes.index')} className="text-muted-foreground hover:text-foreground">
+                    Edições anteriores
+                </Link>
                 <a
                     href="https://github.com/joaopedroplinta/hackathon-ifpr"
                     target="_blank"

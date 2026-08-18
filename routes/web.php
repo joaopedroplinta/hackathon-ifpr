@@ -25,6 +25,7 @@ use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\CertificateValidationController;
 use App\Http\Controllers\Public\CookiePolicyController;
+use App\Http\Controllers\Public\EditionController;
 use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\PrivacyPolicyController;
 use App\Http\Controllers\Public\RegulationController;
@@ -59,8 +60,13 @@ Route::get('cookies', [CookiePolicyController::class, 'show'])->name('cookies.sh
 Route::get('privacidade', [PrivacyPolicyController::class, 'show'])->name('privacidade.show');
 
 // Resultado público. Só mostra algo se results_published_at não for nulo
-// -- checado no servidor, ver Public\ResultController.
+// -- checado no servidor, ver Public\ResultController. Sem slug: edição
+// atual. Com slug: uma edição específica (issue #97).
 Route::get('resultados', [PublicResultController::class, 'show'])->name('resultados.show');
+Route::get('resultados/{event:slug}', [PublicResultController::class, 'show'])->name('resultados.show.edicao');
+
+// Lista as edições encerradas com resultado publicado (issue #97).
+Route::get('edicoes', [EditionController::class, 'index'])->name('edicoes.index');
 
 // Vitrine dos projetos enviados. É daqui que o voto popular acontece --
 // quem pode votar é decidido no servidor (PopularVotePolicy), não aqui.
