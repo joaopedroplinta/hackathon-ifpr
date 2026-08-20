@@ -32,6 +32,11 @@ bump manual a cada tag.
 - Documentação técnica: diagrama de entidade-relacionamento, diagrama de
   classes, diagrama de casos de uso e diagramas de sequência dos 5 fluxos
   principais (`docs/diagramas.md`, PR #104)
+- Deploy de demonstração migrado de Render + Supabase pro Railway
+  (`railway.json`, roteiro em `deploy/railway.md`), agora com worker de
+  fila e agendador (`schedule:run`) de verdade em vez do `QUEUE_CONNECTION=
+  sync` improvisado do free tier da Render. O dado de ensaio saiu do Brasil
+  por completo nessa troca — ver aviso no topo de `deploy/railway.md`
 
 ### Corrigido
 
