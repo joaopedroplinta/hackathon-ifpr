@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Models\Event;
 use App\Support\AppVersion;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,8 +37,6 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
         $event = Event::current();
 
         // parent::share era chamado duas vezes no starter kit (array_merge
@@ -48,7 +45,6 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'app_version' => (new AppVersion)->display(),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
                 // Só decide o que a navegação mostra. Cada rota do painel
