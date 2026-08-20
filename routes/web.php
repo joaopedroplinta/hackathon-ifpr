@@ -14,6 +14,7 @@ use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
 use App\Http\Controllers\Participant\CertificateController;
 use App\Http\Controllers\Participant\CredentialController;
+use App\Http\Controllers\Participant\DashboardController as ParticipantDashboardController;
 use App\Http\Controllers\Participant\EventRegistrationController;
 use App\Http\Controllers\Participant\PopularVoteController;
 use App\Http\Controllers\Participant\SubmissionController;
@@ -34,7 +35,6 @@ use App\Http\Controllers\Public\RubricController as PublicRubricController;
 use App\Http\Controllers\Public\SubmissionShowcaseController;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [LandingController::class, 'show'])->name('home');
 
@@ -80,9 +80,7 @@ Route::get('validar/{code}', [CertificateValidationController::class, 'show'])
     ->whereUuid('code');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [ParticipantDashboardController::class, 'index'])->name('dashboard');
 });
 
 // Inscricao no evento. 'verified' porque e-mail nao confirmado nao pode
