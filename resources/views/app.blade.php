@@ -10,7 +10,7 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link
-            href="https://fonts.bunny.net/css?family=space-grotesk:500,600,700|public-sans:400,500,600,700|jetbrains-mono:400,500,600"
+            href="https://fonts.bunny.net/css?family=inter:400,500,600|jetbrains-mono:400,500"
             rel="stylesheet"
         />
 

@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, ExternalLink, FileText, History, Paperclip, TriangleAlert } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -12,10 +13,10 @@ interface Props {
 }
 
 const corDoStatus: Record<StatusSubmissao, string> = {
-    draft: 'border-muted-foreground/30 text-muted-foreground',
-    submitted: 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400',
-    late: 'border-amber-600/40 text-amber-700 dark:text-amber-400',
-    disqualified: 'border-red-600/40 text-red-700 dark:text-red-400',
+    draft: 'bg-muted text-muted-foreground',
+    submitted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+    late: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+    disqualified: 'bg-red-500/15 text-red-700 dark:text-red-400',
 };
 
 // Chave do payload → rótulo em português. Chave fora deste mapa aparece
@@ -69,6 +70,13 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
         { rotulo: 'Deploy', href: submissao.deploy_url },
     ].filter((link) => link.href);
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -78,15 +86,15 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
         >
             <Head title={`Submissão — ${submissao.equipe.nome}`} />
 
-            <div className="mx-auto w-full max-w-3xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6">
                 <header className="mb-6">
                     <p className="text-muted-foreground text-sm">{submissao.trilha?.nome ?? 'Sem trilha'}</p>
-                    <h1 className="text-2xl font-semibold">{submissao.titulo ?? 'Projeto sem título'}</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">{submissao.titulo ?? 'Projeto sem título'}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Equipe {submissao.equipe.nome}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <span className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoStatus[submissao.status]}`}>
-                            [{submissao.status_label}]
+                        <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${corDoStatus[submissao.status]}`}>
+                            {submissao.status_label}
                         </span>
                         <span className="text-muted-foreground text-xs">Versão atual: {submissao.versao_atual}</span>
                         <span className="text-muted-foreground text-xs">Enviado em {formatarData(submissao.enviado_em)}</span>
@@ -122,7 +130,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                                 href={link.href ?? undefined}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="border-sidebar-border/70 dark:border-sidebar-border hover:bg-muted inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                                className="bg-card hover:bg-muted inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm"
                             >
                                 <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 {link.rotulo}
@@ -131,7 +139,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     </section>
                 )}
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
                     <h2 className="font-medium">Arquivos</h2>
 
                     {arquivos.length === 0 ? (
@@ -171,7 +179,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     ) : (
                         <ol className="flex flex-col gap-4">
                             {versoes.map((versao) => (
-                                <li key={versao.versao} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                                <li key={versao.versao} className="bg-card rounded-2xl p-4">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <div className="flex items-center gap-2 text-sm font-medium">
                                             <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -198,10 +206,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                                             <p className="text-muted-foreground text-xs">Arquivos entregues nesta versão</p>
                                             <ul className="mt-1 flex flex-wrap gap-2">
                                                 {(versao.payload.files as Array<{ id: number; original_name: string }>).map((arquivo) => (
-                                                    <li
-                                                        key={arquivo.id}
-                                                        className="border-sidebar-border/70 dark:border-sidebar-border rounded-md border px-2 py-1 text-xs"
-                                                    >
+                                                    <li key={arquivo.id} className="bg-muted rounded-md px-2 py-1 text-xs">
                                                         {arquivo.original_name}
                                                     </li>
                                                 ))}
@@ -217,7 +222,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                 <Link href={route('admin.submissions.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

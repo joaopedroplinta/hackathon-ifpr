@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, Pencil, Trash2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -59,6 +60,13 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -68,18 +76,16 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         >
             <Head title={`Rubrica — ${rubrica.nome}`} />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-2xl font-semibold">{rubrica.nome}</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">{rubrica.nome}</h1>
                         <span
-                            className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${
-                                rubrica.ativa
-                                    ? 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
-                                    : 'border-muted-foreground/30 text-muted-foreground'
+                            className={`inline-block rounded-full px-2 py-0.5 text-xs ${
+                                rubrica.ativa ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400' : 'bg-muted text-muted-foreground'
                             }`}
                         >
-                            [{rubrica.ativa ? 'ativa' : 'inativa'}]
+                            {rubrica.ativa ? 'Ativa' : 'Inativa'}
                         </span>
                     </div>
                     <p className="text-muted-foreground mt-1 text-sm">Soma dos pesos: {somaPesos}.</p>
@@ -91,7 +97,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                     <ol className="mb-6 flex flex-col gap-3">
                         {criterios.map((criterio) =>
                             editandoId === criterio.id ? (
-                                <li key={criterio.id} className="rounded-xl border p-4">
+                                <li key={criterio.id} className="bg-card rounded-2xl p-4">
                                     <form onSubmit={salvarEdicao} className="grid gap-3">
                                         <div className="grid gap-2">
                                             <Label htmlFor={`edit-name-${criterio.id}`}>Nome</Label>
@@ -146,7 +152,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                                     </form>
                                 </li>
                             ) : (
-                                <li key={criterio.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                                <li key={criterio.id} className="bg-card rounded-2xl p-4">
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                         <div>
                                             <p className="font-medium">{criterio.nome}</p>
@@ -182,7 +188,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                     </ol>
                 )}
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
+                <section className="bg-card rounded-2xl p-4 sm:p-6">
                     <h2 className="font-medium">Novo critério</h2>
                     <form onSubmit={criarCriterio} className="mt-4 grid gap-3">
                         <div className="grid gap-2">
@@ -239,7 +245,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                 <Link href={route('admin.rubrica.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

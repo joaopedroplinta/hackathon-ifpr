@@ -1,4 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { History, LoaderCircle, RefreshCw, Scale, Shuffle, Trash2, Users } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -80,14 +81,21 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
         });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Jurados', href: route('admin.jurados.index') }]}>
             <Head title="Jurados" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Jurados</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Jurados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             Distribuição é sugestão — ajuste na mão nunca é sobrescrito por uma nova rodada.
                         </p>
@@ -126,10 +134,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                         <p className="text-muted-foreground text-sm">Nenhum usuário com o papel de jurado ainda.</p>
                     ) : (
                         jurados.map((jurado) => (
-                            <span
-                                key={jurado.id}
-                                className="border-sidebar-border/70 dark:border-sidebar-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs"
-                            >
+                            <span key={jurado.id} className="bg-card flex items-center gap-1.5 rounded-full px-3 py-1 text-xs">
                                 <Users className="h-3 w-3 shrink-0" aria-hidden="true" />
                                 {jurado.nome} · {jurado.total_atribuicoes} {jurado.total_atribuicoes === 1 ? 'submissão' : 'submissões'}
                             </span>
@@ -137,7 +142,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     )}
                 </section>
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
                     <h2 className="font-medium">Atribuir manualmente</h2>
                     <form onSubmit={atribuirManual} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div className="flex-1">
@@ -185,7 +190,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                 ) : (
                     <ul className="mb-6 flex flex-col gap-3">
                         {submissoes.map((submissao) => (
-                            <li key={submissao.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                            <li key={submissao.id} className="bg-card rounded-2xl p-4">
                                 <p className="font-medium">{submissao.titulo}</p>
                                 <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
 
@@ -205,7 +210,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                         type="button"
                                                         onClick={() => abrirReabertura(jurado.atribuicao_id)}
                                                         aria-label={`Reabrir avaliação de ${jurado.nome} para correção`}
-                                                        className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1"
+                                                        className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1.5"
                                                         title="Reabrir avaliação enviada para correção"
                                                     >
                                                         <History className="h-3 w-3" aria-hidden="true" />
@@ -216,7 +221,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                     onClick={() => reatribuir(jurado.atribuicao_id)}
                                                     disabled={emAndamento === jurado.atribuicao_id}
                                                     aria-label={`Reatribuir vaga de ${jurado.nome}`}
-                                                    className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1"
+                                                    className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1.5"
                                                     title="Jurado ausente: reatribuir a vaga"
                                                 >
                                                     <RefreshCw className="h-3 w-3" aria-hidden="true" />
@@ -226,7 +231,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                     onClick={() => removerAtribuicao(jurado.atribuicao_id)}
                                                     disabled={emAndamento === jurado.atribuicao_id}
                                                     aria-label={`Remover ${jurado.nome} desta submissão`}
-                                                    className="hover:bg-muted text-muted-foreground hover:text-destructive rounded-full p-1"
+                                                    className="hover:bg-muted text-muted-foreground hover:text-destructive rounded-full p-1.5"
                                                 >
                                                     <Trash2 className="h-3 w-3" aria-hidden="true" />
                                                 </button>
@@ -241,7 +246,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                         <form
                                             key={jurado.atribuicao_id}
                                             onSubmit={confirmarReabertura}
-                                            className="border-sidebar-border/70 dark:border-sidebar-border mt-3 flex flex-col gap-2 rounded-lg border p-3"
+                                            className="bg-muted mt-3 flex flex-col gap-2 rounded-xl p-3"
                                         >
                                             <Label htmlFor={`motivo-reabertura-${jurado.atribuicao_id}`}>
                                                 Motivo da correção na avaliação de {jurado.nome}
@@ -271,7 +276,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </ul>
                 )}
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
+                <section className="bg-card rounded-2xl p-4 sm:p-6">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Scale className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Conflitos de interesse
@@ -351,7 +356,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                         </Button>
                     </form>
                 </section>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

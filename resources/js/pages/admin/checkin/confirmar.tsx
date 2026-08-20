@@ -1,4 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle, UserRound } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -49,12 +50,19 @@ export default function ConfirmarCheckin({
         post(confirmar_url);
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('admin.checkin.index') }]}>
             <Head title={`Check-in — ${participante.nome}`} />
 
-            <div className="mx-auto w-full max-w-sm p-4">
-                <div className="flex flex-col items-center gap-3 rounded-xl border p-6 text-center">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-sm p-4 sm:p-6">
+                <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-6 text-center">
                     {participante.avatar_url ? (
                         <img src={participante.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
                     ) : (
@@ -114,7 +122,7 @@ export default function ConfirmarCheckin({
                 <Link href={route('admin.checkin.index')} className="text-muted-foreground mt-4 inline-block text-sm hover:underline">
                     ← Buscar outra pessoa
                 </Link>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

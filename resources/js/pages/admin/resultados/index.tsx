@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { AlertTriangle, LoaderCircle, RefreshCw, Send, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -43,14 +44,21 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
         publicar(false);
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Resultados', href: route('admin.resultados.index') }]}>
             <Head title="Resultados" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Resultados</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Resultados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {publicado_em ? `Publicado em ${publicado_em}.` : 'Ainda não publicado.'}
                             {computado_em && ` Último cálculo: ${computado_em}.`}
@@ -96,7 +104,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                 )}
 
                 {temPendencia && (
-                    <section className="border-sidebar-border/70 dark:border-sidebar-border mb-6 rounded-xl border p-4 sm:p-6">
+                    <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
                         <h2 className="flex items-center gap-2 font-medium">
                             <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             Pendências
@@ -143,10 +151,12 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
 
                 <h2 className="mb-3 font-medium">Ranking</h2>
                 {resultados.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center">
-                        <Trophy className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhum resultado calculado ainda.</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Clique em &quot;Recalcular&quot; para gerar o ranking.</p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhum resultado calculado ainda.</p>
+                        <p className="text-muted-foreground text-sm">Clique em &quot;Recalcular&quot; para gerar o ranking.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -177,7 +187,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                         </table>
                     </div>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

@@ -39,5 +39,8 @@
       "Read(./.env.production)",
       "Read(./storage/app/private/**)"
     ]
+  },
+  "enabledPlugins": {
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
   }
 }

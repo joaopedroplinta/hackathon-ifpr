@@ -38,69 +38,89 @@ export default function CabecalhoPublico() {
         </Link>
     );
 
-    const ContaOuEntrar = auth.user ? (
-        <Button asChild size="sm">
-            <Link href={route('dashboard')}>Meu painel</Link>
-        </Button>
-    ) : (
-        <>
-            <Button asChild variant="ghost" size="sm">
-                <Link href={route('login')}>Entrar</Link>
+    /**
+     * Desktop usa "sm" (36px, tudo bem -- é mouse). No menu mobile o mesmo
+     * botão precisa do alvo de toque mínimo confortável (44px), daí o h-11
+     * quando `noMenuMobile` é true.
+     */
+    const contaOuEntrar = (noMenuMobile = false) => {
+        const classeAltura = noMenuMobile ? 'h-11' : undefined;
+
+        return auth.user ? (
+            <Button asChild size="sm" className={classeAltura}>
+                <Link href={route('dashboard')}>Meu painel</Link>
             </Button>
-            <Button asChild size="sm">
-                <Link href={route('register')}>Criar conta</Link>
-            </Button>
-        </>
-    );
+        ) : (
+            <>
+                <Button asChild variant="ghost" size="sm" className={classeAltura}>
+                    <Link href={route('login')}>Entrar</Link>
+                </Button>
+                <Button asChild size="sm" className={classeAltura}>
+                    <Link href={route('register')}>Criar conta</Link>
+                </Button>
+            </>
+        );
+    };
 
     return (
         <>
-            <header className="mx-auto flex w-full max-w-5xl items-center justify-between p-4 sm:p-6">
-                {Logo}
+            {/* sticky + blur: cabeçalho nunca é só decoração aqui -- ele precisa
+                continuar legível por cima do hero em qualquer ponto do scroll,
+                sem um recorte duro (daí o blur em vez de um bg sólido). */}
+            <header className="border-border/60 bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b backdrop-blur-md">
+                <div className="mx-auto flex w-full max-w-5xl items-center justify-between p-4 sm:p-6">
+                    {Logo}
 
-                {/* Desktop: tudo na mesma linha -- ver comentário do componente. */}
-                <nav className="hidden items-center gap-3 sm:flex">
-                    {linksPublicos.map((link) => (
-                        <Link key={link.href} href={route(link.href)} className="text-muted-foreground hover:text-foreground text-sm">
-                            {link.label}
-                        </Link>
-                    ))}
+                    {/* Desktop: tudo na mesma linha -- ver comentário do componente. */}
+                    <nav className="hidden items-center gap-3 sm:flex">
+                        {linksPublicos.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={route(link.href)}
+                                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
 
-                    {ContaOuEntrar}
+                        {contaOuEntrar()}
 
-                    <AppearanceToggleDropdown />
-                </nav>
+                        <AppearanceToggleDropdown />
+                    </nav>
 
-                {/* Mobile: menu num painel deslizante, não espremido ao lado do logo. */}
-                <div className="flex items-center gap-1 sm:hidden">
-                    <AppearanceToggleDropdown />
+                    {/* Mobile: menu num painel deslizante, não espremido ao lado do logo. */}
+                    <div className="flex items-center gap-1 sm:hidden">
+                        <AppearanceToggleDropdown />
 
-                    <Sheet open={menuAberto} onOpenChange={setMenuAberto}>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" aria-label="Abrir menu">
-                                <Menu className="size-5" aria-hidden="true" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="flex w-72 flex-col gap-6">
-                            <SheetTitle className="font-display text-left">Menu</SheetTitle>
-                            <SheetDescription className="sr-only">Links de navegação do site</SheetDescription>
+                        <Sheet open={menuAberto} onOpenChange={setMenuAberto}>
+                            <SheetTrigger asChild>
+                                {/* h-11 w-11 (44px): alvo de toque mínimo confortável -- o ícone
+                                    "size" padrão do botão (h-10) fica 4px abaixo disso. */}
+                                <Button variant="ghost" size="icon" className="h-11 w-11" aria-label="Abrir menu">
+                                    <Menu className="size-5" aria-hidden="true" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="flex w-72 flex-col gap-6">
+                                <SheetTitle className="font-display text-left">Menu</SheetTitle>
+                                <SheetDescription className="sr-only">Links de navegação do site</SheetDescription>
 
-                            <nav className="flex flex-col gap-1">
-                                {linksPublicos.map((link) => (
-                                    <Link
-                                        key={link.href}
-                                        href={route(link.href)}
-                                        onClick={() => setMenuAberto(false)}
-                                        className="hover:bg-accent hover:text-accent-foreground rounded-md px-3 py-2.5 text-sm font-medium"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                ))}
-                            </nav>
+                                <nav className="flex flex-col gap-1">
+                                    {linksPublicos.map((link) => (
+                                        <Link
+                                            key={link.href}
+                                            href={route(link.href)}
+                                            onClick={() => setMenuAberto(false)}
+                                            className="hover:bg-accent hover:text-accent-foreground rounded-md px-3 py-2.5 text-sm font-medium"
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    ))}
+                                </nav>
 
-                            <div className="mt-auto flex flex-col gap-2">{ContaOuEntrar}</div>
-                        </SheetContent>
-                    </Sheet>
+                                <div className="mt-auto flex flex-col gap-2">{contaOuEntrar(true)}</div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </header>
 

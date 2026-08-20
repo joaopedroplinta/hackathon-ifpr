@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -77,12 +78,19 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
         patch(route('admin.evento.update'), { preserveScroll: true });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Evento', href: route('admin.evento.edit') }]}>
             <Head title="Editar evento" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
-                <h1 className="mb-1 text-2xl font-semibold">Editar evento</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
+                <h1 className="mb-1 text-2xl font-medium tracking-tight">Editar evento</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
                 </p>
@@ -262,7 +270,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                 <div className="mt-6">
                     <PainelRegulamento regulamento={regulamento} />
                 </div>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

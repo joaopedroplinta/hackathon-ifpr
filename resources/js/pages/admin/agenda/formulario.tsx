@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -66,6 +67,13 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
         }
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -75,8 +83,8 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
         >
             <Head title={editando ? 'Editar item da agenda' : 'Novo item da agenda'} />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
-                <h1 className="mb-6 text-2xl font-semibold">{editando ? 'Editar item' : 'Novo item da agenda'}</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
+                <h1 className="mb-6 text-2xl font-medium tracking-tight">{editando ? 'Editar item' : 'Novo item da agenda'}</h1>
 
                 <form onSubmit={enviar} className="grid gap-6">
                     <div className="grid gap-2">
@@ -213,7 +221,7 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
                         lista.
                     </p>
                 </form>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

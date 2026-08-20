@@ -47,7 +47,6 @@ export interface SharedData {
     name: string;
     /** Ex.: "v0.6.0" em produção, "v0.6.0-dev+af4e0aa" fora dela. */
     app_version: string;
-    quote: { message: string; author: string };
     auth: Auth;
     /** Evento em foco. Nulo quando nenhum evento saiu do rascunho. */
     evento: EventoAtual | null;

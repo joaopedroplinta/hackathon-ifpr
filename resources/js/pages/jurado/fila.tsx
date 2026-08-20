@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, Circle, ClipboardCheck } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -11,39 +12,56 @@ interface Props {
 
 export default function FilaJurado({ submissoes, progresso }: Props) {
     const percentual = progresso.total === 0 ? 0 : Math.round((progresso.avaliadas / progresso.total) * 100);
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Avaliar', href: route('jurado.index') }]}>
             <Head title="Avaliar" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Suas submissões</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Suas submissões</h1>
                     {progresso.total > 0 && (
                         <>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 {progresso.avaliadas} de {progresso.total} avaliadas
                             </p>
                             <div className="bg-muted mt-2 h-2 w-full overflow-hidden rounded-full" role="progressbar" aria-valuenow={percentual}>
-                                <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${percentual}%` }} />
+                                <motion.div
+                                    className="bg-primary h-full rounded-full"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentual}%` }}
+                                    transition={reduzMovimento ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
+                                />
                             </div>
                         </>
                     )}
                 </header>
 
                 {submissoes.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center">
-                        <ClipboardCheck className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhuma submissão atribuída a você ainda.</p>
-                        <p className="text-muted-foreground mt-1 text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <ClipboardCheck className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhuma submissão atribuída a você ainda.</p>
+                        <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
                     <ul className="flex flex-col gap-3">
                         {submissoes.map((s) => (
-                            <li key={s.submission_id}>
+                            <motion.li
+                                key={s.submission_id}
+                                whileHover={reduzMovimento ? undefined : { y: -2 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                            >
                                 <Link
                                     href={route('jurado.avaliar.show', s.submission_id)}
-                                    className="border-sidebar-border/70 dark:border-sidebar-border hover:bg-muted/40 flex items-center justify-between gap-3 rounded-xl border p-4 transition-colors"
+                                    className="bg-card flex min-h-11 items-center justify-between gap-3 rounded-2xl p-4"
                                 >
                                     <div className="min-w-0">
                                         <p className="truncate font-medium">{s.titulo}</p>
@@ -63,11 +81,11 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                                         )}
                                     </span>
                                 </Link>
-                            </li>
+                            </motion.li>
                         ))}
                     </ul>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

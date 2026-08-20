@@ -48,7 +48,7 @@ export default function PainelConvites() {
     };
 
     return (
-        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+        <section className="bg-card rounded-2xl p-6">
             <h2 className="font-medium">Convidar por e-mail</h2>
             <p className="text-muted-foreground mt-1 text-sm">Manda um link de convite para quem ainda não tem o código da equipe.</p>
 

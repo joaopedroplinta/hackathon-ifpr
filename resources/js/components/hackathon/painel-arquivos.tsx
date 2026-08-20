@@ -48,7 +48,7 @@ export default function PainelArquivos({ arquivos, podeAnexar }: Props) {
     };
 
     return (
-        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
+        <section className="bg-card rounded-2xl p-4 sm:p-6">
             <h2 className="font-medium">Arquivos</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Slide do pitch, código compactado ou print da tela. PDF, ZIP, PNG ou JPG, até 25 MB cada — no máximo {arquivos.limite} arquivos.

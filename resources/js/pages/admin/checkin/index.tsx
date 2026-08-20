@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, MapPin, Search, UserRound } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -56,20 +57,27 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
         window.location.href = texto;
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('admin.checkin.index') }]}>
             <Head title="Check-in" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Check-in</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Check-in</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Peça pra pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
                     </p>
                 </header>
 
                 {checkpoints.length === 0 ? (
-                    <section className="rounded-xl border border-dashed p-6">
+                    <section className="bg-card rounded-2xl p-6">
                         <h2 className="font-medium">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
                             Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
@@ -111,10 +119,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                     <>
                         <section aria-label="Checkpoints" className="mb-6 flex flex-wrap gap-2">
                             {checkpoints.map((c) => (
-                                <span
-                                    key={c.id}
-                                    className="border-sidebar-border/70 dark:border-sidebar-border flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs"
-                                >
+                                <span key={c.id} className="bg-card flex items-center gap-1.5 rounded-full px-3 py-1 text-xs">
                                     <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                                     {c.nome} · {c.tipo_label}
                                 </span>
@@ -157,10 +162,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 ) : (
                                     <ul className="flex flex-col gap-2">
                                         {resultados.map((pessoa) => (
-                                            <li
-                                                key={pessoa.id}
-                                                className="border-sidebar-border/70 dark:border-sidebar-border flex items-center justify-between gap-3 rounded-xl border p-3"
-                                            >
+                                            <li key={pessoa.id} className="bg-card flex items-center justify-between gap-3 rounded-2xl p-3">
                                                 <div className="flex items-center gap-3">
                                                     <UserRound className="text-muted-foreground h-5 w-5 shrink-0" aria-hidden="true" />
                                                     <div>
@@ -182,7 +184,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                         )}
                     </>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

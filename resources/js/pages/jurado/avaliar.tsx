@@ -1,4 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -24,7 +25,7 @@ type AvaliacaoForm = {
 };
 
 const areaTexto =
-    'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60';
+    'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-xl border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60';
 
 export default function AvaliarSubmissao({ submissao, criterios, avaliacao, somente_leitura: somenteLeitura }: Props) {
     const form = useForm<AvaliacaoForm>({
@@ -87,6 +88,12 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
     // cast. Sem isto, rejeição de nota (ex.: acima do máximo do critério)
     // falha em silêncio: nenhuma mensagem chega ao jurado.
     const errosPorIndice = form.errors as unknown as Record<string, string | undefined>;
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout
@@ -97,44 +104,53 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
         >
             <Head title={`Avaliar — ${submissao.titulo}`} />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4 sm:p-6">
                 {somenteLeitura && (
-                    <div className="mb-6 flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-600/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
+                    <div className="flex items-center gap-2 rounded-2xl bg-emerald-500/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
                         <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Avaliação já enviada. Não é mais possível alterar a nota por aqui.
                     </div>
                 )}
 
-                <div className="grid gap-6 md:grid-cols-2">
-                    <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
-                        <h1 className="text-xl font-semibold">{submissao.titulo}</h1>
-                        <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
+                {/* lg (paisagem de tablet/desktop) divide em duas colunas, com o
+                    projeto fixo enquanto o jurado rola pelos critérios -- ele
+                    consulta repositório e vídeo o tempo todo enquanto pontua.
+                    Abaixo disso (retrato de tablet e celular) empilha: cada
+                    critério precisa da largura toda pra caber comentário. */}
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+                    <section className="bg-card flex shrink-0 flex-col gap-4 rounded-2xl p-6 lg:sticky lg:top-20 lg:w-80">
+                        <div>
+                            <h1 className="text-xl font-medium tracking-tight">{submissao.titulo}</h1>
+                            <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
+                        </div>
 
-                        {submissao.resumo && <p className="mt-3 text-sm">{submissao.resumo}</p>}
-                        {submissao.descricao && <p className="text-muted-foreground mt-3 text-sm whitespace-pre-line">{submissao.descricao}</p>}
+                        {submissao.resumo && <p className="text-sm leading-relaxed">{submissao.resumo}</p>}
+                        {submissao.descricao && (
+                            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">{submissao.descricao}</p>
+                        )}
 
-                        <div className="mt-4 flex flex-col gap-1 text-sm">
+                        <div className="flex flex-col gap-2 text-sm">
                             {submissao.repo_url && (
-                                <a href={submissao.repo_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                <a href={submissao.repo_url} target="_blank" rel="noopener noreferrer" className="text-verde-ifpr hover:underline">
                                     Repositório
                                 </a>
                             )}
                             {submissao.video_url && (
-                                <a href={submissao.video_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                <a href={submissao.video_url} target="_blank" rel="noopener noreferrer" className="text-verde-ifpr hover:underline">
                                     Vídeo de demonstração
                                 </a>
                             )}
                             {submissao.deploy_url && (
-                                <a href={submissao.deploy_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                <a href={submissao.deploy_url} target="_blank" rel="noopener noreferrer" className="text-verde-ifpr hover:underline">
                                     Aplicação publicada
                                 </a>
                             )}
                         </div>
                     </section>
 
-                    <section className="flex flex-col gap-4">
+                    <section className="flex min-w-0 flex-1 flex-col gap-4">
                         {criterios.length === 0 ? (
-                            <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 text-sm">
+                            <div className="bg-card rounded-2xl p-6 text-sm">
                                 Nenhuma rubrica ativa para este evento. Fale com o organizador antes de avaliar.
                             </div>
                         ) : (
@@ -143,7 +159,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                 const erroNota = errosPorIndice[`scores.${indice}.score`];
 
                                 return (
-                                    <div key={criterio.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                                    <div key={criterio.id} className="bg-card rounded-2xl p-4 sm:p-6">
                                         <div className="flex items-baseline justify-between gap-3">
                                             <Label htmlFor={`score-${criterio.id}`} className="font-medium">
                                                 {criterio.nome}
@@ -165,7 +181,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                             disabled={somenteLeitura}
                                             onChange={(e) => atualizarNota(criterio.id, e.target.value === '' ? null : Number(e.target.value))}
                                             aria-describedby={erroNota ? `score-${criterio.id}-erro` : undefined}
-                                            className="border-input bg-background focus-visible:ring-ring mt-3 h-12 w-24 rounded-md border px-3 text-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
+                                            className="border-input bg-background focus-visible:ring-ring mt-3 h-12 w-24 rounded-xl border px-3 text-lg font-medium tabular-nums focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
                                         />
                                         <InputError id={`score-${criterio.id}-erro`} message={erroNota} />
 
@@ -183,7 +199,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                             })
                         )}
 
-                        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                        <div className="bg-card rounded-2xl p-4 sm:p-6">
                             <Label htmlFor="overall_comment">Comentário geral (opcional)</Label>
                             <textarea
                                 id="overall_comment"
@@ -197,25 +213,30 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
                         <InputError message={form.errors.scores} />
 
-                        {!somenteLeitura && (
-                            <>
-                                <p className="text-muted-foreground -mb-2 text-right text-xs" aria-live="polite">
-                                    {form.processing ? 'Salvando rascunho…' : form.recentlySuccessful ? 'Rascunho salvo.' : ''}
-                                </p>
-
-                                <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} className="w-full">
-                                    {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                                    Enviar avaliação
-                                </Button>
-                            </>
-                        )}
-
                         <Link href={route('jurado.index')} className="text-muted-foreground text-center text-sm hover:underline">
                             ← Voltar para a fila
                         </Link>
                     </section>
                 </div>
-            </div>
+            </motion.div>
+
+            {/* Sticky no rodapé: quem avalia numa fila de 8+ submissões, em pé
+                com o celular, não deveria precisar rolar até o fim toda vez
+                que termina uma. O blur segue o mesmo tratamento do cabeçalho
+                público -- nunca some atrás do conteúdo. */}
+            {!somenteLeitura && (
+                <div className="border-border/60 bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky bottom-0 z-30 border-t p-4 backdrop-blur-md sm:p-6">
+                    <div className="mx-auto flex w-full max-w-5xl flex-col gap-2">
+                        <p className="text-muted-foreground text-right text-xs" aria-live="polite">
+                            {form.processing ? 'Salvando rascunho…' : form.recentlySuccessful ? 'Rascunho salvo.' : ''}
+                        </p>
+                        <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} size="lg" className="w-full">
+                            {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                            Enviar avaliação
+                        </Button>
+                    </div>
+                </div>
+            )}
         </AppLayout>
     );
 }

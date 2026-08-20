@@ -7,9 +7,12 @@ type Props = {
 };
 
 /**
- * Contagem regressiva grande da landing, até o início do evento (ou até a
+ * Contagem regressiva da landing, até o início do evento (ou até a
  * inscrição fechar, conforme o chamador decidir). Não é fonte de decisão --
  * quem confirma prazo é sempre o servidor (.claude/rules/security.md).
+ *
+ * Tipográfico, não em caixas -- caixa com borda por dígito é o clichê de
+ * "SaaS launch countdown" que estávamos tentando tirar daqui.
  */
 export default function ContadorEvento({ alvo, rotulo }: Props) {
     const alvoMs = new Date(alvo).getTime();
@@ -35,13 +38,14 @@ export default function ContadorEvento({ alvo, rotulo }: Props) {
 
     return (
         <div role="status" aria-live="polite" className="flex flex-col items-center gap-3">
-            <p className="text-muted-foreground text-sm">{rotulo}</p>
-            <div className="flex gap-3 sm:gap-4">
-                {partes.map((parte) => (
-                    <div key={parte.rotulo} className="bg-card flex w-16 flex-col items-center rounded-xl border py-3 sm:w-20">
-                        <span className="font-display text-2xl font-semibold tabular-nums sm:text-3xl">{String(parte.valor).padStart(2, '0')}</span>
-                        <span className="text-muted-foreground text-xs">{parte.rotulo}</span>
-                    </div>
+            <p className="text-muted-foreground text-xs tracking-wide uppercase">{rotulo}</p>
+            <div className="flex items-baseline gap-1.5 sm:gap-2.5">
+                {partes.map((parte, indice) => (
+                    <span key={parte.rotulo} className="flex items-baseline">
+                        <span className="text-3xl font-medium tabular-nums sm:text-5xl">{String(parte.valor).padStart(2, '0')}</span>
+                        <span className="text-muted-foreground ml-1 text-xs sm:text-sm">{parte.rotulo}</span>
+                        {indice < partes.length - 1 && <span className="text-muted-foreground/40 ml-2.5 sm:ml-3.5">·</span>}
+                    </span>
                 ))}
             </div>
         </div>

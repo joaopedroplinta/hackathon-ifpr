@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, FilePlus2, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -22,10 +23,10 @@ const seletor =
 
 /** Estado por texto e cor, nunca só por cor -- .claude/rules/frontend.md. */
 const corDoStatus: Record<StatusSubmissao, string> = {
-    draft: 'border-muted-foreground/30 text-muted-foreground',
-    submitted: 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400',
-    late: 'border-amber-600/40 text-amber-700 dark:text-amber-400',
-    disqualified: 'border-red-600/40 text-red-700 dark:text-red-400',
+    draft: 'bg-muted text-muted-foreground',
+    submitted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+    late: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+    disqualified: 'bg-red-500/15 text-red-700 dark:text-red-400',
 };
 
 function formatarData(iso: string | null): string {
@@ -78,14 +79,21 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
         }
     });
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('admin.submissions.index') }]}>
             <Head title="Submissões" />
 
-            <div className="mx-auto w-full max-w-6xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Submissões</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Submissões</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
                         </p>
@@ -117,12 +125,16 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                             type="button"
                             onClick={() => aplicar({ status: filtros.status === item.valor ? null : item.valor })}
                             aria-pressed={filtros.status === item.valor}
-                            className={`rounded-xl border p-3 text-left transition ${
-                                filtros.status === item.valor ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
+                            className={`rounded-2xl p-3 text-left transition-colors ${
+                                filtros.status === item.valor ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'
                             }`}
                         >
-                            <span className="text-2xl font-semibold">{item.total}</span>
-                            <span className="text-muted-foreground block text-xs">{item.rotulo}</span>
+                            <span className="text-2xl font-medium">{item.total}</span>
+                            <span
+                                className={`block text-xs ${filtros.status === item.valor ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}
+                            >
+                                {item.rotulo}
+                            </span>
                         </button>
                     ))}
                 </section>
@@ -191,17 +203,19 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                 </form>
 
                 {submissoes.data.length === 0 ? (
-                    <div className="rounded-xl border border-dashed p-10 text-center">
-                        <Inbox className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">{temFiltro ? 'Nenhuma submissão com esses filtros' : 'Nenhuma submissão ainda'}</p>
-                        <p className="text-muted-foreground mt-1 text-sm">
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <Inbox className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">{temFiltro ? 'Nenhuma submissão com esses filtros' : 'Nenhuma submissão ainda'}</p>
+                        <p className="text-muted-foreground text-sm">
                             {temFiltro
                                 ? 'Tente outra trilha ou situação, ou limpe os filtros.'
                                 : 'Assim que uma equipe enviar o projeto, ele aparece aqui.'}
                         </p>
                     </div>
                 ) : (
-                    <div className={`overflow-x-auto rounded-xl border transition-opacity ${carregando ? 'opacity-60' : ''}`}>
+                    <div className={`bg-card overflow-x-auto rounded-2xl transition-opacity ${carregando ? 'opacity-60' : ''}`}>
                         <table className="w-full min-w-[48rem] text-sm">
                             <caption className="sr-only">Submissões do evento</caption>
                             <thead className="bg-muted/50 text-left">
@@ -253,10 +267,8 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                                         </td>
                                         <td className="text-muted-foreground p-3">{linha.trilha?.nome ?? '—'}</td>
                                         <td className="p-3">
-                                            <span
-                                                className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoStatus[linha.status]}`}
-                                            >
-                                                [{linha.status_label}]
+                                            <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${corDoStatus[linha.status]}`}>
+                                                {linha.status_label}
                                             </span>
                                         </td>
                                         <td className="text-muted-foreground p-3 whitespace-nowrap">{formatarData(linha.enviado_em)}</td>
@@ -277,20 +289,20 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                                     href={link.url}
                                     preserveScroll
                                     aria-current={link.active ? 'page' : undefined}
-                                    className={`rounded-md border px-3 py-2 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                                    className={`rounded-full px-3 py-2 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             ) : (
                                 <span
                                     key={i}
-                                    className="text-muted-foreground rounded-md border px-3 py-2 text-sm opacity-50"
+                                    className="text-muted-foreground bg-card rounded-full px-3 py-2 text-sm opacity-50"
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             ),
                         )}
                     </nav>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

@@ -20,7 +20,7 @@ function formatarData(iso: string): string {
  */
 export default function HistoricoEnvios({ versoes }: Props) {
     return (
-        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
+        <section className="bg-card rounded-2xl p-4 sm:p-6">
             <h2 className="flex items-center gap-2 font-medium">
                 <History className="h-4 w-4 shrink-0" aria-hidden="true" />
                 Histórico de envios
