@@ -4,8 +4,8 @@ import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import ContadorEvento from '@/components/hackathon/contador-evento';
-import FundoCircuito from '@/components/hackathon/fundo-circuito';
 import LogDeBuild from '@/components/hackathon/log-de-build';
+import RedeInterativa from '@/components/hackathon/rede-interativa';
 import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
@@ -45,7 +45,7 @@ export default function Inicio({ evento }: Props) {
             <main className="mx-auto flex w-full max-w-5xl flex-col gap-24 p-4 pb-24 sm:gap-32 sm:p-6">
                 {evento ? (
                     <>
-                        <FundoCircuito opacidade={0.1} className="flex flex-col items-center gap-10 pt-12 text-center sm:gap-12 sm:pt-24 lg:pt-28">
+                        <RedeInterativa className="flex flex-col items-center gap-10 pt-12 text-center sm:gap-12 sm:pt-24 lg:pt-28">
                             <div>
                                 <p
                                     style={{ animationDelay: '0ms' }}
@@ -137,7 +137,7 @@ export default function Inicio({ evento }: Props) {
                             >
                                 <LogDeBuild />
                             </div>
-                        </FundoCircuito>
+                        </RedeInterativa>
 
                         <section aria-labelledby="como-participar" className="flex flex-col gap-10">
                             <h2 id="como-participar" className="font-display text-center text-2xl font-semibold tracking-tight sm:text-3xl">
