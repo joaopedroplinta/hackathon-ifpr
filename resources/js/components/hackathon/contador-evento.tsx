@@ -34,13 +34,19 @@ export default function ContadorEvento({ alvo, rotulo }: Props) {
     ];
 
     return (
-        <div role="status" aria-live="polite" className="flex flex-col items-center gap-3">
-            <p className="text-muted-foreground text-sm">{rotulo}</p>
-            <div className="flex gap-3 sm:gap-4">
+        <div role="status" aria-live="polite" className="flex flex-col items-center gap-4">
+            <p className="text-muted-foreground font-mono text-xs tracking-wide uppercase">{rotulo}</p>
+            <div className="flex gap-2.5 sm:gap-3.5">
                 {partes.map((parte) => (
-                    <div key={parte.rotulo} className="bg-card flex w-16 flex-col items-center rounded-xl border py-3 sm:w-20">
-                        <span className="font-display text-2xl font-semibold tabular-nums sm:text-3xl">{String(parte.valor).padStart(2, '0')}</span>
-                        <span className="text-muted-foreground text-xs">{parte.rotulo}</span>
+                    <div
+                        key={parte.rotulo}
+                        className="bg-card relative flex w-16 flex-col items-center overflow-hidden rounded-xl border py-3.5 shadow-sm sm:w-20 sm:py-4"
+                    >
+                        {/* borda de sinal no topo -- o mesmo verde-brilho do log de build,
+                            o painel inteiro fala "instrumento calibrado", não caixa genérica */}
+                        <span className="bg-verde-brilho/70 absolute inset-x-0 top-0 h-[2px]" aria-hidden="true" />
+                        <span className="font-display text-2xl font-semibold tabular-nums sm:text-4xl">{String(parte.valor).padStart(2, '0')}</span>
+                        <span className="text-muted-foreground mt-0.5 font-mono text-[10px] tracking-wide uppercase sm:text-xs">{parte.rotulo}</span>
                     </div>
                 ))}
             </div>

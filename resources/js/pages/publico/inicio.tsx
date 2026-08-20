@@ -41,63 +41,105 @@ export default function Inicio({ evento }: Props) {
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 p-4 pb-24 sm:p-6">
+            <main className="mx-auto flex w-full max-w-5xl flex-col gap-24 p-4 pb-24 sm:gap-32 sm:p-6">
                 {evento ? (
                     <>
-                        <section className="flex flex-col items-center gap-8 pt-8 text-center sm:pt-16">
+                        <section className="flex flex-col items-center gap-10 pt-12 text-center sm:gap-12 sm:pt-24 lg:pt-28">
                             <div>
-                                <p className="text-muted-foreground font-mono text-sm">
+                                <p
+                                    style={{ animationDelay: '0ms' }}
+                                    className="text-primary motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both font-mono text-sm motion-safe:duration-700"
+                                >
                                     <span aria-hidden="true">$ </span>
                                     {evento.edicao}ª edição — {evento.situacao_label}
                                 </p>
-                                <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">{evento.nome}</h1>
-                                {evento.descricao && <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-balance">{evento.descricao}</p>}
+                                <h1
+                                    style={{ animationDelay: '80ms' }}
+                                    className="font-display motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both mt-3 text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.03] font-semibold tracking-tight text-balance motion-safe:duration-700"
+                                >
+                                    {evento.nome}
+                                </h1>
+                                {evento.descricao && (
+                                    <p
+                                        style={{ animationDelay: '160ms' }}
+                                        className="text-muted-foreground motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both mx-auto mt-5 max-w-2xl text-lg text-balance motion-safe:duration-700"
+                                    >
+                                        {evento.descricao}
+                                    </p>
+                                )}
                             </div>
 
-                            {evento.situacao === 'running' ? (
-                                <p role="status" className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                                    <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />O evento está acontecendo agora.
-                                </p>
-                            ) : evento.situacao === 'finished' ? (
-                                <p role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
-                                    <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    Esta edição já terminou. Resultados em breve.
-                                </p>
-                            ) : evento.inicia_em ? (
-                                <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
-                            ) : null}
+                            <div
+                                style={{ animationDelay: '220ms' }}
+                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:fill-mode-both motion-safe:duration-700"
+                            >
+                                {evento.situacao === 'running' ? (
+                                    <p role="status" className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />O evento está acontecendo agora.
+                                    </p>
+                                ) : evento.situacao === 'finished' ? (
+                                    <p role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
+                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Esta edição já terminou. Resultados em breve.
+                                    </p>
+                                ) : evento.inicia_em ? (
+                                    <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
+                                ) : null}
+                            </div>
 
-                            <div className="flex flex-wrap items-center justify-center gap-3">
+                            <div
+                                style={{ animationDelay: '300ms' }}
+                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both flex flex-wrap items-center justify-center gap-3 motion-safe:duration-700"
+                            >
                                 {!auth.user && (
-                                    <Button asChild size="lg">
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+                                    >
                                         <Link href={route('register')}>Criar conta e participar</Link>
                                     </Button>
                                 )}
 
                                 {auth.user && evento.inscricoes_abertas && (
-                                    <Button asChild size="lg">
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+                                    >
                                         <Link href={route('registration.create')}>Fazer inscrição</Link>
                                     </Button>
                                 )}
 
                                 {auth.user && !evento.inscricoes_abertas && (
-                                    <Button asChild size="lg">
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+                                    >
                                         <Link href={route('dashboard')}>Ir para o painel</Link>
                                     </Button>
                                 )}
+
+                                <Button asChild variant="ghost" size="lg">
+                                    <Link href={route('regulamento.show')}>Ver regulamento</Link>
+                                </Button>
                             </div>
 
                             {!evento.inscricoes_abertas && evento.situacao === 'published' && (
                                 <p className="text-muted-foreground text-sm">As inscrições ainda não abriram ou já encerraram.</p>
                             )}
 
-                            <div className="mx-auto w-full max-w-lg">
+                            <div
+                                style={{ animationDelay: '160ms' }}
+                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both mx-auto w-full max-w-lg motion-safe:duration-1000"
+                            >
                                 <LogDeBuild />
                             </div>
                         </section>
 
-                        <section aria-labelledby="como-participar" className="flex flex-col gap-8">
-                            <h2 id="como-participar" className="font-display text-center text-2xl font-semibold tracking-tight">
+                        <section aria-labelledby="como-participar" className="flex flex-col gap-10">
+                            <h2 id="como-participar" className="font-display text-center text-2xl font-semibold tracking-tight sm:text-3xl">
                                 <span aria-hidden="true">
                                     <span className="text-muted-foreground font-mono text-lg font-normal">$ </span>
                                     como_participar
@@ -106,11 +148,17 @@ export default function Inicio({ evento }: Props) {
                             </h2>
                             <div className="grid gap-6 sm:grid-cols-3">
                                 {passos.map((passo, indice) => (
-                                    <div key={passo.titulo} className="bg-card flex flex-col gap-3 rounded-xl border p-5">
+                                    <div
+                                        key={passo.titulo}
+                                        style={{ animationDelay: `${indice * 120}ms` }}
+                                        className="bg-card motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both group hover:border-primary/30 flex flex-col gap-3.5 rounded-xl border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md motion-safe:duration-700"
+                                    >
                                         <div className="text-primary font-mono text-xs">[passo {indice + 1}]</div>
-                                        <passo.icone className="h-6 w-6 shrink-0" aria-hidden="true" />
+                                        <span className="bg-primary/10 text-primary group-hover:bg-primary/15 flex size-11 items-center justify-center rounded-lg transition-colors">
+                                            <passo.icone className="h-5 w-5 shrink-0" aria-hidden="true" />
+                                        </span>
                                         <h3 className="font-display font-medium">{passo.titulo}</h3>
-                                        <p className="text-muted-foreground text-sm">{passo.texto}</p>
+                                        <p className="text-muted-foreground text-sm leading-relaxed">{passo.texto}</p>
                                     </div>
                                 ))}
                             </div>
