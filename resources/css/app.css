@@ -26,6 +26,7 @@
     --font-display: 'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
+    --color-verde-ifpr: var(--verde-ifpr);
     --color-verde-brilho: var(--verde-brilho);
     --color-verde-mata: var(--verde-mata);
     --color-amarelo-sinal: var(--amarelo-sinal);
