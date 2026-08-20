@@ -1,6 +1,6 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { Medal, Trophy, Users } from 'lucide-react';
+import { History, Medal, Trophy, Users } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import RodapePublico from '@/components/hackathon/rodape-publico';
@@ -8,7 +8,7 @@ import { LinhaPodio, PremioPopular } from '@/types/resultado-publico';
 
 interface Props {
     publicado: boolean;
-    evento: { nome: string } | null;
+    evento: { nome: string; edicao: number } | null;
     podio_geral: LinhaPodio[];
     podio_por_trilha: Record<string, LinhaPodio[]>;
     premio_popular: PremioPopular | null;
@@ -120,7 +120,18 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                         <span aria-hidden="true">$ </span>resultados --status
                     </p>
                     <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">Resultados</h1>
-                    {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
+                    {evento && (
+                        <p className="text-muted-foreground mt-2 text-sm">
+                            {evento.nome} · Edição {evento.edicao}
+                        </p>
+                    )}
+                    <Link
+                        href={route('edicoes.index')}
+                        className="text-muted-foreground hover:text-foreground mt-3 inline-flex items-center gap-1.5 text-xs"
+                    >
+                        <History className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        Ver edições anteriores
+                    </Link>
                 </motion.header>
 
                 {!publicado ? (
