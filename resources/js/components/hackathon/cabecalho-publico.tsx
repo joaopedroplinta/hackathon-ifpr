@@ -38,20 +38,29 @@ export default function CabecalhoPublico() {
         </Link>
     );
 
-    const ContaOuEntrar = auth.user ? (
-        <Button asChild size="sm">
-            <Link href={route('dashboard')}>Meu painel</Link>
-        </Button>
-    ) : (
-        <>
-            <Button asChild variant="ghost" size="sm">
-                <Link href={route('login')}>Entrar</Link>
+    /**
+     * Desktop usa "sm" (36px, tudo bem -- é mouse). No menu mobile o mesmo
+     * botão precisa do alvo de toque mínimo confortável (44px), daí o h-11
+     * quando `noMenuMobile` é true.
+     */
+    const contaOuEntrar = (noMenuMobile = false) => {
+        const classeAltura = noMenuMobile ? 'h-11' : undefined;
+
+        return auth.user ? (
+            <Button asChild size="sm" className={classeAltura}>
+                <Link href={route('dashboard')}>Meu painel</Link>
             </Button>
-            <Button asChild size="sm">
-                <Link href={route('register')}>Criar conta</Link>
-            </Button>
-        </>
-    );
+        ) : (
+            <>
+                <Button asChild variant="ghost" size="sm" className={classeAltura}>
+                    <Link href={route('login')}>Entrar</Link>
+                </Button>
+                <Button asChild size="sm" className={classeAltura}>
+                    <Link href={route('register')}>Criar conta</Link>
+                </Button>
+            </>
+        );
+    };
 
     return (
         <>
@@ -74,7 +83,7 @@ export default function CabecalhoPublico() {
                             </Link>
                         ))}
 
-                        {ContaOuEntrar}
+                        {contaOuEntrar()}
 
                         <AppearanceToggleDropdown />
                     </nav>
@@ -85,7 +94,9 @@ export default function CabecalhoPublico() {
 
                         <Sheet open={menuAberto} onOpenChange={setMenuAberto}>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" aria-label="Abrir menu">
+                                {/* h-11 w-11 (44px): alvo de toque mínimo confortável -- o ícone
+                                    "size" padrão do botão (h-10) fica 4px abaixo disso. */}
+                                <Button variant="ghost" size="icon" className="h-11 w-11" aria-label="Abrir menu">
                                     <Menu className="size-5" aria-hidden="true" />
                                 </Button>
                             </SheetTrigger>
@@ -106,7 +117,7 @@ export default function CabecalhoPublico() {
                                     ))}
                                 </nav>
 
-                                <div className="mt-auto flex flex-col gap-2">{ContaOuEntrar}</div>
+                                <div className="mt-auto flex flex-col gap-2">{contaOuEntrar(true)}</div>
                             </SheetContent>
                         </Sheet>
                     </div>
