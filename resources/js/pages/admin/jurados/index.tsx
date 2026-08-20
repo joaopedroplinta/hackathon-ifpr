@@ -213,7 +213,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                         type="button"
                                                         onClick={() => abrirReabertura(jurado.atribuicao_id)}
                                                         aria-label={`Reabrir avaliação de ${jurado.nome} para correção`}
-                                                        className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1"
+                                                        className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1.5"
                                                         title="Reabrir avaliação enviada para correção"
                                                     >
                                                         <History className="h-3 w-3" aria-hidden="true" />
@@ -224,7 +224,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                     onClick={() => reatribuir(jurado.atribuicao_id)}
                                                     disabled={emAndamento === jurado.atribuicao_id}
                                                     aria-label={`Reatribuir vaga de ${jurado.nome}`}
-                                                    className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1"
+                                                    className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1.5"
                                                     title="Jurado ausente: reatribuir a vaga"
                                                 >
                                                     <RefreshCw className="h-3 w-3" aria-hidden="true" />
@@ -234,7 +234,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                     onClick={() => removerAtribuicao(jurado.atribuicao_id)}
                                                     disabled={emAndamento === jurado.atribuicao_id}
                                                     aria-label={`Remover ${jurado.nome} desta submissão`}
-                                                    className="hover:bg-muted text-muted-foreground hover:text-destructive rounded-full p-1"
+                                                    className="hover:bg-muted text-muted-foreground hover:text-destructive rounded-full p-1.5"
                                                 >
                                                     <Trash2 className="h-3 w-3" aria-hidden="true" />
                                                 </button>
