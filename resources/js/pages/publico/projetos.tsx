@@ -1,4 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle, Rocket, Vote } from 'lucide-react';
 import { useState } from 'react';
 
@@ -19,10 +20,26 @@ interface Props {
 export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAberta, pode_votar: podeVotar, ja_votou_em: jaVotouEm }: Props) {
     const { auth } = usePage<SharedData>().props;
     const [votandoEm, setVotandoEm] = useState<number | null>(null);
+    const reduzMovimento = useReducedMotion();
 
     const votar = (submissionId: number) => {
         setVotandoEm(submissionId);
         router.post(route('votos.store'), { submission_id: submissionId }, { preserveScroll: true, onFinish: () => setVotandoEm(null) });
+    };
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
+    };
+
+    const listaVariants: Variants = {
+        oculto: {},
+        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.08 } },
+    };
+
+    const itemVariants: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 16 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' } },
     };
 
     return (
@@ -31,14 +48,22 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6">
-                <header>
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Projetos</h1>
-                    {evento && <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>}
-                </header>
+            <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 pb-24 sm:p-6">
+                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 sm:pt-12">
+                    <p className="text-primary font-mono text-sm">
+                        <span aria-hidden="true">$ </span>projetos --status
+                    </p>
+                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Projetos</h1>
+                    {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
+                </motion.header>
 
                 {votacaoAberta && !podeVotar && (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 text-sm">
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 text-sm"
+                    >
                         {auth.user ? (
                             <>Você precisa estar inscrito neste evento para votar.</>
                         ) : (
@@ -49,33 +74,47 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
                                 e inscreva-se no evento para votar no seu projeto favorito.
                             </>
                         )}
-                    </div>
+                    </motion.div>
                 )}
 
                 {submissoes.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border border-dashed p-10 text-center">
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border border-dashed p-10 text-center"
+                    >
                         <Rocket className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
                         <p className="mt-3 font-medium">Nenhum projeto enviado ainda</p>
                         <p className="text-muted-foreground mt-1 text-sm">Volte depois que o prazo de submissão fechar.</p>
-                    </div>
+                    </motion.div>
                 ) : (
-                    <ul className="flex flex-col gap-3">
+                    <motion.ul initial="oculto" animate="visivel" variants={listaVariants} className="flex flex-col gap-4">
                         {submissoes.map((submissao) => {
                             const jaVotouNesta = jaVotouEm === submissao.id;
 
                             return (
-                                <li key={submissao.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
-                                    <p className="font-medium">{submissao.titulo}</p>
+                                <motion.li
+                                    key={submissao.id}
+                                    variants={itemVariants}
+                                    className="bg-card border-sidebar-border/70 dark:border-sidebar-border hover:border-primary/30 rounded-xl border p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-6"
+                                >
+                                    <p className="font-display font-medium">{submissao.titulo}</p>
                                     <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
-                                    {submissao.resumo && <p className="mt-2 text-sm">{submissao.resumo}</p>}
+                                    {submissao.resumo && <p className="mt-2 text-sm leading-relaxed">{submissao.resumo}</p>}
 
                                     {votacaoAberta && podeVotar && (
-                                        <div className="mt-3">
+                                        <div className="mt-4">
                                             {jaVotouNesta ? (
-                                                <span className="flex items-center gap-1.5 text-sm text-emerald-700 dark:text-emerald-400">
+                                                <motion.span
+                                                    initial={reduzMovimento ? false : { opacity: 0, scale: 0.85 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                                                    className="flex items-center gap-1.5 text-sm text-emerald-700 dark:text-emerald-400"
+                                                >
                                                     <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
                                                     Seu voto
-                                                </span>
+                                                </motion.span>
                                             ) : (
                                                 <Button
                                                     size="sm"
@@ -93,10 +132,10 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
                                             )}
                                         </div>
                                     )}
-                                </li>
+                                </motion.li>
                             );
                         })}
-                    </ul>
+                    </motion.ul>
                 )}
             </main>
 
