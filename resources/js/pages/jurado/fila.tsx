@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, Circle, ClipboardCheck } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -11,21 +12,32 @@ interface Props {
 
 export default function FilaJurado({ submissoes, progresso }: Props) {
     const percentual = progresso.total === 0 ? 0 : Math.round((progresso.avaliadas / progresso.total) * 100);
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Avaliar', href: route('jurado.index') }]}>
             <Head title="Avaliar" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Suas submissões</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Suas submissões</h1>
                     {progresso.total > 0 && (
                         <>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 {progresso.avaliadas} de {progresso.total} avaliadas
                             </p>
                             <div className="bg-muted mt-2 h-2 w-full overflow-hidden rounded-full" role="progressbar" aria-valuenow={percentual}>
-                                <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${percentual}%` }} />
+                                <motion.div
+                                    className="bg-verde-brilho h-full rounded-full"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentual}%` }}
+                                    transition={reduzMovimento ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
+                                />
                             </div>
                         </>
                     )}
@@ -67,7 +79,7 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                         ))}
                     </ul>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

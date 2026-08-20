@@ -1,4 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -87,6 +88,12 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
     // cast. Sem isto, rejeição de nota (ex.: acima do máximo do critério)
     // falha em silêncio: nenhuma mensagem chega ao jurado.
     const errosPorIndice = form.errors as unknown as Record<string, string | undefined>;
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout
@@ -97,7 +104,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
         >
             <Head title={`Avaliar — ${submissao.titulo}`} />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 {somenteLeitura && (
                     <div className="mb-6 flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-600/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
                         <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -107,7 +114,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
                 <div className="grid gap-6 md:grid-cols-2">
                     <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
-                        <h1 className="text-xl font-semibold">{submissao.titulo}</h1>
+                        <h1 className="font-display text-xl font-semibold tracking-tight">{submissao.titulo}</h1>
                         <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
 
                         {submissao.resumo && <p className="mt-3 text-sm">{submissao.resumo}</p>}
@@ -215,7 +222,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                         </Link>
                     </section>
                 </div>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }
