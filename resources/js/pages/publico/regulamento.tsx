@@ -42,10 +42,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                 className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
             >
                 <motion.header variants={fadeIn} className="pt-8 sm:pt-12">
-                    <p className="text-primary font-mono text-sm">
-                        <span aria-hidden="true">$ </span>regulamento --status
-                    </p>
-                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Regulamento</h1>
+                    <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Regulamento</h1>
                     {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
                     <p className="text-muted-foreground mt-2 text-sm">
                         Regras definidas antes das inscrições. Valem para todas as equipes, sem exceção.
@@ -56,7 +53,9 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     <motion.a
                         variants={itemVariants}
                         href={route('regulamento.download')}
-                        className="border-input bg-background hover:bg-accent hover:border-primary/30 flex items-center gap-3 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm"
+                        whileHover={{ y: -2 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                        className="bg-card flex items-center gap-3 rounded-2xl p-4"
                     >
                         <Download className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         <div className="min-w-0 flex-1">
@@ -66,7 +65,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     </motion.a>
                 )}
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Trophy className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Critério de desempate
@@ -83,7 +82,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <GitCommitVertical className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Se o sistema cair no dia
@@ -94,7 +93,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Users className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Equipes e prazo
@@ -111,7 +110,7 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     )}
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border border-dashed p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <ScrollText className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Regras específicas desta edição

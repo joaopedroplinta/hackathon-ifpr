@@ -14,11 +14,11 @@ interface Props {
 }
 
 const corDoTipo: Record<TipoItemAgenda, string> = {
-    palestra: 'border-blue-600/40 text-blue-700 dark:text-blue-400',
-    workshop: 'border-violet-600/40 text-violet-700 dark:text-violet-400',
-    checkpoint: 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400',
-    refeicao: 'border-amber-600/40 text-amber-700 dark:text-amber-400',
-    deadline: 'border-red-600/40 text-red-700 dark:text-red-400',
+    palestra: 'bg-blue-500/15 text-blue-700 dark:text-blue-400',
+    workshop: 'bg-violet-500/15 text-violet-700 dark:text-violet-400',
+    checkpoint: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+    refeicao: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+    deadline: 'bg-red-500/15 text-red-700 dark:text-red-400',
 };
 
 function formatarHora(iso: string): string {
@@ -82,15 +82,12 @@ export default function Agenda({ evento, itens }: Props) {
                     className="flex flex-wrap items-start justify-between gap-3 pt-8 sm:pt-12"
                 >
                     <div>
-                        <p className="text-primary font-mono text-sm">
-                            <span aria-hidden="true">$ </span>agenda --status
-                        </p>
-                        <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Agenda</h1>
+                        <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Agenda</h1>
                         {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
                     </div>
 
                     {itens.length > 0 && (
-                        <Button asChild variant="outline" className="transition-all hover:-translate-y-0.5 hover:shadow-md">
+                        <Button asChild variant="outline">
                             <a href={route('agenda.ics')}>
                                 <Download className="h-4 w-4" aria-hidden="true" />
                                 Baixar (.ics)
@@ -100,16 +97,22 @@ export default function Agenda({ evento, itens }: Props) {
                 </motion.header>
 
                 {itens.length === 0 ? (
-                    <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="rounded-xl border border-dashed p-10 text-center">
-                        <CalendarX2 className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Agenda ainda não publicada</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Assim que a organização publicar os horários, eles aparecem aqui.</p>
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                    >
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <CalendarX2 className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Agenda ainda não publicada</p>
+                        <p className="text-muted-foreground text-sm">Assim que a organização publicar os horários, eles aparecem aqui.</p>
                     </motion.div>
                 ) : (
                     Object.entries(dias).map(([dia, itensDoDia]) => (
                         <section key={dia} aria-labelledby={`dia-${dia}`}>
-                            <h2 id={`dia-${dia}`} className="text-muted-foreground mb-4 font-mono text-xs tracking-wide uppercase">
-                                <span aria-hidden="true">// </span>
+                            <h2 id={`dia-${dia}`} className="text-muted-foreground mb-4 text-xs tracking-wide uppercase">
                                 {dia}
                             </h2>
 
@@ -136,30 +139,26 @@ export default function Agenda({ evento, itens }: Props) {
                                                 <span className="relative mt-1.5 flex size-3 shrink-0 items-center justify-center">
                                                     {emAndamento && (
                                                         <span
-                                                            className="bg-verde-brilho absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                                                            className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                                                             aria-hidden="true"
                                                         />
                                                     )}
                                                     <span
                                                         className={`relative inline-flex size-2.5 rounded-full ${
-                                                            emAndamento ? 'bg-verde-brilho' : item.destaque ? 'bg-primary' : 'bg-border'
+                                                            emAndamento || item.destaque ? 'bg-primary' : 'bg-border'
                                                         }`}
                                                     />
                                                 </span>
                                                 {!ultimoDoDia && <span className="bg-border mt-1 w-px flex-1" aria-hidden="true" />}
                                             </div>
 
-                                            <div
-                                                className={`mb-3 rounded-xl border p-4 ${emAndamento ? 'border-primary bg-primary/5' : item.destaque ? 'bg-card' : ''}`}
-                                            >
+                                            <div className={`bg-card mb-3 rounded-2xl p-4 ${emAndamento ? 'ring-primary/30 ring-2' : ''}`}>
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="text-muted-foreground font-mono text-sm tabular-nums">
+                                                    <span className="text-muted-foreground text-sm tabular-nums">
                                                         {formatarHora(item.inicia_em)}–{formatarHora(item.termina_em)}
                                                     </span>
-                                                    <span
-                                                        className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${corDoTipo[item.tipo]}`}
-                                                    >
-                                                        [{item.tipo_label.toLowerCase()}]
+                                                    <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${corDoTipo[item.tipo]}`}>
+                                                        {item.tipo_label}
                                                     </span>
                                                     {item.trilha && (
                                                         <span
