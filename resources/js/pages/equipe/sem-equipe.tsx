@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,15 +11,22 @@ interface Props {
 }
 
 export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Equipe', href: route('teams.show') }]}>
             <Head title="Equipe" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-8 text-center">
                     <Users className="text-muted-foreground mx-auto h-10 w-10" aria-hidden="true" />
 
-                    <h1 className="mt-4 text-xl font-semibold">Você ainda não tem equipe</h1>
+                    <h1 className="font-display mt-4 text-xl font-semibold tracking-tight">Você ainda não tem equipe</h1>
 
                     {pode_criar ? (
                         <>
@@ -42,7 +50,7 @@ export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
                         </p>
                     )}
                 </section>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

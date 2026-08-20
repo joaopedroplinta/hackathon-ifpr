@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Check, Copy, Crown, LogOut, UserMinus } from 'lucide-react';
 import { useState } from 'react';
 
@@ -116,14 +117,20 @@ function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
 
 export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props) {
     const faltam = limites.minimo - limites.atual;
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Equipe', href: route('teams.show') }]}>
             <Head title={equipe.nome} />
 
-            <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-semibold">{equipe.nome}</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">{equipe.nome}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {equipe.trilha ? `Trilha: ${equipe.trilha.name}` : 'Sem trilha definida'} · {equipe.status_label}
                     </p>
@@ -213,7 +220,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                         </section>
                     );
                 })()}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

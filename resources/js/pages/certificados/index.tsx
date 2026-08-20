@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Award, Clock, Download } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,12 +11,19 @@ interface Props {
 }
 
 export default function MeusCertificados({ certificados }: Props) {
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Certificados', href: route('certificates.index') }]}>
             <Head title="Certificados" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
-                <h1 className="mb-1 text-2xl font-semibold">Certificados</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
+                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Certificados</h1>
                 <p className="text-muted-foreground mb-6 text-sm">Seus certificados de participação, jurado, organização e colocação.</p>
 
                 {certificados.length === 0 ? (
@@ -57,7 +65,7 @@ export default function MeusCertificados({ certificados }: Props) {
                         ))}
                     </ul>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

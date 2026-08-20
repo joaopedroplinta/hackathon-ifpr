@@ -1,4 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -21,6 +22,7 @@ type InscricaoForm = {
 
 export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
     const { evento } = usePage<SharedData>().props;
+    const reduzMovimento = useReducedMotion();
 
     const { data, setData, post, processing, errors } = useForm<InscricaoForm>({
         shirt_size: '',
@@ -34,6 +36,11 @@ export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
         post(route('registration.store'));
     };
 
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -43,9 +50,9 @@ export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
         >
             <Head title="Inscrição" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="text-2xl font-semibold">Inscrição no evento</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Inscrição no evento</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {evento?.nome}. Todos os campos abaixo são opcionais — servem para a organização se preparar melhor.
                     </p>
@@ -114,7 +121,7 @@ export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
                         {processing ? 'Confirmando…' : 'Confirmar inscrição'}
                     </Button>
                 </form>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CircleAlert, FileText, LoaderCircle, Lock, TriangleAlert } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -42,6 +43,13 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
 
     const salvarRascunho = () => post(route('submissions.save'), { preserveScroll: true });
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -51,9 +59,9 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
         >
             <Head title="Projeto" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Projeto da {equipe.nome}</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Projeto da {equipe.nome}</h1>
                     {pode_editar && (
                         <p className="text-muted-foreground mt-1 text-sm">
                             Vocês podem salvar um rascunho quantas vezes quiserem. Cada envio fica guardado como uma versão — nada é sobrescrito.
@@ -194,7 +202,7 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                 <div className="mt-8">
                     <HistoricoEnvios versoes={versoes} />
                 </div>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }
