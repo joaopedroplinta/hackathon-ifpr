@@ -1,26 +1,47 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { AlertTriangle, Clock, Database, Mail, Share2, ShieldCheck } from 'lucide-react';
 
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import RodapePublico from '@/components/hackathon/rodape-publico';
 
 export default function Privacidade() {
+    const reduzMovimento = useReducedMotion();
+
+    const listaVariants: Variants = {
+        oculto: {},
+        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.06, delayChildren: reduzMovimento ? 0 : 0.1 } },
+    };
+
+    const itemVariants: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <div className="bg-background text-foreground min-h-svh">
             <Head title="Política de Privacidade" />
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6">
-                <header>
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Política de Privacidade</h1>
+            <motion.main
+                initial="oculto"
+                animate="visivel"
+                variants={listaVariants}
+                className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
+            >
+                <motion.header variants={itemVariants} className="pt-8 sm:pt-12">
+                    <p className="text-primary font-mono text-sm">
+                        <span aria-hidden="true">$ </span>privacidade --status
+                    </p>
+                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Política de Privacidade</h1>
                     <p className="text-muted-foreground mt-2 text-sm">
                         Como o sistema do 1º Hackathon IFPR Pinhais trata os dados de quem se inscreve, participa ou julga o evento — conforme a Lei
                         Geral de Proteção de Dados (Lei 13.709/2018).
                     </p>
-                </header>
+                </motion.header>
 
-                <section className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Database className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Que dados coletamos
@@ -41,9 +62,9 @@ export default function Privacidade() {
                             resultado ficam num log de auditoria com autor e horário
                         </li>
                     </ul>
-                </section>
+                </motion.section>
 
-                <section className="rounded-xl border border-dashed p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border border-dashed p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <AlertTriangle className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Restrição alimentar é dado sensível
@@ -53,9 +74,9 @@ export default function Privacidade() {
                         condição de saúde ou convicção religiosa — por isso a LGPD trata como dado sensível (art. 5º, II). Usamos só pra logística de
                         alimentação do evento, e ele é apagado se você excluir sua conta.
                     </p>
-                </section>
+                </motion.section>
 
-                <section className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <ShieldCheck className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Por que coletamos
@@ -65,9 +86,9 @@ export default function Privacidade() {
                         check-in, calcular e publicar o resultado, emitir certificado. A base legal é o seu consentimento ao se inscrever e o legítimo
                         interesse da organização em realizar o evento.
                     </p>
-                </section>
+                </motion.section>
 
-                <section className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Share2 className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Com quem compartilhamos
@@ -76,9 +97,9 @@ export default function Privacidade() {
                         Jurado só enxerga a submissão atribuída a ele — nunca a lista completa de equipes. Organizador vê o necessário pra operar o
                         evento. Nunca vendemos nem compartilhamos seu dado com anúncio ou rastreamento de terceiros.
                     </p>
-                </section>
+                </motion.section>
 
-                <section className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Clock className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Quanto tempo guardamos
@@ -88,9 +109,9 @@ export default function Privacidade() {
                         seu nome ou e-mail, porque excluir a conta anonimiza esses dados em vez de simplesmente apagar a avaliação de todo mundo que
                         participou com você.
                     </p>
-                </section>
+                </motion.section>
 
-                <section className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Mail className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Seus direitos e contato
@@ -104,16 +125,16 @@ export default function Privacidade() {
                         </a>
                         .
                     </p>
-                </section>
+                </motion.section>
 
-                <p className="text-muted-foreground text-center text-xs">
+                <motion.p variants={itemVariants} className="text-muted-foreground text-center text-xs">
                     Veja também a{' '}
                     <Link href={route('cookies.show')} className="text-foreground underline underline-offset-2">
                         política de cookies
                     </Link>
                     .
-                </p>
-            </main>
+                </motion.p>
+            </motion.main>
 
             <RodapePublico />
         </div>
