@@ -17,11 +17,21 @@ Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização d
 
 > **Status:** Semanas 0 a 8 concluídas — auth, equipes, submissões, agenda,
 > check-in, avaliação por jurados, resultados, voto popular, certificados,
-> regulamento, identidade visual e o ensaio geral automatizado (30 equipes,
-> carga, plano B) já funcionam de ponta a ponta. Falta decidir a hospedagem
-> (dado precisa ficar no Brasil, LGPD) e rodar o ensaio ao vivo com a equipe
-> de organização (roteiro pronto, issue #86) — backlog completo em
-> [`docs/`](docs) e no
+> regulamento e o ensaio geral automatizado (30 equipes, carga, plano B) já
+> funcionam de ponta a ponta. Identidade visual reconstruída do zero (estilo
+> neutro/minimalista, `PLANO.md` §11) e identidade institucional — CPF,
+> vínculo IFPR com matrícula SUAP/SIAPE, foto de perfil — também mescladas.
+> O que resta no projeto inteiro são quatro decisões organizacionais,
+> nenhuma delas código: hospedagem com dado no Brasil
+> ([#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71)),
+> provedor de e-mail em produção
+> ([#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78)),
+> nomeação formal do DPO
+> ([#83](https://github.com/joaopedroplinta/hackathon-ifpr/issues/83)) e o
+> ensaio ao vivo com a equipe de organização
+> ([#86](https://github.com/joaopedroplinta/hackathon-ifpr/issues/86)) —
+> backlog completo em [`docs/backlog.md`](docs/backlog.md), diagramas em
+> [`docs/diagramas.md`](docs/diagramas.md) e no
 > [GitHub Project](https://github.com/users/joaopedroplinta/projects/9).
 
 ---

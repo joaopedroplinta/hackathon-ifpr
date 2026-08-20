@@ -550,85 +550,92 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
 
 ## 11. Identidade visual
 
-O sistema nasceu com a aparência padrão do starter kit: ícone do Laravel no
-favicon e no header, paleta cinza neutra do shadcn. Esta seção documenta uma
-identidade própria do evento, puxando pro verde institucional do IFPR, antes
-de espalhar a mudança pelo código.
+**Segunda versão desta seção.** A primeira identidade (puxando pro verde
+institucional com um conceito de "terminal": painel de log, prompt `$ `,
+badges `[status]` em JetBrains Mono) foi reprovada num pente-fino de UX —
+lia como template genérico de IA: fundo preto puro, verde espalhado em
+texto+borda+badge ao mesmo tempo, partículas decorativas no hero, contagem
+regressiva em caixinha (clichê de "SaaS launch countdown"). Reconstruída do
+zero num estilo neutro/minimalista (referência: Apple, Linear, Vercel) —
+acento de cor vira detalhe pontual, nunca decoração espalhada. **Implementada
+e mesclada** — histórico completo commit a commit no PR #100
+(`feat/redesign-visual-publico`).
 
 ### Ponto de partida
 
 Verde institucional do IFPR, **Pantone 362 C** (`#509E2F`), extraído do manual
 oficial de aplicação da marca:
 <https://ifpr.edu.br/wp-content/uploads/2016/04/manual-aplicacao-marca-ifpr.pdf>.
-
-A cor do manual é a referência — a interface usa uma versão ajustada pra
-contraste de acessibilidade (tabela abaixo). **O símbolo institucional do IF
-não é reaproveitado**: uso da marca oficial é regulado pelo manual, então o
-evento tem um símbolo próprio, só compartilhando a família de verde.
+A cor continua na paleta — só que agora só aparece em detalhe (anel de foco,
+link, um painel de marca isolado), nunca em botão, badge ou fundo grande.
+**O símbolo institucional do IF não é reaproveitado**, mesma razão de sempre:
+uso da marca oficial é regulado pelo manual.
 
 ### Paleta
 
-| Token | Hex | Uso |
-|---|---|---|
-| `verde-ifpr` | `#357724` | Cor primária — botões, links, foco. Pantone 362C escurecido pra dar contraste AA (4.5:1) com texto branco — `#3F8F2E` batia só 4.05:1 |
-| `verde-mata` | `#163C1B` | Fundo do painel "terminal" (hero) e base do modo escuro |
-| `verde-brilho` | `#8FD14F` | Destaque, sucesso, linha "adicionada" no terminal, gráfico |
-| `grafite` | `#1B1B1D` | Texto e superfícies escuras — troca o cinza neutro do shadcn |
-| `papel` | `#F5F7F3` | Fundo claro — branco com leve viés esverdeado, não o creme genérico de template de IA |
-| `amarelo-sinal` | `#E8B93F` | Urgência — prazo perto do fim, aviso. Usado só em pontos de sinal, não decoração |
+Valores reais em `resources/css/app.css` (`:root` = claro, `.dark` = escuro):
 
-Gráficos (`chart-1..5` do shadcn) usam a rampa: `verde-ifpr`, `verde-brilho`,
-`amarelo-sinal`, `verde-mata`, e um cinza quente `#6B6E68` pra série neutra —
-sem introduzir matiz fora da paleta.
+| Token | Claro | Escuro | Uso |
+|---|---|---|---|
+| `background` / `foreground` | `#fcfcfc` / `#1d1d1f` | `#1d1d1f` / `#f5f5f7` | Neutro puro, sem viés de cor |
+| `card` | `#f5f5f7` | `#2c2c2e` | Um degrau abaixo do fundo — separa sem borda nem sombra (`bg-card rounded-2xl`, sem `border`) |
+| `primary` | = `foreground` | = `foreground` | Botão/CTA principal é a pílula preto-sobre-branco (ou o inverso no escuro) — sem cor de marca no botão |
+| `verde-ifpr` | `#357724` (5.5:1 com branco) | `#5cb84a` | Acento — só em anel de foco (`--ring`), link de texto corrido e indicador pontual. Nunca em botão, badge ou fundo grande |
+| `verde-mata` | `#163c1b` | — | Único bloco sólido na cor institucional que sobrou no sistema: o painel de marca em `auth-split-layout.tsx` (login/registro/recuperação de senha). Em todo o resto, verde é só detalhe |
+| status (enviado, atrasado, ativa…) | `emerald`/`amber`/`red-500` a 15% de opacidade, texto na variante 700 (claro) / 400 (escuro) | idem | Pill `rounded-full`, nunca borda colorida nem colchete (`[enviado]` virou `Enviado`) |
 
-Modo escuro: fundo `#14170F` (grafite com viés verde, não cinza puro),
-texto `#F5F7F3`, primária clareada pra `#5CB84A` pra manter contraste em
-fundo escuro.
+`verde-brilho` (`#8fd14f`) sobrevive só nos checkmarks do painel de auth.
+`amarelo-sinal` (`#e8b93f`) saiu de uso nos componentes — aviso/urgência usa
+`amber-*` do Tailwind direto, mesmo vocabulário do restante da paleta de
+status.
+
+`--radius` subiu de `0.5rem` pra `1.25rem`: todo botão do shadcn vira pílula
+sem editar `components/ui/button.tsx` à mão — só o token muda, herdado por
+`--radius-lg/md/sm` no `@theme` (`.claude/rules/frontend.md`: nunca editar
+`components/ui/`).
 
 ### Tipografia
 
 | Papel | Fonte | Por quê |
 |---|---|---|
-| Título/display | Space Grotesk | Geométrica, caráter técnico, números desenhados pra se destacar (contagem regressiva de prazo) |
-| Texto/corpo | Public Sans | Fonte do padrão de serviços digitais públicos (USWDS) — reforça "instituição pública", ótima legibilidade em PT-BR |
-| Dado/utilitário | JetBrains Mono | Prazos, código de convite, `qr_token`, status — qualquer lugar que hoje mostra um dado bruto |
+| Título e corpo | Inter | Uma família só pros dois papéis. Títulos em `font-medium`, nunca `font-semibold`/`font-bold` |
+| Dado tabular | JetBrains Mono | Só onde monospace é funcional de verdade: código de convite, versão no rodapé. Não aparece mais em badge de status nem rótulo de seção |
 
-Servidas via Bunny Fonts, mesmo provedor já usado pro Instrument Sans atual —
-sem cookie/tracking do Google Fonts.
+Servidas via Bunny Fonts (`resources/views/app.blade.php`), sem
+cookie/tracking do Google Fonts.
 
-### Conceito de layout — "log de build"
+### Conceito de layout
 
-A landing pública ganha um painel estilo terminal como elemento de
-assinatura: um log mostrando o fluxo real do evento (equipe formada → projeto
-enviado → avaliado) em JetBrains Mono, com timestamp e cursor piscando. É o
-único momento visualmente ousado da interface — o resto (formulários, tabelas
-do admin, painel do jurado) fica disciplinado, herdando só paleta e
-tipografia, sem repetir o efeito.
+Sem um elemento de assinatura único — o painel de "log de build" (antigo
+`log-de-build.tsx`) foi apagado, não substituído por outro efeito. A
+disciplina se repete em toda tela: cards `bg-card rounded-2xl` sem borda,
+hover `whileHover={{ y: -2 }}` em spring do framer-motion nos itens
+clicáveis (`transition={{ type: 'spring', stiffness: 400, damping: 25 }}`),
+estado vazio como card com ícone circular `bg-muted` em vez de borda
+tracejada.
 
-Rótulos de seção usam prefixo de prompt (`$ como_participar`) em vez de
-uppercase genérico — só faz sentido porque o produto inteiro já fala a
-língua de terminal/versionamento (deadline, commit, log). Badges de status
-(`Enviado`, `Pendente`, `Desqualificado`) passam a render em `JetBrains Mono`
-com colchete (`[enviado]`), o mesmo vocabulário aplicado no sistema inteiro,
-não só na landing.
+O painel esquerdo de login/registro é a exceção deliberada: bloco sólido
+`verde-mata`, sem partículas nem prompt de terminal. Tinha um canvas de
+partículas interativas (`rede-interativa.tsx`, adaptado de um componente do
+21st.dev) — apagado junto, sem outro lugar que o usasse.
 
-### Ícone e favicon
+### Pendência conhecida
 
-`AppLogoIcon` (hoje o "L" do Laravel) é substituído por um símbolo próprio:
-prompt de terminal (`>_`) num quadrado arredondado em `verde-ifpr`. Simples o
-bastante pra continuar legível em 16px de favicon.
+`AppLogoIcon` (`components/app-logo-icon.tsx`) e `public/favicon.svg`
+continuam com o glifo `>_` (prompt de terminal) da primeira identidade, com
+a cor antiga (`#3F8F2E`, fora da paleta atual) — não foram redesenhados
+junto com o resto porque o pente-fino de UX não cobriu marca/ícone, só
+layout, cor e tipografia. Sem issue aberta ainda.
 
 ### Onde mexeu
 
-- `resources/css/app.css` — tokens de cor claro/escuro e import de fonte
-- `components/app-logo-icon.tsx` (prompt `>_`), `public/favicon.svg`
-- `components/hackathon/cabecalho-publico.tsx`, `components/hackathon/log-de-build.tsx`
-  (painel de assinatura), `pages/publico/*.tsx`
-- Badges de status em `pages/admin/{submissoes,rubrica,agenda}/*.tsx` e
-  `pages/publico/agenda.tsx` — `[enviado]` em JetBrains Mono
+Praticamente toda `resources/js/pages/` e boa parte de
+`resources/js/components/hackathon/`, mais `resources/css/app.css` (tokens)
+e `resources/views/app.blade.php` (fonte) — histórico completo, commit por
+commit, no PR #100.
 
-**Implementado.** Aplicado em todo o admin (herda os tokens globais sem
-mexer arquivo por arquivo) e nas páginas públicas listadas acima.
+**Implementado** em público, autenticação, participante, jurado e
+organizador. Ícone/favicon pendentes (ver acima).
 
 ---
 
