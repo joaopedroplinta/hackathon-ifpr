@@ -165,6 +165,21 @@ horário — confirmado.
 
 ---
 
+## Épico 12 — Identidade Institucional
+
+Não fazia parte do cronograma original de 8 semanas — proposto depois, pela
+comissão organizadora, junto do ensaio geral.
+
+| # | História | Status |
+|---|---|---|
+| 12.1 | [Como usuário, quero informar CPF, vínculo institucional e matrícula (SUAP/SIAPE) no meu perfil,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/101) para o certificado emitido ter validade legal e o vínculo institucional ser confirmável quando declarado. | ✅ — branch `feat/identidade-institucional`, ainda não mesclada |
+| 12.2 | [Como usuário, quero trocar minha foto de perfil,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/102) para minha conta ser reconhecível por colegas de equipe, jurados e organização mesmo sem entrar pelo Google. | ✅ — mesma branch. De quebra corrigiu um bug real: `auth.user.avatar` nunca funcionava (a coluna é `avatar_url`), então nenhuma foto — nem a do Google — jamais aparecia no header/sidebar |
+
+**Pendente, fora de escopo:** nada hoje trava a emissão de certificado pra
+quem não preencheu CPF — decisão de design ainda não tomada (`PLANO.md` §4).
+
+---
+
 ## Rastreabilidade com o Canvas de Descoberta
 
 Os quatro épicos que respondem diretamente às dores relatadas pela comissão

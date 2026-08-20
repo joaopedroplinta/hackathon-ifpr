@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Enums\TipoVinculo;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,6 +36,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'cpf',
+        'tipo_vinculo',
+        'matricula_suap',
+        'matricula_siape',
     ];
 
     /**
@@ -67,6 +72,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
         'google_id',
         'qr_token',
+        'cpf',
     ];
 
     /**
@@ -77,6 +83,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tipo_vinculo' => TipoVinculo::class,
         ];
     }
 

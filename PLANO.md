@@ -111,10 +111,14 @@ sem migração dolorosa depois.
 ```
 users
   id, name, email, password (nullable — só Google), google_id (nullable)
-  avatar_url, curso, telefone, qr_token (uuid, único), email_verified_at
+  avatar_url, qr_token (uuid, único), email_verified_at
+  cpf (nullable, único), tipo_vinculo (nullable: aluno_ifpr|professor_ifpr|externo)
+  matricula_suap (nullable), matricula_siape (nullable)  # os três opcionais,
+                                                          # preenchidos em Configurações
 
 event_registrations           # inscrição no evento específico
   id, event_id, user_id, registered_at, dietary_notes, shirt_size
+  phone, course
 
 teams
   id, event_id, track_id, name, slug, invite_code (único)
@@ -133,6 +137,16 @@ team_invites                  # convidar quem ainda não tem conta
 - Equipe só vira `confirmed` com o mínimo de membros
 - Depois de `registration_closes_at`, entrada/saída de membro só via organizador
 - Líder que sai transfere a liderança antes — sem equipe órfã
+- `cpf`/`tipo_vinculo`/`matricula_suap`/`matricula_siape` são opcionais em
+  Configurações — editar nome/e-mail nunca trava por falta deles.
+  `tipo_vinculo = aluno_ifpr` exige `matricula_suap`; `professor_ifpr`
+  exige `matricula_siape`; trocar de vínculo limpa a matrícula do vínculo
+  anterior. CPF valida os dois dígitos verificadores de verdade
+  (`App\Rules\CpfValido`), não só o formato
+- **Pendente:** nada hoje impede emitir certificado pra quem não preencheu
+  CPF — a coleta existe (issue a abrir), mas travar a emissão sem CPF (ou
+  incluí-lo no PDF) é decisão de design ainda não tomada. Ver `docs/ropa.md`
+  pra base legal e retenção do dado
 
 ### Submissões
 

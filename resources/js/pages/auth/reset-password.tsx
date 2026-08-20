@@ -3,6 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
+import PasswordRequirements from '@/components/password-requirements';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,7 +69,9 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             autoFocus
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Nova senha"
+                            aria-describedby="password-requisitos"
                         />
+                        <PasswordRequirements />
                         <InputError message={errors.password} />
                     </div>
 

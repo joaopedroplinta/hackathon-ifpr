@@ -52,6 +52,11 @@ export default function Privacidade() {
                             <strong className="text-foreground">Inscrição no evento:</strong> telefone, curso e tamanho de camiseta
                         </li>
                         <li>
+                            <strong className="text-foreground">Identidade institucional (opcional):</strong> CPF, vínculo com o IFPR (aluno,
+                            professor ou externo) e matrícula do SUAP ou SIAPE — preenchido em Configurações, não na inscrição. Usado pra dar validade
+                            legal ao certificado e confirmar vínculo institucional quando declarado
+                        </li>
+                        <li>
                             <strong className="text-foreground">Crachá digital:</strong> um código único pro check-in por QR na entrada
                         </li>
                         <li>
