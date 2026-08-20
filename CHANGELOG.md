@@ -10,11 +10,60 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
-### Planejado (ver `PLANO.md`, cronograma semana 7-8)
+### Adicionado
 
-- Certificados em PDF com validação por código
-- Notificações por e-mail em fila (deadline, resultado)
-- Ensaio geral: carga, acessibilidade, responsivo, deploy, plano B
+- Página pública para navegar edições anteriores do hackathon e seus
+  resultados publicados (#98)
+- `DemoSeeder`: evento encerrado com resultado publicado + evento atual com
+  inscrições abertas, para demonstrar o sistema fora do ambiente de ensaio
+  (#96)
+- Identidade visual reconstruída do zero: o conceito "terminal" original
+  (painel de log, prompt `$ `, badges `[status]`) reprovou num pente-fino
+  de UX por ler como template genérico de IA. No lugar, estilo
+  neutro/minimalista com acento de cor só em detalhe (link, anel de foco) —
+  ver `PLANO.md` §11 para a paleta e o conceito de layout novos (#100)
+- Identidade institucional: CPF com validação real de dígito verificador
+  (`App\Rules\CpfValido`, não só formato), vínculo institucional (aluno
+  IFPR / professor IFPR / externo) com matrícula SUAP ou SIAPE condicional
+  ao vínculo, e troca de foto de perfil (#101, #102, PR #103)
+- Requisitos de senha (letra maiúscula, minúscula, símbolo, 8+ caracteres)
+  agora aplicados no servidor e exibidos no formulário — antes só exigia 8
+  caracteres, sem nenhum aviso (PR #103)
+- Documentação técnica: diagrama de entidade-relacionamento, diagrama de
+  classes, diagrama de casos de uso e diagramas de sequência dos 5 fluxos
+  principais (`docs/diagramas.md`, PR #104)
+
+### Corrigido
+
+- `auth.user.avatar` nunca funcionava — a coluna real é `avatar_url` —
+  então nenhuma foto de perfil, nem a vinda do Google, jamais aparecia no
+  header ou na sidebar (PR #103)
+- 17 `judge_assignments` de um script de carga antigo apontavam para um
+  `judge_id` que nunca existiu de verdade, derrubando `/admin/jurados` com
+  erro 500 — dado órfão limpo diretamente; a FK `restrictOnDelete()` já
+  impede que isso aconteça de novo por um caminho normal do app
+
+## [0.7.0] - 2026-08-18
+
+Infraestrutura de demonstração — sem mudança visível pro usuário final.
+
+### Adicionado
+
+- Deploy de demonstração via Render + Supabase (`render.yaml`, `Dockerfile`,
+  roteiro em `deploy/render-supabase.md`), para mostrar o sistema fora do
+  `localhost`. **Não é** a decisão de hospedagem do evento real — dado fora
+  do Brasil, só dado de ensaio ali dentro (ver Épico 11.2 do backlog)
+
+### Corrigido
+
+- Título da aba mostrava "Início - Laravel" em vez do nome do projeto no
+  build de produção via Docker (`VITE_APP_NAME` não chegava no estágio de
+  build dos assets)
+- URLs de asset geradas em `http://` atrás do proxy reverso da Render
+- Logs de exceção iam para lugar nenhum que o visualizador da Render
+  enxergasse — agora vão para stderr
+- Migration deixava de rodar sozinha no boot do container (free tier não
+  dá Shell nem One-Off Jobs para rodar à mão)
 
 ## [0.6.0] - 2026-08-17
 
@@ -34,9 +83,17 @@ e do organizador, do cadastro ao resultado publicado.
 - Painel do jurado com autosave, pensado para avaliação pelo celular
 - Cálculo de resultados (`hackathon:compute-results`), publicação
   controlada, página pública de resultados e voto popular
+- Certificados em PDF (participação, jurado, organização, colocação) com
+  emissão manual e validação pública por código (`/validar/{code}`)
+- Notificações por e-mail em fila: lembrete de prazo de submissão e
+  resultado publicado
+- Banner de consentimento de cookies (LGPD)
+- Troca do driver de filas de `database` para Redis, com persistência e
+  systemd configurados
 - Página de privacidade LGPD, RoPA e minuta de designação do DPO
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.6.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/joaopedroplinta/hackathon-ifpr/releases/tag/v0.6.0
