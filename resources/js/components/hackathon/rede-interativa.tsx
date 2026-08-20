@@ -112,7 +112,7 @@ export function RedeInterativa({
             desenhar() {
                 ctx!.beginPath();
                 ctx!.arc(this.x, this.y, this.raio, 0, Math.PI * 2);
-                const alfa = Math.max(0.25, this.ativacao);
+                const alfa = Math.max(0.55, this.ativacao);
                 ctx!.fillStyle = corNo.replace(/[^,]+(?=\))/, alfa.toString());
                 ctx!.fill();
                 this.pulsos.forEach((p) => p.desenhar());
