@@ -8,6 +8,7 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
+import PasswordRequirements from '@/components/password-requirements';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -87,8 +88,10 @@ export default function Password() {
                                 className="mt-1 block w-full"
                                 autoComplete="new-password"
                                 placeholder="Nova senha"
+                                aria-describedby="password-requisitos"
                             />
 
+                            <PasswordRequirements />
                             <InputError message={errors.password} />
                         </div>
 

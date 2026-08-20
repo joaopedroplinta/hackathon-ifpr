@@ -4,6 +4,7 @@ import { FormEventHandler } from 'react';
 
 import { GoogleLoginButton } from '@/components/hackathon/google-login-button';
 import InputError from '@/components/input-error';
+import PasswordRequirements from '@/components/password-requirements';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -92,7 +93,9 @@ export default function Register() {
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Sua senha"
+                            aria-describedby="password-requisitos"
                         />
+                        <PasswordRequirements />
                         <InputError message={errors.password} />
                     </div>
 
