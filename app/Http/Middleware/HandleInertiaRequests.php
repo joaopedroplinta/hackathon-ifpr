@@ -50,7 +50,19 @@ class HandleInertiaRequests extends Middleware
             'app_version' => (new AppVersion)->display(),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                // Serialização explícita, não o model cru: a coluna real é
+                // avatar_url, mas o header/sidebar sempre esperou `avatar`
+                // -- sem isto o campo simplesmente nunca chegava (bug real,
+                // achado ao construir o upload manual de foto).
+                'user' => $request->user() ? [
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    'avatar' => $request->user()->avatar_url,
+                    'email_verified_at' => $request->user()->email_verified_at,
+                    'created_at' => $request->user()->created_at,
+                    'updated_at' => $request->user()->updated_at,
+                ] : null,
                 // Só decide o que a navegação mostra. Cada rota do painel
                 // continua passando pela Policy -- esconder o link nunca é
                 // controle de acesso (.claude/rules/security.md).

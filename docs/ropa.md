@@ -42,6 +42,7 @@ aqui.
 | Tabela | Dado pessoal | Titular | Finalidade | Base legal (LGPD art. 7º) | Retenção | Compartilhado com |
 |---|---|---|---|---|---|---|
 | `users` | nome, e-mail, senha (hash), `google_id`, `avatar_url`, `qr_token` | Todos | Identidade, autenticação, crachá digital de check-in | Execução de procedimento preliminar / consentimento no cadastro (inc. V) | Enquanto a conta existir; anonimizado ao excluir (§5) | Ninguém fora do sistema. Senha nunca sai do hash |
+| `users` (identidade institucional) | CPF, vínculo (aluno/professor do IFPR ou externo), matrícula SUAP ou SIAPE | Todos | Dar validade legal ao certificado emitido; confirmar vínculo institucional quando declarado | Consentimento (inc. I) — os três campos são opcionais, preenchidos em Configurações, nunca na inscrição | Enquanto a conta existir; zerado ao excluir (§5) | Ninguém fora do sistema. CPF fica fora da serialização padrão do model (`$hidden`), só o próprio dono vê o valor em Configurações |
 | `event_registrations` | telefone, curso, tamanho de camiseta, **restrição alimentar** | Participante | Logística do evento (contato, credenciamento, alimentação) | Consentimento (inc. I) — restrição alimentar é opcional | Enquanto a inscrição existir; apagado (não anonimizado — zerado) ao excluir a conta | Organização, só o necessário pra operar o evento |
 | `teams` / `team_members` | nome (via `leader_id`/`user_id`), papel na equipe | Participante | Formar e gerenciar equipes | Consentimento ao entrar na equipe | Enquanto a equipe existir (soft delete) | Outros membros da equipe, organização |
 | `submissions` / `submission_files` | conteúdo do projeto enviado, autoria (`team_id`), nome original do arquivo (metadado, nunca usado no caminho de disco) | Participante | Avaliação do projeto, exibição pública pós-publicação | Execução do procedimento do evento (inc. V) | Registro do evento — não é apagado, é histórico da submissão | Jurados atribuídos; público em geral após `results_published_at`, só o que for exibido na vitrine |
@@ -68,7 +69,11 @@ Nenhuma outra coluna do sistema se enquadra como dado sensível.
 de conta (art. 18, VI):
 
 - `users`: nome vira "Usuário removido", e-mail vira
-  `removido-{id}@removido.local`, `google_id` e `avatar_url` zerados
+  `removido-{id}@removido.local`, `google_id`, `avatar_url`, `cpf`,
+  `tipo_vinculo`, `matricula_suap` e `matricula_siape` zerados. Se a foto
+  de perfil era um upload nosso (não uma URL do Google), o arquivo também
+  é apagado de `storage/app/public` -- zerar só a coluna deixaria a
+  imagem do rosto da pessoa órfã no disco
 - `event_registrations`: telefone, curso e restrição alimentar zerados
 - Soft delete em `users` — escopo global do Eloquent já esconde de toda
   consulta normal, login para de funcionar
@@ -95,3 +100,4 @@ relevante pra este inventário:
 | Data | Mudança |
 |---|---|
 | 2026-08-15 | Primeira versão, consolidando `/privacidade`, PLANO.md Anexo A.11 e `.claude/rules/security.md` — issue #84 |
+| 2026-08-20 | Adiciona CPF, vínculo institucional e matrícula SUAP/SIAPE em `users` (todos opcionais, preenchidos em Configurações) — certificado com validade legal e confirmação de vínculo. `AnonymizeUser` atualizado pra zerar os três e apagar foto de perfil local do disco |

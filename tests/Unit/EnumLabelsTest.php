@@ -16,6 +16,7 @@ use App\Enums\SubmissionStatus;
 use App\Enums\TeamMemberRole;
 use App\Enums\TeamMemberStatus;
 use App\Enums\TeamStatus;
+use App\Enums\TipoVinculo;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -46,6 +47,7 @@ class EnumLabelsTest extends TestCase
             'TeamMemberRole' => [TeamMemberRole::class],
             'TeamMemberStatus' => [TeamMemberStatus::class],
             'AttendanceMethod' => [AttendanceMethod::class],
+            'TipoVinculo' => [TipoVinculo::class],
         ];
     }
 
