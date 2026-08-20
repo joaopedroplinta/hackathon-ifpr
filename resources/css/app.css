@@ -22,8 +22,8 @@
 }
 
 @theme {
-    --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-display: 'Space Grotesk', 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    --font-display: 'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
     --color-verde-brilho: var(--verde-brilho);
@@ -103,49 +103,52 @@
        sobrescreve pra "dark" logo abaixo. */
     color-scheme: light;
 
-    /* Paleta institucional -- PLANO.md §11. Pantone 362C (#509E2F) escurecido
-       pra dar contraste AA com texto branco (4.05:1 com #3F8F2E não bate os
-       4.5:1 exigidos pra texto normal -- #357724 dá 5.5:1); papel é branco
-       com leve viés esverdeado, não o creme genérico de template de IA. */
+    /* Verde institucional (PLANO.md §11) sobrevive só como acento funcional
+       -- anel de foco, indicador de item ativo -- não mais como cor de botão
+       nem espalhado em texto/borda/badge ao mesmo tempo. #357724 dá 5.5:1 de
+       contraste com branco, então continua seguro pra texto quando usado. */
     --verde-ifpr: #357724;
     --verde-mata: #163c1b;
     --verde-brilho: #8fd14f;
-    --grafite: #1b1b1d;
-    --papel: #f5f7f3;
     --amarelo-sinal: #e8b93f;
 
-    --background: var(--papel);
-    --foreground: var(--grafite);
-    --card: #ffffff;
-    --card-foreground: var(--grafite);
+    /* Neutro puro, sem viés de cor -- nada de cinza esverdeado. Cartão fica
+       um degrau abaixo do fundo pra separar sem borda nem sombra. */
+    --background: #fcfcfc;
+    --foreground: #1d1d1f;
+    --card: #f5f5f7;
+    --card-foreground: #1d1d1f;
     --popover: #ffffff;
-    --popover-foreground: var(--grafite);
-    --primary: var(--verde-ifpr);
-    --primary-foreground: #ffffff;
-    --secondary: #e6ece1;
-    --secondary-foreground: var(--grafite);
-    --muted: #edf1e8;
-    --muted-foreground: #5b6157;
-    --accent: #e2f0d9;
-    --accent-foreground: var(--grafite);
+    --popover-foreground: #1d1d1f;
+    /* Botão primário é o par foreground/background -- pílula preta sobre
+       branco, sem cor de marca. O acento entra só em detalhe (anel de
+       foco, link, indicador), nunca no CTA principal. */
+    --primary: var(--foreground);
+    --primary-foreground: var(--background);
+    --secondary: #f5f5f7;
+    --secondary-foreground: #1d1d1f;
+    --muted: #f5f5f7;
+    --muted-foreground: #6e6e73;
+    --accent: #f5f5f7;
+    --accent-foreground: #1d1d1f;
     --destructive: #c1402f;
     --destructive-foreground: #ffffff;
-    --border: #dbe2d3;
-    --input: #dbe2d3;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
     --ring: var(--verde-ifpr);
     --chart-1: var(--verde-ifpr);
     --chart-2: var(--verde-brilho);
     --chart-3: var(--amarelo-sinal);
     --chart-4: var(--verde-mata);
-    --chart-5: #6b6e68;
-    --radius: 0.5rem;
-    --sidebar-background: #eff3ea;
-    --sidebar-foreground: var(--grafite);
-    --sidebar-primary: var(--verde-ifpr);
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #e2f0d9;
-    --sidebar-accent-foreground: var(--grafite);
-    --sidebar-border: #dbe2d3;
+    --chart-5: #86868b;
+    --radius: 1.25rem;
+    --sidebar-background: #f5f5f7;
+    --sidebar-foreground: #1d1d1f;
+    --sidebar-primary: #1d1d1f;
+    --sidebar-primary-foreground: #fcfcfc;
+    --sidebar-accent: #eaeaec;
+    --sidebar-accent-foreground: #1d1d1f;
+    --sidebar-border: #e5e5e5;
     --sidebar-ring: var(--verde-ifpr);
 }
 
@@ -157,38 +160,39 @@
     --verde-brilho: #8fd14f;
     --amarelo-sinal: #e8b93f;
 
-    /* Grafite com viés verde -- nunca cinza puro. */
-    --background: #14170f;
-    --foreground: #f5f7f3;
-    --card: #1b1f16;
-    --card-foreground: #f5f7f3;
-    --popover: #1b1f16;
-    --popover-foreground: #f5f7f3;
-    --primary: var(--verde-ifpr);
-    --primary-foreground: #0e1309;
-    --secondary: #232922;
-    --secondary-foreground: #f5f7f3;
-    --muted: #1f241b;
-    --muted-foreground: #9aa394;
-    --accent: #232922;
-    --accent-foreground: #f5f7f3;
+    /* Mesmo princípio do claro: preto suave, não #000; branco suave, não
+       #fff. Neutro, sem o viés verde que o tema escuro tinha antes. */
+    --background: #1d1d1f;
+    --foreground: #f5f5f7;
+    --card: #2c2c2e;
+    --card-foreground: #f5f5f7;
+    --popover: #2c2c2e;
+    --popover-foreground: #f5f5f7;
+    --primary: var(--foreground);
+    --primary-foreground: var(--background);
+    --secondary: #2c2c2e;
+    --secondary-foreground: #f5f5f7;
+    --muted: #2c2c2e;
+    --muted-foreground: #98989d;
+    --accent: #2c2c2e;
+    --accent-foreground: #f5f5f7;
     --destructive: #e05a4a;
-    --destructive-foreground: #14170f;
-    --border: #2a3024;
-    --input: #2a3024;
+    --destructive-foreground: #1d1d1f;
+    --border: #38383a;
+    --input: #38383a;
     --ring: var(--verde-ifpr);
     --chart-1: var(--verde-ifpr);
     --chart-2: var(--verde-brilho);
     --chart-3: var(--amarelo-sinal);
     --chart-4: #3f8f2e;
-    --chart-5: #8a8f82;
-    --sidebar-background: var(--verde-mata);
-    --sidebar-foreground: #f5f7f3;
-    --sidebar-primary: var(--verde-brilho);
-    --sidebar-primary-foreground: #0e1309;
-    --sidebar-accent: #1f4a26;
-    --sidebar-accent-foreground: #f5f7f3;
-    --sidebar-border: #234a29;
+    --chart-5: #98989d;
+    --sidebar-background: #2c2c2e;
+    --sidebar-foreground: #f5f5f7;
+    --sidebar-primary: #f5f5f7;
+    --sidebar-primary-foreground: #1d1d1f;
+    --sidebar-accent: #38383a;
+    --sidebar-accent-foreground: #f5f5f7;
+    --sidebar-border: #38383a;
     --sidebar-ring: var(--verde-ifpr);
 }
 

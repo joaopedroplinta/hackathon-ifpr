@@ -1,11 +1,10 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 
 import AppLogoIcon from '@/components/app-logo-icon';
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
 import ContadorEvento from '@/components/hackathon/contador-evento';
-import LogDeBuild from '@/components/hackathon/log-de-build';
-import RedeInterativa from '@/components/hackathon/rede-interativa';
 import RodapePublico from '@/components/hackathon/rodape-publico';
 import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
@@ -35,6 +34,12 @@ const passos = [
 
 export default function Inicio({ evento }: Props) {
     const { auth } = usePage<SharedData>().props;
+    const reduzMovimento = useReducedMotion();
+
+    const subir: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 14 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' } },
+    };
 
     return (
         <div className="bg-background text-foreground min-h-svh">
@@ -45,79 +50,52 @@ export default function Inicio({ evento }: Props) {
             <main className="mx-auto flex w-full max-w-5xl flex-col gap-24 p-4 pb-24 sm:gap-32 sm:p-6">
                 {evento ? (
                     <>
-                        <RedeInterativa className="flex flex-col items-center gap-10 pt-12 text-center sm:gap-12 sm:pt-24 lg:pt-28">
+                        <motion.section
+                            initial="oculto"
+                            animate="visivel"
+                            variants={subir}
+                            className="flex flex-col items-center gap-10 pt-16 text-center sm:gap-12 sm:pt-28 lg:pt-32"
+                        >
                             <div>
-                                <p
-                                    style={{ animationDelay: '0ms' }}
-                                    className="text-primary motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both font-mono text-sm motion-safe:duration-700"
-                                >
-                                    <span aria-hidden="true">$ </span>
-                                    {evento.edicao}ª edição — {evento.situacao_label}
+                                <p className="text-muted-foreground text-sm tracking-wide uppercase">
+                                    {evento.edicao}ª edição · {evento.situacao_label}
                                 </p>
-                                <h1
-                                    style={{ animationDelay: '80ms' }}
-                                    className="font-display motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both mt-3 text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.03] font-semibold tracking-tight text-balance motion-safe:duration-700"
-                                >
+                                <h1 className="mt-4 text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.05] font-medium tracking-tight text-balance">
                                     {evento.nome}
                                 </h1>
                                 {evento.descricao && (
-                                    <p
-                                        style={{ animationDelay: '160ms' }}
-                                        className="text-muted-foreground motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both mx-auto mt-5 max-w-2xl text-lg text-balance motion-safe:duration-700"
-                                    >
-                                        {evento.descricao}
-                                    </p>
+                                    <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-lg text-balance">{evento.descricao}</p>
                                 )}
                             </div>
 
-                            <div
-                                style={{ animationDelay: '220ms' }}
-                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:fill-mode-both motion-safe:duration-700"
-                            >
-                                {evento.situacao === 'running' ? (
-                                    <p role="status" className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />O evento está acontecendo agora.
-                                    </p>
-                                ) : evento.situacao === 'finished' ? (
-                                    <p role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
-                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Esta edição já terminou. Resultados em breve.
-                                    </p>
-                                ) : evento.inicia_em ? (
-                                    <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
-                                ) : null}
-                            </div>
+                            {evento.situacao === 'running' ? (
+                                <p role="status" className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                                    <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />O evento está acontecendo agora.
+                                </p>
+                            ) : evento.situacao === 'finished' ? (
+                                <p role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
+                                    <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                    Esta edição já terminou. Resultados em breve.
+                                </p>
+                            ) : evento.inicia_em ? (
+                                <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
+                            ) : null}
 
-                            <div
-                                style={{ animationDelay: '300ms' }}
-                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both flex flex-wrap items-center justify-center gap-3 motion-safe:duration-700"
-                            >
+                            <div className="flex flex-wrap items-center justify-center gap-3">
                                 {!auth.user && (
-                                    <Button
-                                        asChild
-                                        size="lg"
-                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
-                                    >
+                                    <Button asChild size="lg">
                                         <Link href={route('register')}>Criar conta e participar</Link>
                                     </Button>
                                 )}
 
                                 {auth.user && evento.inscricoes_abertas && (
-                                    <Button
-                                        asChild
-                                        size="lg"
-                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
-                                    >
+                                    <Button asChild size="lg">
                                         <Link href={route('registration.create')}>Fazer inscrição</Link>
                                     </Button>
                                 )}
 
                                 {auth.user && !evento.inscricoes_abertas && (
-                                    <Button
-                                        asChild
-                                        size="lg"
-                                        className="shadow-primary/20 hover:shadow-primary/30 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
-                                    >
+                                    <Button asChild size="lg">
                                         <Link href={route('dashboard')}>Ir para o painel</Link>
                                     </Button>
                                 )}
@@ -130,47 +108,36 @@ export default function Inicio({ evento }: Props) {
                             {!evento.inscricoes_abertas && evento.situacao === 'published' && (
                                 <p className="text-muted-foreground text-sm">As inscrições ainda não abriram ou já encerraram.</p>
                             )}
+                        </motion.section>
 
-                            <div
-                                style={{ animationDelay: '160ms' }}
-                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both mx-auto w-full max-w-lg motion-safe:duration-1000"
-                            >
-                                <LogDeBuild />
-                            </div>
-                        </RedeInterativa>
-
-                        <section aria-labelledby="como-participar" className="flex flex-col gap-10">
-                            <h2 id="como-participar" className="font-display text-center text-2xl font-semibold tracking-tight sm:text-3xl">
-                                <span aria-hidden="true">
-                                    <span className="text-muted-foreground font-mono text-lg font-normal">$ </span>
-                                    como_participar
-                                </span>
-                                <span className="sr-only">Como participar</span>
+                        <section aria-labelledby="como-participar" className="flex flex-col gap-12">
+                            <h2 id="como-participar" className="text-center text-2xl font-medium tracking-tight sm:text-3xl">
+                                Como participar
                             </h2>
                             <div className="grid gap-6 sm:grid-cols-3">
-                                {passos.map((passo, indice) => (
-                                    <div
+                                {passos.map((passo) => (
+                                    <motion.div
                                         key={passo.titulo}
-                                        style={{ animationDelay: `${indice * 120}ms` }}
-                                        className="bg-card motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both group hover:border-primary/30 flex flex-col gap-3.5 rounded-xl border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md motion-safe:duration-700"
+                                        whileHover={reduzMovimento ? undefined : { y: -2 }}
+                                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                        className="bg-card flex flex-col gap-3.5 rounded-2xl p-6"
                                     >
-                                        <div className="text-primary font-mono text-xs">[passo {indice + 1}]</div>
-                                        <span className="bg-primary/10 text-primary group-hover:bg-primary/15 flex size-11 items-center justify-center rounded-lg transition-colors">
+                                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                                             <passo.icone className="h-5 w-5 shrink-0" aria-hidden="true" />
                                         </span>
-                                        <h3 className="font-display font-medium">{passo.titulo}</h3>
+                                        <h3 className="font-medium">{passo.titulo}</h3>
                                         <p className="text-muted-foreground text-sm leading-relaxed">{passo.texto}</p>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </section>
                     </>
                 ) : (
                     <section className="flex flex-col items-center gap-4 pt-24 text-center">
-                        <span className="bg-primary text-primary-foreground flex size-14 items-center justify-center rounded-xl">
+                        <span className="bg-primary text-primary-foreground flex size-14 items-center justify-center rounded-2xl">
                             <AppLogoIcon className="size-8 fill-current" />
                         </span>
-                        <h1 className="font-display text-2xl font-semibold tracking-tight">Nenhum evento publicado no momento</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Nenhum evento publicado no momento</h1>
                         <p className="text-muted-foreground max-w-md">Assim que uma edição do hackathon for aberta, ela aparece aqui.</p>
                     </section>
                 )}
