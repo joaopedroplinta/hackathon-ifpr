@@ -68,14 +68,14 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
             <Head title="Lançar submissão manualmente" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Lançar submissão manualmente</h1>
+                <h1 className="mb-1 text-2xl font-medium tracking-tight">Lançar submissão manualmente</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Só pra quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano B,
                     degraus 3 e 4). Fica marcada pra conferência no painel.
                 </p>
 
                 {equipes.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center">
+                    <div className="bg-card rounded-2xl p-6 text-center">
                         <p className="font-medium">Nenhuma equipe pendente.</p>
                         <p className="text-muted-foreground mt-1 text-sm">Toda equipe deste evento já tem uma submissão registrada.</p>
                     </div>

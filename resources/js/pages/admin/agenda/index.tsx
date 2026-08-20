@@ -48,7 +48,7 @@ export default function ListaAgenda({ itens }: Props) {
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="font-display text-2xl font-semibold tracking-tight">Agenda</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Agenda</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece pro público.
                         </p>
@@ -60,26 +60,28 @@ export default function ListaAgenda({ itens }: Props) {
                 </header>
 
                 {itens.length === 0 ? (
-                    <div className="rounded-xl border border-dashed p-10 text-center">
-                        <CalendarDays className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhum item na agenda</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Crie o primeiro item para começar a montar a programação.</p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <CalendarDays className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhum item na agenda</p>
+                        <p className="text-muted-foreground text-sm">Crie o primeiro item para começar a montar a programação.</p>
                     </div>
                 ) : (
                     <ul className="flex flex-col gap-3">
                         {itens.map((item) => (
-                            <li key={item.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                            <li key={item.id} className="bg-card rounded-2xl p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span
-                                                className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${
+                                                className={`inline-block rounded-full px-2 py-0.5 text-xs ${
                                                     item.publicado
-                                                        ? 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
-                                                        : 'border-muted-foreground/30 text-muted-foreground'
+                                                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
+                                                        : 'bg-muted text-muted-foreground'
                                                 }`}
                                             >
-                                                [{item.publicado ? 'publicado' : 'rascunho'}]
+                                                {item.publicado ? 'Publicado' : 'Rascunho'}
                                             </span>
                                             <span className="text-muted-foreground text-xs">{item.tipo_label}</span>
                                             {item.trilha && (

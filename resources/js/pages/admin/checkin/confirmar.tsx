@@ -62,7 +62,7 @@ export default function ConfirmarCheckin({
             <Head title={`Check-in — ${participante.nome}`} />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-sm p-4 sm:p-6">
-                <div className="flex flex-col items-center gap-3 rounded-xl border p-6 text-center">
+                <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-6 text-center">
                     {participante.avatar_url ? (
                         <img src={participante.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
                     ) : (
@@ -72,7 +72,7 @@ export default function ConfirmarCheckin({
                     )}
 
                     <div>
-                        <p className="font-display text-lg font-medium">{participante.nome}</p>
+                        <p className="text-lg font-medium">{participante.nome}</p>
                         <p className="text-muted-foreground text-sm">{participante.email}</p>
                     </div>
 

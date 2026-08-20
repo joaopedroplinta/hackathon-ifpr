@@ -41,7 +41,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Certificados</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Certificados</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Participação, jurado, organizador e colocação saem em lote com{' '}
                         <code className="text-xs">php artisan hackathon:issue-certificates</code>. Aqui é só a emissão avulsa — mentoria ou correção
@@ -49,7 +49,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     </p>
                 </header>
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
                     <h2 className="font-medium">Emitir certificado avulso</h2>
                     <form onSubmit={emitir} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div className="flex-1">
@@ -116,10 +116,12 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
 
                 <h2 className="mb-3 font-medium">Emitidos</h2>
                 {certificados.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center">
-                        <Award className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhum certificado emitido ainda.</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Rode o comando de emissão em lote ou emita um avulso acima.</p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <Award className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhum certificado emitido ainda.</p>
+                        <p className="text-muted-foreground text-sm">Rode o comando de emissão em lote ou emita um avulso acima.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">

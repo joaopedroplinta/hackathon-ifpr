@@ -45,7 +45,7 @@ export default function ListaRubricas({ rubricas }: Props) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Rubrica</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Rubrica</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Só a rubrica ativa conta pro cálculo e aparece pro jurado e pro público.</p>
                 </header>
 
@@ -72,26 +72,28 @@ export default function ListaRubricas({ rubricas }: Props) {
                 </form>
 
                 {rubricas.length === 0 ? (
-                    <div className="rounded-xl border border-dashed p-10 text-center">
-                        <ClipboardList className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhuma rubrica cadastrada</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <ClipboardList className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhuma rubrica cadastrada</p>
+                        <p className="text-muted-foreground text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
                     </div>
                 ) : (
                     <ul className="flex flex-col gap-3">
                         {rubricas.map((rubrica) => (
-                            <li key={rubrica.id} className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                            <li key={rubrica.id} className="bg-card rounded-2xl p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span
-                                                className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${
+                                                className={`inline-block rounded-full px-2 py-0.5 text-xs ${
                                                     rubrica.ativa
-                                                        ? 'border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
-                                                        : 'border-muted-foreground/30 text-muted-foreground'
+                                                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400'
+                                                        : 'bg-muted text-muted-foreground'
                                                 }`}
                                             >
-                                                [{rubrica.ativa ? 'ativa' : 'inativa'}]
+                                                {rubrica.ativa ? 'Ativa' : 'Inativa'}
                                             </span>
                                         </div>
                                         <Link href={route('admin.rubrica.show', rubrica.id)} className="mt-1 block font-medium hover:underline">

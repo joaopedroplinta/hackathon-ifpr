@@ -34,14 +34,14 @@ export default function PainelRegulamento({ regulamento }: Props) {
     };
 
     return (
-        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 sm:p-6">
+        <section className="bg-card rounded-2xl p-4 sm:p-6">
             <h2 className="font-medium">Regulamento em PDF</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Anexe o edital oficial. Aparece com um botão "Baixar PDF" na página pública <span className="font-mono">/regulamento</span>.
             </p>
 
             {regulamento.nome_arquivo ? (
-                <div className="mt-4 flex items-center gap-3 rounded-lg border p-3">
+                <div className="bg-muted mt-4 flex items-center gap-3 rounded-xl p-3">
                     <FileText className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{regulamento.nome_arquivo}</p>

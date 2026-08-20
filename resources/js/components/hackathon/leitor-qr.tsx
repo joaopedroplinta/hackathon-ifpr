@@ -45,7 +45,7 @@ export default function LeitorQr({ onDecode }: Props) {
 
     if (estado === 'sem-contexto-seguro') {
         return (
-            <p className="text-muted-foreground rounded-xl border border-dashed p-4 text-sm">
+            <p className="text-muted-foreground bg-card rounded-2xl p-4 text-sm">
                 A câmera só funciona em conexão segura (HTTPS). Use a busca por nome aqui embaixo.
             </p>
         );
@@ -53,7 +53,7 @@ export default function LeitorQr({ onDecode }: Props) {
 
     if (estado === 'permissao-negada') {
         return (
-            <p className="text-muted-foreground rounded-xl border border-dashed p-4 text-sm">
+            <p className="text-muted-foreground bg-card rounded-2xl p-4 text-sm">
                 Permissão de câmera negada. Libere o acesso nas configurações do navegador ou use a busca por nome.
             </p>
         );
@@ -61,7 +61,7 @@ export default function LeitorQr({ onDecode }: Props) {
 
     if (estado === 'sem-camera') {
         return (
-            <p className="text-muted-foreground rounded-xl border border-dashed p-4 text-sm">
+            <p className="text-muted-foreground bg-card rounded-2xl p-4 text-sm">
                 Não foi possível abrir a câmera neste aparelho. Use a busca por nome aqui embaixo.
             </p>
         );

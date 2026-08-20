@@ -90,7 +90,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
             <Head title="Editar evento" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Editar evento</h1>
+                <h1 className="mb-1 text-2xl font-medium tracking-tight">Editar evento</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
                 </p>
