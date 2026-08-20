@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -50,6 +51,13 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
         post(route('admin.submissions.record.store'));
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -59,8 +67,8 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
         >
             <Head title="Lançar submissão manualmente" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
-                <h1 className="mb-1 text-2xl font-semibold">Lançar submissão manualmente</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
+                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Lançar submissão manualmente</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Só pra quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano B,
                     degraus 3 e 4). Fica marcada pra conferência no painel.
@@ -178,7 +186,7 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
                         </div>
                     </form>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Award, CircleCheck, Clock, FileText } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -27,13 +28,20 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
         });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Certificados', href: route('admin.certificados.index') }]}>
             <Head title="Certificados" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Certificados</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Certificados</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Participação, jurado, organizador e colocação saem em lote com{' '}
                         <code className="text-xs">php artisan hackathon:issue-certificates</code>. Aqui é só a emissão avulsa — mentoria ou correção
@@ -152,7 +160,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     <FileText className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     Qualquer certificado pode ser conferido publicamente em <code>/validar/&#123;código&#125;</code>.
                 </p>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

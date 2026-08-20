@@ -1,4 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { History, LoaderCircle, RefreshCw, Scale, Shuffle, Trash2, Users } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -80,14 +81,21 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
         });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Jurados', href: route('admin.jurados.index') }]}>
             <Head title="Jurados" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Jurados</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Jurados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             Distribuição é sugestão — ajuste na mão nunca é sobrescrito por uma nova rodada.
                         </p>
@@ -351,7 +359,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                         </Button>
                     </form>
                 </section>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

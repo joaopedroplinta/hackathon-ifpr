@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, ExternalLink, FileText, History, Paperclip, TriangleAlert } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -69,6 +70,13 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
         { rotulo: 'Deploy', href: submissao.deploy_url },
     ].filter((link) => link.href);
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -78,10 +86,10 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
         >
             <Head title={`Submissão — ${submissao.equipe.nome}`} />
 
-            <div className="mx-auto w-full max-w-3xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6">
                 <header className="mb-6">
                     <p className="text-muted-foreground text-sm">{submissao.trilha?.nome ?? 'Sem trilha'}</p>
-                    <h1 className="text-2xl font-semibold">{submissao.titulo ?? 'Projeto sem título'}</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">{submissao.titulo ?? 'Projeto sem título'}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Equipe {submissao.equipe.nome}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -217,7 +225,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                 <Link href={route('admin.submissions.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

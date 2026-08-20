@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CalendarDays, LoaderCircle, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -33,14 +34,21 @@ export default function ListaAgenda({ itens }: Props) {
         router.delete(route('admin.agenda.destroy', item.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Agenda', href: route('admin.agenda.index') }]}>
             <Head title="Agenda" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Agenda</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Agenda</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece pro público.
                         </p>
@@ -131,7 +139,7 @@ export default function ListaAgenda({ itens }: Props) {
                         ))}
                     </ul>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

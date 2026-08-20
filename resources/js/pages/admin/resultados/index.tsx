@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { AlertTriangle, LoaderCircle, RefreshCw, Send, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -43,14 +44,21 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
         publicar(false);
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Resultados', href: route('admin.resultados.index') }]}>
             <Head title="Resultados" />
 
-            <div className="mx-auto w-full max-w-4xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Resultados</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Resultados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {publicado_em ? `Publicado em ${publicado_em}.` : 'Ainda não publicado.'}
                             {computado_em && ` Último cálculo: ${computado_em}.`}
@@ -177,7 +185,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                         </table>
                     </div>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

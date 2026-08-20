@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, MapPin, Search, UserRound } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -56,13 +57,20 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
         window.location.href = texto;
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('admin.checkin.index') }]}>
             <Head title="Check-in" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Check-in</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Check-in</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Peça pra pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
                     </p>
@@ -182,7 +190,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                         )}
                     </>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { AlertTriangle, Clock, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -33,14 +34,20 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
     };
 
     const prazoEstendido = prazo_original !== null && prazo_efetivo !== null && prazo_original !== prazo_efetivo;
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Incidentes', href: route('admin.incidentes.index') }]}>
             <Head title="Incidentes" />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-semibold">Incidentes</h1>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight">Incidentes</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Declarar um incidente com extensão de prazo vale pra <strong>todas as equipes</strong>, nunca só pra quem avisou.
                     </p>
@@ -144,7 +151,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                         ))}
                     </ul>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

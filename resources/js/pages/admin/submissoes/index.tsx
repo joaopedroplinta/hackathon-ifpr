@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, FilePlus2, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -78,14 +79,21 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
         }
     });
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('admin.submissions.index') }]}>
             <Head title="Submissões" />
 
-            <div className="mx-auto w-full max-w-6xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-semibold">Submissões</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">Submissões</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
                         </p>
@@ -290,7 +298,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                         )}
                     </nav>
                 )}
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }

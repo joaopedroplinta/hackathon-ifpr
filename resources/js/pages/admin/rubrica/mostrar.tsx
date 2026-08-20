@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, Pencil, Trash2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
@@ -59,6 +60,13 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         });
     };
 
+    const reduzMovimento = useReducedMotion();
+
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -68,10 +76,10 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         >
             <Head title={`Rubrica — ${rubrica.nome}`} />
 
-            <div className="mx-auto w-full max-w-2xl p-4">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-2xl font-semibold">{rubrica.nome}</h1>
+                        <h1 className="font-display text-2xl font-semibold tracking-tight">{rubrica.nome}</h1>
                         <span
                             className={`inline-block rounded border px-2 py-0.5 font-mono text-xs ${
                                 rubrica.ativa
@@ -239,7 +247,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                 <Link href={route('admin.rubrica.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
-            </div>
+            </motion.div>
         </AppLayout>
     );
 }
