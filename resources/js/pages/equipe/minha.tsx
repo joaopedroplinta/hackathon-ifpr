@@ -46,7 +46,7 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     };
 
     return (
-        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+        <div className="bg-card rounded-2xl p-6">
             <h2 className="font-medium">Código de convite</h2>
             <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
 
@@ -87,7 +87,7 @@ function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
     };
 
     return (
-        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+        <section className="bg-card rounded-2xl p-6">
             <h2 className="font-medium">Passar a liderança</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Quem receber a liderança passa a poder convidar, editar e submeter pela equipe. Você continua na equipe como integrante.
@@ -130,7 +130,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
                 <header>
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">{equipe.nome}</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">{equipe.nome}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {equipe.trilha ? `Trilha: ${equipe.trilha.name}` : 'Sem trilha definida'} · {equipe.status_label}
                     </p>
@@ -139,7 +139,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
                 <CodigoConvite codigo={equipe.codigo_convite} />
 
-                <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+                <section className="bg-card rounded-2xl p-6">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <h2 className="font-medium">Integrantes</h2>
                         <span className="text-muted-foreground text-sm">
@@ -206,7 +206,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                     const sozinho = equipe.membros.length === 1;
 
                     return (
-                        <section className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6">
+                        <section className="bg-card rounded-2xl p-6">
                             <h2 className="font-medium">Sair da equipe</h2>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 {sozinho

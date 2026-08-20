@@ -17,17 +17,12 @@ export default function MostrarCredencial({ nome, qr_svg, token }: Credencial) {
             <Head title="Crachá" />
 
             <div className="mx-auto w-full max-w-sm p-4 sm:p-6">
-                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Crachá</h1>
+                <h1 className="mb-1 text-2xl font-medium tracking-tight">Crachá</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Mostre este código pra organização em cada entrada e oficina. É pessoal e não muda durante o evento.
                 </p>
 
-                <motion.div
-                    initial="oculto"
-                    animate="visivel"
-                    variants={fadeIn}
-                    className="border-verde-brilho/30 flex flex-col items-center gap-4 rounded-xl border p-6"
-                >
+                <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="bg-card flex flex-col items-center gap-4 rounded-2xl p-6">
                     {/* SVG vem do servidor via bacon/bacon-qr-code, a partir de um
                         uuid que a gente mesmo gera -- nunca de entrada do usuário,
                         então não tem risco de injeção aqui. */}

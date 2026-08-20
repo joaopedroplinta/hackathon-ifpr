@@ -85,13 +85,11 @@ function Podio({ linhas, compacto = false }: { linhas: LinhaPodio[]; compacto?: 
                                 {linha.equipe}
                                 {linha.trilha && ` · ${linha.trilha}`}
                             </p>
-                            <p className="mt-1 font-mono text-sm font-semibold tabular-nums">{linha.nota_final.toFixed(2)}</p>
+                            <p className="mt-1 text-sm font-medium tabular-nums">{linha.nota_final.toFixed(2)}</p>
                         </div>
 
-                        <div
-                            className={`bg-card border-border/70 flex w-full items-start justify-center rounded-t-lg border border-b-0 pt-2 ${alturas[posicao]}`}
-                        >
-                            <span className="font-display text-muted-foreground text-lg font-bold">{posicao}º</span>
+                        <div className={`bg-card flex w-full items-start justify-center rounded-t-2xl pt-2 ${alturas[posicao]}`}>
+                            <span className="text-muted-foreground text-lg font-medium">{posicao}º</span>
                         </div>
                     </motion.div>
                 );
@@ -116,10 +114,7 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
             <main className="mx-auto flex w-full max-w-3xl flex-col gap-16 p-4 pb-24 sm:gap-20 sm:p-6">
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-16">
-                    <p className="text-primary font-mono text-sm">
-                        <span aria-hidden="true">$ </span>resultados --status
-                    </p>
-                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">Resultados</h1>
+                    <h1 className="text-3xl font-medium tracking-tight sm:text-5xl">Resultados</h1>
                     {evento && (
                         <p className="text-muted-foreground mt-2 text-sm">
                             {evento.nome} · Edição {evento.edicao}
@@ -135,15 +130,22 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                 </motion.header>
 
                 {!publicado ? (
-                    <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="rounded-xl border border-dashed p-10 text-center">
-                        <Trophy className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Resultado ainda não publicado</p>
-                        <p className="text-muted-foreground mt-1 text-sm">A organização está conferindo as notas antes de divulgar a colocação.</p>
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                    >
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Resultado ainda não publicado</p>
+                        <p className="text-muted-foreground text-sm">A organização está conferindo as notas antes de divulgar a colocação.</p>
                     </motion.div>
                 ) : (
                     <>
                         <section aria-labelledby="podio-geral">
-                            <h2 id="podio-geral" className="font-display mb-8 flex items-center justify-center gap-2 text-center font-medium">
+                            <h2 id="podio-geral" className="mb-8 flex items-center justify-center gap-2 text-center font-medium">
                                 <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Pódio geral
                             </h2>
@@ -156,7 +158,7 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
                         {Object.keys(podio_por_trilha).length > 0 && (
                             <section aria-labelledby="podio-trilhas">
-                                <h2 id="podio-trilhas" className="font-display mb-8 text-center font-medium">
+                                <h2 id="podio-trilhas" className="mb-8 text-center font-medium">
                                     Pódio por trilha
                                 </h2>
                                 <div className="grid gap-10 sm:grid-cols-2">
@@ -177,7 +179,7 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                                 viewport={{ once: true, margin: '-60px' }}
                                 variants={fadeIn}
                                 aria-labelledby="premio-popular"
-                                className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center sm:p-8"
+                                className="bg-card rounded-2xl p-6 text-center sm:p-8"
                             >
                                 <h2 id="premio-popular" className="flex items-center justify-center gap-2 font-medium">
                                     <Users className="h-4 w-4 shrink-0" aria-hidden="true" />

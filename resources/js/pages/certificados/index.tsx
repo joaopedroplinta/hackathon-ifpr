@@ -23,24 +23,21 @@ export default function MeusCertificados({ certificados }: Props) {
             <Head title="Certificados" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="font-display mb-1 text-2xl font-semibold tracking-tight">Certificados</h1>
+                <h1 className="mb-1 text-2xl font-medium tracking-tight">Certificados</h1>
                 <p className="text-muted-foreground mb-6 text-sm">Seus certificados de participação, jurado, organização e colocação.</p>
 
                 {certificados.length === 0 ? (
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 text-center">
-                        <Award className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Nenhum certificado ainda.</p>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Eles aparecem aqui depois que a organização emitir, geralmente após o evento.
-                        </p>
+                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <Award className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Nenhum certificado ainda.</p>
+                        <p className="text-muted-foreground text-sm">Eles aparecem aqui depois que a organização emitir, geralmente após o evento.</p>
                     </div>
                 ) : (
                     <ul className="flex flex-col gap-3">
                         {certificados.map((c) => (
-                            <li
-                                key={c.id}
-                                className="border-sidebar-border/70 dark:border-sidebar-border flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between"
-                            >
+                            <li key={c.id} className="bg-card flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <p className="font-medium">{c.tipo_label}</p>
                                     <p className="text-muted-foreground text-sm">

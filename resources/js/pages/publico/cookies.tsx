@@ -31,16 +31,13 @@ export default function Cookies() {
                 className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
             >
                 <motion.header variants={itemVariants} className="pt-8 sm:pt-12">
-                    <p className="text-primary font-mono text-sm">
-                        <span aria-hidden="true">$ </span>cookies --status
-                    </p>
-                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Cookies</h1>
+                    <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Cookies</h1>
                     <p className="text-muted-foreground mt-2 text-sm">
                         O sistema usa só cookies necessários pro funcionamento — nenhum de rastreamento ou publicidade.
                     </p>
                 </motion.header>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <KeyRound className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Sessão e segurança
@@ -51,7 +48,7 @@ export default function Cookies() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Cookie className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Preferência de cookies
@@ -61,7 +58,7 @@ export default function Cookies() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border border-dashed p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <ShieldCheck className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />O que não usamos
                     </h2>

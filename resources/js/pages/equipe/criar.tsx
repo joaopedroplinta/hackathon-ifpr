@@ -53,7 +53,7 @@ export default function CriarEquipe({ trilhas, limites }: Props) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Criar equipe</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Criar equipe</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Você vira o líder. Depois é só passar o código de convite para o resto do time — de {limites.minimo} a {limites.maximo}{' '}
                         pessoas.

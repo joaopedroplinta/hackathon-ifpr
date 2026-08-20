@@ -31,17 +31,14 @@ export default function Privacidade() {
                 className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
             >
                 <motion.header variants={itemVariants} className="pt-8 sm:pt-12">
-                    <p className="text-primary font-mono text-sm">
-                        <span aria-hidden="true">$ </span>privacidade --status
-                    </p>
-                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Política de Privacidade</h1>
+                    <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Política de Privacidade</h1>
                     <p className="text-muted-foreground mt-2 text-sm">
                         Como o sistema do 1º Hackathon IFPR Pinhais trata os dados de quem se inscreve, participa ou julga o evento — conforme a Lei
                         Geral de Proteção de Dados (Lei 13.709/2018).
                     </p>
                 </motion.header>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Database className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Que dados coletamos
@@ -64,7 +61,7 @@ export default function Privacidade() {
                     </ul>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border border-dashed p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <AlertTriangle className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Restrição alimentar é dado sensível
@@ -76,7 +73,7 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <ShieldCheck className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Por que coletamos
@@ -88,7 +85,7 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Share2 className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Com quem compartilhamos
@@ -99,7 +96,7 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Clock className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Quanto tempo guardamos
@@ -111,7 +108,7 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="rounded-xl border p-4">
+                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
                     <h2 className="flex items-center gap-2 font-medium">
                         <Mail className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Seus direitos e contato

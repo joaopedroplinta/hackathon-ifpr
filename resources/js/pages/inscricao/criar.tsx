@@ -52,7 +52,7 @@ export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="font-display text-2xl font-semibold tracking-tight">Inscrição no evento</h1>
+                    <h1 className="text-2xl font-medium tracking-tight">Inscrição no evento</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {evento?.nome}. Todos os campos abaixo são opcionais — servem para a organização se preparar melhor.
                     </p>

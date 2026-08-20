@@ -22,39 +22,41 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
 
             <main className="mx-auto flex w-full max-w-md flex-col gap-8 p-4 pb-24 sm:p-6">
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 sm:pt-12">
-                    <p className="text-primary font-mono text-sm">
-                        <span aria-hidden="true">$ </span>validar --status
-                    </p>
-                    <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight">Validar certificado</h1>
+                    <h1 className="text-3xl font-medium tracking-tight">Validar certificado</h1>
                     <p className="text-muted-foreground mt-2 text-sm">Confirma se um certificado foi mesmo emitido por este evento.</p>
                 </motion.header>
 
                 {!props.encontrado ? (
-                    <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="rounded-xl border border-dashed p-10 text-center">
-                        <CircleAlert className="text-muted-foreground mx-auto h-8 w-8" aria-hidden="true" />
-                        <p className="mt-3 font-medium">Certificado não encontrado</p>
-                        <p className="text-muted-foreground mt-1 text-sm">Confira se o link ou o código foi copiado corretamente.</p>
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                    >
+                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
+                            <CircleAlert className="text-muted-foreground size-5" aria-hidden="true" />
+                        </span>
+                        <p className="font-medium">Certificado não encontrado</p>
+                        <p className="text-muted-foreground text-sm">Confira se o link ou o código foi copiado corretamente.</p>
                     </motion.div>
                 ) : (
                     <motion.div
                         initial={reduzMovimento ? false : { opacity: 0, y: 16, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 24 }}
-                        className="border-verde-brilho/30 relative overflow-hidden rounded-xl border p-6"
+                        className="bg-card rounded-2xl p-6"
                     >
-                        <span className="via-verde-brilho/50 absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent" />
-
                         <motion.div
                             initial={reduzMovimento ? false : { opacity: 0, scale: 0.7 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 18, delay: 0.15 }}
-                            className="text-primary mb-4 flex items-center gap-2"
+                            className="mb-4 flex items-center gap-2 text-emerald-700 dark:text-emerald-400"
                         >
                             <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
                             <p className="font-medium">Certificado válido</p>
                         </motion.div>
 
-                        <dl className="flex flex-col gap-3 font-mono text-sm">
+                        <dl className="flex flex-col gap-3 text-sm">
                             <div>
                                 <dt className="text-muted-foreground">Nome</dt>
                                 <dd className="font-medium">{props.nome}</dd>
