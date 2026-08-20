@@ -260,7 +260,7 @@ erDiagram
 
     EVALUATIONS {
         bigint id PK
-        bigint assignment_id FK UK "1:1"
+        bigint assignment_id FK "UK, 1:1"
         string status "draft/submitted"
         text overall_comment "nullable"
         timestamp submitted_at "nullable"
