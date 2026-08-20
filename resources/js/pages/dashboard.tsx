@@ -47,7 +47,7 @@ function CartaoInscricao() {
 
     if (evento.inscrito) {
         return (
-            <Cartao icone={CircleCheck} corIcone="bg-verde-brilho/15 text-verde-brilho" titulo="Inscrição confirmada">
+            <Cartao icone={CircleCheck} corIcone="bg-primary/15 text-primary" titulo="Inscrição confirmada">
                 Você está inscrito em {evento.nome}. O próximo passo é formar uma equipe.
             </Cartao>
         );

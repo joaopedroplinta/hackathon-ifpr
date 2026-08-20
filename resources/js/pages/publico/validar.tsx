@@ -48,7 +48,7 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                             initial={reduzMovimento ? false : { opacity: 0, scale: 0.7 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 18, delay: 0.15 }}
-                            className="text-verde-brilho mb-4 flex items-center gap-2"
+                            className="text-primary mb-4 flex items-center gap-2"
                         >
                             <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
                             <p className="font-medium">Certificado válido</p>
