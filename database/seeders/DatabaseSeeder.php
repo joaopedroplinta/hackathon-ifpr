@@ -32,6 +32,19 @@ class DatabaseSeeder extends Seeder
         );
         $organizador->syncRoles([Role::Organizador->value]);
 
+        // Primeiro admin: quem desenvolveu o sistema. Login por e-mail/senha
+        // (senha 'password', igual aos outros seeds) ou Google com esta
+        // mesma conta -- ver Épico 13, docs/backlog.md.
+        $admin = User::firstOrCreate(
+            ['email' => 'joaopedrohenriqueplinta@gmail.com'],
+            [
+                'name' => 'João Pedro Plinta',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+            ],
+        );
+        $admin->syncRoles([Role::Admin->value]);
+
         $event = Event::firstOrCreate(
             ['slug' => 'hackathon-ifpr-pinhais-2026'],
             Event::factory()->raw([

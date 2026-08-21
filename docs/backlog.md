@@ -192,6 +192,24 @@ quem não preencheu CPF — decisão de design ainda não tomada (`PLANO.md` §4
 
 ---
 
+## Épico 13 — Gestão de Usuários e Papéis
+
+Não fazia parte do cronograma original de 8 semanas — faltava desde o
+início: conceder qualquer papel (jurado, organizador, admin) só era possível
+via seeder/tinker, nunca por uma tela. `PLANO.md` §3 já descrevia essa
+capacidade ("admin: Tudo + gerenciar usuários e papéis"), mas nunca tinha
+sido construída.
+
+| # | História | Status |
+|---|---|---|
+| 13.1 | [Como admin, quero conceder ou remover papel de outro usuário por uma tela,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/110) para não depender de acesso ao banco/tinker pra promover alguém a jurado, organizador ou admin. | ✅ |
+
+**Critério de pronto do sprint:** admin concede papel pela tela; organizador
+não vê o link nem acessa a rota direto (403); admin não consegue remover o
+próprio papel de admin — confirmado.
+
+---
+
 ## Rastreabilidade com o Canvas de Descoberta
 
 Os quatro épicos que respondem diretamente às dores relatadas pela comissão

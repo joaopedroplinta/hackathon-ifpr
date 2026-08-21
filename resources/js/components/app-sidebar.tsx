@@ -19,6 +19,7 @@ import {
     ScanLine,
     Settings,
     Trophy,
+    Users,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -107,6 +108,15 @@ const staffNavItems: NavItem[] = [
     },
 ];
 
+/** Só aparece para admin. Papel é exclusivo de admin, não de todo staff -- PLANO.md §3. */
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Usuários',
+        url: '/admin/usuarios',
+        icon: Users,
+    },
+];
+
 const footerNavItems: NavItem[] = [
     {
         title: 'Repositório',
@@ -122,7 +132,12 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { auth, app_version } = usePage<SharedData>().props;
-    const navItems = [...mainNavItems, ...(auth?.is_judge ? judgeNavItems : []), ...(auth?.is_staff ? staffNavItems : [])];
+    const navItems = [
+        ...mainNavItems,
+        ...(auth?.is_judge ? judgeNavItems : []),
+        ...(auth?.is_staff ? staffNavItems : []),
+        ...(auth?.is_admin ? adminNavItems : []),
+    ];
 
     return (
         <Sidebar collapsible="icon" variant="inset">
