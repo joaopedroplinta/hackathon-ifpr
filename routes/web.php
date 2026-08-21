@@ -12,6 +12,7 @@ use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Organizer\UserController as OrganizerUserController;
 use App\Http\Controllers\Participant\CertificateController;
 use App\Http\Controllers\Participant\CredentialController;
 use App\Http\Controllers\Participant\DashboardController as ParticipantDashboardController;
@@ -245,6 +246,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // aqui só a emissão avulsa (mentor, correção pontual) -- ver CertificateController.
     Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('admin.certificados.index');
     Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('admin.certificados.store');
+
+    // Gerenciar papel de usuário -- exclusivo de admin, ver UserPolicy.
+    Route::get('usuarios', [OrganizerUserController::class, 'index'])->name('admin.usuarios.index');
+    Route::patch('usuarios/{usuario}', [OrganizerUserController::class, 'update'])->name('admin.usuarios.update');
 });
 
 require __DIR__.'/settings.php';

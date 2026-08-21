@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Role;
 use App\Models\Event;
 use App\Support\AppVersion;
 use Illuminate\Http\Request;
@@ -64,6 +65,7 @@ class HandleInertiaRequests extends Middleware
                 // controle de acesso (.claude/rules/security.md).
                 'is_staff' => (bool) $request->user()?->isStaff(),
                 'is_judge' => (bool) $request->user()?->isJudge(),
+                'is_admin' => (bool) $request->user()?->hasRole(Role::Admin->value),
             ],
             // Evento em foco: usado pela navegação e pelo dashboard em toda
             // tela autenticada, então vive aqui e não em cada controller.

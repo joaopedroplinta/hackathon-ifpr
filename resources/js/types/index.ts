@@ -6,6 +6,8 @@ export interface Auth {
     is_staff: boolean;
     /** Papel de jurado. Mesma ressalva do is_staff: só decide o link, não o acesso. */
     is_judge: boolean;
+    /** Papel de admin. Só decide o link "Usuários" — quem decide o acesso é a UserPolicy. */
+    is_admin: boolean;
 }
 
 export interface BreadcrumbItem {
