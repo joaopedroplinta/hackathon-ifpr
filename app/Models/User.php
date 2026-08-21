@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Role;
 use App\Enums\TipoVinculo;
+use App\Notifications\VerifyEmailQueued;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -117,5 +118,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isJudge(): bool
     {
         return $this->hasRole(Role::Jurado->value);
+    }
+
+    /**
+     * Sobrescrita só pra trocar a notificação padrão do Laravel por uma
+     * versão `ShouldQueue` -- ver App\Notifications\VerifyEmailQueued.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailQueued);
     }
 }
