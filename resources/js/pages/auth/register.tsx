@@ -95,7 +95,7 @@ export default function Register() {
                             placeholder="Sua senha"
                             aria-describedby="password-requisitos"
                         />
-                        <PasswordRequirements />
+                        <PasswordRequirements senha={data.password} />
                         <InputError message={errors.password} />
                     </div>
 
