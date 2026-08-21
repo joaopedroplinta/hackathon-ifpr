@@ -91,7 +91,7 @@ export default function Password() {
                                 aria-describedby="password-requisitos"
                             />
 
-                            <PasswordRequirements />
+                            <PasswordRequirements senha={data.password} />
                             <InputError message={errors.password} />
                         </div>
 

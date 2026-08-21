@@ -71,7 +71,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             placeholder="Nova senha"
                             aria-describedby="password-requisitos"
                         />
-                        <PasswordRequirements />
+                        <PasswordRequirements senha={data.password} />
                         <InputError message={errors.password} />
                     </div>
 
