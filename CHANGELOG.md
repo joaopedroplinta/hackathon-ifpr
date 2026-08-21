@@ -10,6 +10,17 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.0.0] - 2026-08-21
+
+Fecha o desenvolvimento de funcionalidades: todas as fases do evento
+(inscrição, agenda, submissão, avaliação, resultado, certificado) funcionam
+de ponta a ponta, com identidade visual definitiva. O que resta no projeto
+inteiro são quatro decisões organizacionais, nenhuma delas código —
+hospedagem com dado no Brasil ([#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71)),
+provedor de e-mail em produção ([#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78)),
+nomeação formal do DPO ([#83](https://github.com/joaopedroplinta/hackathon-ifpr/issues/83)) e
+ensaio ao vivo com a equipe de organização ([#86](https://github.com/joaopedroplinta/hackathon-ifpr/issues/86)).
+
 ### Adicionado
 
 - Página pública para navegar edições anteriores do hackathon e seus
@@ -37,6 +48,19 @@ bump manual a cada tag.
   fila e agendador (`schedule:run`) de verdade em vez do `QUEUE_CONNECTION=
   sync` improvisado do free tier da Render. O dado de ensaio saiu do Brasil
   por completo nessa troca — ver aviso no topo de `deploy/railway.md`
+- Licença MIT e README reescrito (PR #108)
+
+### Alterado
+
+- Identidade visual trocada de novo: o estilo neutro/minimalista de #100
+  leu como vazio e genérico demais na avaliação de quem organiza o
+  evento. No lugar, um sistema "SaaS denso" — cards com borda de verdade,
+  hierarquia tipográfica forte, cor institucional como cor primária — em
+  público, autenticação, participante, jurado e organizador. O hero da
+  home pública passou por três conceitos (peça 3D em Three.js, ilustração
+  estática em SVG, nenhuma ilustração) antes de fechar num layout
+  centralizado sem decoração, com estatísticas reais do evento vindas do
+  banco em vez de número inventado (PR #108)
 
 ### Corrigido
 
@@ -99,6 +123,7 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/joaopedroplinta/hackathon-ifpr/releases/tag/v0.6.0
