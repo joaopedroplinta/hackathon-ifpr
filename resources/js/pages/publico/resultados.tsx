@@ -88,8 +88,10 @@ function Podio({ linhas, compacto = false }: { linhas: LinhaPodio[]; compacto?: 
                             <p className="mt-1 text-sm font-medium tabular-nums">{linha.nota_final.toFixed(2)}</p>
                         </div>
 
-                        <div className={`bg-card flex w-full items-start justify-center rounded-t-2xl pt-2 ${alturas[posicao]}`}>
-                            <span className="text-muted-foreground text-lg font-medium">{posicao}º</span>
+                        <div
+                            className={`border-border bg-card flex w-full items-start justify-center rounded-t-lg border border-b-0 pt-2 ${alturas[posicao]}`}
+                        >
+                            <span className="text-muted-foreground text-lg font-bold">{posicao}º</span>
                         </div>
                     </motion.div>
                 );
@@ -114,7 +116,7 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
             <main className="mx-auto flex w-full max-w-3xl flex-col gap-16 p-4 pb-24 sm:gap-20 sm:p-6">
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-16">
-                    <h1 className="text-3xl font-medium tracking-tight sm:text-5xl">Resultados</h1>
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">Resultados</h1>
                     {evento && (
                         <p className="text-muted-foreground mt-2 text-sm">
                             {evento.nome} · Edição {evento.edicao}
@@ -134,18 +136,18 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                         initial="oculto"
                         animate="visivel"
                         variants={fadeIn}
-                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
                     >
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Resultado ainda não publicado</p>
+                        <p className="font-semibold">Resultado ainda não publicado</p>
                         <p className="text-muted-foreground text-sm">A organização está conferindo as notas antes de divulgar a colocação.</p>
                     </motion.div>
                 ) : (
                     <>
                         <section aria-labelledby="podio-geral">
-                            <h2 id="podio-geral" className="mb-8 flex items-center justify-center gap-2 text-center font-medium">
+                            <h2 id="podio-geral" className="mb-8 flex items-center justify-center gap-2 text-center font-bold">
                                 <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Pódio geral
                             </h2>
@@ -158,13 +160,13 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
                         {Object.keys(podio_por_trilha).length > 0 && (
                             <section aria-labelledby="podio-trilhas">
-                                <h2 id="podio-trilhas" className="mb-8 text-center font-medium">
+                                <h2 id="podio-trilhas" className="mb-8 text-center font-bold">
                                     Pódio por trilha
                                 </h2>
                                 <div className="grid gap-10 sm:grid-cols-2">
                                     {Object.entries(podio_por_trilha).map(([trilha, linhas]) => (
                                         <div key={trilha} className="flex flex-col items-center gap-4">
-                                            <p className="text-muted-foreground text-sm font-medium">{trilha}</p>
+                                            <p className="text-muted-foreground text-sm font-semibold">{trilha}</p>
                                             <Podio linhas={linhas} compacto />
                                         </div>
                                     ))}
@@ -179,13 +181,13 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
                                 viewport={{ once: true, margin: '-60px' }}
                                 variants={fadeIn}
                                 aria-labelledby="premio-popular"
-                                className="bg-card rounded-2xl p-6 text-center sm:p-8"
+                                className="border-border bg-card rounded-xl border p-6 text-center sm:p-8"
                             >
-                                <h2 id="premio-popular" className="flex items-center justify-center gap-2 font-medium">
+                                <h2 id="premio-popular" className="flex items-center justify-center gap-2 font-bold">
                                     <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Prêmio popular
                                 </h2>
-                                <p className="mt-3 font-medium">{premio_popular.titulo}</p>
+                                <p className="mt-3 font-semibold">{premio_popular.titulo}</p>
                                 <p className="text-muted-foreground text-sm">
                                     {premio_popular.equipe} · {premio_popular.votos} {premio_popular.votos === 1 ? 'voto' : 'votos'}
                                 </p>

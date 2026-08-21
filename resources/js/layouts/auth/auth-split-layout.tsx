@@ -23,14 +23,32 @@ const destaques = ['Inscrição e formação de equipe', 'Envio de submissão co
 export default function AuthSplitLayout({ children, title, description }: AuthLayoutProps) {
     return (
         <div className="grid min-h-svh lg:grid-cols-2">
-            <div className="bg-verde-mata relative hidden flex-col justify-between p-10 lg:flex">
-                <Link href={route('home')} className="flex items-center gap-2 text-lg font-medium text-white">
+            <div className="bg-verde-mata relative hidden flex-col justify-between overflow-hidden p-10 lg:flex">
+                {/* Textura de fundo -- grade de pontos (motivo terminal) com um brilho
+                    radial atrás do headline. Só CSS, sem imagem: a marca desse painel é
+                    a cor institucional sólida, não uma foto de banco de imagem. */}
+                <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.14) 1px, transparent 1px)',
+                        backgroundSize: '26px 26px',
+                        maskImage: 'radial-gradient(ellipse 65% 55% at 30% 62%, black 35%, transparent 80%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse 65% 55% at 30% 62%, black 35%, transparent 80%)',
+                    }}
+                    aria-hidden="true"
+                />
+                <div
+                    className="bg-verde-brilho pointer-events-none absolute top-[58%] left-[28%] size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-[110px]"
+                    aria-hidden="true"
+                />
+
+                <Link href={route('home')} className="relative flex items-center gap-2 text-lg font-medium text-white">
                     <AppLogoIcon className="size-8 fill-current text-white" />
                     Hackathon IFPR
                 </Link>
 
-                <div className="flex flex-col gap-6">
-                    <h2 className="max-w-md text-3xl font-medium tracking-tight text-balance text-white">
+                <div className="relative flex flex-col gap-6">
+                    <h2 className="max-w-md text-3xl font-bold tracking-tight text-balance text-white">
                         Inscrição, submissão e avaliação em um lugar só.
                     </h2>
 
@@ -52,7 +70,7 @@ export default function AuthSplitLayout({ children, title, description }: AuthLa
                     </Link>
 
                     <div className="flex flex-col gap-2 text-center">
-                        <h1 className="text-2xl font-medium tracking-tight">{title}</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
                         {description && <p className="text-muted-foreground text-sm text-balance">{description}</p>}
                     </div>
 

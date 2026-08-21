@@ -93,7 +93,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-medium tracking-tight">Submissões</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Submissões</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
                         </p>
@@ -125,8 +125,10 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                             type="button"
                             onClick={() => aplicar({ status: filtros.status === item.valor ? null : item.valor })}
                             aria-pressed={filtros.status === item.valor}
-                            className={`rounded-2xl p-3 text-left transition-colors ${
-                                filtros.status === item.valor ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'
+                            className={`rounded-xl border p-3 text-left transition-colors ${
+                                filtros.status === item.valor
+                                    ? 'bg-primary text-primary-foreground border-transparent'
+                                    : 'border-border bg-card hover:bg-muted'
                             }`}
                         >
                             <span className="text-2xl font-medium">{item.total}</span>
@@ -203,11 +205,11 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                 </form>
 
                 {submissoes.data.length === 0 ? (
-                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Inbox className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">{temFiltro ? 'Nenhuma submissão com esses filtros' : 'Nenhuma submissão ainda'}</p>
+                        <p className="font-semibold">{temFiltro ? 'Nenhuma submissão com esses filtros' : 'Nenhuma submissão ainda'}</p>
                         <p className="text-muted-foreground text-sm">
                             {temFiltro
                                 ? 'Tente outra trilha ou situação, ou limpe os filtros.'
@@ -215,35 +217,35 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                         </p>
                     </div>
                 ) : (
-                    <div className={`bg-card overflow-x-auto rounded-2xl transition-opacity ${carregando ? 'opacity-60' : ''}`}>
+                    <div className={`border-border bg-card overflow-x-auto rounded-xl border transition-opacity ${carregando ? 'opacity-60' : ''}`}>
                         <table className="w-full min-w-[48rem] text-sm">
                             <caption className="sr-only">Submissões do evento</caption>
                             <thead className="bg-muted/50 text-left">
                                 <tr>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Equipe
                                     </th>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Projeto
                                     </th>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Trilha
                                     </th>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Situação
                                     </th>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Enviado em
                                     </th>
-                                    <th scope="col" className="p-3 font-medium">
+                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
                                         Versão
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {submissoes.data.map((linha) => (
-                                    <tr key={linha.id} className="hover:bg-muted/30 border-t">
-                                        <td className="p-3 font-medium">
+                                    <tr key={linha.id} className="hover:bg-muted/30 border-border border-t">
+                                        <td className="p-3 font-semibold">
                                             <Link href={route('admin.submissions.show', linha.id)} className="hover:underline">
                                                 {linha.equipe.nome}
                                             </Link>

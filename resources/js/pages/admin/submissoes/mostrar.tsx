@@ -89,7 +89,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6">
                 <header className="mb-6">
                     <p className="text-muted-foreground text-sm">{submissao.trilha?.nome ?? 'Sem trilha'}</p>
-                    <h1 className="text-2xl font-medium tracking-tight">{submissao.titulo ?? 'Projeto sem título'}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">{submissao.titulo ?? 'Projeto sem título'}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Equipe {submissao.equipe.nome}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -110,14 +110,14 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
 
                 {submissao.resumo && (
                     <section className="mb-6">
-                        <h2 className="text-sm font-medium">Resumo</h2>
+                        <h2 className="text-sm font-semibold">Resumo</h2>
                         <p className="text-muted-foreground mt-1 text-sm">{submissao.resumo}</p>
                     </section>
                 )}
 
                 {submissao.descricao && (
                     <section className="mb-6">
-                        <h2 className="text-sm font-medium">Descrição</h2>
+                        <h2 className="text-sm font-semibold">Descrição</h2>
                         <p className="text-muted-foreground mt-1 text-sm whitespace-pre-line">{submissao.descricao}</p>
                     </section>
                 )}
@@ -139,8 +139,8 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     </section>
                 )}
 
-                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
-                    <h2 className="font-medium">Arquivos</h2>
+                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                    <h2 className="font-semibold">Arquivos</h2>
 
                     {arquivos.length === 0 ? (
                         <p className="text-muted-foreground mt-2 text-sm">Nenhum arquivo anexado a esta submissão.</p>
@@ -150,7 +150,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                                 <li key={arquivo.id} className="flex items-center gap-3 py-3">
                                     <Paperclip className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-medium">{arquivo.nome}</p>
+                                        <p className="truncate text-sm font-semibold">{arquivo.nome}</p>
                                         <p className="text-muted-foreground text-xs">
                                             {arquivo.tamanho} · versão {arquivo.versao}
                                         </p>
@@ -169,7 +169,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                 </section>
 
                 <section aria-labelledby="historico-versoes">
-                    <h2 id="historico-versoes" className="mb-4 flex items-center gap-2 font-medium">
+                    <h2 id="historico-versoes" className="mb-4 flex items-center gap-2 font-semibold">
                         <History className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Histórico de envios
                     </h2>
@@ -179,9 +179,9 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     ) : (
                         <ol className="flex flex-col gap-4">
                             {versoes.map((versao) => (
-                                <li key={versao.versao} className="bg-card rounded-2xl p-4">
+                                <li key={versao.versao} className="border-border bg-card rounded-xl border p-4">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
+                                        <div className="flex items-center gap-2 text-sm font-semibold">
                                             <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Versão {versao.versao}
                                         </div>

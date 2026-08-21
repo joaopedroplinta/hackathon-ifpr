@@ -48,8 +48,8 @@ export default function PainelConvites() {
     };
 
     return (
-        <section className="bg-card rounded-2xl p-6">
-            <h2 className="font-medium">Convidar por e-mail</h2>
+        <section className="border-border bg-card rounded-xl border p-6">
+            <h2 className="font-semibold">Convidar por e-mail</h2>
             <p className="text-muted-foreground mt-1 text-sm">Manda um link de convite para quem ainda não tem o código da equipe.</p>
 
             {convites.pode_convidar ? (
@@ -81,7 +81,7 @@ export default function PainelConvites() {
             {recentlySuccessful && <p className="mt-2 text-sm text-green-700 dark:text-green-400">Convite enviado.</p>}
 
             <div className="mt-6">
-                <h3 className="text-sm font-medium">Convites pendentes</h3>
+                <h3 className="text-sm font-semibold">Convites pendentes</h3>
 
                 {convites.pendentes.length === 0 ? (
                     <p className="text-muted-foreground mt-2 text-sm">Nenhum convite pendente no momento.</p>
@@ -91,7 +91,7 @@ export default function PainelConvites() {
                             <li key={convite.id} className="flex items-center gap-3 py-3">
                                 <Mail className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-medium">{convite.email}</p>
+                                    <p className="truncate text-sm font-semibold">{convite.email}</p>
                                     <p className="text-muted-foreground text-xs">
                                         {convite.expirado ? 'Expirado' : `Expira em ${new Date(convite.expira_em).toLocaleDateString('pt-BR')}`}
                                     </p>

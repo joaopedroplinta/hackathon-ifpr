@@ -58,7 +58,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-medium tracking-tight">Resultados</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Resultados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {publicado_em ? `Publicado em ${publicado_em}.` : 'Ainda não publicado.'}
                             {computado_em && ` Último cálculo: ${computado_em}.`}
@@ -104,8 +104,8 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                 )}
 
                 {temPendencia && (
-                    <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
-                        <h2 className="flex items-center gap-2 font-medium">
+                    <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                        <h2 className="flex items-center gap-2 font-semibold">
                             <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             Pendências
                         </h2>
@@ -149,38 +149,38 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                     </section>
                 )}
 
-                <h2 className="mb-3 font-medium">Ranking</h2>
+                <h2 className="mb-3 font-semibold">Ranking</h2>
                 {resultados.length === 0 ? (
-                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhum resultado calculado ainda.</p>
+                        <p className="font-semibold">Nenhum resultado calculado ainda.</p>
                         <p className="text-muted-foreground text-sm">Clique em &quot;Recalcular&quot; para gerar o ranking.</p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="border-border bg-card overflow-x-auto rounded-xl border">
                         <table className="w-full min-w-[36rem] text-sm">
                             <thead>
-                                <tr className="text-muted-foreground border-b text-left">
-                                    <th className="py-2 pr-3 font-medium">Geral</th>
-                                    <th className="py-2 pr-3 font-medium">Trilha</th>
-                                    <th className="py-2 pr-3 font-medium">Submissão</th>
-                                    <th className="py-2 pr-3 font-medium">Equipe</th>
-                                    <th className="py-2 pr-3 font-medium">Nota</th>
+                                <tr className="text-muted-foreground border-border border-b text-left">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Geral</th>
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Trilha</th>
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Submissão</th>
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Equipe</th>
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Nota</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {resultados.map((r) => (
-                                    <tr key={r.submission_id} className="border-b last:border-0">
-                                        <td className="py-2 pr-3">{r.rank_overall ?? '—'}</td>
-                                        <td className="py-2 pr-3">
+                                    <tr key={r.submission_id} className="border-border border-b last:border-0">
+                                        <td className="px-4 py-3">{r.rank_overall ?? '—'}</td>
+                                        <td className="px-4 py-3">
                                             {r.rank_track ?? '—'}
                                             {r.trilha && <span className="text-muted-foreground"> ({r.trilha})</span>}
                                         </td>
-                                        <td className="py-2 pr-3">{r.titulo}</td>
-                                        <td className="py-2 pr-3">{r.equipe}</td>
-                                        <td className="py-2 pr-3">{r.nota_final ?? 'Sem nota'}</td>
+                                        <td className="px-4 py-3">{r.titulo}</td>
+                                        <td className="px-4 py-3">{r.equipe}</td>
+                                        <td className="px-4 py-3">{r.nota_final ?? 'Sem nota'}</td>
                                     </tr>
                                 ))}
                             </tbody>

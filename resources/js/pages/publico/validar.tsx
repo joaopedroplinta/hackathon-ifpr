@@ -21,8 +21,8 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
             <CabecalhoPublico />
 
             <main className="mx-auto flex w-full max-w-md flex-col gap-8 p-4 pb-24 sm:p-6">
-                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 sm:pt-12">
-                    <h1 className="text-3xl font-medium tracking-tight">Validar certificado</h1>
+                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
+                    <h1 className="text-3xl font-bold tracking-tight">Validar certificado</h1>
                     <p className="text-muted-foreground mt-2 text-sm">Confirma se um certificado foi mesmo emitido por este evento.</p>
                 </motion.header>
 
@@ -31,12 +31,12 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                         initial="oculto"
                         animate="visivel"
                         variants={fadeIn}
-                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
                     >
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <CircleAlert className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Certificado não encontrado</p>
+                        <p className="font-semibold">Certificado não encontrado</p>
                         <p className="text-muted-foreground text-sm">Confira se o link ou o código foi copiado corretamente.</p>
                     </motion.div>
                 ) : (
@@ -44,7 +44,7 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                         initial={reduzMovimento ? false : { opacity: 0, y: 16, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 24 }}
-                        className="bg-card rounded-2xl p-6"
+                        className="border-primary/40 bg-card rounded-xl border p-6"
                     >
                         <motion.div
                             initial={reduzMovimento ? false : { opacity: 0, scale: 0.7 }}
@@ -53,7 +53,7 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                             className="mb-4 flex items-center gap-2 text-emerald-700 dark:text-emerald-400"
                         >
                             <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
-                            <p className="font-medium">Certificado válido</p>
+                            <p className="font-semibold">Certificado válido</p>
                         </motion.div>
 
                         <dl className="flex flex-col gap-3 text-sm">

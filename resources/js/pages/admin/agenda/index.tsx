@@ -48,7 +48,7 @@ export default function ListaAgenda({ itens }: Props) {
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-medium tracking-tight">Agenda</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Agenda</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece pro público.
                         </p>
@@ -60,17 +60,17 @@ export default function ListaAgenda({ itens }: Props) {
                 </header>
 
                 {itens.length === 0 ? (
-                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <CalendarDays className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhum item na agenda</p>
+                        <p className="font-semibold">Nenhum item na agenda</p>
                         <p className="text-muted-foreground text-sm">Crie o primeiro item para começar a montar a programação.</p>
                     </div>
                 ) : (
-                    <ul className="flex flex-col gap-3">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
                         {itens.map((item) => (
-                            <li key={item.id} className="bg-card rounded-2xl p-4">
+                            <li key={item.id} className="p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
@@ -98,7 +98,7 @@ export default function ListaAgenda({ itens }: Props) {
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="mt-1 font-medium">{item.titulo}</p>
+                                        <p className="mt-1 font-semibold">{item.titulo}</p>
                                         <div className="text-muted-foreground mt-1 flex flex-wrap gap-3 text-xs">
                                             <span>{formatarHorario(item.inicia_em, item.termina_em)}</span>
                                             {item.local && (

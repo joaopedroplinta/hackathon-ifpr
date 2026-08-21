@@ -46,8 +46,8 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     };
 
     return (
-        <div className="bg-card rounded-2xl p-6">
-            <h2 className="font-medium">Código de convite</h2>
+        <div className="border-border bg-card rounded-xl border p-6">
+            <h2 className="font-semibold">Código de convite</h2>
             <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -87,8 +87,8 @@ function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
     };
 
     return (
-        <section className="bg-card rounded-2xl p-6">
-            <h2 className="font-medium">Passar a liderança</h2>
+        <section className="border-border bg-card rounded-xl border p-6">
+            <h2 className="font-semibold">Passar a liderança</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Quem receber a liderança passa a poder convidar, editar e submeter pela equipe. Você continua na equipe como integrante.
             </p>
@@ -130,7 +130,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-medium tracking-tight">{equipe.nome}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">{equipe.nome}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {equipe.trilha ? `Trilha: ${equipe.trilha.name}` : 'Sem trilha definida'} · {equipe.status_label}
                     </p>
@@ -139,9 +139,9 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
                 <CodigoConvite codigo={equipe.codigo_convite} />
 
-                <section className="bg-card rounded-2xl p-6">
+                <section className="border-border bg-card rounded-xl border p-6">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <h2 className="font-medium">Integrantes</h2>
+                        <h2 className="font-semibold">Integrantes</h2>
                         <span className="text-muted-foreground text-sm">
                             {limites.atual} de {limites.maximo}
                         </span>
@@ -165,7 +165,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                                         .toUpperCase()}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-medium">{membro.nome}</p>
+                                    <p className="truncate text-sm font-semibold">{membro.nome}</p>
                                     <p className="text-muted-foreground truncate text-xs">{membro.email}</p>
                                 </div>
                                 {membro.e_lider && (
@@ -206,8 +206,8 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                     const sozinho = equipe.membros.length === 1;
 
                     return (
-                        <section className="bg-card rounded-2xl p-6">
-                            <h2 className="font-medium">Sair da equipe</h2>
+                        <section className="border-border bg-card rounded-xl border p-6">
+                            <h2 className="font-semibold">Sair da equipe</h2>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 {sozinho
                                     ? 'Você é a única pessoa na equipe. Ao sair, ela será desfeita.'

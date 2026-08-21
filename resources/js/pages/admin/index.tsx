@@ -47,42 +47,38 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-medium tracking-tight">Painel do organizador</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Painel do organizador</h1>
                     <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>
                 </header>
 
                 <section aria-labelledby="pendencias">
-                    <h2 id="pendencias" className="mb-3 text-sm font-medium">
+                    <h2 id="pendencias" className="mb-3 text-sm font-semibold">
                         Precisa de atenção
                     </h2>
 
                     {abertas.length === 0 ? (
-                        <div className="bg-card flex items-center gap-3 rounded-2xl p-4">
+                        <div className="border-border bg-card flex items-center gap-3 rounded-xl border p-4">
                             <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                             <p className="text-sm">Tudo em dia — nenhuma submissão ou avaliação pendente.</p>
                         </div>
                     ) : (
-                        <ul className="flex flex-col gap-3">
+                        <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
                             {abertas.map((p) => {
                                 const n = dados[p.chave];
 
                                 return (
-                                    <motion.li
-                                        key={p.chave}
-                                        whileHover={reduzMovimento ? undefined : { y: -2 }}
-                                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                    >
-                                        <Link href={route(p.href)} className="bg-card flex items-center gap-4 rounded-2xl p-4">
+                                    <li key={p.chave}>
+                                        <Link href={route(p.href)} className="hover:bg-muted/50 flex items-center gap-4 p-4 transition-colors">
                                             <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-sm font-medium text-amber-700 dark:text-amber-400">
                                                 {n}
                                             </span>
                                             <div className="min-w-0 flex-1">
-                                                <p className="font-medium">{p.titulo(n)}</p>
+                                                <p className="font-semibold">{p.titulo(n)}</p>
                                                 <p className="text-muted-foreground mt-0.5 text-sm">{p.descricao}</p>
                                             </div>
                                             <ChevronRight className="text-muted-foreground hidden size-4 shrink-0 sm:block" aria-hidden="true" />
                                         </Link>
-                                    </motion.li>
+                                    </li>
                                 );
                             })}
                         </ul>
@@ -90,7 +86,7 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                 </section>
 
                 <section aria-labelledby="hoje">
-                    <h2 id="hoje" className="mb-3 text-sm font-medium">
+                    <h2 id="hoje" className="mb-3 text-sm font-semibold">
                         Hoje
                     </h2>
 
@@ -106,11 +102,11 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                             );
 
                             return item.href ? (
-                                <Link key={item.chave} href={route(item.href)} className="bg-card rounded-2xl p-4 sm:p-6">
+                                <Link key={item.chave} href={route(item.href)} className="border-border bg-card rounded-xl border p-4 sm:p-6">
                                     {conteudo}
                                 </Link>
                             ) : (
-                                <div key={item.chave} className="bg-card rounded-2xl p-4 sm:p-6">
+                                <div key={item.chave} className="border-border bg-card rounded-xl border p-4 sm:p-6">
                                     {conteudo}
                                 </div>
                             );

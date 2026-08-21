@@ -1,284 +1,201 @@
-# Sistema de Apoio ao 1º Hackathon — IFPR Pinhais
+# Hackathon IFPR
 
 [![CI](https://github.com/joaopedroplinta/hackathon-ifpr/actions/workflows/ci.yml/badge.svg)](https://github.com/joaopedroplinta/hackathon-ifpr/actions/workflows/ci.yml)
-![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
-![Inertia](https://img.shields.io/badge/Inertia-v2-9553E9)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
+![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
 
-Sistema web único que cobre o ciclo completo do evento: inscrição e formação
-de equipes, agenda, check-in, submissão de projetos, avaliação por jurados e
-divulgação de resultados.
+Plataforma para operar um hackathon de ponta a ponta: inscrições, equipes,
+submissões, avaliação, resultados, certificados e comunicação do evento.
+Ela foi desenhada para reduzir trabalho manual da organização e continuar
+operável nos momentos mais críticos do evento.
 
-Projeto acadêmico do curso de Tecnologia em Análise e Desenvolvimento de
-Sistemas — **IFPR Campus Pinhais**, desenvolvido para apoiar a organização do
-1º Hackathon do curso.
+Desenvolvida para o **1º Hackathon do IFPR Campus Pinhais**.
 
-> **Status:** Semanas 0 a 8 concluídas — auth, equipes, submissões, agenda,
-> check-in, avaliação por jurados, resultados, voto popular, certificados,
-> regulamento e o ensaio geral automatizado (30 equipes, carga, plano B) já
-> funcionam de ponta a ponta. Identidade visual reconstruída do zero (estilo
-> neutro/minimalista, `PLANO.md` §11) e identidade institucional — CPF,
-> vínculo IFPR com matrícula SUAP/SIAPE, foto de perfil — também mescladas.
-> O que resta no projeto inteiro são quatro decisões organizacionais,
-> nenhuma delas código: hospedagem com dado no Brasil
-> ([#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71)),
-> provedor de e-mail em produção
-> ([#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78)),
-> nomeação formal do DPO
-> ([#83](https://github.com/joaopedroplinta/hackathon-ifpr/issues/83)) e o
-> ensaio ao vivo com a equipe de organização
-> ([#86](https://github.com/joaopedroplinta/hackathon-ifpr/issues/86)) —
-> backlog completo em [`docs/backlog.md`](docs/backlog.md), diagramas em
-> [`docs/diagramas.md`](docs/diagramas.md) e no
-> [GitHub Project](https://github.com/users/joaopedroplinta/projects/9).
+## O que a plataforma resolve
 
----
+| Momento | Recursos |
+| --- | --- |
+| Antes do evento | inscrição, autenticação institucional, formação de equipes, agenda e regulamento |
+| Durante o evento | check-in por QR Code, submissão com prazo validado no servidor e acompanhamento da programação |
+| Avaliação | rubricas configuráveis, distribuição de jurados, conflitos de interesse e salvamento automático |
+| Encerramento | ranking calculado, publicação controlada dos resultados, voto popular e certificados verificáveis |
 
-## Sumário
+Também estão incluídas uma trilha de auditoria para operações sensíveis, o
+versionamento de submissões, notificações em fila e alternativas de
+contingência para o dia do evento.
 
-- [Equipe](#equipe)
-- [Visão geral](#visão-geral)
-- [Papéis do sistema](#papéis-do-sistema)
-- [Stack técnica](#stack-técnica)
-- [Arquitetura](#arquitetura)
-- [Como rodar localmente](#como-rodar-localmente)
-- [Testes e qualidade](#testes-e-qualidade)
-- [Estrutura do projeto](#estrutura-do-projeto)
-- [Documentação](#documentação)
-- [Cronograma](#cronograma)
-- [Plano B — dia do evento](#plano-b--dia-do-evento)
-- [Licença](#licença)
+## Comece em poucos minutos
 
----
+### Pré-requisitos
 
-## Equipe
+- PHP 8.2 ou superior
+- [Composer](https://getcomposer.org/)
+- Node.js 20 ou superior
+- Docker e Docker Compose
 
-| Nome |
-|---|
-| João Pedro dos Santos Henrique Plinta |
-| Jair Rosa de Aguiar Neto |
-| João Pedro Camargo dos Santos |
-
----
-
-## Visão geral
-
-O sistema acompanha o hackathon nas três fases do evento:
-
-- **Antes** — inscrição, formação de equipes, agenda pública
-- **Durante** — check-in, submissão de projetos, acompanhamento da agenda
-- **Depois** — avaliação pelos jurados, resultados públicos, certificados
-
-Requisito transversal: o sistema precisa sobreviver ao dia do evento. Rede
-instável, dezenas de equipes submetendo no último minuto e jurado avaliando
-pelo celular são o cenário normal, não a exceção — por isso existe um
-[plano B](#plano-b--dia-do-evento) inteiro dedicado a degradação controlada.
-
-### Funcionalidades
-
-- Inscrição com login por e-mail/senha ou Google (restrito a domínio
-  institucional)
-- Formação de equipes por convite (e-mail ou código), com trilhas/categorias
-- Submissão de projetos com upload, versionamento e prazo validado no servidor
-- Avaliação por jurados com rubrica configurável, autosave e distribuição
-  automática respeitando conflito de interesse
-- Cálculo de resultado materializado, publicação manual e explícita,
-  pódio geral e por trilha
-- Voto popular com uma vitrine pública de projetos
-- Check-in por QR code com fallback de busca manual
-- Certificados em PDF com página pública de validação
-- Regulamento público com critério de desempate, regra de contingência e
-  upload do edital oficial em PDF
-- Auditoria (`activity log`) de toda alteração sensível: nota, desqualificação,
-  publicação de resultado
-
-## Papéis do sistema
-
-| Papel | Pode |
-|---|---|
-| **guest** | Ver agenda, resultados publicados e páginas públicas de projeto |
-| **participante** | Criar/entrar em equipe, submeter projeto, votar no prêmio popular, baixar certificado |
-| **jurado** | Ver só as submissões atribuídas a ele, avaliar, comentar |
-| **organizador** | CRUD de evento/agenda/equipes, check-in, atribuir jurados, publicar resultados |
-| **admin** | Tudo, além de gerenciar usuários e papéis |
-
-Papéis acumulam (um monitor pode ser participante e organizador) e toda regra
-de acesso vive em **Policies** — nunca em `if` espalhado no controller. Ver
-[`.claude/rules/security.md`](.claude/rules/security.md).
-
-## Stack técnica
-
-| Camada | Escolha | Motivo |
-|---|---|---|
-| Backend | Laravel 12 | Ecossistema completo: auth, filas, notificações, storage |
-| Ponte | Inertia v2 | React sem escrever API REST, sem CORS, sem gerenciar token |
-| Frontend | React 19 + TypeScript | Tipagem nas props vindas do controller |
-| Estilo | Tailwind v4 + shadcn/ui | Starter kit oficial já entrega isso configurado |
-| Banco | PostgreSQL 17 (Docker) | Mesmo banco em dev e prod — sem surpresa de tipo no deploy |
-| Filas | Redis (predis) | E-mails e PDFs fora do request, sem competir com o Postgres no pico do evento |
-| Testes | Pest 3 | Sintaxe enxuta, feature tests cobrem o fluxo real |
-
-**Pacotes de domínio:**
-
-```
-laravel/socialite                 # Google OAuth
-spatie/laravel-permission         # papéis e permissões
-barryvdh/laravel-dompdf           # certificados em PDF (PHP puro, sem Chromium)
-bacon/bacon-qr-code               # QR em SVG, sem dependência de imagick
-spatie/laravel-activitylog        # auditoria de notas e mudanças sensíveis
-resend/resend-php                 # e-mail transacional em produção
-```
-
-Decisões de stack, modelo de dados completo e telas planejadas estão em
-[`PLANO.md`](PLANO.md).
-
-## Arquitetura
-
-Repositório único, um deploy — **sem API REST**. As páginas React recebem
-dados por props do controller via `Inertia::render()`, não por `fetch`.
-
-```
-Controller (Http/Controllers/{Público}/…)
-   │  autoriza via Policy, valida via Form Request
-   ▼
-Action (Actions/…)          ← regra de negócio com mais de uma tabela
-   │
-   ▼
-Model (Eloquent)  ──────────► Inertia::render('pagina', [...])
-                                     │
-                                     ▼
-                          Página React tipada (pages/…)
-```
-
-- **Controllers agrupados por público** (`Public`, `Participant`, `Judge`,
-  `Organizer`), não por recurso — a pasta espelha a fronteira das Policies.
-- **Actions** só para escrita que toca mais de uma tabela ou que precisa
-  rodar de controller *e* de comando artisan. Leitura simples fica no
-  controller.
-- **Sem `Services/`** — vira classe-deus sem relação entre métodos.
-
-Detalhes completos em [`.claude/rules/estrutura.md`](.claude/rules/estrutura.md).
-
-## Como rodar localmente
-
-Pré-requisitos: PHP 8.2+, Composer, Node 20+, Docker.
+### Instalação
 
 ```bash
 git clone https://github.com/joaopedroplinta/hackathon-ifpr.git
 cd hackathon-ifpr
 
-docker compose up -d      # Postgres 17 + Redis + Mailpit
+docker compose up -d
 composer install
 npm install
 
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
-
-npm run dev                # terminal 1 — Vite
-php artisan serve          # terminal 2 — app em http://localhost:8000
+php artisan migrate --seed
 ```
 
-Filas (e-mails e PDFs) rodam fora do request:
+Inicie a aplicação, o worker de fila, os logs e o Vite em um único comando:
 
 ```bash
+composer dev
+```
+
+Acesse [http://localhost:8000](http://localhost:8000). O Mailpit fica em
+[http://localhost:8025](http://localhost:8025), para inspecionar os e-mails
+enviados localmente.
+
+> O seed padrão cria uma conta de organização: `organizacao@ifpr.edu.br` /
+> `password`. Troque essa credencial em qualquer ambiente que não seja local.
+
+### Dados para demonstração
+
+Para preencher a aplicação com uma edição encerrada, resultados publicados e
+uma edição atual com equipes inscritas, execute:
+
+```bash
+php artisan db:seed --class=DemoSeeder
+```
+
+O seeder é idempotente: pode ser executado novamente sem duplicar o cenário.
+
+## Operação local
+
+Os serviços de apoio são iniciados pelo Docker Compose:
+
+| Serviço | Endereço | Uso |
+| --- | --- | --- |
+| PostgreSQL 17 | `localhost:5432` | banco principal e de testes |
+| Redis 7 | `localhost:6379` | filas e cache |
+| Mailpit | `localhost:8025` | visualização de e-mails em desenvolvimento |
+
+Caso prefira processos separados, use `npm run dev` para o frontend,
+`php artisan serve` para a aplicação e `php artisan queue:work` para as filas.
+
+O login com Google é opcional no desenvolvimento. Veja o guia em
+[docs/google-oauth.md](docs/google-oauth.md).
+
+## Arquitetura
+
+O projeto é um monólito Laravel com Inertia: o backend entrega páginas React
+tipadas, sem uma API REST intermediária. Essa escolha simplifica autenticação,
+autorização e deploy, mantendo uma única aplicação para operar.
+
+```text
+Browser
+  │
+  ▼
+Laravel routes → Controller → Policy / Form Request → Action → Eloquent
+  │                                                        │
+  └──────── Inertia props ← React + TypeScript ←──────────┘
+```
+
+- **Policies** concentram as regras de acesso por papel.
+- **Form Requests** validam entradas antes da regra de negócio.
+- **Actions** encapsulam operações que coordenam mais de um modelo, como
+  distribuição de jurados e cálculo de resultados.
+- **Redis + queues** retiram e-mails e geração de PDFs do caminho da requisição.
+
+## Stack
+
+| Camada | Tecnologias |
+| --- | --- |
+| Aplicação | Laravel 12, PHP 8.2+ |
+| Interface | Inertia v2, React 19, TypeScript, Tailwind CSS v4 e shadcn/ui |
+| Dados e assíncrono | PostgreSQL 17, Redis e Laravel Queues |
+| Integrações | Google OAuth, Resend, QR Code e geração de PDF |
+| Qualidade | Pest, Laravel Pint, ESLint, Prettier e TypeScript |
+
+## Qualidade
+
+```bash
+./vendor/bin/pest       # testes de unidade e integração
+./vendor/bin/pint       # formatação PHP
+npm run lint:check      # ESLint
+npm run format:check    # Prettier
+npx tsc --noEmit        # verificação de tipos
+```
+
+Essas verificações também são executadas no CI para cada push e pull request.
+
+## Comandos úteis
+
+```bash
+php artisan hackathon:compute-results {event}
+php artisan hackathon:import-submissions {csv}
 php artisan queue:work
 ```
 
-Login com Google é opcional em dev — guia de configuração (~10 min) em
-[`docs/`](docs).
+O comando de importação é parte do plano de contingência: permite recuperar
+submissões registradas externamente caso seja necessário durante o evento.
 
-### Comandos de domínio
+## Estrutura do repositório
 
-```bash
-php artisan hackathon:compute-results {event}     # recalcula ranking
-php artisan hackathon:import-submissions {csv}    # plano B: importa do Google Forms
-```
-
-## Testes e qualidade
-
-```bash
-./vendor/bin/pest              # testes (Feature + Unit)
-./vendor/bin/pint               # formatação PHP
-npm run lint:check              # ESLint (não usar `lint`, que corrige em silêncio)
-npm run format:check            # Prettier
-npx tsc --noEmit                # tipos
-```
-
-O CI ([`ci.yml`](.github/workflows/ci.yml)) roda os cinco a cada push e pull
-request, contra Postgres 17. Rode localmente antes de abrir PR — é mais
-rápido que esperar o CI reprovar.
-
-**Definição de pronto** de uma feature (checada com o comando `/pronto`):
-Policy cobrindo acesso, validação em Form Request, teste Pest do caminho feliz
-e de pelo menos 1 erro, layout de celular, estados de vazio/carregando/erro
-na UI.
-
-## Estrutura do projeto
-
-```
+```text
 app/
-├── Enums/            status, tipos e papéis — todo enum tem label() em português
-├── Models/            Eloquent
-├── Policies/          uma por model com regra de acesso
-├── Actions/           escrita com regra de negócio, agrupada por domínio
-├── Http/
-│   ├── Controllers/   agrupado por público: Public, Participant, Judge, Organizer, Auth
-│   └── Requests/      mesma divisão dos controllers
-├── Support/           helpers de domínio sem estado
-└── Console/Commands/  hackathon:compute-results, hackathon:import-submissions
+├── Actions/        regras de negócio que coordenam operações
+├── Http/           controllers e validações por público do sistema
+├── Models/         modelos Eloquent
+├── Policies/       autorização
+└── Jobs/            trabalho assíncrono, como certificados em PDF
 
 resources/js/
-├── pages/             espelha o backend: publico, equipe, submissao, jurado, admin
-├── components/
-│   ├── ui/             shadcn — gerado por CLI, não editado à mão
-│   └── hackathon/       componentes do domínio
-├── layouts/
-├── hooks/
-└── types/             props tipadas por página, sem any
+├── pages/          telas React por área do produto
+├── components/     componentes de interface e de domínio
+├── layouts/        estruturas compartilhadas
+└── types/          contratos TypeScript
 
-tests/
-├── Feature/           espelha a estrutura dos controllers
-└── Unit/               enums, cálculo, Support
+tests/              testes de feature e unidade
+docs/               documentos operacionais e de produto
+deploy/             serviços de fila e agendador para produção
 ```
+
+## Segurança e continuidade operacional
+
+- Controle de acesso por papéis: participante, jurado, organizador e admin.
+- Restrição de autenticação Google ao domínio institucional configurado.
+- Auditoria de avaliações, desqualificações e publicação de resultados.
+- Publicação explícita de resultados; o ranking não se torna público
+  automaticamente.
+- Check-in com QR Code e busca manual como alternativa.
+- Procedimento de contingência para falhas de rede e de submissão. Consulte o
+  [plano B](PLANO.md#anexo-a--plano-b).
+
+Para produção, mantenha worker de fila e scheduler ativos. As unidades de
+serviço e as instruções de instalação estão em [deploy/README.md](deploy/README.md).
 
 ## Documentação
 
-| Arquivo | Conteúdo |
-|---|---|
-| [`PLANO.md`](PLANO.md) | Escopo, papéis, modelo de dados, telas, cronograma e decisões travadas |
-| [`PLANO.md` § Anexo A](PLANO.md#anexo-a--plano-b) | Plano B para o dia do evento |
-| [`CLAUDE.md`](CLAUDE.md) | Convenções de código e ferramentas do projeto |
-| [`.claude/rules/`](.claude/rules) | Invariantes de estrutura, banco, segurança e frontend |
-| [`docs/`](docs) | Guias de configuração (Google OAuth), canvas de descoberta e backlog do projeto |
+| Documento | Descrição |
+| --- | --- |
+| [PLANO.md](PLANO.md) | escopo, decisões de produto, modelo de dados e plano de contingência |
+| [docs/diagramas.md](docs/diagramas.md) | diagramas do sistema |
+| [docs/backlog.md](docs/backlog.md) | itens em acompanhamento |
+| [docs/google-oauth.md](docs/google-oauth.md) | configuração do login com Google |
+| [docs/ropa.md](docs/ropa.md) | registro de operações de tratamento de dados |
+| [CHANGELOG.md](CHANGELOG.md) | histórico de mudanças |
 
-## Cronograma
+## Equipe
 
-Sprint de 1 semana, 8 semanas ao todo. Detalhes de cada entrega em
-[`PLANO.md § 6`](PLANO.md#6-cronograma--8-semanas).
-
-| Semana | Entrega |
-|---|---|
-| 0 ✅ | Setup: Laravel + Inertia + React, Docker, CI, papéis, layout base |
-| 1 ✅ | Autenticação: Google + e-mail/senha, perfil, inscrição no evento |
-| 2 ✅ | Equipes: criar, convidar, entrar, travas de tamanho e prazo |
-| 3 ✅ | Submissões: formulário, upload, versionamento, deadline no servidor |
-| 4 ✅ | Agenda pública/admin + `.ics` e check-in por QR com fallback manual |
-| 5 ✅ | Rubrica configurável, atribuição de jurados, painel do jurado com autosave |
-| 6 ✅ | Cálculo de resultados, publicação controlada, voto popular |
-| 7 ✅ | Certificados em PDF, notificações por e-mail em fila |
-| 8 ✅ | Ensaio geral: carga, acessibilidade, responsivo, plano B — deploy segue pendente (decisão de hospedagem) |
-
-## Plano B — dia do evento
-
-Premissa central: **no deadline, o que importa é carimbar o tempo e guardar o
-link do código** — deck, vídeo e descrição podem ser completados depois. Uma
-escada de degradação define o que fazer se rede, upload ou o próprio sistema
-falharem, do reenvio mínimo até papel e caneta. Runbook completo, backup e
-kit físico de contingência em [`PLANO.md § Anexo A`](PLANO.md#anexo-a--plano-b).
+- João Pedro dos Santos Henrique Plinta
+- Jair Rosa de Aguiar Neto
+- João Pedro Camargo dos Santos
 
 ## Licença
 
-Projeto acadêmico — IFPR Campus Pinhais. Sem licença de distribuição definida.
+Distribuído sob a [licença MIT](LICENSE).

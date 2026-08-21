@@ -47,14 +47,14 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-medium tracking-tight">Incidentes</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Incidentes</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Declarar um incidente com extensão de prazo vale pra <strong>todas as equipes</strong>, nunca só pra quem avisou.
                     </p>
                 </header>
 
                 {prazo_original && (
-                    <div className="bg-card mb-6 flex items-center gap-2 rounded-2xl p-4 text-sm">
+                    <div className="border-border bg-card mb-6 flex items-center gap-2 rounded-xl border p-4 text-sm">
                         <Clock className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         <span>
                             Prazo de submissão original: <strong>{prazo_original}</strong>
@@ -68,8 +68,8 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                     </div>
                 )}
 
-                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
-                    <h2 className="font-medium">Declarar incidente</h2>
+                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                    <h2 className="font-semibold">Declarar incidente</h2>
                     <form onSubmit={declarar} className="mt-3 grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="kind">Tipo</Label>
@@ -127,21 +127,21 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                     </form>
                 </section>
 
-                <h2 className="mb-3 font-medium">Histórico</h2>
+                <h2 className="mb-3 font-semibold">Histórico</h2>
                 {incidentes.length === 0 ? (
-                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <AlertTriangle className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhum incidente registrado.</p>
+                        <p className="font-semibold">Nenhum incidente registrado.</p>
                         <p className="text-muted-foreground text-sm">Que continue assim até o fim do evento.</p>
                     </div>
                 ) : (
-                    <ul className="flex flex-col gap-3">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
                         {incidentes.map((i) => (
-                            <li key={i.id} className="bg-card rounded-2xl p-4">
+                            <li key={i.id} className="p-4">
                                 <div className="flex items-center justify-between gap-2">
-                                    <p className="font-medium">{i.tipo_label}</p>
+                                    <p className="font-semibold">{i.tipo_label}</p>
                                     <span className="text-muted-foreground text-xs">{i.declarado_em}</span>
                                 </div>
                                 <p className="mt-1 text-sm">{i.descricao}</p>

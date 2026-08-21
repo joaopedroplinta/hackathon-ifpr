@@ -53,14 +53,14 @@ export default function CriarEquipe({ trilhas, limites }: Props) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="text-2xl font-medium tracking-tight">Criar equipe</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Criar equipe</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Você vira o líder. Depois é só passar o código de convite para o resto do time — de {limites.minimo} a {limites.maximo}{' '}
                         pessoas.
                     </p>
                 </header>
 
-                <form onSubmit={submit} className="grid gap-6">
+                <form onSubmit={submit} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome da equipe</Label>
                         <Input

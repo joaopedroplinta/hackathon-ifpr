@@ -70,15 +70,15 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-medium tracking-tight">Check-in</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Check-in</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Peça pra pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
                     </p>
                 </header>
 
                 {checkpoints.length === 0 ? (
-                    <section className="bg-card rounded-2xl p-6">
-                        <h2 className="font-medium">Nenhum checkpoint cadastrado ainda</h2>
+                    <section className="border-border bg-card rounded-xl border p-6">
+                        <h2 className="font-semibold">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
                             Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
                         </p>
@@ -160,13 +160,13 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 {resultados.length === 0 ? (
                                     <p className="text-muted-foreground text-sm">Ninguém inscrito neste evento bate com "{busca}".</p>
                                 ) : (
-                                    <ul className="flex flex-col gap-2">
+                                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
                                         {resultados.map((pessoa) => (
-                                            <li key={pessoa.id} className="bg-card flex items-center justify-between gap-3 rounded-2xl p-3">
+                                            <li key={pessoa.id} className="flex items-center justify-between gap-3 p-3">
                                                 <div className="flex items-center gap-3">
                                                     <UserRound className="text-muted-foreground h-5 w-5 shrink-0" aria-hidden="true" />
                                                     <div>
-                                                        <p className="font-medium">{pessoa.nome}</p>
+                                                        <p className="font-semibold">{pessoa.nome}</p>
                                                         <p className="text-muted-foreground text-xs">{pessoa.email}</p>
                                                     </div>
                                                 </div>

@@ -79,10 +79,10 @@ export default function Agenda({ evento, itens }: Props) {
                     initial="oculto"
                     animate="visivel"
                     variants={fadeIn}
-                    className="flex flex-wrap items-start justify-between gap-3 pt-8 sm:pt-12"
+                    className="flex flex-col items-center gap-3 pt-8 text-center sm:pt-12"
                 >
                     <div>
-                        <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Agenda</h1>
+                        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Agenda</h1>
                         {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
                     </div>
 
@@ -101,18 +101,18 @@ export default function Agenda({ evento, itens }: Props) {
                         initial="oculto"
                         animate="visivel"
                         variants={fadeIn}
-                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
                     >
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <CalendarX2 className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Agenda ainda não publicada</p>
+                        <p className="font-semibold">Agenda ainda não publicada</p>
                         <p className="text-muted-foreground text-sm">Assim que a organização publicar os horários, eles aparecem aqui.</p>
                     </motion.div>
                 ) : (
                     Object.entries(dias).map(([dia, itensDoDia]) => (
                         <section key={dia} aria-labelledby={`dia-${dia}`}>
-                            <h2 id={`dia-${dia}`} className="text-muted-foreground mb-4 text-xs tracking-wide uppercase">
+                            <h2 id={`dia-${dia}`} className="text-muted-foreground mb-4 text-xs font-semibold tracking-wide uppercase">
                                 {dia}
                             </h2>
 
@@ -152,7 +152,9 @@ export default function Agenda({ evento, itens }: Props) {
                                                 {!ultimoDoDia && <span className="bg-border mt-1 w-px flex-1" aria-hidden="true" />}
                                             </div>
 
-                                            <div className={`bg-card mb-3 rounded-2xl p-4 ${emAndamento ? 'ring-primary/30 ring-2' : ''}`}>
+                                            <div
+                                                className={`border-border bg-card mb-3 rounded-xl border p-4 ${emAndamento ? 'border-primary/40 ring-primary/20 ring-2' : ''}`}
+                                            >
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     <span className="text-muted-foreground text-sm tabular-nums">
                                                         {formatarHora(item.inicia_em)}–{formatarHora(item.termina_em)}
@@ -181,7 +183,7 @@ export default function Agenda({ evento, itens }: Props) {
                                                     )}
                                                 </div>
 
-                                                <p className="mt-2 font-medium">{item.titulo}</p>
+                                                <p className="mt-2 font-semibold">{item.titulo}</p>
                                                 {item.descricao && <p className="text-muted-foreground mt-1 text-sm">{item.descricao}</p>}
 
                                                 {(item.local || item.palestrante) && (

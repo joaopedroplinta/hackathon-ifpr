@@ -61,7 +61,7 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-medium tracking-tight">Projeto da {equipe.nome}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Projeto da {equipe.nome}</h1>
                     {pode_editar && (
                         <p className="text-muted-foreground mt-1 text-sm">
                             Vocês podem salvar um rascunho quantas vezes quiserem. Cada envio fica guardado como uma versão — nada é sobrescrito.
@@ -75,14 +75,14 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                 <EstadoDoEnvio submissao={submissao} />
 
                 {!pode_editar && (
-                    <div role="alert" className="bg-card mb-6 flex items-start gap-3 rounded-2xl p-4 text-sm">
+                    <div role="alert" className="border-border bg-card mb-6 flex items-start gap-3 rounded-xl border p-4 text-sm">
                         <Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                         <p>{motivo_bloqueio ?? 'Este projeto não pode mais ser alterado por aqui.'}</p>
                     </div>
                 )}
 
                 {pode_editar ? (
-                    <form onSubmit={enviar} className="grid gap-6">
+                    <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                         <div className="grid gap-2">
                             <Label htmlFor="title">Título do projeto</Label>
                             <Input
@@ -189,7 +189,9 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                         </div>
                     </form>
                 ) : (
-                    <ResumoSomenteLeitura submissao={submissao} />
+                    <div className="border-border bg-card rounded-xl border p-6">
+                        <ResumoSomenteLeitura submissao={submissao} />
+                    </div>
                 )}
 
                 {/* Fora do <form> de propósito: formulário dentro de
@@ -211,7 +213,7 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
 function EstadoDoEnvio({ submissao }: { submissao: Submissao | null }) {
     if (!submissao || !submissao.foi_enviada) {
         return (
-            <div className="bg-card mb-6 flex items-start gap-3 rounded-2xl p-4 text-sm">
+            <div className="border-border bg-card mb-6 flex items-start gap-3 rounded-xl border p-4 text-sm">
                 <FileText className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                 <p>
                     {submissao
