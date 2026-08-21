@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\User;
+use App\Notifications\VerifyEmailQueued;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -27,6 +30,27 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Regressão: a notificação padrão de verificação de e-mail não é
+     * ShouldQueue -- ela era enviada dentro do próprio request de cadastro,
+     * então uma falha do provedor de e-mail (Resend fora do ar, chave
+     * errada, domínio de teste rejeitado) derrubava o cadastro inteiro com
+     * 500, mesmo com o usuário já criado no banco. Ver VerifyEmailQueued.
+     */
+    public function test_registration_sends_a_queued_verification_email(): void
+    {
+        Notification::fake();
+
+        $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'Password!1',
+            'password_confirmation' => 'Password!1',
+        ]);
+
+        Notification::assertSentTo(User::firstWhere('email', 'test@example.com'), VerifyEmailQueued::class);
     }
 
     /**
