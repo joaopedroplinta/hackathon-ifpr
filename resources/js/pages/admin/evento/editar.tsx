@@ -90,12 +90,12 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
             <Head title="Editar evento" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="mb-1 text-2xl font-medium tracking-tight">Editar evento</h1>
+                <h1 className="mb-1 text-2xl font-bold tracking-tight">Editar evento</h1>
                 <p className="text-muted-foreground mb-6 text-sm">
                     Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
                 </p>
 
-                <form onSubmit={enviar} className="grid gap-6">
+                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome do evento</Label>
                         <Input
@@ -142,7 +142,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                     </div>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-medium">Inscrições</legend>
+                        <legend className="mb-1 text-sm font-semibold">Inscrições</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="registration_opens_at">Abre em</Label>
                             <Input
@@ -168,7 +168,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                     </fieldset>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-medium">Evento</legend>
+                        <legend className="mb-1 text-sm font-semibold">Evento</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="starts_at">Início</Label>
                             <Input
@@ -206,7 +206,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                     </div>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-medium">Votação popular</legend>
+                        <legend className="mb-1 text-sm font-semibold">Votação popular</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="voting_opens_at">Abre em</Label>
                             <Input
@@ -232,7 +232,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                     </fieldset>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-medium">Tamanho da equipe</legend>
+                        <legend className="mb-1 text-sm font-semibold">Tamanho da equipe</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="min_team_size">Mínimo</Label>
                             <Input

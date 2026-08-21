@@ -30,3 +30,9 @@ export type EventoPublico = {
     inscricoes_fecham_em: string | null;
     inscricoes_abertas: boolean;
 };
+
+export type EstatisticasEvento = {
+    inscritos: number;
+    equipes: number;
+    trilhas: number;
+};

@@ -104,96 +104,97 @@
        sobrescreve pra "dark" logo abaixo. */
     color-scheme: light;
 
-    /* Verde institucional (PLANO.md §11) sobrevive só como acento funcional
-       -- anel de foco, indicador de item ativo -- não mais como cor de botão
-       nem espalhado em texto/borda/badge ao mesmo tempo. #357724 dá 5.5:1 de
-       contraste com branco, então continua seguro pra texto quando usado. */
+    /* Segunda troca de identidade (PLANO.md §11): o minimalismo "verde só
+       em detalhe" leu como vazio/genérico demais pra quem organiza o
+       evento. Verde institucional volta a ser a cor primária de verdade --
+       botão, link, badge de status ativo -- não só anel de foco. #357724
+       mantém 5.5:1 de contraste com branco. */
     --verde-ifpr: #357724;
     --verde-mata: #163c1b;
     --verde-brilho: #8fd14f;
     --amarelo-sinal: #e8b93f;
 
-    /* Neutro puro, sem viés de cor -- nada de cinza esverdeado. Cartão fica
-       um degrau abaixo do fundo pra separar sem borda nem sombra. */
-    --background: #fcfcfc;
-    --foreground: #1d1d1f;
-    --card: #f5f5f7;
-    --card-foreground: #1d1d1f;
+    /* Fundo com leve viés esverdeado (não cinza puro) -- cartão em branco
+       puro por cima, com borda visível de verdade, pra separar por
+       contraste de superfície como um dashboard denso, não por respiro. */
+    --background: #f5f7f4;
+    --foreground: #14200f;
+    --card: #ffffff;
+    --card-foreground: #14200f;
     --popover: #ffffff;
-    --popover-foreground: #1d1d1f;
-    /* Botão primário é o par foreground/background -- pílula preta sobre
-       branco, sem cor de marca. O acento entra só em detalhe (anel de
-       foco, link, indicador), nunca no CTA principal. */
-    --primary: var(--foreground);
-    --primary-foreground: var(--background);
-    --secondary: #f5f5f7;
-    --secondary-foreground: #1d1d1f;
-    --muted: #f5f5f7;
-    --muted-foreground: #6e6e73;
-    --accent: #f5f5f7;
-    --accent-foreground: #1d1d1f;
-    --destructive: #c1402f;
+    --popover-foreground: #14200f;
+    --primary: var(--verde-ifpr);
+    --primary-foreground: #ffffff;
+    --secondary: #eaf0e7;
+    --secondary-foreground: #1c3016;
+    --muted: #eef1ec;
+    --muted-foreground: #5b6a56;
+    --accent: #eaf0e7;
+    --accent-foreground: #1c3016;
+    --destructive: #b3261e;
     --destructive-foreground: #ffffff;
-    --border: #e5e5e5;
-    --input: #e5e5e5;
+    --border: #d7ddd3;
+    --input: #d7ddd3;
     --ring: var(--verde-ifpr);
     --chart-1: var(--verde-ifpr);
     --chart-2: var(--verde-brilho);
     --chart-3: var(--amarelo-sinal);
     --chart-4: var(--verde-mata);
-    --chart-5: #86868b;
-    --radius: 1.25rem;
-    --sidebar-background: #f5f5f7;
-    --sidebar-foreground: #1d1d1f;
-    --sidebar-primary: #1d1d1f;
-    --sidebar-primary-foreground: #fcfcfc;
-    --sidebar-accent: #eaeaec;
-    --sidebar-accent-foreground: #1d1d1f;
-    --sidebar-border: #e5e5e5;
+    --chart-5: #6b6e68;
+    --radius: 0.625rem;
+    --sidebar-background: #ffffff;
+    --sidebar-foreground: #14200f;
+    --sidebar-primary: var(--verde-ifpr);
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #eaf0e7;
+    --sidebar-accent-foreground: #1c3016;
+    --sidebar-border: #d7ddd3;
     --sidebar-ring: var(--verde-ifpr);
 }
 
 .dark {
     color-scheme: dark;
 
-    --verde-ifpr: #5cb84a;
+    --verde-ifpr: #5fc244;
     --verde-mata: #163c1b;
     --verde-brilho: #8fd14f;
     --amarelo-sinal: #e8b93f;
 
-    /* Mesmo princípio do claro: preto suave, não #000; branco suave, não
-       #fff. Neutro, sem o viés verde que o tema escuro tinha antes. */
-    --background: #1d1d1f;
-    --foreground: #f5f5f7;
-    --card: #2c2c2e;
-    --card-foreground: #f5f5f7;
-    --popover: #2c2c2e;
-    --popover-foreground: #f5f5f7;
-    --primary: var(--foreground);
-    --primary-foreground: var(--background);
-    --secondary: #2c2c2e;
-    --secondary-foreground: #f5f5f7;
-    --muted: #2c2c2e;
-    --muted-foreground: #98989d;
-    --accent: #2c2c2e;
-    --accent-foreground: #f5f5f7;
-    --destructive: #e05a4a;
-    --destructive-foreground: #1d1d1f;
-    --border: #38383a;
-    --input: #38383a;
+    /* Fundo neutro (não verde-murcho) -- o verde forte no fundo escuro
+       misturava com o card e sumia a separação. Card claramente mais claro
+       que o fundo, mesma lógica de "degrau de superfície" do claro, só
+       que agora com contraste suficiente pra não precisar só de borda. */
+    --background: #17181a;
+    --foreground: #f1f3ef;
+    --card: #212422;
+    --card-foreground: #f1f3ef;
+    --popover: #212422;
+    --popover-foreground: #f1f3ef;
+    --primary: var(--verde-ifpr);
+    --primary-foreground: #0c1a08;
+    --secondary: #262a26;
+    --secondary-foreground: #e4e9e1;
+    --muted: #1e211f;
+    --muted-foreground: #9aa79a;
+    --accent: #262a26;
+    --accent-foreground: #e4e9e1;
+    --destructive: #e5695c;
+    --destructive-foreground: #17181a;
+    --border: #34382f;
+    --input: #34382f;
     --ring: var(--verde-ifpr);
     --chart-1: var(--verde-ifpr);
     --chart-2: var(--verde-brilho);
     --chart-3: var(--amarelo-sinal);
     --chart-4: #3f8f2e;
-    --chart-5: #98989d;
-    --sidebar-background: #2c2c2e;
-    --sidebar-foreground: #f5f5f7;
-    --sidebar-primary: #f5f5f7;
-    --sidebar-primary-foreground: #1d1d1f;
-    --sidebar-accent: #38383a;
-    --sidebar-accent-foreground: #f5f5f7;
-    --sidebar-border: #38383a;
+    --chart-5: #9aa79a;
+    --sidebar-background: #212422;
+    --sidebar-foreground: #f1f3ef;
+    --sidebar-primary: var(--verde-ifpr);
+    --sidebar-primary-foreground: #0c1a08;
+    --sidebar-accent: #262a26;
+    --sidebar-accent-foreground: #e4e9e1;
+    --sidebar-border: #34382f;
     --sidebar-ring: var(--verde-ifpr);
 }
 

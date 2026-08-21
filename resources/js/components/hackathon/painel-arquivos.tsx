@@ -48,8 +48,8 @@ export default function PainelArquivos({ arquivos, podeAnexar }: Props) {
     };
 
     return (
-        <section className="bg-card rounded-2xl p-4 sm:p-6">
-            <h2 className="font-medium">Arquivos</h2>
+        <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
+            <h2 className="font-semibold">Arquivos</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Slide do pitch, código compactado ou print da tela. PDF, ZIP, PNG ou JPG, até 25 MB cada — no máximo {arquivos.limite} arquivos.
             </p>
@@ -62,7 +62,7 @@ export default function PainelArquivos({ arquivos, podeAnexar }: Props) {
                         <li key={arquivo.id} className="flex items-center gap-3 py-3">
                             <Paperclip className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium">{arquivo.nome}</p>
+                                <p className="truncate text-sm font-semibold">{arquivo.nome}</p>
                                 <p className="text-muted-foreground text-xs">{arquivo.tamanho}</p>
                             </div>
                             <a

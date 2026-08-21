@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Team;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,6 +32,13 @@ class LandingController extends Controller
                 'inscricoes_abrem_em' => $event->registration_opens_at?->toIso8601String(),
                 'inscricoes_fecham_em' => $event->registration_closes_at?->toIso8601String(),
                 'inscricoes_abertas' => $event->registrationIsOpen(),
+            ] : null,
+            // Número de verdade, não decoração -- se não tiver ninguém
+            // inscrito ainda, o hero mostra zero mesmo, sem inventar.
+            'estatisticas' => $event ? [
+                'inscritos' => $event->registrations()->count(),
+                'equipes' => Team::forEvent($event)->count(),
+                'trilhas' => $event->tracks()->count(),
             ] : null,
         ]);
     }

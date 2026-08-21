@@ -95,7 +95,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
                 <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl font-medium tracking-tight">Jurados</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Jurados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             Distribuição é sugestão — ajuste na mão nunca é sobrescrito por uma nova rodada.
                         </p>
@@ -142,8 +142,8 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     )}
                 </section>
 
-                <section className="bg-card mb-6 rounded-2xl p-4 sm:p-6">
-                    <h2 className="font-medium">Atribuir manualmente</h2>
+                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                    <h2 className="font-semibold">Atribuir manualmente</h2>
                     <form onSubmit={atribuirManual} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div className="flex-1">
                             <Label htmlFor="submission_id">Submissão</Label>
@@ -184,14 +184,14 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     {atribuirForm.errors.judge_id && <p className="mt-2 text-sm text-red-600">{atribuirForm.errors.judge_id}</p>}
                 </section>
 
-                <h2 className="mb-3 font-medium">Submissões</h2>
+                <h2 className="mb-3 font-semibold">Submissões</h2>
                 {submissoes.length === 0 ? (
                     <p className="text-muted-foreground mb-6 text-sm">Nenhuma submissão enviada ainda.</p>
                 ) : (
                     <ul className="mb-6 flex flex-col gap-3">
                         {submissoes.map((submissao) => (
-                            <li key={submissao.id} className="bg-card rounded-2xl p-4">
-                                <p className="font-medium">{submissao.titulo}</p>
+                            <li key={submissao.id} className="border-border bg-card rounded-xl border p-4">
+                                <p className="font-semibold">{submissao.titulo}</p>
                                 <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
 
                                 {submissao.jurados.length === 0 ? (
@@ -276,8 +276,8 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </ul>
                 )}
 
-                <section className="bg-card rounded-2xl p-4 sm:p-6">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <Scale className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Conflitos de interesse
                     </h2>

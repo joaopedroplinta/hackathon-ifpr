@@ -41,13 +41,13 @@ export default function EntrarNaEquipe() {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="text-2xl font-medium tracking-tight">Entrar em uma equipe</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Entrar em uma equipe</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Peça o código de convite para quem já criou a equipe e digite abaixo. Maiúsculas ou minúsculas, tanto faz.
                     </p>
                 </header>
 
-                <form onSubmit={submit} className="grid gap-6">
+                <form onSubmit={submit} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                     <div className="grid gap-2">
                         <Label htmlFor="invite_code">Código de convite</Label>
                         <Input

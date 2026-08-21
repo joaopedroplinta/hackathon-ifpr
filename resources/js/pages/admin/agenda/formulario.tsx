@@ -84,9 +84,9 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
             <Head title={editando ? 'Editar item da agenda' : 'Novo item da agenda'} />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="mb-6 text-2xl font-medium tracking-tight">{editando ? 'Editar item' : 'Novo item da agenda'}</h1>
+                <h1 className="mb-6 text-2xl font-bold tracking-tight">{editando ? 'Editar item' : 'Novo item da agenda'}</h1>
 
-                <form onSubmit={enviar} className="grid gap-6">
+                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                     <div className="grid gap-2">
                         <Label htmlFor="title">Título</Label>
                         <Input

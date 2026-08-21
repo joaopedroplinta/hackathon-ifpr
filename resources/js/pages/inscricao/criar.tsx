@@ -52,13 +52,13 @@ export default function CriarInscricao({ tamanhos }: { tamanhos: Tamanho[] }) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-8">
-                    <h1 className="text-2xl font-medium tracking-tight">Inscrição no evento</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Inscrição no evento</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         {evento?.nome}. Todos os campos abaixo são opcionais — servem para a organização se preparar melhor.
                     </p>
                 </header>
 
-                <form onSubmit={submit} className="grid gap-6">
+                <form onSubmit={submit} className="border-border bg-card grid gap-6 rounded-xl border p-6">
                     <div className="grid gap-2">
                         <Label htmlFor="course">Curso</Label>
                         <Input

@@ -106,7 +106,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4 sm:p-6">
                 {somenteLeitura && (
-                    <div className="flex items-center gap-2 rounded-2xl bg-emerald-500/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
+                    <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
                         <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Avaliação já enviada. Não é mais possível alterar a nota por aqui.
                     </div>
@@ -118,9 +118,9 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                     Abaixo disso (retrato de tablet e celular) empilha: cada
                     critério precisa da largura toda pra caber comentário. */}
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-                    <section className="bg-card flex shrink-0 flex-col gap-4 rounded-2xl p-6 lg:sticky lg:top-20 lg:w-80">
+                    <section className="border-border bg-card flex shrink-0 flex-col gap-4 rounded-xl border p-6 lg:sticky lg:top-20 lg:w-80">
                         <div>
-                            <h1 className="text-xl font-medium tracking-tight">{submissao.titulo}</h1>
+                            <h1 className="text-xl font-bold tracking-tight">{submissao.titulo}</h1>
                             <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
                         </div>
 
@@ -150,7 +150,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
                     <section className="flex min-w-0 flex-1 flex-col gap-4">
                         {criterios.length === 0 ? (
-                            <div className="bg-card rounded-2xl p-6 text-sm">
+                            <div className="border-border bg-card rounded-xl border p-6 text-sm">
                                 Nenhuma rubrica ativa para este evento. Fale com o organizador antes de avaliar.
                             </div>
                         ) : (
@@ -159,9 +159,9 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                 const erroNota = errosPorIndice[`scores.${indice}.score`];
 
                                 return (
-                                    <div key={criterio.id} className="bg-card rounded-2xl p-4 sm:p-6">
+                                    <div key={criterio.id} className="border-border bg-card rounded-xl border p-4 sm:p-6">
                                         <div className="flex items-baseline justify-between gap-3">
-                                            <Label htmlFor={`score-${criterio.id}`} className="font-medium">
+                                            <Label htmlFor={`score-${criterio.id}`} className="font-semibold">
                                                 {criterio.nome}
                                             </Label>
                                             <span className="text-muted-foreground shrink-0 text-xs">
@@ -199,7 +199,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                             })
                         )}
 
-                        <div className="bg-card rounded-2xl p-4 sm:p-6">
+                        <div className="border-border bg-card rounded-xl border p-4 sm:p-6">
                             <Label htmlFor="overall_comment">Comentário geral (opcional)</Label>
                             <textarea
                                 id="overall_comment"

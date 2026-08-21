@@ -30,16 +30,16 @@ export default function Privacidade() {
                 variants={listaVariants}
                 className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
             >
-                <motion.header variants={itemVariants} className="pt-8 sm:pt-12">
-                    <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Política de Privacidade</h1>
-                    <p className="text-muted-foreground mt-2 text-sm">
+                <motion.header variants={itemVariants} className="pt-8 text-center sm:pt-12">
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Política de Privacidade</h1>
+                    <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
                         Como o sistema do 1º Hackathon IFPR Pinhais trata os dados de quem se inscreve, participa ou julga o evento — conforme a Lei
                         Geral de Proteção de Dados (Lei 13.709/2018).
                     </p>
                 </motion.header>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <Database className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Que dados coletamos
                     </h2>
@@ -66,8 +66,8 @@ export default function Privacidade() {
                     </ul>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <AlertTriangle className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Restrição alimentar é dado sensível
                     </h2>
@@ -78,8 +78,8 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <ShieldCheck className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Por que coletamos
                     </h2>
@@ -90,8 +90,8 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <Share2 className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Com quem compartilhamos
                     </h2>
@@ -101,8 +101,8 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <Clock className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Quanto tempo guardamos
                     </h2>
@@ -113,8 +113,8 @@ export default function Privacidade() {
                     </p>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-card rounded-2xl p-4">
-                    <h2 className="flex items-center gap-2 font-medium">
+                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                    <h2 className="flex items-center gap-2 font-semibold">
                         <Mail className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Seus direitos e contato
                     </h2>

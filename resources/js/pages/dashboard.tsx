@@ -42,7 +42,7 @@ function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTril
 
             <div className={`flex-1 items-start justify-between gap-3 sm:flex ${ultimo ? 'pb-1' : 'pb-8'}`}>
                 <div>
-                    <p className={`font-medium ${bloqueado ? 'text-muted-foreground' : ''}`}>{passo.titulo}</p>
+                    <p className={`font-semibold ${bloqueado ? 'text-muted-foreground' : ''}`}>{passo.titulo}</p>
                     <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{passo.descricao}</p>
                 </div>
 
@@ -81,11 +81,11 @@ export default function Dashboard({ trilha }: Props) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="flex flex-col gap-8 p-4 sm:p-6">
                 <header>
-                    <h1 className="text-2xl font-medium tracking-tight">Olá, {primeiroNome}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Olá, {primeiroNome}</h1>
                 </header>
 
                 {trilha ? (
-                    <section className="bg-card max-w-xl rounded-2xl p-6">
+                    <section className="border-border bg-card max-w-xl rounded-xl border p-6">
                         <ol className="flex flex-col">
                             {trilha.map((passo, indice) => (
                                 <ItemTrilha key={passo.chave} passo={passo} indice={indice} total={trilha.length} reduzMovimento={reduzMovimento} />
@@ -93,11 +93,11 @@ export default function Dashboard({ trilha }: Props) {
                         </ol>
                     </section>
                 ) : (
-                    <section className="bg-card flex max-w-xl flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <section className="border-border bg-card flex max-w-xl flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Calendar className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhum evento aberto</p>
+                        <p className="font-semibold">Nenhum evento aberto</p>
                         <p className="text-muted-foreground text-sm">Assim que a organização publicar o próximo hackathon, ele aparece aqui.</p>
                     </section>
                 )}

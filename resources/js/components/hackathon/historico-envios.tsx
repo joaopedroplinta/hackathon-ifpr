@@ -20,8 +20,8 @@ function formatarData(iso: string): string {
  */
 export default function HistoricoEnvios({ versoes }: Props) {
     return (
-        <section className="bg-card rounded-2xl p-4 sm:p-6">
-            <h2 className="flex items-center gap-2 font-medium">
+        <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
+            <h2 className="flex items-center gap-2 font-semibold">
                 <History className="h-4 w-4 shrink-0" aria-hidden="true" />
                 Histórico de envios
             </h2>
@@ -32,7 +32,7 @@ export default function HistoricoEnvios({ versoes }: Props) {
                 <ol className="mt-4 divide-y">
                     {versoes.map((versao) => (
                         <li key={versao.versao} className="flex items-center justify-between gap-3 py-3 text-sm">
-                            <span className="font-medium">Versão {versao.versao}</span>
+                            <span className="font-semibold">Versão {versao.versao}</span>
                             <span className="text-muted-foreground text-right">
                                 {versao.autor} · {formatarData(versao.criado_em)}
                             </span>

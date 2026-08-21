@@ -23,10 +23,10 @@ export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
             <Head title="Equipe" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <section className="bg-card rounded-2xl p-8 text-center">
+                <section className="border-border bg-card rounded-xl border p-8 text-center">
                     <Users className="text-muted-foreground mx-auto h-10 w-10" aria-hidden="true" />
 
-                    <h1 className="mt-4 text-xl font-medium tracking-tight">Você ainda não tem equipe</h1>
+                    <h1 className="mt-4 text-xl font-bold tracking-tight">Você ainda não tem equipe</h1>
 
                     {pode_criar ? (
                         <>

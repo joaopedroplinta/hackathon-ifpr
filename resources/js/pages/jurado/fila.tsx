@@ -25,7 +25,7 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <header className="mb-6">
-                    <h1 className="text-2xl font-medium tracking-tight">Suas submissões</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Suas submissões</h1>
                     {progresso.total > 0 && (
                         <>
                             <p className="text-muted-foreground mt-1 text-sm">
@@ -44,27 +44,23 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                 </header>
 
                 {submissoes.length === 0 ? (
-                    <div className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center">
+                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <ClipboardCheck className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhuma submissão atribuída a você ainda.</p>
+                        <p className="font-semibold">Nenhuma submissão atribuída a você ainda.</p>
                         <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
-                    <ul className="flex flex-col gap-3">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
                         {submissoes.map((s) => (
-                            <motion.li
-                                key={s.submission_id}
-                                whileHover={reduzMovimento ? undefined : { y: -2 }}
-                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                            >
+                            <motion.li key={s.submission_id}>
                                 <Link
                                     href={route('jurado.avaliar.show', s.submission_id)}
-                                    className="bg-card flex min-h-11 items-center justify-between gap-3 rounded-2xl p-4"
+                                    className="hover:bg-muted/50 flex min-h-11 items-center justify-between gap-3 p-4 transition-colors"
                                 >
                                     <div className="min-w-0">
-                                        <p className="truncate font-medium">{s.titulo}</p>
+                                        <p className="truncate font-semibold">{s.titulo}</p>
                                         <p className="text-muted-foreground truncate text-xs">{s.equipe}</p>
                                     </div>
                                     <span className="flex shrink-0 items-center gap-1.5 text-xs">

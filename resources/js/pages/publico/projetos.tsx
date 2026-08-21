@@ -49,13 +49,18 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
             <CabecalhoPublico />
 
             <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 pb-24 sm:p-6">
-                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 sm:pt-12">
-                    <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">Projetos</h1>
+                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Projetos</h1>
                     {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
                 </motion.header>
 
                 {votacaoAberta && !podeVotar && (
-                    <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="bg-card rounded-2xl p-4 text-sm">
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="border-border bg-muted/30 rounded-xl border p-4 text-sm"
+                    >
                         {auth.user ? (
                             <>Você precisa estar inscrito neste evento para votar.</>
                         ) : (
@@ -74,12 +79,12 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
                         initial="oculto"
                         animate="visivel"
                         variants={fadeIn}
-                        className="bg-card flex flex-col items-center gap-3 rounded-2xl p-10 text-center"
+                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
                     >
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Rocket className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
-                        <p className="font-medium">Nenhum projeto enviado ainda</p>
+                        <p className="font-semibold">Nenhum projeto enviado ainda</p>
                         <p className="text-muted-foreground text-sm">Volte depois que o prazo de submissão fechar.</p>
                     </motion.div>
                 ) : (
@@ -93,9 +98,9 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
                                     variants={itemVariants}
                                     whileHover={{ y: -2 }}
                                     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                    className="bg-card rounded-2xl p-5 sm:p-6"
+                                    className="border-border bg-card rounded-xl border p-5 sm:p-6"
                                 >
-                                    <p className="font-medium">{submissao.titulo}</p>
+                                    <p className="font-semibold">{submissao.titulo}</p>
                                     <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
                                     {submissao.resumo && <p className="mt-2 text-sm leading-relaxed">{submissao.resumo}</p>}
 
