@@ -116,9 +116,7 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-6">
                 <header className="mb-6">
                     <h1 className="text-2xl font-bold tracking-tight">Usuários</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Conceder ou remover papel (jurado, organizador, admin). Papéis acumulam — ver PLANO.md §3.
-                    </p>
+                    <p className="text-muted-foreground mt-1 text-sm">Conceder ou remover papel (jurado, organizador, admin). Papéis acumulam.</p>
                 </header>
 
                 <form onSubmit={buscar} className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end">
