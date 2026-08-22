@@ -37,6 +37,16 @@ class StoreEventRequest extends FormRequest
             'voting_closes_at' => ['nullable', 'date', 'after_or_equal:voting_opens_at'],
             'min_team_size' => ['required', 'integer', 'min:1'],
             'max_team_size' => ['required', 'integer', 'min:1', 'gte:min_team_size'],
+            // Opcional aqui -- diferente do upload avulso (UploadRegulationRequest),
+            // criar o evento sem regulamento em mãos ainda é um caminho válido.
+            'regulamento' => [
+                'nullable',
+                'file',
+                'max:'.UploadRegulationRequest::MAX_KILOBYTES,
+                'extensions:pdf',
+                'mimes:pdf',
+                'mimetypes:application/pdf',
+            ],
         ];
     }
 
@@ -52,6 +62,10 @@ class StoreEventRequest extends FormRequest
             'ends_at.after_or_equal' => 'O fim do evento precisa vir depois do início.',
             'voting_closes_at.after_or_equal' => 'O fechamento da votação precisa vir depois da abertura.',
             'max_team_size.gte' => 'O tamanho máximo da equipe não pode ser menor que o mínimo.',
+            'regulamento.max' => 'O arquivo passa de 10 MB.',
+            'regulamento.extensions' => 'Só aceitamos PDF.',
+            'regulamento.mimes' => 'Só aceitamos PDF.',
+            'regulamento.mimetypes' => 'O conteúdo do arquivo não bate com um PDF.',
         ];
     }
 }

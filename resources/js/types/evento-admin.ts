@@ -46,6 +46,7 @@ export type NovoEventoForm = {
     voting_closes_at: string;
     min_team_size: string;
     max_team_size: string;
+    regulamento: File | null;
 };
 
 export type OpcaoStatusEvento = { value: string; label: string };

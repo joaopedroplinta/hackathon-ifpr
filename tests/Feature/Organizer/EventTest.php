@@ -109,6 +109,38 @@ class EventTest extends TestCase
         $this->assertSame(1, $event->edition);
     }
 
+    /** Anexar o edital já na criação poupa uma segunda ida a Editar evento. */
+    public function test_staff_attaches_the_regulation_while_creating_the_event(): void
+    {
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.store'), [
+                'name' => 'Hackathon IFPR 2026',
+                'min_team_size' => 1,
+                'max_team_size' => 4,
+                'regulamento' => UploadedFile::fake()->create('edital-2026.pdf', 200, 'application/pdf'),
+            ])
+            ->assertRedirect(route('admin.evento.edit'))
+            ->assertSessionHas('sucesso');
+
+        $event = Event::current();
+        $this->assertSame('edital-2026.pdf', $event->regulation_original_name);
+        $this->assertNotNull($event->regulation_updated_at);
+        Storage::disk('local')->assertExists($event->regulation_path);
+    }
+
+    public function test_creating_the_event_without_a_regulation_still_works(): void
+    {
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.store'), [
+                'name' => 'Hackathon IFPR 2026',
+                'min_team_size' => 1,
+                'max_team_size' => 4,
+            ])
+            ->assertSessionDoesntHaveErrors();
+
+        $this->assertNull(Event::current()->regulation_path);
+    }
+
     public function test_a_second_event_gets_the_next_edition_number(): void
     {
         Event::factory()->create(['edition' => 1]);

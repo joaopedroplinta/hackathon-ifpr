@@ -39,6 +39,7 @@ export default function CriarEvento() {
         voting_closes_at: '',
         min_team_size: '1',
         max_team_size: '5',
+        regulamento: null,
     });
 
     transform((dadosAtuais) => ({
@@ -54,7 +55,7 @@ export default function CriarEvento() {
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.evento.store'), { preserveScroll: true });
+        post(route('admin.evento.store'), { preserveScroll: true, forceFormData: true });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -220,6 +221,21 @@ export default function CriarEvento() {
                             <InputError id="max_team_size-erro" message={errors.max_team_size} />
                         </div>
                     </fieldset>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="regulamento">Regulamento em PDF (opcional)</Label>
+                        <Input
+                            id="regulamento"
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => setData('regulamento', e.target.files?.[0] ?? null)}
+                            aria-describedby={errors.regulamento ? 'regulamento-erro' : undefined}
+                        />
+                        <InputError id="regulamento-erro" message={errors.regulamento} />
+                        <p className="text-muted-foreground text-xs">
+                            Sem o PDF em mãos agora? Sem problema — dá pra anexar depois em Editar evento.
+                        </p>
+                    </div>
 
                     <div className="flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
                         <Button type="submit" disabled={processing} className="w-full sm:w-auto">
