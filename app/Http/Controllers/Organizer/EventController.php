@@ -69,14 +69,15 @@ class EventController extends Controller
         return Inertia::render('admin/evento/criar');
     }
 
-    public function store(StoreEventRequest $request): RedirectResponse
+    public function store(StoreEventRequest $request, UploadRegulation $uploadRegulation): RedirectResponse
     {
         $this->authorize('create', Event::class);
 
         $edition = (Event::max('edition') ?? 0) + 1;
+        $dados = $request->safe()->except('regulamento');
 
-        Event::create([
-            ...$request->validated(),
+        $event = Event::create([
+            ...$dados,
             // Sempre a próxima edição, nunca escolhida à mão -- evita
             // colisão e mantém `Event::current()` (ordena por edition)
             // determinístico.
@@ -84,8 +85,14 @@ class EventController extends Controller
             'status' => EventStatus::Published,
             // slug é NOT NULL + unique; incluir a edição garante
             // unicidade mesmo se o nome se repetir entre edições.
-            'slug' => Str::slug($request->validated('name')).'-'.$edition,
+            'slug' => Str::slug($dados['name']).'-'.$edition,
         ]);
+
+        // Anexar o regulamento já na criação é opcional -- quem não tem o
+        // PDF em mãos ainda anexa depois em Editar evento.
+        if ($request->hasFile('regulamento')) {
+            $uploadRegulation->handle($event, $request->file('regulamento'));
+        }
 
         return to_route('admin.evento.edit')->with('sucesso', 'Evento criado.');
     }
