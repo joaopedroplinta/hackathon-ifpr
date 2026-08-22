@@ -34,6 +34,7 @@ use App\Http\Controllers\Public\RegulationController;
 use App\Http\Controllers\Public\ResultController as PublicResultController;
 use App\Http\Controllers\Public\RubricController as PublicRubricController;
 use App\Http\Controllers\Public\SubmissionShowcaseController;
+use App\Http\Middleware\EnsureEventExists;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 
@@ -166,13 +167,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // rota garante que ninguém chega ao controller sem passar por
 // SubmissionPolicy::viewAny.
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    // Criar a primeira edição do evento e gerenciar papel de usuário não
+    // dependem de já existir um evento em cartaz -- ficam fora do grupo com
+    // EnsureEventExists abaixo, senão a própria tela de criar o evento
+    // ficaria bloqueada por "não existe evento".
+    Route::get('evento/criar', [EventController::class, 'create'])->name('admin.evento.create');
+    Route::post('evento', [EventController::class, 'store'])->name('admin.evento.store');
+
+    // Gerenciar papel de usuário -- exclusivo de admin, ver UserPolicy.
+    Route::get('usuarios', [OrganizerUserController::class, 'index'])->name('admin.usuarios.index');
+    Route::patch('usuarios/{usuario}', [OrganizerUserController::class, 'update'])->name('admin.usuarios.update');
+});
+
+// Todo o resto do painel do organizador pressupõe uma edição do hackathon
+// em cartaz -- ver EnsureEventExists. A porta em cada tela específica é a
+// Policy, não o prefixo da URL: `can:` na rota garante que ninguém chega ao
+// controller sem passar por SubmissionPolicy::viewAny, por exemplo.
+Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Edição do evento -- nome, tema/desafio, datas, limites, fase. Sempre o
     // evento atual, sem {event} na URL: só existe uma edição em cartaz por
     // vez (PLANO.md, seção 5).
-    Route::get('evento/criar', [EventController::class, 'create'])->name('admin.evento.create');
-    Route::post('evento', [EventController::class, 'store'])->name('admin.evento.store');
     Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
     Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
     Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('admin.evento.regulamento.upload');
@@ -248,10 +264,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // aqui só a emissão avulsa (mentor, correção pontual) -- ver CertificateController.
     Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('admin.certificados.index');
     Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('admin.certificados.store');
-
-    // Gerenciar papel de usuário -- exclusivo de admin, ver UserPolicy.
-    Route::get('usuarios', [OrganizerUserController::class, 'index'])->name('admin.usuarios.index');
-    Route::patch('usuarios/{usuario}', [OrganizerUserController::class, 'update'])->name('admin.usuarios.update');
 });
 
 require __DIR__.'/settings.php';
