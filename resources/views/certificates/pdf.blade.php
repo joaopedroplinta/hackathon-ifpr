@@ -11,7 +11,7 @@
             color: #1b1b1d;
         }
         .moldura {
-            border: 3px solid #3f8f2e;
+            border: 3px solid #357724;
             padding: 50px;
             text-align: center;
         }
@@ -19,7 +19,7 @@
             font-size: 12px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #3f8f2e;
+            color: #357724;
             margin-bottom: 30px;
         }
         .titulo {

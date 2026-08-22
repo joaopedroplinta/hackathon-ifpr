@@ -186,7 +186,7 @@
     --chart-1: var(--verde-ifpr);
     --chart-2: var(--verde-brilho);
     --chart-3: var(--amarelo-sinal);
-    --chart-4: #3f8f2e;
+    --chart-4: var(--verde-mata);
     --chart-5: #9aa79a;
     --sidebar-background: #212422;
     --sidebar-foreground: #f1f3ef;
