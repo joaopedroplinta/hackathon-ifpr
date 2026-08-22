@@ -118,9 +118,18 @@ registrada no ensaio geral (Semana 8).
 | 7.2 | Como qualquer pessoa, quero validar um certificado por um código público (`/validar/{code}`), para confirmar que ele é legítimo sem depender de confiar cegamente num PDF. | ✅ |
 | 7.3 | Como participante, quero receber um lembrete por e-mail perto do prazo de submissão, para não perder o prazo por esquecimento. | ✅ |
 | 7.4 | Como organizador, quero que resultado publicado dispare notificação por e-mail, para ninguém precisar ficar recarregando a página. | ✅ |
+| 7.5 | [Como organizador, quero definir quem assina o certificado em nome da comissão (nome e cargo),](https://github.com/joaopedroplinta/hackathon-ifpr/pull/123) para o documento ter a legitimidade de uma assinatura, como no certificado de referência que a comissão trouxe (CodeCon Summit). | ✅ |
+| 7.6 | [Como participante, quero que meu CPF, matrícula e equipe/projeto apareçam no certificado que eu baixo,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/120) para o documento ter validade legal — sem bloquear quem não preencheu CPF, e sem expor o CPF na página pública de validação. | ✅ |
 
 **Critério de pronto do sprint:** e-mail de deadline dispara sozinho no
 horário — confirmado.
+
+**Pendente, fora deste sprint:** permitir que a comissão configure o
+**template visual inteiro** do certificado (logo do evento, ilustração de
+fundo, não só a assinatura) — 🔜
+[#122](https://github.com/joaopedroplinta/hackathon-ifpr/issues/122). Item
+maior, com decisões de design em aberto (upload de template vs. construtor
+visual, sanitização de HTML customizado, versionamento entre edições).
 
 ---
 
@@ -187,8 +196,10 @@ comissão organizadora, junto do ensaio geral.
 | 12.1 | [Como usuário, quero informar CPF, vínculo institucional e matrícula (SUAP/SIAPE) no meu perfil,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/101) para o certificado emitido ter validade legal e o vínculo institucional ser confirmável quando declarado. | ✅ — PR #103, mesclada |
 | 12.2 | [Como usuário, quero trocar minha foto de perfil,](https://github.com/joaopedroplinta/hackathon-ifpr/issues/102) para minha conta ser reconhecível por colegas de equipe, jurados e organização mesmo sem entrar pelo Google. | ✅ — PR #103, mesclada. De quebra corrigiu um bug real: `auth.user.avatar` nunca funcionava (a coluna é `avatar_url`), então nenhuma foto — nem a do Google — jamais aparecia no header/sidebar |
 
-**Pendente, fora de escopo:** nada hoje trava a emissão de certificado pra
-quem não preencheu CPF — decisão de design ainda não tomada (`PLANO.md` §4).
+**Resolvido:** o certificado agora mostra CPF e matrícula (quando
+preenchidos) e nunca bloqueia a emissão de quem não tem CPF cadastrado — ver
+Épico 7, item de certificados
+([#120](https://github.com/joaopedroplinta/hackathon-ifpr/issues/120)).
 
 ---
 
