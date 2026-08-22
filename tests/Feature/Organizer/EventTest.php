@@ -63,7 +63,7 @@ class EventTest extends TestCase
     public function test_edit_shows_the_no_event_screen_when_no_event_exists(): void
     {
         $this->actingAs($this->organizador())
-            ->get(route('admin.evento.edit'))
+            ->get(route('painel.evento.edit'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page->component('admin/sem-evento'));
     }
@@ -71,7 +71,7 @@ class EventTest extends TestCase
     public function test_staff_sees_the_create_form_when_no_event_exists(): void
     {
         $this->actingAs($this->organizador())
-            ->get(route('admin.evento.create'))
+            ->get(route('painel.evento.create'))
             ->assertOk();
     }
 
@@ -80,8 +80,8 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.evento.create'))
-            ->assertRedirect(route('admin.evento.edit'));
+            ->get(route('painel.evento.create'))
+            ->assertRedirect(route('painel.evento.edit'));
     }
 
     /**
@@ -93,13 +93,13 @@ class EventTest extends TestCase
     public function test_staff_creates_the_first_event_already_published(): void
     {
         $this->actingAs($this->organizador())
-            ->post(route('admin.evento.store'), [
+            ->post(route('painel.evento.store'), [
                 'name' => 'Hackathon IFPR 2026',
                 'description' => 'Soluções para mobilidade urbana',
                 'min_team_size' => 2,
                 'max_team_size' => 5,
             ])
-            ->assertRedirect(route('admin.evento.edit'))
+            ->assertRedirect(route('painel.evento.edit'))
             ->assertSessionHas('sucesso');
 
         $event = Event::current();
@@ -113,13 +113,13 @@ class EventTest extends TestCase
     public function test_staff_attaches_the_regulation_while_creating_the_event(): void
     {
         $this->actingAs($this->organizador())
-            ->post(route('admin.evento.store'), [
+            ->post(route('painel.evento.store'), [
                 'name' => 'Hackathon IFPR 2026',
                 'min_team_size' => 1,
                 'max_team_size' => 4,
                 'regulamento' => UploadedFile::fake()->create('edital-2026.pdf', 200, 'application/pdf'),
             ])
-            ->assertRedirect(route('admin.evento.edit'))
+            ->assertRedirect(route('painel.evento.edit'))
             ->assertSessionHas('sucesso');
 
         $event = Event::current();
@@ -131,7 +131,7 @@ class EventTest extends TestCase
     public function test_creating_the_event_without_a_regulation_still_works(): void
     {
         $this->actingAs($this->organizador())
-            ->post(route('admin.evento.store'), [
+            ->post(route('painel.evento.store'), [
                 'name' => 'Hackathon IFPR 2026',
                 'min_team_size' => 1,
                 'max_team_size' => 4,
@@ -145,7 +145,7 @@ class EventTest extends TestCase
     {
         Event::factory()->create(['edition' => 1]);
 
-        $this->actingAs($this->organizador())->post(route('admin.evento.store'), [
+        $this->actingAs($this->organizador())->post(route('painel.evento.store'), [
             'name' => 'Hackathon IFPR 2027',
             'min_team_size' => 1,
             'max_team_size' => 4,
@@ -157,11 +157,11 @@ class EventTest extends TestCase
     public function test_a_participant_cannot_create_the_event(): void
     {
         $this->actingAs($this->participante())
-            ->get(route('admin.evento.create'))
+            ->get(route('painel.evento.create'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.evento.store'), ['name' => 'Tentativa', 'min_team_size' => 1, 'max_team_size' => 4])
+            ->post(route('painel.evento.store'), ['name' => 'Tentativa', 'min_team_size' => 1, 'max_team_size' => 4])
             ->assertForbidden();
     }
 
@@ -169,7 +169,7 @@ class EventTest extends TestCase
     {
         $event = Event::factory()->create(['name' => 'Meu Evento']);
 
-        $response = $this->actingAs($this->organizador())->get(route('admin.evento.edit'));
+        $response = $this->actingAs($this->organizador())->get(route('painel.evento.edit'));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page->where('evento.name', $event->name));
@@ -180,10 +180,10 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos([
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
                 'description' => 'Soluções para acesso à saúde',
             ]))
-            ->assertRedirect(route('admin.evento.edit'))
+            ->assertRedirect(route('painel.evento.edit'))
             ->assertSessionHas('sucesso');
 
         $event = Event::current();
@@ -196,7 +196,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos([
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
                 'certificate_signer_name' => 'Maria Souza',
                 'certificate_signer_role' => 'Coordenadora do Hackathon',
             ]))
@@ -212,7 +212,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos([
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
                 'certificate_signer_name' => 'Maria Souza',
                 'certificate_signer_role' => '',
             ]))
@@ -224,7 +224,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos([
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
                 'min_team_size' => 5,
                 'max_team_size' => 2,
             ]))
@@ -236,7 +236,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos([
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
                 'registration_opens_at' => now()->addDay()->toIso8601String(),
                 'registration_closes_at' => now()->toIso8601String(),
             ]))
@@ -251,7 +251,7 @@ class EventTest extends TestCase
         $event->save();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.evento.update'), $this->dadosValidos());
+            ->patch(route('painel.evento.update'), $this->dadosValidos());
 
         $fresh = $event->fresh();
         $this->assertNotNull($fresh->results_published_at);
@@ -263,11 +263,11 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.evento.edit'))
+            ->get(route('painel.evento.edit'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->patch(route('admin.evento.update'), $this->dadosValidos())
+            ->patch(route('painel.evento.update'), $this->dadosValidos())
             ->assertForbidden();
     }
 
@@ -275,7 +275,7 @@ class EventTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.evento.edit'))->assertRedirect(route('login'));
+        $this->get(route('painel.evento.edit'))->assertRedirect(route('login'));
     }
 
     public function test_staff_uploads_the_regulation_pdf(): void
@@ -283,10 +283,10 @@ class EventTest extends TestCase
         $event = Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.evento.regulamento.upload'), [
+            ->post(route('painel.evento.regulamento.upload'), [
                 'regulamento' => UploadedFile::fake()->create('edital-2026.pdf', 200, 'application/pdf'),
             ])
-            ->assertRedirect(route('admin.evento.edit'))
+            ->assertRedirect(route('painel.evento.edit'))
             ->assertSessionHas('sucesso');
 
         $fresh = $event->fresh();
@@ -300,12 +300,12 @@ class EventTest extends TestCase
     {
         $event = Event::factory()->create();
 
-        $this->actingAs($this->organizador())->post(route('admin.evento.regulamento.upload'), [
+        $this->actingAs($this->organizador())->post(route('painel.evento.regulamento.upload'), [
             'regulamento' => UploadedFile::fake()->create('primeira-versao.pdf', 100, 'application/pdf'),
         ]);
         $caminhoAntigo = $event->fresh()->regulation_path;
 
-        $this->actingAs($this->organizador())->post(route('admin.evento.regulamento.upload'), [
+        $this->actingAs($this->organizador())->post(route('painel.evento.regulamento.upload'), [
             'regulamento' => UploadedFile::fake()->create('versao-final.pdf', 100, 'application/pdf'),
         ]);
 
@@ -320,7 +320,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.evento.regulamento.upload'), [
+            ->post(route('painel.evento.regulamento.upload'), [
                 'regulamento' => UploadedFile::fake()->create('edital.docx', 100, 'application/msword'),
             ])
             ->assertSessionHasErrors('regulamento');
@@ -333,7 +333,7 @@ class EventTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.evento.regulamento.upload'), [
+            ->post(route('painel.evento.regulamento.upload'), [
                 'regulamento' => UploadedFile::fake()->create('edital.pdf', 100, 'application/pdf'),
             ])
             ->assertForbidden();

@@ -133,7 +133,7 @@ class CheckinTest extends TestCase
         EventRegistration::factory()->for($event)->for($participante)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.checkin.index', ['busca' => 'beatriz']))
+            ->get(route('painel.checkin.index', ['busca' => 'beatriz']))
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->has('resultados', 1)
@@ -150,7 +150,7 @@ class CheckinTest extends TestCase
         EventRegistration::factory()->for($event)->for($participante)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.checkin.index', ['busca' => 'carlos']))
+            ->get(route('painel.checkin.index', ['busca' => 'carlos']))
             ->assertInertia(fn (AssertableInertia $page) => $page->missing('resultados.0.qr_token'));
     }
 
@@ -178,7 +178,7 @@ class CheckinTest extends TestCase
         EventRegistration::factory()->for($outroEvento)->for($foraDoEvento)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.checkin.index', ['busca' => 'diego']))
+            ->get(route('painel.checkin.index', ['busca' => 'diego']))
             ->assertInertia(fn (AssertableInertia $page) => $page->has('resultados', 0));
     }
 
@@ -187,8 +187,8 @@ class CheckinTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'entrada'])
-            ->assertRedirect(route('admin.checkin.index'));
+            ->post(route('painel.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'entrada'])
+            ->assertRedirect(route('painel.checkin.index'));
 
         $this->assertSame(1, Checkpoint::count());
     }
@@ -198,7 +198,7 @@ class CheckinTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'tipo-inventado'])
+            ->post(route('painel.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'tipo-inventado'])
             ->assertSessionHasErrors('type');
 
         $this->assertSame(0, Checkpoint::count());
@@ -209,7 +209,7 @@ class CheckinTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'entrada'])
+            ->post(route('painel.checkin.checkpoints.store'), ['name' => 'Entrada', 'type' => 'entrada'])
             ->assertForbidden();
 
         $this->assertSame(0, Checkpoint::count());
@@ -231,6 +231,6 @@ class CheckinTest extends TestCase
         $participante = $this->participante();
 
         $this->get(route('checkin.show', $participante->qr_token))->assertRedirect(route('login'));
-        $this->get(route('admin.checkin.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.checkin.index'))->assertRedirect(route('login'));
     }
 }

@@ -29,7 +29,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
     const buscar: FormEventHandler = (e) => {
         e.preventDefault();
         router.get(
-            route('admin.checkin.index'),
+            route('painel.checkin.index'),
             { busca: termoBusca },
             { preserveState: true, onStart: () => setBuscando(true), onFinish: () => setBuscando(false) },
         );
@@ -37,7 +37,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
 
     const criarCheckpoint: FormEventHandler = (e) => {
         e.preventDefault();
-        checkpointForm.post(route('admin.checkin.checkpoints.store'), { preserveScroll: true });
+        checkpointForm.post(route('painel.checkin.checkpoints.store'), { preserveScroll: true });
     };
 
     // O QR carrega a URL absoluta gerada pelo crachá (ver CheckinQrCode). Mesma
@@ -65,7 +65,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('admin.checkin.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('painel.checkin.index') }]}>
             <Head title="Check-in" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">

@@ -16,7 +16,7 @@ use App\Models\User;
  * `hackathon:issue-certificates`. Cobre só o que dá pra derivar dos dados
  * do evento -- participação (presença registrada), jurado (avaliação
  * submetida) e colocação (resultado publicado). Certificado de mentor, ou
- * qualquer emissão fora dessas regras, é avulso pela tela /admin/certificados
+ * qualquer emissão fora dessas regras, é avulso pela tela /painel/certificados
  * (usuário confirmou essa divisão em 2026-08-12).
  */
 class IssueEventCertificates

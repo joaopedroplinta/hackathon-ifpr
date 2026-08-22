@@ -73,7 +73,7 @@ class DashboardTest extends TestCase
         $attendance->method = AttendanceMethod::Manual;
         $attendance->save();
 
-        $response = $this->actingAs($this->organizador())->get(route('admin.dashboard'));
+        $response = $this->actingAs($this->organizador())->get(route('painel.dashboard'));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -89,7 +89,7 @@ class DashboardTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.dashboard'))
+            ->get(route('painel.dashboard'))
             ->assertForbidden();
     }
 
@@ -97,6 +97,6 @@ class DashboardTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('painel.dashboard'))->assertRedirect(route('login'));
     }
 }

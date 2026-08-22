@@ -58,7 +58,7 @@ export default function ConfirmarCheckin({
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('admin.checkin.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('painel.checkin.index') }]}>
             <Head title={`Check-in — ${participante.nome}`} />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-sm p-4 sm:p-6">
@@ -79,7 +79,7 @@ export default function ConfirmarCheckin({
                     {checkpoints.length === 0 ? (
                         <p className="text-muted-foreground mt-2 text-sm">
                             Nenhum checkpoint cadastrado.{' '}
-                            <Link href={route('admin.checkin.index')} className="underline underline-offset-4">
+                            <Link href={route('painel.checkin.index')} className="underline underline-offset-4">
                                 Criar um agora
                             </Link>
                             .
@@ -119,7 +119,7 @@ export default function ConfirmarCheckin({
                     )}
                 </div>
 
-                <Link href={route('admin.checkin.index')} className="text-muted-foreground mt-4 inline-block text-sm hover:underline">
+                <Link href={route('painel.checkin.index')} className="text-muted-foreground mt-4 inline-block text-sm hover:underline">
                     ← Buscar outra pessoa
                 </Link>
             </motion.div>

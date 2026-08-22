@@ -856,7 +856,7 @@ sequenceDiagram
     participant DB as Banco
     participant Fila as Queue
 
-    O->>C: POST /admin/resultados/calcular
+    O->>C: POST /painel/resultados/calcular
     C->>Pol: authorize('compute', evento)
     C->>Comp: handle(evento)
     Comp->>DB: SELECT submissions WHERE status IN (submitted, late)
@@ -872,12 +872,12 @@ sequenceDiagram
     Comp-->>C: void
     C-->>O: "Resultado recalculado"
 
-    O->>C: GET /admin/resultados
+    O->>C: GET /painel/resultados
     C->>Find: handle(evento)
     Find-->>C: pendências (sem nota, jurado incompleto, empate)
     C-->>O: painel com alertas antes de publicar
 
-    O->>C: POST /admin/resultados/publicar
+    O->>C: POST /painel/resultados/publicar
     C->>Pol: authorize('publish', evento)
     alt há pendência
         C-->>O: modal de confirmação explícita

@@ -23,13 +23,13 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
 
     const recalcular = () => {
         setRecalculando(true);
-        router.post(route('admin.resultados.recompute'), {}, { preserveScroll: true, onFinish: () => setRecalculando(false) });
+        router.post(route('painel.resultados.recompute'), {}, { preserveScroll: true, onFinish: () => setRecalculando(false) });
     };
 
     const publicar = (confirmarPendencias: boolean) => {
         setPublicando(true);
         router.post(
-            route('admin.resultados.publish'),
+            route('painel.resultados.publish'),
             { confirmar_pendencias: confirmarPendencias },
             { preserveScroll: true, onFinish: () => setPublicando(false), onSuccess: () => setConfirmandoComPendencia(false) },
         );
@@ -52,7 +52,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Resultados', href: route('admin.resultados.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Resultados', href: route('painel.resultados.index') }]}>
             <Head title="Resultados" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">

@@ -39,7 +39,7 @@ class ErrorPagesTest extends TestCase
         $participante->assignRole(Role::Participante->value);
 
         $this->actingAs($participante)
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertForbidden()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page

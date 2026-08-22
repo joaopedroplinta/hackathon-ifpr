@@ -19,17 +19,17 @@ export default function ListaRubricas({ rubricas }: Props) {
 
     const criar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.rubrica.store'), { onSuccess: () => reset() });
+        post(route('painel.rubrica.store'), { onSuccess: () => reset() });
     };
 
     const ativar = (rubrica: LinhaRubrica) => {
         setEmAndamento(rubrica.id);
-        router.patch(route('admin.rubrica.activate', rubrica.id), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.patch(route('painel.rubrica.activate', rubrica.id), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const remover = (rubrica: LinhaRubrica) => {
         setEmAndamento(rubrica.id);
-        router.delete(route('admin.rubrica.destroy', rubrica.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.rubrica.destroy', rubrica.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -40,7 +40,7 @@ export default function ListaRubricas({ rubricas }: Props) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Rubrica', href: route('admin.rubrica.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Rubrica', href: route('painel.rubrica.index') }]}>
             <Head title="Rubrica" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
@@ -96,7 +96,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                                                 {rubrica.ativa ? 'Ativa' : 'Inativa'}
                                             </span>
                                         </div>
-                                        <Link href={route('admin.rubrica.show', rubrica.id)} className="mt-1 block font-semibold hover:underline">
+                                        <Link href={route('painel.rubrica.show', rubrica.id)} className="mt-1 block font-semibold hover:underline">
                                             {rubrica.nome}
                                         </Link>
                                         <p className="text-muted-foreground mt-1 text-xs">

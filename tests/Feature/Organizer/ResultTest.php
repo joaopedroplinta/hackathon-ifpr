@@ -104,7 +104,7 @@ class ResultTest extends TestCase
         $submissao = $this->submissaoEnviada($event);
         $this->assignmentPendente($event, $submissao, $this->jurado());
 
-        $response = $this->actingAs($this->organizador())->get(route('admin.resultados.index'));
+        $response = $this->actingAs($this->organizador())->get(route('painel.resultados.index'));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -123,8 +123,8 @@ class ResultTest extends TestCase
         $this->avaliacaoSubmetida($event, $submissao, $this->jurado(), $criterio, 8);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.resultados.recompute'))
-            ->assertRedirect(route('admin.resultados.index'));
+            ->post(route('painel.resultados.recompute'))
+            ->assertRedirect(route('painel.resultados.index'));
 
         $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
         $this->assertSame('8.00', (string) $result->final_score);
@@ -141,8 +141,8 @@ class ResultTest extends TestCase
         app(ComputeResults::class)->handle($event);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.resultados.publish'))
-            ->assertRedirect(route('admin.resultados.index'))
+            ->post(route('painel.resultados.publish'))
+            ->assertRedirect(route('painel.resultados.index'))
             ->assertSessionHas('sucesso');
 
         $this->assertNotNull($event->fresh()->results_published_at);
@@ -157,14 +157,14 @@ class ResultTest extends TestCase
         $this->assignmentPendente($event, $submissao, $this->jurado());
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.resultados.publish'))
+            ->post(route('painel.resultados.publish'))
             ->assertSessionHas('erro');
 
         $this->assertNull($event->fresh()->results_published_at);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.resultados.publish'), ['confirmar_pendencias' => true])
-            ->assertRedirect(route('admin.resultados.index'))
+            ->post(route('painel.resultados.publish'), ['confirmar_pendencias' => true])
+            ->assertRedirect(route('painel.resultados.index'))
             ->assertSessionHas('sucesso');
 
         $this->assertNotNull($event->fresh()->results_published_at);
@@ -175,15 +175,15 @@ class ResultTest extends TestCase
         $event = Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.resultados.index'))
+            ->get(route('painel.resultados.index'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.resultados.recompute'))
+            ->post(route('painel.resultados.recompute'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.resultados.publish'))
+            ->post(route('painel.resultados.publish'))
             ->assertForbidden();
     }
 
@@ -191,6 +191,6 @@ class ResultTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.resultados.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.resultados.index'))->assertRedirect(route('login'));
     }
 }

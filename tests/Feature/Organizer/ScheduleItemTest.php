@@ -59,7 +59,7 @@ class ScheduleItemTest extends TestCase
         ScheduleItem::factory()->for($event)->publicado()->create(['title' => 'Publicado']);
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.agenda.index'))
+            ->get(route('painel.agenda.index'))
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page->component('admin/agenda/index')->has('itens', 2));
     }
@@ -69,7 +69,7 @@ class ScheduleItemTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.agenda.index'))
+            ->get(route('painel.agenda.index'))
             ->assertForbidden();
     }
 
@@ -78,8 +78,8 @@ class ScheduleItemTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.agenda.store'), $this->itemValido())
-            ->assertRedirect(route('admin.agenda.index'))
+            ->post(route('painel.agenda.store'), $this->itemValido())
+            ->assertRedirect(route('painel.agenda.index'))
             ->assertSessionHas('sucesso');
 
         $item = ScheduleItem::firstOrFail();
@@ -92,7 +92,7 @@ class ScheduleItemTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.agenda.store'), $this->itemValido())
+            ->post(route('painel.agenda.store'), $this->itemValido())
             ->assertForbidden();
 
         $this->assertSame(0, ScheduleItem::count());
@@ -103,7 +103,7 @@ class ScheduleItemTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.agenda.store'), $this->itemValido([
+            ->post(route('painel.agenda.store'), $this->itemValido([
                 'starts_at' => now()->addDay()->toIso8601String(),
                 'ends_at' => now()->addDay()->subHour()->toIso8601String(),
             ]))
@@ -120,7 +120,7 @@ class ScheduleItemTest extends TestCase
         $trilhaAlheia = Track::factory()->for($outro)->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.agenda.store'), $this->itemValido(['track_id' => $trilhaAlheia->id]))
+            ->post(route('painel.agenda.store'), $this->itemValido(['track_id' => $trilhaAlheia->id]))
             ->assertSessionHasErrors('track_id');
     }
 
@@ -130,8 +130,8 @@ class ScheduleItemTest extends TestCase
         $item = ScheduleItem::factory()->for($event)->create(['title' => 'Título antigo']);
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.agenda.update', $item), $this->itemValido(['title' => 'Título novo']))
-            ->assertRedirect(route('admin.agenda.index'));
+            ->patch(route('painel.agenda.update', $item), $this->itemValido(['title' => 'Título novo']))
+            ->assertRedirect(route('painel.agenda.index'));
 
         $this->assertSame('Título novo', $item->fresh()->title);
     }
@@ -143,7 +143,7 @@ class ScheduleItemTest extends TestCase
 
         $this->get(route('agenda.index'))->assertInertia(fn (AssertableInertia $page) => $page->has('itens', 0));
 
-        $this->actingAs($this->organizador())->patch(route('admin.agenda.publish', $item));
+        $this->actingAs($this->organizador())->patch(route('painel.agenda.publish', $item));
 
         $this->assertTrue($item->fresh()->is_published);
         $this->get(route('agenda.index'))->assertInertia(fn (AssertableInertia $page) => $page->has('itens', 1));
@@ -154,7 +154,7 @@ class ScheduleItemTest extends TestCase
         $event = Event::factory()->create();
         $item = ScheduleItem::factory()->for($event)->publicado()->create();
 
-        $this->actingAs($this->organizador())->patch(route('admin.agenda.publish', $item));
+        $this->actingAs($this->organizador())->patch(route('painel.agenda.publish', $item));
 
         $this->assertFalse($item->fresh()->is_published);
         $this->get(route('agenda.index'))->assertInertia(fn (AssertableInertia $page) => $page->has('itens', 0));
@@ -166,7 +166,7 @@ class ScheduleItemTest extends TestCase
         $item = ScheduleItem::factory()->for($event)->create();
 
         $this->actingAs($this->participante())
-            ->patch(route('admin.agenda.publish', $item))
+            ->patch(route('painel.agenda.publish', $item))
             ->assertForbidden();
 
         $this->assertFalse($item->fresh()->is_published);
@@ -178,8 +178,8 @@ class ScheduleItemTest extends TestCase
         $item = ScheduleItem::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->delete(route('admin.agenda.destroy', $item))
-            ->assertRedirect(route('admin.agenda.index'));
+            ->delete(route('painel.agenda.destroy', $item))
+            ->assertRedirect(route('painel.agenda.index'));
 
         $this->assertSame(0, ScheduleItem::count());
     }
@@ -190,7 +190,7 @@ class ScheduleItemTest extends TestCase
         $item = ScheduleItem::factory()->for($event)->create();
 
         $this->actingAs($this->participante())
-            ->delete(route('admin.agenda.destroy', $item))
+            ->delete(route('painel.agenda.destroy', $item))
             ->assertForbidden();
 
         $this->assertSame(1, ScheduleItem::count());
@@ -198,6 +198,6 @@ class ScheduleItemTest extends TestCase
 
     public function test_a_guest_is_redirected_to_login(): void
     {
-        $this->get(route('admin.agenda.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.agenda.index'))->assertRedirect(route('login'));
     }
 }

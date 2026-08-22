@@ -48,7 +48,7 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.submissions.record.store'));
+        post(route('painel.submissions.record.store'));
     };
 
     const reduzMovimento = useReducedMotion();
@@ -61,7 +61,7 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Submissões', href: route('admin.submissions.index') },
+                { title: 'Submissões', href: route('painel.submissions.index') },
                 { title: 'Lançar manualmente', href: '#' },
             ]}
         >
