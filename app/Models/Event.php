@@ -38,6 +38,7 @@ class Event extends Model
         'max_team_size',
         'certificate_signer_name',
         'certificate_signer_role',
+        'certificate_accent_color',
     ];
 
     protected function casts(): array
@@ -176,6 +177,11 @@ class Event extends Model
     public function hasRegulationFile(): bool
     {
         return $this->regulation_path !== null;
+    }
+
+    public function hasCertificateLogo(): bool
+    {
+        return $this->certificate_logo_path !== null;
     }
 
     /**
