@@ -47,9 +47,16 @@ export default function CabecalhoPublico() {
         const classeAltura = noMenuMobile ? 'h-11' : undefined;
 
         return auth.user ? (
-            <Button asChild size="sm" className={classeAltura}>
-                <Link href={route('dashboard')}>Meu painel</Link>
-            </Button>
+            <>
+                <Button asChild variant="ghost" size="sm" className={classeAltura}>
+                    <Link href={route('logout')} method="post" as="button">
+                        Sair
+                    </Link>
+                </Button>
+                <Button asChild size="sm" className={classeAltura}>
+                    <Link href={route('dashboard')}>Meu painel</Link>
+                </Button>
+            </>
         ) : (
             <>
                 <Button asChild variant="ghost" size="sm" className={classeAltura}>
