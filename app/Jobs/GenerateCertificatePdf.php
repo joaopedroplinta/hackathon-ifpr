@@ -32,7 +32,10 @@ class GenerateCertificatePdf implements ShouldQueue
             return;
         }
 
-        $pdf = Pdf::loadView('certificates.pdf', ['certificate' => $certificate]);
+        // Nunca foi definido antes -- sem isso, o dompdf cai no padrão dele
+        // (carta, retrato), errado pro formato usual de certificado.
+        $pdf = Pdf::loadView('certificates.pdf', ['certificate' => $certificate])
+            ->setPaper('a4', 'landscape');
 
         $path = "certificates/{$certificate->event_id}/{$certificate->code}.pdf";
         Storage::disk('local')->put($path, $pdf->output());

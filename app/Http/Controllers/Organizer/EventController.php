@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Events\UploadCertificateLogo;
 use App\Actions\Events\UploadRegulation;
 use App\Enums\EventStatus;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\StoreEventRequest;
 use App\Http\Requests\Organizer\UpdateEventRequest;
+use App\Http\Requests\Organizer\UploadCertificateLogoRequest;
 use App\Http\Requests\Organizer\UploadRegulationRequest;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
@@ -46,6 +48,7 @@ class EventController extends Controller
                 'max_team_size' => $event->max_team_size,
                 'certificate_signer_name' => $event->certificate_signer_name,
                 'certificate_signer_role' => $event->certificate_signer_role,
+                'certificate_accent_color' => $event->certificate_accent_color,
             ],
             'status_opcoes' => array_map(
                 fn (EventStatus $s) => ['value' => $s->value, 'label' => $s->label()],
@@ -54,6 +57,9 @@ class EventController extends Controller
             'regulamento' => [
                 'nome_arquivo' => $event->regulation_original_name,
                 'atualizado_em' => $event->regulation_updated_at?->timezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i'),
+            ],
+            'certificado_logo' => [
+                'tem_logo' => $event->hasCertificateLogo(),
             ],
         ]);
     }
@@ -116,5 +122,15 @@ class EventController extends Controller
         $action->handle($event, $request->file('regulamento'));
 
         return to_route('admin.evento.edit')->with('sucesso', 'Regulamento atualizado.');
+    }
+
+    public function uploadCertificateLogo(UploadCertificateLogoRequest $request, UploadCertificateLogo $action): RedirectResponse
+    {
+        $this->authorize('update', Event::class);
+
+        $event = $this->currentEventOrFail();
+        $action->handle($event, $request->file('logo'));
+
+        return to_route('admin.evento.edit')->with('sucesso', 'Logo do certificado atualizado.');
     }
 }

@@ -2,6 +2,17 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
+    @php
+        // Lidos do snapshot em payload.template, gravado por IssueCertificate
+        // no momento da emissão -- nunca do Event ao vivo, senão trocar o
+        // design depois mudaria a aparência de certificado já emitido.
+        $logoPath = $certificate->payload['template']['logo_path'] ?? null;
+        $corDestaque = $certificate->payload['template']['accent_color'] ?? '#357724';
+        $logoBase64 = $logoPath && Illuminate\Support\Facades\Storage::disk('local')->exists($logoPath)
+            ? base64_encode(Illuminate\Support\Facades\Storage::disk('local')->get($logoPath))
+            : null;
+        $logoMime = str_ends_with((string) $logoPath, '.png') ? 'image/png' : 'image/jpeg';
+    @endphp
     <style>
         @page { margin: 0; }
         body {
@@ -11,15 +22,20 @@
             color: #1b1b1d;
         }
         .moldura {
-            border: 3px solid #357724;
+            border: 3px solid {{ $corDestaque }};
             padding: 50px;
             text-align: center;
+        }
+        .logo {
+            max-height: 60px;
+            max-width: 220px;
+            margin-bottom: 20px;
         }
         .rotulo {
             font-size: 12px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #357724;
+            color: {{ $corDestaque }};
             margin-bottom: 30px;
         }
         .titulo {
@@ -85,6 +101,9 @@
     @endphp
 
     <div class="moldura">
+        @if ($logoBase64)
+            <img class="logo" src="data:{{ $logoMime }};base64,{{ $logoBase64 }}" alt="">
+        @endif
         <div class="rotulo">{{ $certificate->type->label() }}</div>
         <div class="titulo">{{ $certificate->event->name }}</div>
 
