@@ -17,6 +17,7 @@ use App\Models\EventRegistration;
 use App\Models\JudgeAssignment;
 use App\Models\Submission;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -71,6 +72,46 @@ class IssueEventCertificatesTest extends TestCase
         ]);
 
         Queue::assertPushed(GenerateCertificatePdf::class);
+    }
+
+    public function test_participation_certificate_includes_team_and_project(): void
+    {
+        Queue::fake();
+
+        $event = Event::factory()->create();
+        $user = $this->inscritoComPresenca($event);
+
+        $team = Team::factory()->for($event)->create(['name' => 'Os Devs']);
+        Submission::factory()->for($event)->for($team)->create(['title' => 'App Incrível']);
+        TeamMember::factory()->for($event)->for($team)->for($user)->create();
+
+        app(IssueEventCertificates::class)->handle($event);
+
+        $certificate = Certificate::forEvent($event)
+            ->where('user_id', $user->id)
+            ->where('type', CertificateType::Participacao->value)
+            ->first();
+
+        $this->assertSame('Os Devs', $certificate->payload['equipe']);
+        $this->assertSame('App Incrível', $certificate->payload['projeto']);
+    }
+
+    public function test_participation_certificate_without_team_has_null_equipe(): void
+    {
+        Queue::fake();
+
+        $event = Event::factory()->create();
+        $user = $this->inscritoComPresenca($event);
+
+        app(IssueEventCertificates::class)->handle($event);
+
+        $certificate = Certificate::forEvent($event)
+            ->where('user_id', $user->id)
+            ->where('type', CertificateType::Participacao->value)
+            ->first();
+
+        $this->assertNull($certificate->payload['equipe']);
+        $this->assertNull($certificate->payload['projeto']);
     }
 
     public function test_issues_judge_certificate_only_for_judges_who_submitted_an_evaluation(): void
