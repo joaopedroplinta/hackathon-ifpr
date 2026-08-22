@@ -13,6 +13,7 @@ import {
     ClipboardList,
     FileText,
     Folder,
+    Globe,
     LayoutGrid,
     QrCode,
     Scale,
@@ -118,6 +119,11 @@ const adminNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
+    {
+        title: 'Site público',
+        url: '/',
+        icon: Globe,
+    },
     {
         title: 'Repositório',
         url: 'https://github.com/joaopedroplinta/hackathon-ifpr',

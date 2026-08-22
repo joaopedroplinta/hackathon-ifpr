@@ -24,6 +24,12 @@ class EventPolicy
         return $user->isStaff();
     }
 
+    /** Criar a primeira edição do evento, quando nenhuma existe ainda. */
+    public function create(User $user): bool
+    {
+        return $user->isStaff();
+    }
+
     /**
      * Inscrever-se no evento.
      *
