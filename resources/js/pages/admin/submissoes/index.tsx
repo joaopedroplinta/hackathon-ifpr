@@ -55,7 +55,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
             }
         });
 
-        router.get(route('admin.submissions.index'), parametros, {
+        router.get(route('painel.submissions.index'), parametros, {
             preserveState: true,
             preserveScroll: true,
             replace: true,
@@ -87,7 +87,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('admin.submissions.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('painel.submissions.index') }]}>
             <Head title="Submissões" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6">
@@ -101,7 +101,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
 
                     <div className="flex flex-wrap gap-2">
                         <Button asChild variant="outline">
-                            <Link href={route('admin.submissions.record.create')}>
+                            <Link href={route('painel.submissions.record.create')}>
                                 <FilePlus2 className="h-4 w-4" aria-hidden="true" />
                                 Lançar manualmente
                             </Link>
@@ -109,7 +109,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
 
                         {submissoes.total > 0 && (
                             <Button asChild variant="outline">
-                                <a href={route('admin.submissions.export', parametrosDoFiltro)}>
+                                <a href={route('painel.submissions.export', parametrosDoFiltro)}>
                                     <Download className="h-4 w-4" aria-hidden="true" />
                                     {temFiltro ? 'Baixar filtrados (.zip)' : 'Baixar tudo (.zip)'}
                                 </a>
@@ -246,7 +246,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                                 {submissoes.data.map((linha) => (
                                     <tr key={linha.id} className="hover:bg-muted/30 border-border border-t">
                                         <td className="p-3 font-semibold">
-                                            <Link href={route('admin.submissions.show', linha.id)} className="hover:underline">
+                                            <Link href={route('painel.submissions.show', linha.id)} className="hover:underline">
                                                 {linha.equipe.nome}
                                             </Link>
                                             {linha.precisa_conferencia && (

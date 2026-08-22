@@ -59,8 +59,8 @@ class ManualSubmissionTest extends TestCase
         $team = Team::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.submissions.record.store'), $this->dadosValidos($team))
-            ->assertRedirect(route('admin.submissions.index'))
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team))
+            ->assertRedirect(route('painel.submissions.index'))
             ->assertSessionHas('sucesso');
 
         $submission = Submission::forEvent($event)->where('team_id', $team->id)->firstOrFail();
@@ -76,7 +76,7 @@ class ManualSubmissionTest extends TestCase
         $jaEnviou = Team::factory()->for($event)->create(['name' => 'Equipe Já Enviou']);
         Submission::factory()->for($event)->for($jaEnviou)->enviada()->create();
 
-        $response = $this->actingAs($this->organizador())->get(route('admin.submissions.record.create'));
+        $response = $this->actingAs($this->organizador())->get(route('painel.submissions.record.create'));
 
         $response->assertInertia(fn ($page) => $page
             ->has('equipes', 1)
@@ -91,7 +91,7 @@ class ManualSubmissionTest extends TestCase
         Submission::factory()->for($event)->for($team)->enviada()->create(['title' => 'Original']);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.submissions.record.store'), $this->dadosValidos($team))
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team))
             ->assertSessionHasErrors('team_id');
 
         $this->assertSame('Original', Submission::forEvent($event)->where('team_id', $team->id)->firstOrFail()->title);
@@ -103,7 +103,7 @@ class ManualSubmissionTest extends TestCase
         $team = Team::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.submissions.record.store'), $this->dadosValidos($team, ['repo_url' => '']))
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team, ['repo_url' => '']))
             ->assertSessionHasErrors('repo_url');
     }
 
@@ -113,11 +113,11 @@ class ManualSubmissionTest extends TestCase
         $team = Team::factory()->for($event)->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.submissions.record.create'))
+            ->get(route('painel.submissions.record.create'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.submissions.record.store'), $this->dadosValidos($team))
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team))
             ->assertForbidden();
     }
 
@@ -125,6 +125,6 @@ class ManualSubmissionTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.submissions.record.create'))->assertRedirect(route('login'));
+        $this->get(route('painel.submissions.record.create'))->assertRedirect(route('login'));
     }
 }

@@ -27,7 +27,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
 
     const declarar: FormEventHandler = (e) => {
         e.preventDefault();
-        form.post(route('admin.incidentes.store'), {
+        form.post(route('painel.incidentes.store'), {
             preserveScroll: true,
             onSuccess: () => form.reset(),
         });
@@ -42,7 +42,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Incidentes', href: route('admin.incidentes.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Incidentes', href: route('painel.incidentes.index') }]}>
             <Head title="Incidentes" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">

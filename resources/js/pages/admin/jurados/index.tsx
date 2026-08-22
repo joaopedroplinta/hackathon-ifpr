@@ -32,37 +32,37 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
 
     const distribuir = () => {
         setDistribuindo(true);
-        router.post(route('admin.jurados.distribute'), {}, { preserveScroll: true, onFinish: () => setDistribuindo(false) });
+        router.post(route('painel.jurados.distribute'), {}, { preserveScroll: true, onFinish: () => setDistribuindo(false) });
     };
 
     const salvarConfig: FormEventHandler = (e) => {
         e.preventDefault();
-        configForm.patch(route('admin.jurados.config'), { preserveScroll: true });
+        configForm.patch(route('painel.jurados.config'), { preserveScroll: true });
     };
 
     const atribuirManual: FormEventHandler = (e) => {
         e.preventDefault();
-        atribuirForm.post(route('admin.jurados.store'), { preserveScroll: true, onSuccess: () => atribuirForm.reset() });
+        atribuirForm.post(route('painel.jurados.store'), { preserveScroll: true, onSuccess: () => atribuirForm.reset() });
     };
 
     const criarConflito: FormEventHandler = (e) => {
         e.preventDefault();
-        conflitoForm.post(route('admin.jurados.conflicts.store'), { preserveScroll: true, onSuccess: () => conflitoForm.reset() });
+        conflitoForm.post(route('painel.jurados.conflicts.store'), { preserveScroll: true, onSuccess: () => conflitoForm.reset() });
     };
 
     const removerAtribuicao = (atribuicaoId: number) => {
         setEmAndamento(atribuicaoId);
-        router.delete(route('admin.jurados.destroy', atribuicaoId), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.jurados.destroy', atribuicaoId), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const reatribuir = (atribuicaoId: number) => {
         setEmAndamento(atribuicaoId);
-        router.post(route('admin.jurados.reassign', atribuicaoId), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.post(route('painel.jurados.reassign', atribuicaoId), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const removerConflito = (conflitoId: number) => {
         setEmAndamento(conflitoId);
-        router.delete(route('admin.jurados.conflicts.destroy', conflitoId), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.jurados.conflicts.destroy', conflitoId), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const abrirReabertura = (atribuicaoId: number) => {
@@ -75,7 +75,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
         e.preventDefault();
         if (reabrindoId === null) return;
 
-        reabrirForm.post(route('admin.jurados.reopen-evaluation', reabrindoId), {
+        reabrirForm.post(route('painel.jurados.reopen-evaluation', reabrindoId), {
             preserveScroll: true,
             onSuccess: () => setReabrindoId(null),
         });
@@ -89,7 +89,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Jurados', href: route('admin.jurados.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Jurados', href: route('painel.jurados.index') }]}>
             <Head title="Jurados" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">

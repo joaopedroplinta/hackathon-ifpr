@@ -21,7 +21,7 @@ export default function SemEvento() {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('admin.evento.create') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('painel.evento.create') }]}>
             <Head title="Nenhum evento cadastrado" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="p-4 sm:p-6">
@@ -35,7 +35,7 @@ export default function SemEvento() {
                         do hackathon existir.
                     </p>
                     <Button asChild className="mt-2">
-                        <Link href={route('admin.evento.create')}>Criar evento</Link>
+                        <Link href={route('painel.evento.create')}>Criar evento</Link>
                     </Button>
                 </section>
             </motion.div>

@@ -55,47 +55,47 @@ const judgeNavItems: NavItem[] = [
 const staffNavItems: NavItem[] = [
     {
         title: 'Painel',
-        url: '/admin',
+        url: '/painel',
         icon: LayoutGrid,
     },
     {
         title: 'Evento',
-        url: '/admin/evento',
+        url: '/painel/evento',
         icon: Settings,
     },
     {
         title: 'Submissões',
-        url: '/admin/submissoes',
+        url: '/painel/submissoes',
         icon: FileText,
     },
     {
         title: 'Agenda',
-        url: '/admin/agenda',
+        url: '/painel/agenda',
         icon: CalendarDays,
     },
     {
         title: 'Check-in',
-        url: '/admin/checkin',
+        url: '/painel/checkin',
         icon: ScanLine,
     },
     {
         title: 'Incidentes',
-        url: '/admin/incidentes',
+        url: '/painel/incidentes',
         icon: AlertTriangle,
     },
     {
         title: 'Rubrica',
-        url: '/admin/rubrica',
+        url: '/painel/rubrica',
         icon: ClipboardList,
     },
     {
         title: 'Jurados',
-        url: '/admin/jurados',
+        url: '/painel/jurados',
         icon: Scale,
     },
     {
         title: 'Resultados',
-        url: '/admin/resultados',
+        url: '/painel/resultados',
         icon: Trophy,
     },
     {
@@ -104,7 +104,7 @@ const staffNavItems: NavItem[] = [
         // título como key, então precisa ser distinto de verdade, não só
         // a URL.
         title: 'Emitir certificados',
-        url: '/admin/certificados',
+        url: '/painel/certificados',
         icon: Award,
     },
 ];

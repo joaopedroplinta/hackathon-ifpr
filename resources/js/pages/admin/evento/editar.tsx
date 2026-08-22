@@ -77,7 +77,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('admin.evento.update'), { preserveScroll: true });
+        patch(route('painel.evento.update'), { preserveScroll: true });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -88,7 +88,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('admin.evento.edit') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('painel.evento.edit') }]}>
             <Head title="Editar evento" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">

@@ -69,6 +69,6 @@ class CertificateController extends Controller
 
         $issue->handle($event, $user, $type, $payload);
 
-        return to_route('admin.certificados.index')->with('sucesso', "Certificado de {$user->name} emitido.");
+        return to_route('painel.certificados.index')->with('sucesso', "Certificado de {$user->name} emitido.");
     }
 }

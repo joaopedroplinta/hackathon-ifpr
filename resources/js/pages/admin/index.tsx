@@ -16,19 +16,19 @@ const pendencias = [
         chave: 'equipes_sem_submissao' as const,
         titulo: (n: number) => (n === 1 ? '1 equipe sem submissão' : `${n} equipes sem submissão`),
         descricao: 'Ainda não enviaram nada ou só têm rascunho salvo.',
-        href: 'admin.submissions.index',
+        href: 'painel.submissions.index',
     },
     {
         chave: 'atribuicoes_em_aberto' as const,
         titulo: (n: number) => (n === 1 ? '1 avaliação em aberto' : `${n} avaliações em aberto`),
         descricao: 'Atribuídas a um jurado, ainda não concluídas.',
-        href: 'admin.jurados.index',
+        href: 'painel.jurados.index',
     },
 ];
 
 const numeros = [
     { chave: 'inscritos' as const, titulo: 'Inscritos', icon: Users, href: null },
-    { chave: 'presenca_hoje' as const, titulo: 'Presenças hoje', icon: ScanLine, href: 'admin.checkin.index' },
+    { chave: 'presenca_hoje' as const, titulo: 'Presenças hoje', icon: ScanLine, href: 'painel.checkin.index' },
 ];
 
 export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) {
@@ -42,7 +42,7 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
     const abertas = pendencias.filter((p) => dados[p.chave] > 0);
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Painel', href: route('admin.dashboard') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Painel', href: route('painel.dashboard') }]}>
             <Head title="Painel do organizador" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 sm:p-6">
