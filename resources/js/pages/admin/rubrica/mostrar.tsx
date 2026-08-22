@@ -30,7 +30,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
 
     const criarCriterio: FormEventHandler = (e) => {
         e.preventDefault();
-        novoForm.post(route('admin.rubrica.criteria.store', rubrica.id), { onSuccess: () => novoForm.reset() });
+        novoForm.post(route('painel.rubrica.criteria.store', rubrica.id), { onSuccess: () => novoForm.reset() });
     };
 
     const abrirEdicao = (criterio: Criterio) => {
@@ -47,14 +47,14 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         e.preventDefault();
         if (editandoId === null) return;
 
-        editarForm.patch(route('admin.rubrica.criteria.update', editandoId), {
+        editarForm.patch(route('painel.rubrica.criteria.update', editandoId), {
             onSuccess: () => setEditandoId(null),
         });
     };
 
     const remover = (criterio: Criterio) => {
         setRemovendoId(criterio.id);
-        router.delete(route('admin.rubrica.criteria.destroy', criterio.id), {
+        router.delete(route('painel.rubrica.criteria.destroy', criterio.id), {
             preserveScroll: true,
             onFinish: () => setRemovendoId(null),
         });
@@ -70,8 +70,8 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Rubrica', href: route('admin.rubrica.index') },
-                { title: rubrica.nome, href: route('admin.rubrica.show', rubrica.id) },
+                { title: 'Rubrica', href: route('painel.rubrica.index') },
+                { title: rubrica.nome, href: route('painel.rubrica.show', rubrica.id) },
             ]}
         >
             <Head title={`Rubrica — ${rubrica.nome}`} />
@@ -242,7 +242,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                     </form>
                 </section>
 
-                <Link href={route('admin.rubrica.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
+                <Link href={route('painel.rubrica.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
             </motion.div>

@@ -62,6 +62,6 @@ class IncidentController extends Controller
             $request->integer('deadline_extension_minutes'),
         );
 
-        return to_route('admin.incidentes.index')->with('sucesso', 'Incidente registrado.');
+        return to_route('painel.incidentes.index')->with('sucesso', 'Incidente registrado.');
     }
 }

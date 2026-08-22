@@ -55,7 +55,7 @@ class ResultController extends Controller
 
         app(ComputeResults::class)->handle($event);
 
-        return to_route('admin.resultados.index')->with('sucesso', 'Resultados recalculados.');
+        return to_route('painel.resultados.index')->with('sucesso', 'Resultados recalculados.');
     }
 
     /**
@@ -81,6 +81,6 @@ class ResultController extends Controller
 
         app(PublishResults::class)->handle($event);
 
-        return to_route('admin.resultados.index')->with('sucesso', 'Resultado publicado.');
+        return to_route('painel.resultados.index')->with('sucesso', 'Resultado publicado.');
     }
 }

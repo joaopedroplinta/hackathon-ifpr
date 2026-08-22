@@ -61,9 +61,9 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
         e.preventDefault();
 
         if (editando) {
-            patch(route('admin.agenda.update', item.id));
+            patch(route('painel.agenda.update', item.id));
         } else {
-            post(route('admin.agenda.store'));
+            post(route('painel.agenda.store'));
         }
     };
 
@@ -77,7 +77,7 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Agenda', href: route('admin.agenda.index') },
+                { title: 'Agenda', href: route('painel.agenda.index') },
                 { title: editando ? 'Editar item' : 'Novo item', href: '#' },
             ]}
         >

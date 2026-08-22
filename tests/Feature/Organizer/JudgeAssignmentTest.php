@@ -156,8 +156,8 @@ class JudgeAssignmentTest extends TestCase
         $this->jurado();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.distribute'))
-            ->assertRedirect(route('admin.jurados.index'))
+            ->post(route('painel.jurados.distribute'))
+            ->assertRedirect(route('painel.jurados.index'))
             ->assertSessionHas('sucesso');
 
         $this->assertSame(1, JudgeAssignment::count());
@@ -168,7 +168,7 @@ class JudgeAssignmentTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.jurados.distribute'))
+            ->post(route('painel.jurados.distribute'))
             ->assertForbidden();
     }
 
@@ -179,7 +179,7 @@ class JudgeAssignmentTest extends TestCase
         $jurado = $this->jurado();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
+            ->post(route('painel.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
             ->assertRedirect();
 
         $this->assertSame(1, JudgeAssignment::count());
@@ -195,7 +195,7 @@ class JudgeAssignmentTest extends TestCase
         ConflictOfInterest::factory()->create(['judge_id' => $jurado->id, 'team_id' => $team->id]);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
+            ->post(route('painel.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
             ->assertSessionHasErrors('judge_id');
 
         $this->assertSame(0, JudgeAssignment::count());
@@ -215,7 +215,7 @@ class JudgeAssignmentTest extends TestCase
         $assignment->save();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
+            ->post(route('painel.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
             ->assertSessionHasErrors('judge_id');
 
         $this->assertSame(1, JudgeAssignment::count());
@@ -235,7 +235,7 @@ class JudgeAssignmentTest extends TestCase
         $assignment->save();
 
         $this->actingAs($this->organizador())
-            ->delete(route('admin.jurados.destroy', $assignment))
+            ->delete(route('painel.jurados.destroy', $assignment))
             ->assertRedirect();
 
         $this->assertSame(0, JudgeAssignment::count());
@@ -257,7 +257,7 @@ class JudgeAssignmentTest extends TestCase
         $assignment->save();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.reassign', $assignment))
+            ->post(route('painel.jurados.reassign', $assignment))
             ->assertRedirect();
 
         $this->assertSame(0, JudgeAssignment::where('judge_id', $ausente->id)->count());
@@ -271,7 +271,7 @@ class JudgeAssignmentTest extends TestCase
         $jurado = $this->jurado();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.conflicts.store'), ['judge_id' => $jurado->id, 'team_id' => $team->id, 'reason' => 'Parente'])
+            ->post(route('painel.jurados.conflicts.store'), ['judge_id' => $jurado->id, 'team_id' => $team->id, 'reason' => 'Parente'])
             ->assertRedirect();
 
         $this->assertSame(1, ConflictOfInterest::count());
@@ -282,7 +282,7 @@ class JudgeAssignmentTest extends TestCase
         $event = Event::factory()->create(['judges_per_submission' => 3]);
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.jurados.config'), ['judges_per_submission' => 5])
+            ->patch(route('painel.jurados.config'), ['judges_per_submission' => 5])
             ->assertRedirect();
 
         $this->assertSame(5, $event->fresh()->judges_per_submission);
@@ -292,7 +292,7 @@ class JudgeAssignmentTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.jurados.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.jurados.index'))->assertRedirect(route('login'));
     }
 
     public function test_a_judge_cannot_manage_assignments(): void
@@ -302,11 +302,11 @@ class JudgeAssignmentTest extends TestCase
         $jurado = $this->jurado();
 
         $this->actingAs($jurado)
-            ->get(route('admin.jurados.index'))
+            ->get(route('painel.jurados.index'))
             ->assertForbidden();
 
         $this->actingAs($jurado)
-            ->post(route('admin.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
+            ->post(route('painel.jurados.store'), ['judge_id' => $jurado->id, 'submission_id' => $submissao->id])
             ->assertForbidden();
     }
 
@@ -343,10 +343,10 @@ class JudgeAssignmentTest extends TestCase
         $organizador = $this->organizador();
 
         $this->actingAs($organizador)
-            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+            ->post(route('painel.jurados.reopen-evaluation', $assignment), [
                 'reason' => 'Jurado percebeu que trocou a nota de dois critérios sem querer.',
             ])
-            ->assertRedirect(route('admin.jurados.index'));
+            ->assertRedirect(route('painel.jurados.index'));
 
         $evaluation->refresh();
         $this->assertSame(EvaluationStatus::Draft, $evaluation->status);
@@ -367,7 +367,7 @@ class JudgeAssignmentTest extends TestCase
         [, $assignment] = $this->avaliacaoEnviada($event, $jurado);
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.reopen-evaluation', $assignment), ['reason' => 'curto'])
+            ->post(route('painel.jurados.reopen-evaluation', $assignment), ['reason' => 'curto'])
             ->assertSessionHasErrors('reason');
     }
 
@@ -378,7 +378,7 @@ class JudgeAssignmentTest extends TestCase
         [, $assignment] = $this->avaliacaoEnviada($event, $jurado);
 
         $this->actingAs($jurado)
-            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+            ->post(route('painel.jurados.reopen-evaluation', $assignment), [
                 'reason' => 'Motivo qualquer com mais de dez caracteres.',
             ])
             ->assertForbidden();
@@ -403,7 +403,7 @@ class JudgeAssignmentTest extends TestCase
         $evaluation->save();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+            ->post(route('painel.jurados.reopen-evaluation', $assignment), [
                 'reason' => 'Motivo qualquer com mais de dez caracteres.',
             ])
             ->assertForbidden();
@@ -423,7 +423,7 @@ class JudgeAssignmentTest extends TestCase
         $assignment->save();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.jurados.reopen-evaluation', $assignment), [
+            ->post(route('painel.jurados.reopen-evaluation', $assignment), [
                 'reason' => 'Motivo qualquer com mais de dez caracteres.',
             ])
             ->assertForbidden();

@@ -21,7 +21,7 @@ export default function PainelLogoCertificado({ certificadoLogo }: Props) {
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.evento.certificado.logo.upload'), {
+        post(route('painel.evento.certificado.logo.upload'), {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {

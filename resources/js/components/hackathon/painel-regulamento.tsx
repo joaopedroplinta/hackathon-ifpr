@@ -21,7 +21,7 @@ export default function PainelRegulamento({ regulamento }: Props) {
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.evento.regulamento.upload'), {
+        post(route('painel.evento.regulamento.upload'), {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {

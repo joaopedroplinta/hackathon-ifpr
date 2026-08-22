@@ -47,11 +47,11 @@ class CertificateTest extends TestCase
         $mentor = $this->participante();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.certificados.store'), [
+            ->post(route('painel.certificados.store'), [
                 'user_id' => $mentor->id,
                 'type' => CertificateType::Mentor->value,
             ])
-            ->assertRedirect(route('admin.certificados.index'))
+            ->assertRedirect(route('painel.certificados.index'))
             ->assertSessionHas('sucesso');
 
         $this->assertDatabaseHas('certificates', [
@@ -67,7 +67,7 @@ class CertificateTest extends TestCase
         $pessoa = $this->participante();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.certificados.store'), [
+            ->post(route('painel.certificados.store'), [
                 'user_id' => $pessoa->id,
                 'type' => 'inexistente',
             ])
@@ -82,14 +82,14 @@ class CertificateTest extends TestCase
         $pessoa = $this->participante();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.certificados.store'), [
+            ->post(route('painel.certificados.store'), [
                 'user_id' => $pessoa->id,
                 'type' => CertificateType::Participacao->value,
             ])
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.certificados.index'))
+            ->get(route('painel.certificados.index'))
             ->assertForbidden();
     }
 
@@ -97,6 +97,6 @@ class CertificateTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.certificados.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.certificados.index'))->assertRedirect(route('login'));
     }
 }

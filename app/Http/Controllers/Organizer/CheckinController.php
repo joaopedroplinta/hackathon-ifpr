@@ -22,7 +22,7 @@ use Inertia\Response;
 /**
  * Check-in. Dois jeitos de chegar na mesma confirmação: o organizador
  * escaneia o crachá com a própria câmera (abre `show` direto) ou busca o
- * nome em /admin/checkin quando não há QR pra ler. Controle é sempre da
+ * nome em /painel/checkin quando não há QR pra ler. Controle é sempre da
  * organização -- participante nunca confirma a própria presença
  * (AttendancePolicy).
  */
@@ -61,7 +61,7 @@ class CheckinController extends Controller
         $checkpoint->event_id = $event->id;
         $checkpoint->save();
 
-        return to_route('admin.checkin.index')->with('sucesso', "Checkpoint \"{$checkpoint->name}\" criado.");
+        return to_route('painel.checkin.index')->with('sucesso', "Checkpoint \"{$checkpoint->name}\" criado.");
     }
 
     /**

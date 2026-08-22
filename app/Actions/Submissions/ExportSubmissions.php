@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use ZipArchive;
 
 /**
- * Monta o zip que o organizador baixa em `/admin/submissoes/exportar`: uma
+ * Monta o zip que o organizador baixa em `/painel/submissoes/exportar`: uma
  * planilha com os metadados de cada submissão e os arquivos que cada equipe
  * anexou, agrupados por equipe.
  *

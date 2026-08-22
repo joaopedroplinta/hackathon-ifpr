@@ -106,13 +106,13 @@ class JudgeAssignmentController extends Controller
         if (! empty($resultado['sem_jurado_elegivel'])) {
             $lista = implode(', ', $resultado['sem_jurado_elegivel']);
 
-            return to_route('admin.jurados.index')->with(
+            return to_route('painel.jurados.index')->with(
                 'erro',
                 "{$resultado['criadas']} atribuições criadas, mas faltou jurado elegível pra: {$lista}."
             );
         }
 
-        return to_route('admin.jurados.index')->with('sucesso', "{$resultado['criadas']} atribuições criadas.");
+        return to_route('painel.jurados.index')->with('sucesso', "{$resultado['criadas']} atribuições criadas.");
     }
 
     public function store(StoreJudgeAssignmentRequest $request): RedirectResponse
@@ -128,7 +128,7 @@ class JudgeAssignmentController extends Controller
         $assignment->assigned_at = now();
         $assignment->save();
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Jurado atribuído.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Jurado atribuído.');
     }
 
     public function destroy(JudgeAssignment $assignment): RedirectResponse
@@ -137,7 +137,7 @@ class JudgeAssignmentController extends Controller
 
         $assignment->delete();
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Atribuição removida.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Atribuição removida.');
     }
 
     /**
@@ -157,7 +157,7 @@ class JudgeAssignmentController extends Controller
             app(DistributeJudges::class)->handle($event, collect([$submission]), $juradoRemovido);
         });
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Vaga reatribuída.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Vaga reatribuída.');
     }
 
     /** Nota já enviada só volta a ser editável com motivo -- fica no activity log. */
@@ -167,7 +167,7 @@ class JudgeAssignmentController extends Controller
 
         app(ReopenEvaluation::class)->handle($assignment, $request->validated('reason'), $request->user());
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Avaliação reaberta para correção.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Avaliação reaberta para correção.');
     }
 
     public function storeConflict(StoreConflictOfInterestRequest $request): RedirectResponse
@@ -180,7 +180,7 @@ class JudgeAssignmentController extends Controller
         $conflict->reason = $request->validated('reason');
         $conflict->save();
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Conflito de interesse registrado.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Conflito de interesse registrado.');
     }
 
     public function destroyConflict(ConflictOfInterest $conflict): RedirectResponse
@@ -189,7 +189,7 @@ class JudgeAssignmentController extends Controller
 
         $conflict->delete();
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Conflito removido.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Conflito removido.');
     }
 
     /** Único campo de configuração do evento que este sprint precisa. */
@@ -206,6 +206,6 @@ class JudgeAssignmentController extends Controller
         $event->judges_per_submission = $data['judges_per_submission'];
         $event->save();
 
-        return to_route('admin.jurados.index')->with('sucesso', 'Quantidade de jurados por submissão atualizada.');
+        return to_route('painel.jurados.index')->with('sucesso', 'Quantidade de jurados por submissão atualizada.');
     }
 }

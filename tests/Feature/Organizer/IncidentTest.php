@@ -45,12 +45,12 @@ class IncidentTest extends TestCase
         $event = Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.incidentes.store'), [
+            ->post(route('painel.incidentes.store'), [
                 'kind' => IncidentKind::Rede->value,
                 'description' => 'Wi-fi do campus caiu por 5 minutos.',
                 'deadline_extension_minutes' => 0,
             ])
-            ->assertRedirect(route('admin.incidentes.index'))
+            ->assertRedirect(route('painel.incidentes.index'))
             ->assertSessionHas('sucesso');
 
         $this->assertDatabaseHas('incidents', [
@@ -71,7 +71,7 @@ class IncidentTest extends TestCase
 
         $this->assertFalse($event->submissionIsOpen());
 
-        $this->actingAs($this->organizador())->post(route('admin.incidentes.store'), [
+        $this->actingAs($this->organizador())->post(route('painel.incidentes.store'), [
             'kind' => IncidentKind::Sistema->value,
             'description' => 'Servidor ficou fora do ar por 10 minutos.',
             'deadline_extension_minutes' => 15,
@@ -89,12 +89,12 @@ class IncidentTest extends TestCase
     {
         $event = Event::factory()->create();
 
-        $this->actingAs($this->organizador())->post(route('admin.incidentes.store'), [
+        $this->actingAs($this->organizador())->post(route('painel.incidentes.store'), [
             'kind' => IncidentKind::Rede->value,
             'description' => 'Primeira queda de rede do dia.',
             'deadline_extension_minutes' => 10,
         ]);
-        $this->actingAs($this->organizador())->post(route('admin.incidentes.store'), [
+        $this->actingAs($this->organizador())->post(route('painel.incidentes.store'), [
             'kind' => IncidentKind::Energia->value,
             'description' => 'Falta de energia breve no bloco B.',
             'deadline_extension_minutes' => 20,
@@ -112,7 +112,7 @@ class IncidentTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.incidentes.store'), [
+            ->post(route('painel.incidentes.store'), [
                 'kind' => IncidentKind::Outro->value,
                 'description' => 'curto',
                 'deadline_extension_minutes' => 0,
@@ -125,11 +125,11 @@ class IncidentTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->get(route('admin.incidentes.index'))
+            ->get(route('painel.incidentes.index'))
             ->assertForbidden();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.incidentes.store'), [
+            ->post(route('painel.incidentes.store'), [
                 'kind' => IncidentKind::Outro->value,
                 'description' => 'Tentativa sem permissão de declarar.',
                 'deadline_extension_minutes' => 0,
@@ -141,6 +141,6 @@ class IncidentTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.incidentes.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.incidentes.index'))->assertRedirect(route('login'));
     }
 }

@@ -57,7 +57,7 @@ class ScheduleItemController extends Controller
         $item->event_id = $event->id;
         $item->save();
 
-        return to_route('admin.agenda.index')->with('sucesso', "Item \"{$item->title}\" criado como rascunho.");
+        return to_route('painel.agenda.index')->with('sucesso', "Item \"{$item->title}\" criado como rascunho.");
     }
 
     public function edit(ScheduleItem $item): Response
@@ -76,7 +76,7 @@ class ScheduleItemController extends Controller
 
         $item->update($request->validated());
 
-        return to_route('admin.agenda.index')->with('sucesso', "Item \"{$item->title}\" atualizado.");
+        return to_route('painel.agenda.index')->with('sucesso', "Item \"{$item->title}\" atualizado.");
     }
 
     /** Publicar/despublicar é uma ação isolada -- não exige reenviar o formulário inteiro. */
@@ -87,7 +87,7 @@ class ScheduleItemController extends Controller
         $item->is_published = ! $item->is_published;
         $item->save();
 
-        return to_route('admin.agenda.index')->with(
+        return to_route('painel.agenda.index')->with(
             'sucesso',
             $item->is_published ? "\"{$item->title}\" publicado." : "\"{$item->title}\" despublicado."
         );
@@ -99,7 +99,7 @@ class ScheduleItemController extends Controller
 
         $item->delete();
 
-        return to_route('admin.agenda.index')->with('sucesso', "Item \"{$item->title}\" removido.");
+        return to_route('painel.agenda.index')->with('sucesso', "Item \"{$item->title}\" removido.");
     }
 
     /**

@@ -51,7 +51,7 @@ class EnsureEventExistsTest extends TestCase
     public function test_staff_sees_the_no_event_screen_instead_of_a_raw_404(): void
     {
         $this->actingAs($this->organizador())
-            ->get(route('admin.agenda.index'))
+            ->get(route('painel.agenda.index'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page->component('admin/sem-evento'));
     }
@@ -61,7 +61,7 @@ class EnsureEventExistsTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.agenda.index'))
+            ->get(route('painel.agenda.index'))
             ->assertInertia(fn ($page) => $page->component('admin/agenda/index'));
     }
 
@@ -73,7 +73,7 @@ class EnsureEventExistsTest extends TestCase
     public function test_a_participant_without_access_still_gets_forbidden_not_the_no_event_screen(): void
     {
         $this->actingAs($this->participante())
-            ->get(route('admin.agenda.index'))
+            ->get(route('painel.agenda.index'))
             ->assertForbidden();
     }
 

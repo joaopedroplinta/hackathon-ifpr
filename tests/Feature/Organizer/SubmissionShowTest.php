@@ -49,7 +49,7 @@ class SubmissionShowTest extends TestCase
         SubmissionFile::factory()->for($submission)->create(['original_name' => 'pitch.pdf']);
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.show', $submission))
+            ->get(route('painel.submissions.show', $submission))
             ->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
@@ -79,7 +79,7 @@ class SubmissionShowTest extends TestCase
         TeamMember::factory()->for($event)->for($outraEquipe)->for($intruso)->create();
 
         $this->actingAs($intruso)
-            ->get(route('admin.submissions.show', $submission))
+            ->get(route('painel.submissions.show', $submission))
             ->assertForbidden();
     }
 
@@ -95,7 +95,7 @@ class SubmissionShowTest extends TestCase
         TeamMember::factory()->for($event)->for($team)->for($membro)->create();
 
         $this->actingAs($membro)
-            ->get(route('admin.submissions.show', $submission))
+            ->get(route('painel.submissions.show', $submission))
             ->assertOk();
     }
 
@@ -105,7 +105,7 @@ class SubmissionShowTest extends TestCase
         $team = Team::factory()->for($event)->create();
         $submission = Submission::factory()->for($event)->for($team)->enviada()->create();
 
-        $this->get(route('admin.submissions.show', $submission))
+        $this->get(route('painel.submissions.show', $submission))
             ->assertRedirect(route('login'));
     }
 
@@ -116,7 +116,7 @@ class SubmissionShowTest extends TestCase
         $submission = Submission::factory()->for($event)->for($team)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.show', $submission))
+            ->get(route('painel.submissions.show', $submission))
             ->assertInertia(fn (AssertableInertia $page) => $page->has('versoes', 0));
     }
 }

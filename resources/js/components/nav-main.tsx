@@ -3,12 +3,12 @@ import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 /**
- * Página de detalhe (ex.: /admin/submissoes/52) não batia com nenhum item
+ * Página de detalhe (ex.: /painel/submissoes/52) não batia com nenhum item
  * do menu -- comparação era só ===, então nada ficava marcado como "você
  * está aqui" fora da própria página de listagem. Casa pelo prefixo mais
  * específico entre os itens do menu, não só o primeiro que combina: sem
- * isso, "/admin" (Painel) e "/admin/evento" (Evento) ficariam ativos ao
- * mesmo tempo em /admin/evento.
+ * isso, "/painel" (Painel) e "/painel/evento" (Evento) ficariam ativos ao
+ * mesmo tempo em /painel/evento.
  */
 function itemMaisEspecifico(items: NavItem[], urlAtual: string): NavItem | null {
     return items.reduce<NavItem | null>((melhor, item) => {

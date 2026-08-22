@@ -44,7 +44,7 @@ class RubricTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.rubrica.store'), ['name' => 'Rubrica 2026'])
+            ->post(route('painel.rubrica.store'), ['name' => 'Rubrica 2026'])
             ->assertRedirect();
 
         $this->assertSame(1, Rubric::count());
@@ -56,7 +56,7 @@ class RubricTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->participante())
-            ->post(route('admin.rubrica.store'), ['name' => 'Rubrica 2026'])
+            ->post(route('painel.rubrica.store'), ['name' => 'Rubrica 2026'])
             ->assertForbidden();
 
         $this->assertSame(0, Rubric::count());
@@ -68,7 +68,7 @@ class RubricTest extends TestCase
         $rubric = Rubric::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.rubrica.criteria.store', $rubric), [
+            ->post(route('painel.rubrica.criteria.store', $rubric), [
                 'name' => 'Inovação',
                 'weight' => '2.50',
                 'max_score' => 10,
@@ -86,7 +86,7 @@ class RubricTest extends TestCase
         $rubric = Rubric::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->post(route('admin.rubrica.criteria.store', $rubric), [
+            ->post(route('painel.rubrica.criteria.store', $rubric), [
                 'name' => 'Inovação',
                 'weight' => '0',
                 'max_score' => 10,
@@ -103,7 +103,7 @@ class RubricTest extends TestCase
         $criterion = Criterion::factory()->for($rubric)->create(['name' => 'Nome antigo']);
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.rubrica.criteria.update', $criterion), [
+            ->patch(route('painel.rubrica.criteria.update', $criterion), [
                 'name' => 'Nome novo',
                 'weight' => '1.00',
                 'max_score' => 10,
@@ -120,7 +120,7 @@ class RubricTest extends TestCase
         $criterion = Criterion::factory()->for($rubric)->create();
 
         $this->actingAs($this->organizador())
-            ->delete(route('admin.rubrica.criteria.destroy', $criterion))
+            ->delete(route('painel.rubrica.criteria.destroy', $criterion))
             ->assertRedirect();
 
         $this->assertSame(0, Criterion::count());
@@ -134,7 +134,7 @@ class RubricTest extends TestCase
         $nova = Rubric::factory()->for($event)->create();
 
         $this->actingAs($this->organizador())
-            ->patch(route('admin.rubrica.activate', $nova))
+            ->patch(route('painel.rubrica.activate', $nova))
             ->assertRedirect();
 
         $this->assertFalse($antiga->fresh()->is_active);
@@ -149,7 +149,7 @@ class RubricTest extends TestCase
         $ativaEmA = Rubric::factory()->for($eventoA)->ativa()->create();
         $novaEmB = Rubric::factory()->for($eventoB)->create();
 
-        $this->actingAs($this->organizador())->patch(route('admin.rubrica.activate', $novaEmB));
+        $this->actingAs($this->organizador())->patch(route('painel.rubrica.activate', $novaEmB));
 
         $this->assertTrue($ativaEmA->fresh()->is_active);
     }
@@ -158,7 +158,7 @@ class RubricTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.rubrica.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.rubrica.index'))->assertRedirect(route('login'));
     }
 
     public function test_the_public_page_shows_only_the_active_rubric(): void

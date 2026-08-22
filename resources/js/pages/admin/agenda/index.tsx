@@ -26,12 +26,12 @@ export default function ListaAgenda({ itens }: Props) {
 
     const alternarPublicacao = (item: LinhaItemAgenda) => {
         setEmAndamento(item.id);
-        router.patch(route('admin.agenda.publish', item.id), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.patch(route('painel.agenda.publish', item.id), {}, { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const remover = (item: LinhaItemAgenda) => {
         setEmAndamento(item.id);
-        router.delete(route('admin.agenda.destroy', item.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.agenda.destroy', item.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -42,7 +42,7 @@ export default function ListaAgenda({ itens }: Props) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Agenda', href: route('admin.agenda.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Agenda', href: route('painel.agenda.index') }]}>
             <Head title="Agenda" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
@@ -55,7 +55,7 @@ export default function ListaAgenda({ itens }: Props) {
                     </div>
 
                     <Button asChild>
-                        <Link href={route('admin.agenda.create')}>Novo item</Link>
+                        <Link href={route('painel.agenda.create')}>Novo item</Link>
                     </Button>
                 </header>
 
@@ -121,7 +121,7 @@ export default function ListaAgenda({ itens }: Props) {
                                             {item.publicado ? 'Despublicar' : 'Publicar'}
                                         </Button>
                                         <Button asChild variant="ghost" size="icon" aria-label={`Editar ${item.titulo}`}>
-                                            <Link href={route('admin.agenda.edit', item.id)}>
+                                            <Link href={route('painel.agenda.edit', item.id)}>
                                                 <Pencil className="h-4 w-4" aria-hidden="true" />
                                             </Link>
                                         </Button>
