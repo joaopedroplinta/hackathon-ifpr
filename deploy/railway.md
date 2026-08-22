@@ -13,10 +13,11 @@ fora do Brasil. Esta migração move **tudo** pro Railway, inclusive o
 banco — nenhum dado (nem de ensaio, nem de inscrição real) fica no Brasil.
 Aceito pela orientadora, registrado aqui de propósito.
 
-**Antes de abrir inscrição real, resolver o Anexo A.10 do PLANO.md** —
-em especial o storage de upload, que hoje **não é persistente**: um
-redeploy no meio do evento apaga os arquivos de submissão das equipes
-(ver seção "Limitações conhecidas" no fim deste arquivo).
+**Storage de upload já é persistente** (2026-08-22): Railway Volume
+`hackathon-ifpr-volume` montado em `/var/www/html/storage/app/private` no
+serviço `web` — um redeploy no meio do evento não apaga mais os arquivos
+de submissão das equipes (ver seção "Volume de storage" abaixo). O que
+ainda falta do Anexo A.10 do `PLANO.md` é só o agendamento de backup.
 
 ## Por que Railway em vez de Render
 
@@ -182,17 +183,32 @@ tenha rodado neste ambiente enquanto ele era só demo** — equipe fictícia
 do `DemoSeeder` misturada com equipe de verdade quebra ranking, contagem
 de inscritos na landing e qualquer relatório tirado depois.
 
+## 7. Volume de storage
+
+Configurado em 2026-08-22, via CLI (o serviço `web` chama-se
+`hackathon-ifpr` dentro do projeto Railway):
+
+```bash
+railway volume add --mount-path /var/www/html/storage/app/private   # cria o volume no serviço linkado
+railway restart --service hackathon-ifpr --yes                      # aplica o mount (sem rebuild)
+```
+
+`/var/www/html/storage/app/private` é o `WORKDIR` do `Dockerfile` seguido
+do caminho do disco `local` do Laravel — onde ficam regulamento e arquivo
+de submissão. Sem o volume, esse diretório vive na camada gravável do
+container e some a cada novo deploy; com ele, sobrevive.
+
+Confirmar que pegou: nos logs do serviço (`railway logs --service
+hackathon-ifpr`) deve aparecer `Mounting volume on: ...` antes do boot do
+Laravel. Não montar o volume num caminho que ainda não existe na imagem —
+o Railway cria o diretório, mas o dono/permissão do mount pode não bater
+com o que o `Dockerfile` preparou (`chmod -R a+w storage`) se a imagem
+mudar de usuário no futuro.
+
 ## Limitações conhecidas
 
 - **Dado fora do Brasil.** Aceito formalmente pela orientadora em
   2026-08-22 (issue #71) — não é mais uma pendência, é a decisão tomada.
-- **Upload não sobrevive a redeploy — resolver antes de inscrição real.**
-  `storage/app/private` fica no disco do container `web`, recriado a cada
-  deploy. Enquanto só rodava `DemoSeeder`, perder o disco num redeploy não
-  importava; com inscrição de verdade, um deploy no meio do evento apaga
-  os arquivos de submissão das equipes. O Railway suporta Volumes
-  persistentes (Settings → Volumes) — configurar antes de abrir inscrição
-  real (ver Anexo A.10 do `PLANO.md`).
 - **Sem SPF/DKIM de domínio próprio.** Remetente continua
   `onboarding@resend.dev` — decisão aceita (issue #78 fechada): verificar
   `ifpr.edu.br` exigiria acesso ao DNS institucional, fora do controle
