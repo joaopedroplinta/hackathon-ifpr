@@ -97,9 +97,14 @@ redigitar tudo três vezes.
 ## 3. Serviço `web`
 
 1. **New → GitHub Repo**, conectar `joaopedroplinta/hackathon-ifpr`,
-   branch `main`. O Railway detecta o `Dockerfile` sozinho (e lê
-   `railway.json` pra healthcheck e política de restart — não precisa
-   configurar isso à mão).
+   branch `main`. O Railway detecta o `Dockerfile` sozinho e lê
+   `railway.json` pra política de restart — mas **não** pra healthcheck:
+   `railway.json` é compartilhado pelos três serviços deste repositório
+   (`web`, `worker`, `scheduler`), e um `healthcheckPath` ali viraria
+   herança automática pro `worker`/`scheduler` também, que não servem HTTP
+   nenhum e nunca passariam no healthcheck (loop de crash já visto em
+   produção — ver Épico 13 do backlog). Healthcheck é configurado só no
+   dashboard deste serviço.
 2. Adicionar as Shared Variables do passo 2.
 3. **Networking → Generate Domain** pra ganhar uma URL `*.up.railway.app`.
 4. Voltar nas variáveis (agora só neste serviço, não precisa propagar pros
@@ -112,6 +117,8 @@ redigitar tudo três vezes.
 6. **Settings → Deploy → Wait for CI** — liga o equivalente ao "After CI
    Checks Pass" que a Render tinha: o Railway só builda depois que
    `ci.yml` (Pint, ESLint, Prettier, tsc, Pest) reportar sucesso pro commit.
+7. **Settings → Deploy → Healthcheck Path**: `/up`, **Healthcheck
+   Timeout**: `300`. Só neste serviço — é dashboard, não `railway.json`.
 
 CMD do `Dockerfile` já serve sem alteração: `storage:link` + `migrate
 --force` + `php artisan serve --port ${PORT}` — o Railway injeta `$PORT`
