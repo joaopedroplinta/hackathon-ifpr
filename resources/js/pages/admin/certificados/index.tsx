@@ -22,7 +22,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
 
     const emitir: FormEventHandler = (e) => {
         e.preventDefault();
-        form.post(route('admin.certificados.store'), {
+        form.post(route('painel.certificados.store'), {
             preserveScroll: true,
             onSuccess: () => form.reset(),
         });
@@ -36,7 +36,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Certificados', href: route('admin.certificados.index') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Certificados', href: route('painel.certificados.index') }]}>
             <Head title="Certificados" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">

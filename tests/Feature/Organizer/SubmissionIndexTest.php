@@ -49,7 +49,7 @@ class SubmissionIndexTest extends TestCase
         $this->submissao($event, 'Equipe Beta');
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
@@ -67,7 +67,7 @@ class SubmissionIndexTest extends TestCase
         $participante->assignRole(Role::Participante->value);
 
         $this->actingAs($participante)
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertForbidden();
     }
 
@@ -75,7 +75,7 @@ class SubmissionIndexTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.submissions.index'))->assertRedirect(route('login'));
+        $this->get(route('painel.submissions.index'))->assertRedirect(route('login'));
     }
 
     /**
@@ -91,7 +91,7 @@ class SubmissionIndexTest extends TestCase
         $this->submissao($anterior, 'Equipe Do Ano Passado');
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
@@ -111,7 +111,7 @@ class SubmissionIndexTest extends TestCase
         Submission::factory()->for($event)->for($atrasada)->atrasada()->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index', ['status' => 'late']))
+            ->get(route('painel.submissions.index', ['status' => 'late']))
             ->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
@@ -131,7 +131,7 @@ class SubmissionIndexTest extends TestCase
         $this->submissao($event, 'Equipe Educação', $educacao);
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index', ['track_id' => $saude->id]))
+            ->get(route('painel.submissions.index', ['track_id' => $saude->id]))
             ->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
@@ -146,7 +146,7 @@ class SubmissionIndexTest extends TestCase
         $this->submissao($event, 'Equipe Alfa');
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index', ['status' => 'inventado']))
+            ->get(route('painel.submissions.index', ['status' => 'inventado']))
             ->assertSessionHasErrors('status');
     }
 
@@ -158,7 +158,7 @@ class SubmissionIndexTest extends TestCase
         $trilhaAlheia = Track::factory()->for($outro)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index', ['track_id' => $trilhaAlheia->id]))
+            ->get(route('painel.submissions.index', ['track_id' => $trilhaAlheia->id]))
             ->assertSessionHasErrors('track_id');
     }
 
@@ -175,12 +175,12 @@ class SubmissionIndexTest extends TestCase
         $organizador = $this->organizador();
 
         $this->actingAs($organizador)
-            ->get(route('admin.submissions.index', ['busca' => 'os devs']))
+            ->get(route('painel.submissions.index', ['busca' => 'os devs']))
             ->assertInertia(fn (AssertableInertia $page) => $page->has('submissoes.data', 1)
                 ->where('submissoes.data.0.equipe.nome', 'Os Devs'));
 
         $this->actingAs($organizador)
-            ->get(route('admin.submissions.index', ['busca' => 'enchente']))
+            ->get(route('painel.submissions.index', ['busca' => 'enchente']))
             ->assertInertia(fn (AssertableInertia $page) => $page->has('submissoes.data', 1)
                 ->where('submissoes.data.0.titulo', 'Alerta de enchente'));
     }
@@ -201,7 +201,7 @@ class SubmissionIndexTest extends TestCase
         Submission::factory()->for($event)->for($soRascunho)->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->has('resumo.equipes_sem_envio', 2)
@@ -217,7 +217,7 @@ class SubmissionIndexTest extends TestCase
         Submission::factory()->for($event)->for($team)->manual()->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.index'))
+            ->get(route('painel.submissions.index'))
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->where('submissoes.data.0.precisa_conferencia', true)

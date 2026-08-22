@@ -81,7 +81,7 @@ celular/notebook, tentando de fato.
    ```bash
    php artisan hackathon:import-submissions caminho/do/arquivo.csv --event=<slug> --source=form
    ```
-8. Conferir no painel do organizador (`/admin/submissoes`) que as
+8. Conferir no painel do organizador (`/painel/submissoes`) que as
    submissões do ensaio aparecem marcadas como `source = form` — a marca
    que existe justamente pra não confundir com envio direto pelo site
    (Anexo A.4)

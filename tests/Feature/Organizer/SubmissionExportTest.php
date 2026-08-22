@@ -79,7 +79,7 @@ class SubmissionExportTest extends TestCase
         $this->anexar($submission, 'pitch.pdf');
 
         $response = $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.export'))
+            ->get(route('painel.submissions.export'))
             ->assertOk();
 
         [, $zip] = $this->abrirZip($response);
@@ -99,7 +99,7 @@ class SubmissionExportTest extends TestCase
         $participante->assignRole(Role::Participante->value);
 
         $this->actingAs($participante)
-            ->get(route('admin.submissions.export'))
+            ->get(route('painel.submissions.export'))
             ->assertForbidden();
     }
 
@@ -107,7 +107,7 @@ class SubmissionExportTest extends TestCase
     {
         Event::factory()->create();
 
-        $this->get(route('admin.submissions.export'))->assertRedirect(route('login'));
+        $this->get(route('painel.submissions.export'))->assertRedirect(route('login'));
     }
 
     /** O zip respeita o mesmo filtro da tela -- baixar "filtrado" é baixar só isso. */
@@ -122,7 +122,7 @@ class SubmissionExportTest extends TestCase
         Submission::factory()->for($event)->for($atrasada)->atrasada()->create();
 
         $response = $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.export', ['status' => 'late']))
+            ->get(route('painel.submissions.export', ['status' => 'late']))
             ->assertOk();
 
         [, $zip] = $this->abrirZip($response);
@@ -144,7 +144,7 @@ class SubmissionExportTest extends TestCase
         Submission::factory()->for($anterior)->for($teamAnterior)->enviada()->create();
 
         $response = $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.export'))
+            ->get(route('painel.submissions.export'))
             ->assertOk();
 
         [, $zip] = $this->abrirZip($response);
@@ -160,7 +160,7 @@ class SubmissionExportTest extends TestCase
         Event::factory()->create();
 
         $this->actingAs($this->organizador())
-            ->get(route('admin.submissions.export', ['status' => 'inventado']))
+            ->get(route('painel.submissions.export', ['status' => 'inventado']))
             ->assertSessionHasErrors('status');
     }
 }

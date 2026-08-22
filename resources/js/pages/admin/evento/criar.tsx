@@ -55,7 +55,7 @@ export default function CriarEvento() {
 
     const enviar: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.evento.store'), { preserveScroll: true, forceFormData: true });
+        post(route('painel.evento.store'), { preserveScroll: true, forceFormData: true });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -66,7 +66,7 @@ export default function CriarEvento() {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('admin.evento.create') }]}>
+        <AppLayout breadcrumbs={[{ title: 'Evento', href: route('painel.evento.create') }]}>
             <Head title="Criar evento" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">

@@ -75,6 +75,6 @@ class ManualSubmissionController extends Controller
             return back()->withErrors(['team_id' => 'Esta equipe já tem uma submissão registrada -- não é possível lançar por cima.']);
         }
 
-        return to_route('admin.submissions.index')->with('sucesso', "Submissão de \"{$team->name}\" lançada e marcada pra conferência.");
+        return to_route('painel.submissions.index')->with('sucesso', "Submissão de \"{$team->name}\" lançada e marcada pra conferência.");
     }
 }

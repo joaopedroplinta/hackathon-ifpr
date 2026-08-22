@@ -330,7 +330,7 @@ passa pelo controller, nunca link direto pro disco) que dá 404 se
 **Tela nova:** `/regulamento` — pública, mostra o texto formalizado acima
 mais um botão "Baixar PDF" quando `regulation_path` existir; sem arquivo
 ainda, mostra só o texto e nenhum botão quebrado. **Tela existente que
-ganha um campo:** `/admin/evento` recebe o upload (input de arquivo +
+ganha um campo:** `/painel/evento` recebe o upload (input de arquivo +
 mostrar nome do arquivo atual e data, com opção de substituir). Sem Policy
 nova — mesma regra de "organizador edita evento" que já vale pro resto da
 tela.
@@ -369,19 +369,19 @@ pela tela em vez de sempre trocar o PDF, aí sim vira coluna.
   autosave; navegação "próxima pendente"
 
 ### Organizador
-- `/admin` — painel: inscritos, equipes sem submissão, jurados atrasados,
+- `/painel` — painel: inscritos, equipes sem submissão, jurados atrasados,
   presença do dia
-- `/admin/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
+- `/painel/evento` — nome, tema/desafio, datas, limites, abrir/fechar fases.
   Implementada na semana 8. Tema já aparece na landing pública
   (`publico/inicio.tsx`). Também recebe o upload do PDF do regulamento
   (ver seção "Regulamento" acima).
-- `/admin/equipes` — listar, editar, desqualificar, forçar membro
-- `/admin/submissoes` — todas, filtro por trilha/status, download em lote
-- `/admin/rubrica` — critérios, pesos, escala
-- `/admin/jurados` — convidar, conflitos, distribuição automática, ajuste manual
-- `/admin/agenda` — CRUD
-- `/admin/checkin` — scanner QR + busca manual
-- `/admin/resultados` — recalcular, conferir, **publicar** (ação explícita)
+- `/painel/equipes` — listar, editar, desqualificar, forçar membro
+- `/painel/submissoes` — todas, filtro por trilha/status, download em lote
+- `/painel/rubrica` — critérios, pesos, escala
+- `/painel/jurados` — convidar, conflitos, distribuição automática, ajuste manual
+- `/painel/agenda` — CRUD
+- `/painel/checkin` — scanner QR + busca manual
+- `/painel/resultados` — recalcular, conferir, **publicar** (ação explícita)
 
 ---
 
@@ -708,7 +708,7 @@ Lê o CSV do Forms, casa por e-mail do líder, cria a submissão com
 `source`, `recorded_by` e `original_submitted_at`. Conflito com submissão
 existente → relatório pra decisão humana, nunca sobrescrita automática.
 
-Tela `/admin/submissoes/lancar` faz o mesmo caso a caso, pros degraus 3 e 4.
+Tela `/painel/submissoes/lancar` faz o mesmo caso a caso, pros degraus 3 e 4.
 
 **Toda submissão com `source != web` aparece marcada no painel do organizador**
 até ser conferida. Transparência aqui evita acusação de favorecimento depois.

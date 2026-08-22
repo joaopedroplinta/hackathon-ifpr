@@ -55,7 +55,7 @@ class RubricController extends Controller
         $rubric->event_id = $event->id;
         $rubric->save();
 
-        return to_route('admin.rubrica.show', $rubric)->with('sucesso', "Rubrica \"{$rubric->name}\" criada.");
+        return to_route('painel.rubrica.show', $rubric)->with('sucesso', "Rubrica \"{$rubric->name}\" criada.");
     }
 
     public function show(Rubric $rubric): Response
@@ -96,7 +96,7 @@ class RubricController extends Controller
             $rubric->save();
         });
 
-        return to_route('admin.rubrica.index')->with('sucesso', "\"{$rubric->name}\" é a rubrica ativa agora.");
+        return to_route('painel.rubrica.index')->with('sucesso', "\"{$rubric->name}\" é a rubrica ativa agora.");
     }
 
     public function destroy(Rubric $rubric): RedirectResponse
@@ -105,7 +105,7 @@ class RubricController extends Controller
 
         $rubric->delete();
 
-        return to_route('admin.rubrica.index')->with('sucesso', "Rubrica \"{$rubric->name}\" removida.");
+        return to_route('painel.rubrica.index')->with('sucesso', "Rubrica \"{$rubric->name}\" removida.");
     }
 
     public function storeCriterion(StoreCriterionRequest $request, Rubric $rubric): RedirectResponse
@@ -119,7 +119,7 @@ class RubricController extends Controller
         $criterion->position = $proximaPosicao;
         $criterion->save();
 
-        return to_route('admin.rubrica.show', $rubric)->with('sucesso', "Critério \"{$criterion->name}\" adicionado.");
+        return to_route('painel.rubrica.show', $rubric)->with('sucesso', "Critério \"{$criterion->name}\" adicionado.");
     }
 
     public function updateCriterion(StoreCriterionRequest $request, Criterion $criterion): RedirectResponse
@@ -128,7 +128,7 @@ class RubricController extends Controller
 
         $criterion->update($request->validated());
 
-        return to_route('admin.rubrica.show', $criterion->rubric)->with('sucesso', "Critério \"{$criterion->name}\" atualizado.");
+        return to_route('painel.rubrica.show', $criterion->rubric)->with('sucesso', "Critério \"{$criterion->name}\" atualizado.");
     }
 
     public function destroyCriterion(Criterion $criterion): RedirectResponse
@@ -146,6 +146,6 @@ class RubricController extends Controller
 
         $criterion->delete();
 
-        return to_route('admin.rubrica.show', $rubric)->with('sucesso', "Critério \"{$criterion->name}\" removido.");
+        return to_route('painel.rubrica.show', $rubric)->with('sucesso', "Critério \"{$criterion->name}\" removido.");
     }
 }

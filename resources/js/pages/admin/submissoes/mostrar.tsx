@@ -80,8 +80,8 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
     return (
         <AppLayout
             breadcrumbs={[
-                { title: 'Submissões', href: route('admin.submissions.index') },
-                { title: submissao.equipe.nome, href: route('admin.submissions.show', submissao.id) },
+                { title: 'Submissões', href: route('painel.submissions.index') },
+                { title: submissao.equipe.nome, href: route('painel.submissions.show', submissao.id) },
             ]}
         >
             <Head title={`Submissão — ${submissao.equipe.nome}`} />
@@ -219,7 +219,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     )}
                 </section>
 
-                <Link href={route('admin.submissions.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
+                <Link href={route('painel.submissions.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
             </motion.div>

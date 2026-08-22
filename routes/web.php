@@ -134,7 +134,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('submissao/arquivos/{file}', [SubmissionFileController::class, 'destroy'])
         ->name('submission-files.destroy');
 
-    // Destino do QR do crachá. Fora do prefixo /admin de propósito: é a URL
+    // Destino do QR do crachá. Fora do prefixo /painel de propósito: é a URL
     // que a câmera do celular abre direto, igual o crachá promete -- ver
     // Support\CheckinQrCode. AttendancePolicy barra quem não é staff.
     //
@@ -163,107 +163,111 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('certificados/{certificate}/baixar', [CertificateController::class, 'download'])->name('certificates.download');
 });
 
-// Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
-// rota garante que ninguém chega ao controller sem passar por
-// SubmissionPolicy::viewAny.
+// /admin é território exclusivo de Role::Admin -- gerenciar papel de
+// usuário é a única coisa que só admin faz (PLANO.md, seção 3). Todo o
+// resto do painel operacional mora em /painel, ver abaixo -- issue #133.
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
-    // Criar a primeira edição do evento e gerenciar papel de usuário não
-    // dependem de já existir um evento em cartaz -- ficam fora do grupo com
-    // EnsureEventExists abaixo, senão a própria tela de criar o evento
-    // ficaria bloqueada por "não existe evento".
-    Route::get('evento/criar', [EventController::class, 'create'])->name('admin.evento.create');
-    Route::post('evento', [EventController::class, 'store'])->name('admin.evento.store');
-
-    // Gerenciar papel de usuário -- exclusivo de admin, ver UserPolicy.
     Route::get('usuarios', [OrganizerUserController::class, 'index'])->name('admin.usuarios.index');
     Route::patch('usuarios/{usuario}', [OrganizerUserController::class, 'update'])->name('admin.usuarios.update');
+});
+
+// Painel do organizador. A porta é a Policy, não o prefixo da URL: `can:` na
+// rota garante que ninguém chega ao controller sem passar por
+// SubmissionPolicy::viewAny. /painel é compartilhado por organizador e
+// admin (isStaff()) -- só /admin acima é exclusivo de admin.
+Route::middleware(['auth', 'verified'])->prefix('painel')->group(function () {
+    // Criar a primeira edição do evento não depende de já existir um evento
+    // em cartaz -- fica fora do grupo com EnsureEventExists abaixo, senão a
+    // própria tela de criar o evento ficaria bloqueada por "não existe evento".
+    Route::get('evento/criar', [EventController::class, 'create'])->name('painel.evento.create');
+    Route::post('evento', [EventController::class, 'store'])->name('painel.evento.store');
 });
 
 // Todo o resto do painel do organizador pressupõe uma edição do hackathon
 // em cartaz -- ver EnsureEventExists. A porta em cada tela específica é a
 // Policy, não o prefixo da URL: `can:` na rota garante que ninguém chega ao
 // controller sem passar por SubmissionPolicy::viewAny, por exemplo.
-Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('admin')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('painel')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('painel.dashboard');
 
     // Edição do evento -- nome, tema/desafio, datas, limites, fase. Sempre o
     // evento atual, sem {event} na URL: só existe uma edição em cartaz por
     // vez (PLANO.md, seção 5).
-    Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
-    Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
-    Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('admin.evento.regulamento.upload');
+    Route::get('evento', [EventController::class, 'edit'])->name('painel.evento.edit');
+    Route::patch('evento', [EventController::class, 'update'])->name('painel.evento.update');
+    Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('painel.evento.regulamento.upload');
 
     // Incidentes do dia do evento. Extensão de prazo vale pra todo mundo --
     // ver IncidentController e Event::effectiveSubmissionDeadline().
-    Route::get('incidentes', [IncidentController::class, 'index'])->name('admin.incidentes.index');
-    Route::post('incidentes', [IncidentController::class, 'store'])->name('admin.incidentes.store');
+    Route::get('incidentes', [IncidentController::class, 'index'])->name('painel.incidentes.index');
+    Route::post('incidentes', [IncidentController::class, 'store'])->name('painel.incidentes.store');
 
     Route::get('submissoes', [OrganizerSubmissionController::class, 'index'])
         ->can('viewAny', Submission::class)
-        ->name('admin.submissions.index');
+        ->name('painel.submissions.index');
 
     // Antes de '{submission}': senão o binding implícito tenta achar uma
     // submissão com id "exportar" e devolve 404 no lugar do zip.
     Route::get('submissoes/exportar', [OrganizerSubmissionController::class, 'export'])
         ->can('viewAny', Submission::class)
-        ->name('admin.submissions.export');
+        ->name('painel.submissions.export');
 
     // Lançamento manual (plano B, degraus 3 e 4) -- mesmo motivo do
     // 'exportar' acima, precisa vir antes de '{submission}'.
-    Route::get('submissoes/lancar', [ManualSubmissionController::class, 'create'])->name('admin.submissions.record.create');
-    Route::post('submissoes/lancar', [ManualSubmissionController::class, 'store'])->name('admin.submissions.record.store');
+    Route::get('submissoes/lancar', [ManualSubmissionController::class, 'create'])->name('painel.submissions.record.create');
+    Route::post('submissoes/lancar', [ManualSubmissionController::class, 'store'])->name('painel.submissions.record.store');
 
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
         ->can('view', 'submission')
-        ->name('admin.submissions.show');
+        ->name('painel.submissions.show');
 
     // CRUD da agenda. Autorização em cada método do controller, não aqui --
     // ver ScheduleItemController.
-    Route::get('agenda', [ScheduleItemController::class, 'index'])->name('admin.agenda.index');
-    Route::get('agenda/criar', [ScheduleItemController::class, 'create'])->name('admin.agenda.create');
-    Route::post('agenda', [ScheduleItemController::class, 'store'])->name('admin.agenda.store');
-    Route::get('agenda/{item}/editar', [ScheduleItemController::class, 'edit'])->name('admin.agenda.edit');
-    Route::patch('agenda/{item}', [ScheduleItemController::class, 'update'])->name('admin.agenda.update');
-    Route::patch('agenda/{item}/publicar', [ScheduleItemController::class, 'publish'])->name('admin.agenda.publish');
-    Route::delete('agenda/{item}', [ScheduleItemController::class, 'destroy'])->name('admin.agenda.destroy');
+    Route::get('agenda', [ScheduleItemController::class, 'index'])->name('painel.agenda.index');
+    Route::get('agenda/criar', [ScheduleItemController::class, 'create'])->name('painel.agenda.create');
+    Route::post('agenda', [ScheduleItemController::class, 'store'])->name('painel.agenda.store');
+    Route::get('agenda/{item}/editar', [ScheduleItemController::class, 'edit'])->name('painel.agenda.edit');
+    Route::patch('agenda/{item}', [ScheduleItemController::class, 'update'])->name('painel.agenda.update');
+    Route::patch('agenda/{item}/publicar', [ScheduleItemController::class, 'publish'])->name('painel.agenda.publish');
+    Route::delete('agenda/{item}', [ScheduleItemController::class, 'destroy'])->name('painel.agenda.destroy');
 
     // Busca manual do check-in -- fallback de quando o crachá não tem como
     // ser lido (PLANO.md, Anexo A).
-    Route::get('checkin', [CheckinController::class, 'index'])->name('admin.checkin.index');
-    Route::post('checkin/checkpoints', [CheckinController::class, 'storeCheckpoint'])->name('admin.checkin.checkpoints.store');
+    Route::get('checkin', [CheckinController::class, 'index'])->name('painel.checkin.index');
+    Route::post('checkin/checkpoints', [CheckinController::class, 'storeCheckpoint'])->name('painel.checkin.checkpoints.store');
 
     // CRUD da rubrica. Autorização em cada método -- ver RubricController.
-    Route::get('rubrica', [OrganizerRubricController::class, 'index'])->name('admin.rubrica.index');
-    Route::post('rubrica', [OrganizerRubricController::class, 'store'])->name('admin.rubrica.store');
-    Route::get('rubrica/{rubric}', [OrganizerRubricController::class, 'show'])->name('admin.rubrica.show');
-    Route::patch('rubrica/{rubric}/ativar', [OrganizerRubricController::class, 'activate'])->name('admin.rubrica.activate');
-    Route::delete('rubrica/{rubric}', [OrganizerRubricController::class, 'destroy'])->name('admin.rubrica.destroy');
+    Route::get('rubrica', [OrganizerRubricController::class, 'index'])->name('painel.rubrica.index');
+    Route::post('rubrica', [OrganizerRubricController::class, 'store'])->name('painel.rubrica.store');
+    Route::get('rubrica/{rubric}', [OrganizerRubricController::class, 'show'])->name('painel.rubrica.show');
+    Route::patch('rubrica/{rubric}/ativar', [OrganizerRubricController::class, 'activate'])->name('painel.rubrica.activate');
+    Route::delete('rubrica/{rubric}', [OrganizerRubricController::class, 'destroy'])->name('painel.rubrica.destroy');
 
-    Route::post('rubrica/{rubric}/criterios', [OrganizerRubricController::class, 'storeCriterion'])->name('admin.rubrica.criteria.store');
-    Route::patch('criterios/{criterion}', [OrganizerRubricController::class, 'updateCriterion'])->name('admin.rubrica.criteria.update');
-    Route::delete('criterios/{criterion}', [OrganizerRubricController::class, 'destroyCriterion'])->name('admin.rubrica.criteria.destroy');
+    Route::post('rubrica/{rubric}/criterios', [OrganizerRubricController::class, 'storeCriterion'])->name('painel.rubrica.criteria.store');
+    Route::patch('criterios/{criterion}', [OrganizerRubricController::class, 'updateCriterion'])->name('painel.rubrica.criteria.update');
+    Route::delete('criterios/{criterion}', [OrganizerRubricController::class, 'destroyCriterion'])->name('painel.rubrica.criteria.destroy');
 
     // Atribuição de jurados. Autorização em cada método -- ver JudgeAssignmentController.
-    Route::get('jurados', [JudgeAssignmentController::class, 'index'])->name('admin.jurados.index');
-    Route::post('jurados/distribuir', [JudgeAssignmentController::class, 'distribute'])->name('admin.jurados.distribute');
-    Route::post('jurados', [JudgeAssignmentController::class, 'store'])->name('admin.jurados.store');
-    Route::delete('jurados/{assignment}', [JudgeAssignmentController::class, 'destroy'])->name('admin.jurados.destroy');
-    Route::post('jurados/{assignment}/reatribuir', [JudgeAssignmentController::class, 'reassign'])->name('admin.jurados.reassign');
-    Route::post('jurados/{assignment}/reabrir-avaliacao', [JudgeAssignmentController::class, 'reopenEvaluation'])->name('admin.jurados.reopen-evaluation');
-    Route::patch('jurados/configuracao', [JudgeAssignmentController::class, 'updateJudgesPerSubmission'])->name('admin.jurados.config');
+    Route::get('jurados', [JudgeAssignmentController::class, 'index'])->name('painel.jurados.index');
+    Route::post('jurados/distribuir', [JudgeAssignmentController::class, 'distribute'])->name('painel.jurados.distribute');
+    Route::post('jurados', [JudgeAssignmentController::class, 'store'])->name('painel.jurados.store');
+    Route::delete('jurados/{assignment}', [JudgeAssignmentController::class, 'destroy'])->name('painel.jurados.destroy');
+    Route::post('jurados/{assignment}/reatribuir', [JudgeAssignmentController::class, 'reassign'])->name('painel.jurados.reassign');
+    Route::post('jurados/{assignment}/reabrir-avaliacao', [JudgeAssignmentController::class, 'reopenEvaluation'])->name('painel.jurados.reopen-evaluation');
+    Route::patch('jurados/configuracao', [JudgeAssignmentController::class, 'updateJudgesPerSubmission'])->name('painel.jurados.config');
 
-    Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('admin.jurados.conflicts.store');
-    Route::delete('jurados/conflitos/{conflict}', [JudgeAssignmentController::class, 'destroyConflict'])->name('admin.jurados.conflicts.destroy');
+    Route::post('jurados/conflitos', [JudgeAssignmentController::class, 'storeConflict'])->name('painel.jurados.conflicts.store');
+    Route::delete('jurados/conflitos/{conflict}', [JudgeAssignmentController::class, 'destroyConflict'])->name('painel.jurados.conflicts.destroy');
 
     // Resultados. Calcular nunca publica sozinho -- ver ResultController.
-    Route::get('resultados', [ResultController::class, 'index'])->name('admin.resultados.index');
-    Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('admin.resultados.recompute');
-    Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('admin.resultados.publish');
+    Route::get('resultados', [ResultController::class, 'index'])->name('painel.resultados.index');
+    Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('painel.resultados.recompute');
+    Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('painel.resultados.publish');
 
     // Certificados. Emissão em lote é o comando hackathon:issue-certificates;
     // aqui só a emissão avulsa (mentor, correção pontual) -- ver CertificateController.
-    Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('admin.certificados.index');
-    Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('admin.certificados.store');
+    Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('painel.certificados.index');
+    Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('painel.certificados.store');
 });
 
 require __DIR__.'/settings.php';

@@ -63,7 +63,7 @@ class EventController extends Controller
         $this->authorize('create', Event::class);
 
         if (Event::current()) {
-            return to_route('admin.evento.edit');
+            return to_route('painel.evento.edit');
         }
 
         return Inertia::render('admin/evento/criar');
@@ -94,7 +94,7 @@ class EventController extends Controller
             $uploadRegulation->handle($event, $request->file('regulamento'));
         }
 
-        return to_route('admin.evento.edit')->with('sucesso', 'Evento criado.');
+        return to_route('painel.evento.edit')->with('sucesso', 'Evento criado.');
     }
 
     public function update(UpdateEventRequest $request): RedirectResponse
@@ -105,7 +105,7 @@ class EventController extends Controller
         $event->fill($request->validated());
         $event->save();
 
-        return to_route('admin.evento.edit')->with('sucesso', 'Evento atualizado.');
+        return to_route('painel.evento.edit')->with('sucesso', 'Evento atualizado.');
     }
 
     public function uploadRegulation(UploadRegulationRequest $request, UploadRegulation $action): RedirectResponse
@@ -115,6 +115,6 @@ class EventController extends Controller
         $event = $this->currentEventOrFail();
         $action->handle($event, $request->file('regulamento'));
 
-        return to_route('admin.evento.edit')->with('sucesso', 'Regulamento atualizado.');
+        return to_route('painel.evento.edit')->with('sucesso', 'Regulamento atualizado.');
     }
 }
