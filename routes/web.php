@@ -171,6 +171,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // Edição do evento -- nome, tema/desafio, datas, limites, fase. Sempre o
     // evento atual, sem {event} na URL: só existe uma edição em cartaz por
     // vez (PLANO.md, seção 5).
+    Route::get('evento/criar', [EventController::class, 'create'])->name('admin.evento.create');
+    Route::post('evento', [EventController::class, 'store'])->name('admin.evento.store');
     Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
     Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
     Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('admin.evento.regulamento.upload');

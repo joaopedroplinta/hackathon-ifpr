@@ -60,6 +60,78 @@ class EventTest extends TestCase
         ], $sobrescrever);
     }
 
+    public function test_edit_redirects_to_create_when_no_event_exists(): void
+    {
+        $this->actingAs($this->organizador())
+            ->get(route('admin.evento.edit'))
+            ->assertRedirect(route('admin.evento.create'));
+    }
+
+    public function test_staff_sees_the_create_form_when_no_event_exists(): void
+    {
+        $this->actingAs($this->organizador())
+            ->get(route('admin.evento.create'))
+            ->assertOk();
+    }
+
+    public function test_create_redirects_to_edit_when_an_event_already_exists(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->get(route('admin.evento.create'))
+            ->assertRedirect(route('admin.evento.edit'));
+    }
+
+    /**
+     * Sempre Publicado -- Event::current() (usado por toda tela do
+     * organizador via currentEventOrFail) filtra fora quem está em
+     * Rascunho. Criar em Rascunho autobloquearia o organizador de
+     * configurar qualquer coisa até publicar.
+     */
+    public function test_staff_creates_the_first_event_already_published(): void
+    {
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.store'), [
+                'name' => 'Hackathon IFPR 2026',
+                'description' => 'Soluções para mobilidade urbana',
+                'min_team_size' => 2,
+                'max_team_size' => 5,
+            ])
+            ->assertRedirect(route('admin.evento.edit'))
+            ->assertSessionHas('sucesso');
+
+        $event = Event::current();
+        $this->assertNotNull($event);
+        $this->assertSame('Hackathon IFPR 2026', $event->name);
+        $this->assertSame(EventStatus::Published, $event->status);
+        $this->assertSame(1, $event->edition);
+    }
+
+    public function test_a_second_event_gets_the_next_edition_number(): void
+    {
+        Event::factory()->create(['edition' => 1]);
+
+        $this->actingAs($this->organizador())->post(route('admin.evento.store'), [
+            'name' => 'Hackathon IFPR 2027',
+            'min_team_size' => 1,
+            'max_team_size' => 4,
+        ]);
+
+        $this->assertSame(2, Event::current()->edition);
+    }
+
+    public function test_a_participant_cannot_create_the_event(): void
+    {
+        $this->actingAs($this->participante())
+            ->get(route('admin.evento.create'))
+            ->assertForbidden();
+
+        $this->actingAs($this->participante())
+            ->post(route('admin.evento.store'), ['name' => 'Tentativa', 'min_team_size' => 1, 'max_team_size' => 4])
+            ->assertForbidden();
+    }
+
     public function test_staff_sees_the_edit_form_with_current_data(): void
     {
         $event = Event::factory()->create(['name' => 'Meu Evento']);
