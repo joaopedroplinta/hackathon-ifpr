@@ -51,6 +51,19 @@
             font-size: 11px;
             color: #6b6e68;
         }
+        .assinatura {
+            margin: 40px auto 0;
+            width: 260px;
+            border-top: 1px solid #6b6e68;
+            padding-top: 8px;
+            font-size: 13px;
+        }
+        .assinatura .cargo {
+            font-size: 11px;
+            color: #6b6e68;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         .rodape {
             margin-top: 30px;
             font-size: 11px;
@@ -100,6 +113,13 @@
                 &nbsp;·&nbsp;Matrícula: {{ $matricula }}
             @endif
         </div>
+
+        @if ($certificate->event->certificate_signer_name)
+            <div class="assinatura">
+                <strong>{{ $certificate->event->certificate_signer_name }}</strong>
+                <div class="cargo">{{ $certificate->event->certificate_signer_role }}</div>
+            </div>
+        @endif
 
         <div class="rodape">
             Emitido em {{ $certificate->issued_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}

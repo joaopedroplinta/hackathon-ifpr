@@ -36,6 +36,8 @@ class Event extends Model
         'voting_closes_at',
         'min_team_size',
         'max_team_size',
+        'certificate_signer_name',
+        'certificate_signer_role',
     ];
 
     protected function casts(): array

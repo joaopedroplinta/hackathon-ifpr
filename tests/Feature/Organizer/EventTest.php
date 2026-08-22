@@ -86,6 +86,34 @@ class EventTest extends TestCase
         $this->assertSame('Soluções para acesso à saúde', $event->description);
     }
 
+    public function test_staff_sets_the_certificate_signer(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->patch(route('admin.evento.update'), $this->dadosValidos([
+                'certificate_signer_name' => 'Maria Souza',
+                'certificate_signer_role' => 'Coordenadora do Hackathon',
+            ]))
+            ->assertSessionDoesntHaveErrors();
+
+        $event = Event::current();
+        $this->assertSame('Maria Souza', $event->certificate_signer_name);
+        $this->assertSame('Coordenadora do Hackathon', $event->certificate_signer_role);
+    }
+
+    public function test_certificate_signer_role_is_required_when_name_is_filled(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->patch(route('admin.evento.update'), $this->dadosValidos([
+                'certificate_signer_name' => 'Maria Souza',
+                'certificate_signer_role' => '',
+            ]))
+            ->assertSessionHasErrors('certificate_signer_role');
+    }
+
     public function test_max_team_size_cannot_be_smaller_than_the_minimum(): void
     {
         Event::factory()->create();

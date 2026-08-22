@@ -37,6 +37,8 @@ class EventController extends Controller
                 'voting_closes_at' => $event->voting_closes_at?->toIso8601String(),
                 'min_team_size' => $event->min_team_size,
                 'max_team_size' => $event->max_team_size,
+                'certificate_signer_name' => $event->certificate_signer_name,
+                'certificate_signer_role' => $event->certificate_signer_role,
             ],
             'status_opcoes' => array_map(
                 fn (EventStatus $s) => ['value' => $s->value, 'label' => $s->label()],

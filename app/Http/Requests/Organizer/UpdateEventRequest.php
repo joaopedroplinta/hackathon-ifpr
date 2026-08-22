@@ -32,6 +32,8 @@ class UpdateEventRequest extends FormRequest
             'voting_closes_at' => ['nullable', 'date', 'after_or_equal:voting_opens_at'],
             'min_team_size' => ['required', 'integer', 'min:1'],
             'max_team_size' => ['required', 'integer', 'min:1', 'gte:min_team_size'],
+            'certificate_signer_name' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_role'],
+            'certificate_signer_role' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_name'],
         ];
     }
 
@@ -47,6 +49,8 @@ class UpdateEventRequest extends FormRequest
             'ends_at.after_or_equal' => 'O fim do evento precisa vir depois do início.',
             'voting_closes_at.after_or_equal' => 'O fechamento da votação precisa vir depois da abertura.',
             'max_team_size.gte' => 'O tamanho máximo da equipe não pode ser menor que o mínimo.',
+            'certificate_signer_name.required_with' => 'Informe o nome de quem assina, já que o cargo foi preenchido.',
+            'certificate_signer_role.required_with' => 'Informe o cargo de quem assina, já que o nome foi preenchido.',
         ];
     }
 }
