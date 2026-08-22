@@ -11,7 +11,7 @@
             color: #1b1b1d;
         }
         .moldura {
-            border: 3px solid #3f8f2e;
+            border: 3px solid #357724;
             padding: 50px;
             text-align: center;
         }
@@ -19,7 +19,7 @@
             font-size: 12px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #3f8f2e;
+            color: #357724;
             margin-bottom: 30px;
         }
         .titulo {
@@ -41,6 +41,16 @@
             margin: 0 auto;
             max-width: 480px;
         }
+        .projeto {
+            font-size: 13px;
+            color: #4b4e49;
+            margin-top: 8px;
+        }
+        .identificacao {
+            margin-top: 24px;
+            font-size: 11px;
+            color: #6b6e68;
+        }
         .assinatura {
             margin: 40px auto 0;
             width: 260px;
@@ -55,7 +65,7 @@
             letter-spacing: 1px;
         }
         .rodape {
-            margin-top: 50px;
+            margin-top: 30px;
             font-size: 11px;
             color: #6b6e68;
         }
@@ -66,6 +76,14 @@
     </style>
 </head>
 <body>
+    @php
+        $matriculaCampo = $certificate->user->tipo_vinculo?->exigeMatricula();
+        $matricula = $matriculaCampo ? $certificate->user->{$matriculaCampo} : null;
+        $cpfFormatado = app(App\Support\Cpf::class)->format($certificate->user->cpf);
+        $equipe = $certificate->payload['equipe'] ?? null;
+        $projeto = $certificate->payload['projeto'] ?? null;
+    @endphp
+
     <div class="moldura">
         <div class="rotulo">{{ $certificate->type->label() }}</div>
         <div class="titulo">{{ $certificate->event->name }}</div>
@@ -80,6 +98,19 @@
                 Certificamos a conquista de <strong>{{ $certificate->payload['colocacao'] }}</strong>.
             @else
                 Certificamos a participação neste evento.
+            @endif
+
+            @if ($equipe)
+                <div class="projeto">
+                    Equipe {{ $equipe }}@if ($projeto), projeto "{{ $projeto }}"@endif
+                </div>
+            @endif
+        </div>
+
+        <div class="identificacao">
+            CPF: {{ $cpfFormatado ?? 'não informado' }}
+            @if ($matricula)
+                &nbsp;·&nbsp;Matrícula: {{ $matricula }}
             @endif
         </div>
 
