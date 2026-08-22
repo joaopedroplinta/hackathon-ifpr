@@ -129,8 +129,14 @@ automaticamente, igual a Render.
 1. No mesmo projeto, **New → GitHub Repo**, mesmo repositório
    `joaopedroplinta/hackathon-ifpr`, branch `main` — cria um segundo
    serviço apontando pro mesmo código.
-2. Adicionar as mesmas Shared Variables do passo 2 (menos `APP_URL`/
-   `GOOGLE_REDIRECT_URI`, que só o `web` usa).
+2. Adicionar as mesmas Shared Variables do passo 2 (menos
+   `GOOGLE_REDIRECT_URI`, que só o `web` usa) **e também `APP_URL`**, copiado
+   do serviço `web` (Service → Variables → copiar o valor, não referenciar —
+   `APP_URL` é literal, não uma Shared Variable). Sem isso, toda notificação
+   processada pelo worker (verificação de e-mail, convite de equipe,
+   resultado publicado, lembrete de prazo) monta a URL com `route()` sem
+   contexto de request HTTP, que cai no default `http://localhost` do
+   Laravel — bug real já visto em produção (Épico 13 do backlog).
 3. **Settings → Deploy → Custom Start Command**:
    ```
    php artisan queue:work --tries=3 --max-time=3600
@@ -142,7 +148,8 @@ automaticamente, igual a Render.
 ## 5. Serviço `scheduler`
 
 1. Mesmo processo: terceiro serviço, mesmo repositório.
-2. Mesmas Shared Variables (menos `APP_URL`/`GOOGLE_REDIRECT_URI`).
+2. Mesmas Shared Variables (menos `GOOGLE_REDIRECT_URI`) **e também
+   `APP_URL`**, pelo mesmo motivo do passo 2 do `worker`.
 3. **Settings → Deploy → Custom Start Command**:
    ```
    php artisan schedule:run
