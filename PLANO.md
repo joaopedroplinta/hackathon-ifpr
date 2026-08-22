@@ -610,23 +610,34 @@ O painel esquerdo de login/registro é a exceção deliberada: bloco sólido
 partículas interativas (`rede-interativa.tsx`, adaptado de um componente do
 21st.dev) — apagado junto, sem outro lugar que o usasse.
 
-### Pendência conhecida
+### Pendência conhecida — resolvida em 2026-08-22
 
 `AppLogoIcon` (`components/app-logo-icon.tsx`) e `public/favicon.svg`
-continuam com o glifo `>_` (prompt de terminal) da primeira identidade, com
-a cor antiga (`#3F8F2E`, fora da paleta atual) — não foram redesenhados
-junto com o resto porque o pente-fino de UX não cobriu marca/ícone, só
-layout, cor e tipografia. Sem issue aberta ainda.
+continuavam com o glifo `>_` (prompt de terminal) da primeira identidade —
+não foram redesenhados junto com o resto porque o pente-fino de UX não
+cobriu marca/ícone, só layout, cor e tipografia. Substituídos pelo "Encontro"
+(dois quadrados arredondados se sobrepondo, sem motivo de terminal) —
+exploração de direções feita com a skill de design, badge continua com fundo
+verde de propósito (ver nota abaixo sobre o PR #108).
+
+**Nota:** o texto acima descreve a identidade do PR #100 (verde só em
+detalhe pontual). O PR #108 (`feat: apply SaaS-dense visual system`,
+2026-08-21) reverteu esse ponto especificamente: verde voltou a ser cor
+primária de verdade (botão, link, badge), não só acento — decisão tomada
+porque o minimalismo "verde só em detalhe" leu como vazio/genérico demais
+pra quem organiza o evento. Esta seção não foi atualizada quando isso
+aconteceu; o `resources/css/app.css` é a fonte de verdade real da paleta
+hoje, não a tabela de tokens logo acima.
 
 ### Onde mexeu
 
 Praticamente toda `resources/js/pages/` e boa parte de
 `resources/js/components/hackathon/`, mais `resources/css/app.css` (tokens)
 e `resources/views/app.blade.php` (fonte) — histórico completo, commit por
-commit, no PR #100.
+commit, no PR #100 (revertido em parte pelo PR #108, ver nota acima).
 
 **Implementado** em público, autenticação, participante, jurado e
-organizador. Ícone/favicon pendentes (ver acima).
+organizador.
 
 ---
 
