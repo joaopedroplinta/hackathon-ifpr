@@ -58,6 +58,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
         voting_closes_at: deIsoParaDatetimeLocal(evento.voting_closes_at),
         min_team_size: String(evento.min_team_size),
         max_team_size: String(evento.max_team_size),
+        certificate_signer_name: evento.certificate_signer_name ?? '',
+        certificate_signer_role: evento.certificate_signer_role ?? '',
     });
 
     // transform() só muda o que vai pro servidor -- o campo continua
@@ -257,6 +259,37 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                             />
                             <InputError id="max_team_size-erro" message={errors.max_team_size} />
                         </div>
+                    </fieldset>
+
+                    <fieldset className="grid gap-4 sm:grid-cols-2">
+                        <legend className="mb-1 text-sm font-semibold">Assinatura do certificado</legend>
+                        <div className="grid gap-2">
+                            <Label htmlFor="certificate_signer_name">Nome de quem assina</Label>
+                            <Input
+                                id="certificate_signer_name"
+                                value={data.certificate_signer_name}
+                                onChange={(e) => setData('certificate_signer_name', e.target.value)}
+                                placeholder="Ex.: Maria Souza"
+                                maxLength={120}
+                                aria-describedby={errors.certificate_signer_name ? 'certificate_signer_name-erro' : undefined}
+                            />
+                            <InputError id="certificate_signer_name-erro" message={errors.certificate_signer_name} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="certificate_signer_role">Cargo</Label>
+                            <Input
+                                id="certificate_signer_role"
+                                value={data.certificate_signer_role}
+                                onChange={(e) => setData('certificate_signer_role', e.target.value)}
+                                placeholder="Ex.: Coordenadora do Hackathon"
+                                maxLength={120}
+                                aria-describedby={errors.certificate_signer_role ? 'certificate_signer_role-erro' : undefined}
+                            />
+                            <InputError id="certificate_signer_role-erro" message={errors.certificate_signer_role} />
+                        </div>
+                        <p className="text-muted-foreground text-xs sm:col-span-2">
+                            Aparece no rodapé do certificado em PDF. Deixe em branco pra não mostrar nenhuma assinatura.
+                        </p>
                     </fieldset>
 
                     <div className="flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">

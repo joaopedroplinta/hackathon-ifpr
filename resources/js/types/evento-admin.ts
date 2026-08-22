@@ -13,6 +13,8 @@ export type EventoExistente = {
     voting_closes_at: string | null;
     min_team_size: number;
     max_team_size: number;
+    certificate_signer_name: string | null;
+    certificate_signer_role: string | null;
 };
 
 export type EventoForm = {
@@ -28,6 +30,8 @@ export type EventoForm = {
     voting_closes_at: string;
     min_team_size: string;
     max_team_size: string;
+    certificate_signer_name: string;
+    certificate_signer_role: string;
 };
 
 export type OpcaoStatusEvento = { value: string; label: string };
