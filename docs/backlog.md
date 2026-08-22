@@ -169,20 +169,21 @@ visual, sanitização de HTML customizado, versionamento entre edições).
 | # | História | Status |
 |---|---|---|
 | 11.1 | Como organização, quero rodar um ensaio geral com dados e carga realistas antes do evento, para achar problema antes que ele apareça na frente de 25 equipes. | ✅ — achou e corrigiu 3 bugs reais (queda da página de resultados, corrupção de fuso horário no import de emergência, quebra na validação de certificado) |
-| 11.2 | Como organização, quero decidir onde hospedar o sistema mantendo o dado do participante no Brasil (LGPD), para publicar o site pro evento real. | 🔜 [#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71) — opções levantadas (servidor IFPR/RNP, Vultr São Paulo, AWS `sa-east-1`/GCP `southamerica-east1`), nenhuma escolhida. Demo temporária no Railway (`deploy/railway.md`, migrada da demo anterior em Render+Supabase) não conta — dado fora do Brasil, só para mostrar o sistema fora do localhost |
+| 11.2 | Como organização, quero decidir onde hospedar o sistema mantendo o dado do participante no Brasil (LGPD), para publicar o site pro evento real. | ✅ — [#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71) fechada em 2026-08-22: a professora orientadora confirmou que hospedar fora do Brasil não é impeditivo pra este trabalho, relaxando a exigência original. Segue no Railway (`deploy/railway.md`) |
 | 11.3 | Como usuário, quero microinterações mais polidas (loading de botão, transição entre páginas), para o sistema parecer tão profissional quanto o objetivo original pedia. | ✅ — toast real (sonner), loading de botão em todo formulário com `processing`, transição de página. Depois retomado e ampliado numa segunda passada: identidade visual inteira reconstruída (PR #100, ver `PLANO.md` §11) |
 | 11.4 | Como visitante, quero ver um aviso de cookies com a opção de aceitar ou recusar, para saber o que o sistema guarda no meu navegador antes de continuar usando. | ✅ |
 | 11.5 | Como organização, quero avaliar trocar o driver de filas (e possivelmente cache) de `database` para Redis, para reduzir carga no Postgres no pico de uso do dia do evento. | ✅ — trocado, com persistência e systemd configurados |
-| 11.6 | Como organização, quero um provedor de e-mail transacional real configurado em produção, para convite de equipe, lembrete de prazo, resultado publicado, verificação de conta e reset de senha chegarem de verdade. | 🔜 [#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78) — provedor escolhido (Resend, suporte nativo no Laravel 12), falta criar a conta de produção, gerar a chave real e confirmar SPF/DKIM do domínio remetente |
+| 11.6 | Como organização, quero um provedor de e-mail transacional real configurado em produção, para convite de equipe, lembrete de prazo, resultado publicado, verificação de conta e reset de senha chegarem de verdade. | ✅ — [#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78) fechada em 2026-08-22: Resend configurado via variável de ambiente, e-mail real confirmado chegando (verificação de conta testada de ponta a ponta em produção). SPF/DKIM de domínio próprio ficou fora de escopo — remetente é o sandbox `onboarding@resend.dev`, verificar `ifpr.edu.br` exigiria acesso ao DNS institucional fora do controle deste projeto; decisão foi aceitar o sandbox pro caso de uso atual |
 | 11.7 | Como organização, quero formalizar a nomeação do Encarregado de Proteção de Dados (DPO) em documento institucional, para o papel exigido pela LGPD (art. 41) não existir só como e-mail de contato na página `/privacidade`. | 🔜 [#83](https://github.com/joaopedroplinta/hackathon-ifpr/issues/83) — minuta pronta em `docs/termo-designacao-dpo.md`, falta o nome de quem assume o papel e o registro formal (portaria/ata). Decisão organizacional, não é tarefa de código |
 | 11.8 | Como organização, quero montar o RoPA (Registro das Operações de Tratamento de Dados Pessoais), para ter o artefato de governança que a LGPD espera além da política de privacidade voltada ao usuário final. | ✅ — [`docs/ropa.md`](./ropa.md) |
 | 11.9 | Como organização, quero testar o caminho de conflito do import de CSV de emergência (Degrau 2) com um caso proposital, para confirmar que o sistema nunca sobrescreve uma submissão existente sem decisão humana. | ✅ |
 | 11.10 | Como organização, quero rodar o ensaio com a equipe de organização presente, para validar os itens do Anexo A.9 que não são testáveis por código nem por uma pessoa sozinha no terminal (derrubar o app com submissão concorrente de verdade, ler o runbook em voz alta com a equipe). | 🔜 [#86](https://github.com/joaopedroplinta/hackathon-ifpr/issues/86) — exercício social, precisa da equipe de organização presente |
 
-**O que falta no projeto inteiro, hoje, são só estas quatro pendências —
-todas do Épico 11, todas decisão organizacional ou operacional, nenhuma
-exige código novo:** hospedagem (#71), provedor de e-mail (#78), nomeação
-formal do DPO (#83) e o ensaio ao vivo com a equipe (#86).
+**O que falta no projeto inteiro, hoje, são só estas duas pendências —
+ambas do Épico 11, ambas decisão organizacional ou operacional, nenhuma
+exige código novo:** nomeação formal do DPO (#83) e o ensaio ao vivo com a
+equipe (#86). Hospedagem (#71) e provedor de e-mail (#78) foram fechadas em
+2026-08-22.
 
 ---
 

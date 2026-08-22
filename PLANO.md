@@ -452,38 +452,27 @@ Feature só está pronta com:
 
 Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
 
-1. **Decidir e configurar o deploy.** Critério novo, definido em conversa:
-   **dado tem que ficar no Brasil** (instituição federal, LGPD — Railway/Render
-   não têm região no país). Opções levantadas, nenhuma escolhida ainda:
-   - Servidor da própria IFPR/RNP, se houver acesso
-   - Vultr São Paulo (VPS, região confirmada, exige configurar
-     nginx/php-fpm/postgres/systemd na mão)
-   - AWS `sa-east-1` ou GCP `southamerica-east1` (mais robusto, mais complexo)
+1. **Deploy decidido: Railway, definitivo (2026-08-22).** Critério original
+   era **dado tem que ficar no Brasil** (instituição federal, LGPD —
+   Railway/Render não têm região no país), o que descartava Railway pra
+   hospedagem real. A orientadora confirmou em 2026-08-22 que hospedar fora
+   do Brasil não é impeditivo pra este trabalho, o que resolve a questão:
+   **issue #71 fechada**, e o Railway que já rodava como demo
+   (`railway.json`, `Dockerfile`, roteiro em `deploy/railway.md`) vira a
+   hospedagem definitiva, banco incluído. Não há mais restrição de "só dado
+   de ensaio" — inscrição real passa a rodar ali.
 
-   **Demo temporária (2026-08-17, migrada pro Railway em 2026-08-20):** pra
-   mostrar o sistema rodando fora do localhost, primeiro subiu uma instância
-   em Render + Supabase (Postgres em `sa-east-1`, aplicação fora do Brasil);
-   depois migrada por inteiro pro Railway (`railway.json`, `Dockerfile`,
-   roteiro em `deploy/railway.md`) — banco incluído, então o dado de ensaio
-   saiu do Brasil por completo (nem o Railway tem região no país).
-   **Isso não é a decisão de hospedagem acima, nem serve pra ela**: só dado
-   de ensaio (`DemoSeeder`) roda ali, nenhuma inscrição real. A escolha
-   entre IFPR/RNP, Vultr ou AWS/GCP continua em aberto pro evento de verdade.
+   Provedor de e-mail transacional também decidido: **Resend** — suporte
+   nativo no Laravel 12 (`config/mail.php`/`config/services.php`), chave via
+   variável de ambiente (`RESEND_KEY`), e-mail real confirmado chegando de
+   ponta a ponta em produção (**issue #78 fechada**, 2026-08-22). Remetente
+   fica no sandbox `onboarding@resend.dev` — verificar um domínio próprio
+   (`ifpr.edu.br`) com SPF/DKIM exigiria acesso ao DNS institucional, fora
+   do controle deste projeto; decisão foi aceitar o sandbox pro caso de uso
+   atual.
 
-   Sem isso decidido, `scripts/backup.sh`'s "cópia em nuvem" continua um
-   placeholder (Anexo A.5) e não existe workflow de CD, só o CI de teste/lint.
-
-   Decisão separada, mas do mesmo pacote de "o que só existe em dev" (issue
-   #78): provedor de e-mail transacional escolhido é o **Resend** — suporte
-   nativo no Laravel 12 (`config/mail.php`/`config/services.php` já vêm
-   prontos), só faltava o pacote `resend/resend-php` e a variável
-   `RESEND_KEY`. Falta ainda: criar a conta, gerar a chave real, configurar
-   SPF/DKIM do domínio remetente e trocar `MAIL_MAILER=resend` no ambiente
-   de produção — a chave em si não entra em código, seed ou commit
-   (`.claude/rules/security.md`).
-
-   Checklist completo do que falta pra produção — o que já está pronto e o
-   que só se resolve depois desta decisão — no
+   Checklist completo do que já está pronto e do que ainda falta configurar
+   no Railway pra produção real — no
    [Anexo A.10](#a10-checklist-de-deploy-em-produção).
 
 2. **Rodar o ensaio geral de verdade** (semana 8, Anexo A.9) — o código do
@@ -806,48 +795,49 @@ em `docs/roteiro-ensaio-com-equipe.md`.
 
 ## A.10 Checklist de deploy em produção
 
-Levantado ao revisar #71/#78. Metade destes itens só se resolve depois de
-escolher a hospedagem (seção 10) — o resto já está pronto pra usar em
-qualquer host escolhido.
+Levantado ao revisar #71/#78, ambas fechadas em 2026-08-22 — Railway é a
+hospedagem definitiva (`deploy/railway.md`), Resend o provedor de e-mail.
 
-**Já pronto, independente da hospedagem:**
+**Já pronto:**
 
-- [x] Redis com persistência (`appendonly yes` + volume) — sem isso, um job
-      na fila (e-mail, PDF) enfileirado entre dois snapshots se perde se o
+- [x] Redis com persistência (addon Railway) — sem isso, um job na fila
+      (e-mail, PDF) enfileirado entre dois snapshots se perde se o
       container cair
-- [x] `deploy/hackathon-queue.service` e `deploy/hackathon-schedule.service` —
-      units systemd prontas pra fila e pro lembrete de prazo rodarem sozinhos
-      e reiniciarem se caírem. Ver `deploy/README.md`
-- [x] `resend/resend-php` instalado e `config/mail.php`/`config/services.php`
-      já resolvem `MAIL_MAILER=resend` (issue #78)
-- [x] Conta Resend criada, chave `Hackathon IFPR` gerada com permissão
-      "Sending access" (menor privilégio — só envia, não gerencia domínio
-      nem outras chaves). Envio de teste confirmado ponta a ponta: Laravel
-      → Resend → `Delivered` na caixa real, fora do Mailpit
+- [x] Serviço `worker` dedicado (`php artisan queue:work`), equivalente ao
+      que seria uma unit systemd num VPS — Railway reinicia sozinho se cair.
+      `deploy/hackathon-queue.service`/`hackathon-schedule.service` ficam
+      como referência caso a hospedagem mude pra um VPS no futuro, mas não
+      se aplicam ao Railway (PaaS, sem acesso a `systemctl`)
+- [x] `resend/resend-php` instalado, `MAIL_MAILER=resend` em produção
+- [x] Conta Resend criada, chave `Hackathon IFPR` com permissão "Sending
+      access" (menor privilégio). E-mail real confirmado chegando de ponta
+      a ponta em produção (verificação de conta testada, 2026-08-22)
+- [x] `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://…`
+      configurados no serviço `web` do Railway
+- [x] Callback do Google OAuth cadastrado nas "Authorized redirect URIs"
+      do Google Cloud Console com a URL real do Railway
+- [x] `php artisan migrate --force` roda sozinho no boot do serviço `web`
+      (`Dockerfile`) — todo deploy já migra
 
-**Só depois da hospedagem decidida (issue #71):**
+**Decidido não fazer, por ora:**
 
-- [ ] Trocar `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://…` —
-      `APP_DEBUG=true` em produção vaza stack trace com dado sensível pra
-      qualquer visitante que cause um erro
-- [ ] Cadastrar a URL real de callback (`https://…/auth/google/callback`) nas
-      "Authorized redirect URIs" do Google Cloud Console — sem isso, login
-      com Google quebra mesmo com `APP_URL` certo no `.env`
-- [ ] Verificar um domínio de verdade no Resend e configurar SPF/DKIM (issue
-      #78) — hoje o remetente é `onboarding@resend.dev`, domínio de teste do
-      próprio Resend, só serve pra validar o fluxo. `ifpr.edu.br` (o domínio
-      institucional) não está verificado nesta conta e exigiria acesso ao
-      DNS que, até aqui, ninguém confirmou ter
-- [ ] Instalar as units de `deploy/` no servidor escolhido
-      (`sudo systemctl enable --now hackathon-queue hackathon-schedule`)
-- [ ] Agendar `scripts/backup.sh` via cron a cada 15 min + decidir pra onde
-      vai a cópia em nuvem (Anexo A.5 — hoje é placeholder, sem provedor
-      escolhido não tem pra onde mandar)
-- [ ] Rodar `php artisan migrate --force` no primeiro deploy — não existe
-      CD ainda, só CI de teste/lint
-- [ ] Confirmar se o disco de upload (`storage/app/private`) é persistente
-      no host escolhido — VPS com disco próprio é tranquilo, PaaS com
-      container efêmero perde arquivo a cada deploy sem volume dedicado
+- [x] ~~Verificar domínio próprio no Resend (SPF/DKIM)~~ — remetente fica
+      no sandbox `onboarding@resend.dev`; `ifpr.edu.br` exigiria acesso ao
+      DNS institucional, fora do controle deste projeto (issue #78)
+
+**Ainda falta — atenção antes de abrir inscrição real:**
+
+- [ ] **Storage de upload não é persistente no Railway.**
+      `storage/app/private` (arquivos de submissão, regulamento) vive no
+      disco do container, recriado a cada deploy — um redeploy durante o
+      evento apaga os arquivos enviados. Precisa configurar um Railway
+      Volume (Settings → Volumes) montado nesse caminho antes de inscrição
+      real começar a valer, senão qualquer novo deploy no meio do evento
+      derruba os anexos das equipes
+- [ ] Backup: `scripts/backup.sh` ainda não está agendado no Railway (sem
+      cron nativo, precisa de um serviço agendado ou Cron Schedule
+      dedicado) — "cópia em nuvem" (Anexo A.5) continua placeholder, sem
+      provedor de destino escolhido
 
 ## A.11 LGPD — o que foi resolvido
 

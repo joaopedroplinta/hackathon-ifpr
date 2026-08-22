@@ -1,21 +1,22 @@
-# Deploy de demonstração — Railway
+# Deploy em produção — Railway
 
-Hospedagem **temporária**, só pra mostrar o sistema rodando fora do
-localhost, com dado de ensaio (`DemoSeeder`). **Não é** a decisão de
-hospedagem do evento real (PLANO.md §10 e Anexo A.10) — aquela ainda exige
-dado no Brasil, e o Railway não tem região no país (mesma limitação que a
-Render tinha). Substitui a demo anterior em Render + Supabase — ver
-`CHANGELOG.md`.
+Hospedagem **definitiva** do evento real (decidido em 2026-08-22, issue
+#71 fechada). Começou como demo temporária (2026-08-17, Render + Supabase;
+migrada por inteiro pro Railway em 2026-08-20) sob o critério de "dado tem
+que ficar no Brasil" — a orientadora confirmou que hospedar fora do país
+não é impeditivo pra este trabalho, o que resolve a questão e promove este
+mesmo ambiente a definitivo, banco incluído.
 
-**Diferença de LGPD em relação à demo anterior:** a demo na Render mantinha
-o Postgres no Supabase em `sa-east-1` (São Paulo) mesmo com a aplicação fora
-do Brasil. Esta migração move **tudo** pro Railway, inclusive o banco — o
-dado de ensaio sai do Brasil por completo. Aceitável porque continua sendo
-só `DemoSeeder` (nenhuma inscrição real), mas é uma regressão real em
-relação ao setup anterior, registrada aqui de propósito.
+**Diferença de LGPD em relação à demo anterior em Render:** aquela mantinha
+o Postgres no Supabase em `sa-east-1` (São Paulo) mesmo com a aplicação
+fora do Brasil. Esta migração move **tudo** pro Railway, inclusive o
+banco — nenhum dado (nem de ensaio, nem de inscrição real) fica no Brasil.
+Aceito pela orientadora, registrado aqui de propósito.
 
-**Não coloque inscrição real de participante aqui.** Dado de ensaio,
-gerado pelo seeder, é o que existe nesse ambiente.
+**Antes de abrir inscrição real, resolver o Anexo A.10 do PLANO.md** —
+em especial o storage de upload, que hoje **não é persistente**: um
+redeploy no meio do evento apaga os arquivos de submissão das equipes
+(ver seção "Limitações conhecidas" no fim deste arquivo).
 
 ## Por que Railway em vez de Render
 
@@ -176,14 +177,23 @@ railway run --service web php artisan db:seed --class=DemoSeeder --force
 `DemoSeeder` cria um evento passado (encerrado, resultado publicado, 15
 equipes) e o evento atual (inscrições abertas, 8 equipes já formadas).
 
-## Limitações conhecidas dessa demo (aceitas de propósito)
+**Antes de abrir inscrição real, apagar qualquer dado de ensaio que já
+tenha rodado neste ambiente enquanto ele era só demo** — equipe fictícia
+do `DemoSeeder` misturada com equipe de verdade quebra ranking, contagem
+de inscritos na landing e qualquer relatório tirado depois.
 
-- **Dado fora do Brasil.** Ver aviso no topo — regressão real em relação à
-  demo anterior (Postgres saiu do Supabase `sa-east-1`). Só dado de ensaio.
-- **Upload não sobrevive a redeploy.** `storage/app/private` fica no disco
-  do container `web`, recriado a cada deploy. O Railway suporta Volumes
-  persistentes (Settings → Volumes), mas não foi configurado aqui — fora de
-  escopo desta migração, igual já era na demo Render.
+## Limitações conhecidas
+
+- **Dado fora do Brasil.** Aceito formalmente pela orientadora em
+  2026-08-22 (issue #71) — não é mais uma pendência, é a decisão tomada.
+- **Upload não sobrevive a redeploy — resolver antes de inscrição real.**
+  `storage/app/private` fica no disco do container `web`, recriado a cada
+  deploy. Enquanto só rodava `DemoSeeder`, perder o disco num redeploy não
+  importava; com inscrição de verdade, um deploy no meio do evento apaga
+  os arquivos de submissão das equipes. O Railway suporta Volumes
+  persistentes (Settings → Volumes) — configurar antes de abrir inscrição
+  real (ver Anexo A.10 do `PLANO.md`).
 - **Sem SPF/DKIM de domínio próprio.** Remetente continua
-  `onboarding@resend.dev` (Anexo A.10) até alguém confirmar acesso ao DNS de
-  `ifpr.edu.br`.
+  `onboarding@resend.dev` — decisão aceita (issue #78 fechada): verificar
+  `ifpr.edu.br` exigiria acesso ao DNS institucional, fora do controle
+  deste projeto.

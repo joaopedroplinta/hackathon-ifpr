@@ -11,10 +11,12 @@ resultados, voto popular, certificados em PDF, notificações por fila e o
 ensaio geral automatizado (30 equipes, carga, plano B) já funcionam de ponta
 a ponta. Identidade visual reconstruída do zero (PR #100) e identidade
 institucional — CPF, vínculo IFPR com matrícula SUAP/SIAPE, foto de perfil
-(PR #103) — também mescladas. O que resta no projeto inteiro são quatro
-decisões organizacionais, nenhuma exige código: hospedagem com dado no
-Brasil (#71), provedor de e-mail em produção (#78), nomeação formal do DPO
-(#83), ensaio ao vivo com a equipe de organização (#86). Backlog completo em
+(PR #103) — também mescladas. Hospedagem (#71, hospedar fora do Brasil
+autorizado pela orientadora) e provedor de e-mail em produção (#78, Resend
+via variável de ambiente, e-mail real confirmado chegando) fechadas em
+2026-08-22. O que resta no projeto inteiro são duas decisões
+organizacionais, nenhuma exige código: nomeação formal do DPO (#83), ensaio
+ao vivo com a equipe de organização (#86). Backlog completo em
 `docs/backlog.md`. Diagramas (ER, classes, casos de uso, sequência) em
 `docs/diagramas.md`.
 
