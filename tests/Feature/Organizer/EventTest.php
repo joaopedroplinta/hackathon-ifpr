@@ -60,11 +60,12 @@ class EventTest extends TestCase
         ], $sobrescrever);
     }
 
-    public function test_edit_redirects_to_create_when_no_event_exists(): void
+    public function test_edit_shows_the_no_event_screen_when_no_event_exists(): void
     {
         $this->actingAs($this->organizador())
             ->get(route('admin.evento.edit'))
-            ->assertRedirect(route('admin.evento.create'));
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->component('admin/sem-evento'));
     }
 
     public function test_staff_sees_the_create_form_when_no_event_exists(): void

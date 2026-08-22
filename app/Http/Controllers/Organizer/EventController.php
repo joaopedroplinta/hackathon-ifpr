@@ -20,20 +20,15 @@ class EventController extends Controller
     use ResolvesParticipation;
 
     /**
-     * Sem evento nenhum ainda, manda pra criação em vez de 404 --
-     * `currentEventOrFail()` é o que toda outra tela do organizador usa, e
-     * um 404 mudo não diz ao organizador que o próximo passo é criar o
-     * primeiro evento.
+     * A rota passa por EnsureEventExists, então $event nunca é nulo aqui --
+     * sem evento, a middleware já mostra a tela "crie o evento primeiro"
+     * antes de chegar neste método.
      */
-    public function edit(): Response|RedirectResponse
+    public function edit(): Response
     {
         $this->authorize('update', Event::class);
 
-        $event = Event::current();
-
-        if (! $event) {
-            return to_route('admin.evento.create');
-        }
+        $event = $this->currentEventOrFail();
 
         return Inertia::render('admin/evento/editar', [
             'evento' => [
