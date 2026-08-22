@@ -818,6 +818,13 @@ hospedagem definitiva (`deploy/railway.md`), Resend o provedor de e-mail.
       do Google Cloud Console com a URL real do Railway
 - [x] `php artisan migrate --force` roda sozinho no boot do serviço `web`
       (`Dockerfile`) — todo deploy já migra
+- [x] **Storage de upload persistente.** Railway Volume `hackathon-ifpr-volume`
+      (5 GB) criado e montado em `/var/www/html/storage/app/private` no
+      serviço `web`, via `railway volume add` — mesmo caminho do disco
+      `local` do Laravel. Confirmado nos logs pós-restart
+      (`Mounting volume on: ...`, boot limpo, `/up` respondendo) em
+      2026-08-22. Não havia regulamento nem submissão real em produção
+      antes disso, então não houve arquivo perdido na troca
 
 **Decidido não fazer, por ora:**
 
@@ -827,13 +834,6 @@ hospedagem definitiva (`deploy/railway.md`), Resend o provedor de e-mail.
 
 **Ainda falta — atenção antes de abrir inscrição real:**
 
-- [ ] **Storage de upload não é persistente no Railway.**
-      `storage/app/private` (arquivos de submissão, regulamento) vive no
-      disco do container, recriado a cada deploy — um redeploy durante o
-      evento apaga os arquivos enviados. Precisa configurar um Railway
-      Volume (Settings → Volumes) montado nesse caminho antes de inscrição
-      real começar a valer, senão qualquer novo deploy no meio do evento
-      derruba os anexos das equipes
 - [ ] Backup: `scripts/backup.sh` ainda não está agendado no Railway (sem
       cron nativo, precisa de um serviço agendado ou Cron Schedule
       dedicado) — "cópia em nuvem" (Anexo A.5) continua placeholder, sem
