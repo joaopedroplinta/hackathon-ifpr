@@ -99,25 +99,39 @@ img {
 
 .header {
     background-color: #163c1b;
-    padding: 25px 0;
-    text-align: center;
+    padding: 28px 32px;
+    text-align: left;
 }
 
 .header a {
-    color: #8fd14f;
-    font-size: 19px;
-    font-weight: bold;
+    color: #f4f7f2;
+    font-size: 18px;
+    font-weight: 600;
     text-decoration: none;
 }
 
-/* Logo */
+/* Logo -- selo com o glifo de prompt de terminal (`>_`) do ícone da marca
+   (ver AppLogoIcon.tsx), renderizado como texto monoespaçado em vez de
+   imagem: sem isso, clientes de e-mail que bloqueiam imagem por padrão
+   (Outlook, Gmail em alguns casos) mostrariam o cabeçalho vazio. */
 
-.logo {
-    height: 75px;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    max-height: 75px;
-    width: 75px;
+.logo-badge {
+    background-color: #5fc244;
+    border-radius: 6px;
+    color: #0c1a08;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 15px;
+    font-weight: 700;
+    height: 32px;
+    width: 32px;
+    line-height: 32px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.logo-text {
+    padding-left: 12px;
+    vertical-align: middle;
 }
 
 /* Body */
@@ -140,7 +154,7 @@ img {
     -premailer-width: 570px;
     background-color: #ffffff;
     border-color: #e4e4e7;
-    border-radius: 4px;
+    border-radius: 8px;
     border-width: 1px;
     box-shadow:
         0 1px 3px 0 rgba(0, 0, 0, 0.1),
@@ -233,9 +247,10 @@ img {
 
 .button {
     -webkit-text-size-adjust: none;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #fff;
     display: inline-block;
+    font-weight: 600;
     overflow: hidden;
     text-decoration: none;
 }
@@ -243,10 +258,10 @@ img {
 .button-blue,
 .button-primary {
     background-color: #357724;
-    border-bottom: 8px solid #357724;
-    border-left: 18px solid #357724;
-    border-right: 18px solid #357724;
-    border-top: 8px solid #357724;
+    border-bottom: 12px solid #357724;
+    border-left: 26px solid #357724;
+    border-right: 26px solid #357724;
+    border-top: 12px solid #357724;
 }
 
 .button-green,

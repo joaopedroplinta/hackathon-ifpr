@@ -35,9 +35,10 @@ class VerifyEmailQueued extends VerifyEmailBase implements ShouldQueue
         return (new MailMessage)
             ->subject('Confirme seu e-mail — Hackathon IFPR')
             ->greeting('Olá!')
-            ->line('Clique no botão abaixo para confirmar seu endereço de e-mail e ativar sua conta.')
+            ->line('Falta só um passo para ativar sua conta no Hackathon IFPR: confirmar que este e-mail é seu.')
             ->action('Confirmar e-mail', $url)
             ->line('O link expira em 60 minutos.')
-            ->line('Se você não criou uma conta no Hackathon IFPR, pode ignorar este e-mail.');
+            ->line('Se você não criou uma conta no Hackathon IFPR, pode ignorar esta mensagem com segurança.')
+            ->salutation("Até já,  \nEquipe Hackathon IFPR");
     }
 }
