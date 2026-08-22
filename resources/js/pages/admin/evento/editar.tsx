@@ -3,18 +3,20 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import PainelLogoCertificado from '@/components/hackathon/painel-logo-certificado';
 import PainelRegulamento from '@/components/hackathon/painel-regulamento';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { EventoExistente, EventoForm, OpcaoStatusEvento, RegulamentoEvento } from '@/types/evento-admin';
+import { CertificadoLogoEvento, EventoExistente, EventoForm, OpcaoStatusEvento, RegulamentoEvento } from '@/types/evento-admin';
 
 interface Props {
     evento: EventoExistente;
     status_opcoes: OpcaoStatusEvento[];
     regulamento: RegulamentoEvento;
+    certificado_logo: CertificadoLogoEvento;
 }
 
 const campo =
@@ -44,7 +46,7 @@ function deIsoParaDatetimeLocal(iso: string | null): string {
     return new Date(iso).toLocaleString('sv-SE', { timeZone: 'America/Sao_Paulo' }).slice(0, 16).replace(' ', 'T');
 }
 
-export default function EditarEvento({ evento, status_opcoes, regulamento }: Props) {
+export default function EditarEvento({ evento, status_opcoes, regulamento, certificado_logo }: Props) {
     const { data, setData, transform, patch, processing, errors } = useForm<EventoForm>({
         name: evento.name,
         description: evento.description ?? '',
@@ -60,6 +62,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
         max_team_size: String(evento.max_team_size),
         certificate_signer_name: evento.certificate_signer_name ?? '',
         certificate_signer_role: evento.certificate_signer_role ?? '',
+        certificate_accent_color: evento.certificate_accent_color ?? '',
     });
 
     // transform() só muda o que vai pro servidor -- o campo continua
@@ -292,6 +295,33 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                         </p>
                     </fieldset>
 
+                    <fieldset className="grid gap-4">
+                        <legend className="mb-1 text-sm font-semibold">Visual do certificado</legend>
+                        <div className="grid max-w-[200px] gap-2">
+                            <Label htmlFor="certificate_accent_color">Cor de destaque</Label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="certificate_accent_color_picker"
+                                    type="color"
+                                    value={data.certificate_accent_color || '#357724'}
+                                    onChange={(e) => setData('certificate_accent_color', e.target.value)}
+                                    className="border-input h-10 w-12 shrink-0 rounded-md border"
+                                    aria-label="Escolher cor de destaque"
+                                />
+                                <Input
+                                    id="certificate_accent_color"
+                                    value={data.certificate_accent_color}
+                                    onChange={(e) => setData('certificate_accent_color', e.target.value)}
+                                    placeholder="#357724"
+                                    maxLength={7}
+                                    aria-describedby={errors.certificate_accent_color ? 'certificate_accent_color-erro' : undefined}
+                                />
+                            </div>
+                            <InputError id="certificate_accent_color-erro" message={errors.certificate_accent_color} />
+                            <p className="text-muted-foreground text-xs">Usada na borda e nos rótulos do PDF. Deixe em branco pra usar o padrão.</p>
+                        </div>
+                    </fieldset>
+
                     <div className="flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
                         <Button type="submit" disabled={processing} className="w-full sm:w-auto">
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
@@ -300,8 +330,9 @@ export default function EditarEvento({ evento, status_opcoes, regulamento }: Pro
                     </div>
                 </form>
 
-                <div className="mt-6">
+                <div className="mt-6 grid gap-6">
                     <PainelRegulamento regulamento={regulamento} />
+                    <PainelLogoCertificado certificadoLogo={certificado_logo} />
                 </div>
             </motion.div>
         </AppLayout>

@@ -32,6 +32,14 @@ class IssueCertificate
             $payload['carga_horaria'] = $this->attendanceHours->forUser($event, $user);
         }
 
+        // Snapshot do design no momento da emissão: se a comissão trocar
+        // logo/cor depois, certificados já emitidos mantêm a aparência com
+        // que saíram -- decisão do usuário, issue #122.
+        $payload['template'] = [
+            'logo_path' => $event->certificate_logo_path,
+            'accent_color' => $event->certificate_accent_color,
+        ];
+
         $certificate = Certificate::query()
             ->where('event_id', $event->id)
             ->where('user_id', $user->id)

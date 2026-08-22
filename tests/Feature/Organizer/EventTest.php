@@ -338,4 +338,89 @@ class EventTest extends TestCase
             ])
             ->assertForbidden();
     }
+
+    public function test_staff_sets_the_certificate_accent_color(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->patch(route('admin.evento.update'), $this->dadosValidos([
+                'certificate_accent_color' => '#112233',
+            ]))
+            ->assertSessionDoesntHaveErrors();
+
+        $this->assertSame('#112233', Event::current()->certificate_accent_color);
+    }
+
+    public function test_a_certificate_accent_color_outside_hex_format_is_refused(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->patch(route('admin.evento.update'), $this->dadosValidos([
+                'certificate_accent_color' => 'verde',
+            ]))
+            ->assertSessionHasErrors('certificate_accent_color');
+    }
+
+    public function test_staff_uploads_the_certificate_logo(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.certificado.logo.upload'), [
+                'logo' => UploadedFile::fake()->create('logo.png', 100, 'image/png'),
+            ])
+            ->assertRedirect(route('admin.evento.edit'))
+            ->assertSessionHas('sucesso');
+
+        $fresh = $event->fresh();
+        Storage::disk('local')->assertExists($fresh->certificate_logo_path);
+    }
+
+    /**
+     * Ao contrário do regulamento, o logo antigo não é apagado: um
+     * certificado já emitido guarda o caminho antigo no snapshot
+     * (payload.template) e precisa continuar achando o arquivo.
+     */
+    public function test_uploading_a_new_logo_keeps_the_previous_file_on_disk(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->actingAs($this->organizador())->post(route('admin.evento.certificado.logo.upload'), [
+            'logo' => UploadedFile::fake()->create('primeiro.png', 100, 'image/png'),
+        ]);
+        $caminhoAntigo = $event->fresh()->certificate_logo_path;
+
+        $this->actingAs($this->organizador())->post(route('admin.evento.certificado.logo.upload'), [
+            'logo' => UploadedFile::fake()->create('segundo.png', 100, 'image/png'),
+        ]);
+
+        Storage::disk('local')->assertExists($caminhoAntigo);
+        Storage::disk('local')->assertExists($event->fresh()->certificate_logo_path);
+    }
+
+    public function test_a_logo_file_type_outside_the_allowlist_is_refused(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('admin.evento.certificado.logo.upload'), [
+                'logo' => UploadedFile::fake()->create('logo.svg', 50, 'image/svg+xml'),
+            ])
+            ->assertSessionHasErrors('logo');
+
+        $this->assertNull(Event::current()->certificate_logo_path);
+    }
+
+    public function test_a_participant_cannot_upload_the_certificate_logo(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->participante())
+            ->post(route('admin.evento.certificado.logo.upload'), [
+                'logo' => UploadedFile::fake()->create('logo.png', 100, 'image/png'),
+            ])
+            ->assertForbidden();
+    }
 }

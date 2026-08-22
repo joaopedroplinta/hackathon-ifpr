@@ -192,6 +192,7 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('admin
     Route::get('evento', [EventController::class, 'edit'])->name('admin.evento.edit');
     Route::patch('evento', [EventController::class, 'update'])->name('admin.evento.update');
     Route::post('evento/regulamento', [EventController::class, 'uploadRegulation'])->name('admin.evento.regulamento.upload');
+    Route::post('evento/certificado/logo', [EventController::class, 'uploadCertificateLogo'])->name('admin.evento.certificado.logo.upload');
 
     // Incidentes do dia do evento. Extensão de prazo vale pra todo mundo --
     // ver IncidentController e Event::effectiveSubmissionDeadline().

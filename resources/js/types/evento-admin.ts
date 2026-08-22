@@ -15,6 +15,7 @@ export type EventoExistente = {
     max_team_size: number;
     certificate_signer_name: string | null;
     certificate_signer_role: string | null;
+    certificate_accent_color: string | null;
 };
 
 export type EventoForm = {
@@ -32,6 +33,7 @@ export type EventoForm = {
     max_team_size: string;
     certificate_signer_name: string;
     certificate_signer_role: string;
+    certificate_accent_color: string;
 };
 
 export type NovoEventoForm = {
@@ -52,3 +54,5 @@ export type NovoEventoForm = {
 export type OpcaoStatusEvento = { value: string; label: string };
 
 export type RegulamentoEvento = { nome_arquivo: string | null; atualizado_em: string | null };
+
+export type CertificadoLogoEvento = { tem_logo: boolean };

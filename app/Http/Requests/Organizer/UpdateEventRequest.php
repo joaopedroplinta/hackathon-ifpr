@@ -34,6 +34,7 @@ class UpdateEventRequest extends FormRequest
             'max_team_size' => ['required', 'integer', 'min:1', 'gte:min_team_size'],
             'certificate_signer_name' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_role'],
             'certificate_signer_role' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_name'],
+            'certificate_accent_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ];
     }
 
@@ -51,6 +52,7 @@ class UpdateEventRequest extends FormRequest
             'max_team_size.gte' => 'O tamanho máximo da equipe não pode ser menor que o mínimo.',
             'certificate_signer_name.required_with' => 'Informe o nome de quem assina, já que o cargo foi preenchido.',
             'certificate_signer_role.required_with' => 'Informe o cargo de quem assina, já que o nome foi preenchido.',
+            'certificate_accent_color.regex' => 'Informe a cor no formato hexadecimal, ex.: #357724.',
         ];
     }
 }
