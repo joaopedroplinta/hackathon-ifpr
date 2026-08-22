@@ -5,8 +5,10 @@ namespace App\Actions\Certificates;
 use App\Enums\CertificateType;
 use App\Enums\EvaluationStatus;
 use App\Enums\Role;
+use App\Enums\TeamMemberStatus;
 use App\Models\Event;
 use App\Models\Result;
+use App\Models\TeamMember;
 use App\Models\User;
 
 /**
@@ -33,7 +35,17 @@ class IssueEventCertificates
 
         foreach ($event->registrations()->with('user')->get() as $registration) {
             if ($registration->user->attendances()->whereHas('checkpoint', fn ($q) => $q->where('event_id', $event->id))->exists()) {
-                $this->issue->handle($event, $registration->user, CertificateType::Participacao);
+                $teamMember = TeamMember::query()
+                    ->where('event_id', $event->id)
+                    ->where('user_id', $registration->user->id)
+                    ->where('status', TeamMemberStatus::Active)
+                    ->with('team.submission')
+                    ->first();
+
+                $this->issue->handle($event, $registration->user, CertificateType::Participacao, [
+                    'equipe' => $teamMember?->team?->name,
+                    'projeto' => $teamMember?->team?->submission?->title,
+                ]);
                 $emitidos['participacao']++;
             }
         }
@@ -71,6 +83,10 @@ class IssueEventCertificates
         $usuarios = [];
         /** @var array<int, array<int, string>> $colocacoesPorUsuario */
         $colocacoesPorUsuario = [];
+        /** @var array<int, string> $equipePorUsuario */
+        $equipePorUsuario = [];
+        /** @var array<int, string|null> $projetoPorUsuario */
+        $projetoPorUsuario = [];
 
         foreach ($resultados as $result) {
             $team = $result->submission->team;
@@ -94,12 +110,16 @@ class IssueEventCertificates
                     ...($colocacoesPorUsuario[$membership->user_id] ?? []),
                     ...$colocacoes,
                 ];
+                $equipePorUsuario[$membership->user_id] = $team->name;
+                $projetoPorUsuario[$membership->user_id] = $result->submission->title;
             }
         }
 
         foreach ($usuarios as $userId => $usuario) {
             $this->issue->handle($event, $usuario, CertificateType::Colocacao, [
                 'colocacao' => implode(', ', $colocacoesPorUsuario[$userId]),
+                'equipe' => $equipePorUsuario[$userId],
+                'projeto' => $projetoPorUsuario[$userId],
             ]);
         }
 
