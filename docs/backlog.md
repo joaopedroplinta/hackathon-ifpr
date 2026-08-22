@@ -124,12 +124,15 @@ registrada no ensaio geral (Semana 8).
 **Critério de pronto do sprint:** e-mail de deadline dispara sozinho no
 horário — confirmado.
 
-**Pendente, fora deste sprint:** permitir que a comissão configure o
-**template visual inteiro** do certificado (logo do evento, ilustração de
-fundo, não só a assinatura) — 🔜
-[#122](https://github.com/joaopedroplinta/hackathon-ifpr/issues/122). Item
-maior, com decisões de design em aberto (upload de template vs. construtor
-visual, sanitização de HTML customizado, versionamento entre edições).
+**Fechado depois do sprint (2026-08-22):** permitir que a comissão
+personalize o visual do certificado —
+[#122](https://github.com/joaopedroplinta/hackathon-ifpr/issues/122) /
+[PR #132](https://github.com/joaopedroplinta/hackathon-ifpr/pull/132) — ✅.
+Escopo definido com o usuário entre as duas opções em aberto: construtor
+simples (cor de destaque + logo, sem upload de HTML/CSS livre, sem risco
+de injeção no dompdf) em vez de template inteiro customizável. Design
+congelado por certificado (`payload.template`) no momento da emissão —
+trocar cor/logo depois não altera certificado já emitido.
 
 ---
 
