@@ -48,11 +48,31 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votacaoAb
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 pb-24 sm:p-6">
+            <main
+                id="conteudo-publico"
+                tabIndex={-1}
+                className="mx-auto flex w-full max-w-2xl scroll-mt-24 flex-col gap-8 p-4 pb-24 outline-none sm:p-6"
+            >
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
                     <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Projetos</h1>
                     {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
+                    {votacaoAberta && podeVotar && jaVotouEm === null && (
+                        <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
+                            Você pode votar em um projeto só, e o voto não pode ser trocado depois. Escolha com atenção.
+                        </p>
+                    )}
                 </motion.header>
+
+                {!votacaoAberta && submissoes.length > 0 && (
+                    <motion.div
+                        initial="oculto"
+                        animate="visivel"
+                        variants={fadeIn}
+                        className="border-border bg-muted/30 rounded-xl border p-4 text-center text-sm"
+                    >
+                        A votação popular não está aberta no momento.
+                    </motion.div>
+                )}
 
                 {votacaoAberta && !podeVotar && (
                     <motion.div

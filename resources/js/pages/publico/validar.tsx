@@ -20,7 +20,11 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-md flex-col gap-8 p-4 pb-24 sm:p-6">
+            <main
+                id="conteudo-publico"
+                tabIndex={-1}
+                className="mx-auto flex w-full max-w-md scroll-mt-24 flex-col gap-8 p-4 pb-24 outline-none sm:p-6"
+            >
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
                     <h1 className="text-3xl font-bold tracking-tight">Validar certificado</h1>
                     <p className="text-muted-foreground mt-2 text-sm">Confirma se um certificado foi mesmo emitido por este evento.</p>

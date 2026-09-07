@@ -74,7 +74,11 @@ export default function Agenda({ evento, itens }: Props) {
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 p-4 pb-24 sm:p-6">
+            <main
+                id="conteudo-publico"
+                tabIndex={-1}
+                className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-10 p-4 pb-24 outline-none sm:p-6"
+            >
                 <motion.header
                     initial="oculto"
                     animate="visivel"

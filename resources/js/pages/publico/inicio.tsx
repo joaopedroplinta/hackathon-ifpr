@@ -1,6 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { CalendarClock, ClipboardList, Rocket, UsersRound } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, CalendarDays, Check, ClipboardList, Rocket, UsersRound } from 'lucide-react';
 
 import AppLogoIcon from '@/components/app-logo-icon';
 import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
@@ -10,190 +9,221 @@ import { Button } from '@/components/ui/button';
 import { SharedData } from '@/types';
 import { EstatisticasEvento, EventoPublico } from '@/types/publico';
 
-interface Props {
-    evento: EventoPublico | null;
-    estatisticas: EstatisticasEvento | null;
-}
+type Props = { evento: EventoPublico | null; estatisticas: EstatisticasEvento | null };
 
-const passos = [
+const steps = [
     {
-        icone: UsersRound,
-        titulo: 'Forme sua equipe',
-        texto: 'Crie uma equipe ou entre em uma existente pelo código de convite.',
+        icon: UsersRound,
+        title: 'Encontre sua equipe.',
+        text: 'Reúna suas ideias com as de outras pessoas. Crie uma equipe ou entre pelo código de convite.',
     },
     {
-        icone: ClipboardList,
-        titulo: 'Desenvolva o projeto',
-        texto: 'Use a agenda para acompanhar oficinas e checkpoints durante o evento.',
+        icon: ClipboardList,
+        title: 'Tire a ideia do papel.',
+        text: 'Acompanhe as oficinas, desenvolva a solução e salve o progresso do projeto durante o evento.',
     },
     {
-        icone: Rocket,
-        titulo: 'Envie até o prazo',
-        texto: 'Repositório, vídeo e descrição — tudo pelo sistema, com histórico de versões.',
+        icon: Rocket,
+        title: 'Mostre o que vocês criaram.',
+        text: 'Envie a descrição e o repositório até o prazo — o vídeo é opcional. Cada entrega fica no histórico da equipe.',
     },
 ];
 
 export default function Inicio({ evento, estatisticas }: Props) {
-    const { auth } = usePage<SharedData>().props;
-    const reduzMovimento = useReducedMotion();
-
-    const subir: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 14 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' } },
-    };
+    const { auth, evento: currentEvent } = usePage<SharedData>().props;
+    const registered = currentEvent?.inscrito;
+    const action = auth.user
+        ? evento?.inscricoes_abertas && !registered
+            ? { href: 'registration.create', label: 'Fazer minha inscrição' }
+            : { href: 'dashboard', label: 'Acessar meu painel' }
+        : evento?.inscricoes_abertas
+          ? { href: 'register', label: 'Quero participar' }
+          : { href: 'agenda.index', label: 'Explorar a programação' };
+    const startDate = evento?.inicia_em
+        ? new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' }).format(
+              new Date(evento.inicia_em),
+          )
+        : null;
 
     return (
         <div className="bg-background text-foreground min-h-svh">
             <Head title="Início" />
-
             <CabecalhoPublico />
-
-            <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 p-4 pb-24 sm:p-6">
+            <main id="conteudo-publico" tabIndex={-1} className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pb-20 outline-none sm:px-6 lg:px-8">
                 {evento ? (
                     <>
-                        {/* Sem card, sem borda -- inspirado no hero do Raycast: título
-                            grande e centralizado, muito espaço vazio ao redor, zero
-                            ilustração competindo com o texto. A única textura é a grade
-                            de pontos + brilho radial atrás de tudo (mesmo truque do
-                            painel de login), pra não ficar chapado. */}
-                        <motion.section initial="oculto" animate="visivel" variants={subir} className="relative overflow-hidden py-12 sm:py-20">
-                            {/* Textura de fundo -- pintada antes do conteúdo no DOM, mas
-                                como é `absolute` ela flutuaria por cima de qualquer irmão
-                                não posicionado (ordem de pintura do CSS, não do DOM). Por
-                                isso todo o conteúdo real vai dentro do wrapper `relative`
-                                logo abaixo -- mesma pegadinha que já resolvemos no hero 3D
-                                e no painel de login. */}
-                            <div
-                                className="pointer-events-none absolute inset-0"
-                                aria-hidden="true"
-                                style={{
-                                    backgroundImage: 'radial-gradient(circle, var(--border) 1px, transparent 1px)',
-                                    backgroundSize: '28px 28px',
-                                    maskImage: 'radial-gradient(ellipse 60% 70% at 50% 20%, black 30%, transparent 80%)',
-                                    WebkitMaskImage: 'radial-gradient(ellipse 60% 70% at 50% 20%, black 30%, transparent 80%)',
-                                }}
-                            />
-                            <div
-                                className="bg-verde-brilho pointer-events-none absolute top-0 left-1/2 size-96 -translate-x-1/2 -translate-y-1/3 rounded-full opacity-[0.1] blur-[110px]"
-                                aria-hidden="true"
-                            />
-
-                            <div className="relative flex flex-col items-center gap-8 text-center">
-                                <p className="text-primary font-mono text-sm font-semibold tracking-wide uppercase">
-                                    {evento.edicao}ª edição · {evento.situacao_label}
-                                </p>
-
-                                <div>
-                                    <h1 className="mx-auto max-w-3xl text-[clamp(2.25rem,5.5vw,4rem)] leading-[1.05] font-bold tracking-tight text-balance">
-                                        {evento.nome}
-                                    </h1>
-                                    {evento.descricao && (
-                                        <p className="text-muted-foreground mx-auto mt-5 max-w-xl text-base leading-relaxed text-balance sm:text-lg">
-                                            {evento.descricao}
-                                        </p>
-                                    )}
+                        <section
+                            className="grid items-center gap-10 py-10 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-20"
+                            aria-labelledby="event-title"
+                        >
+                            <div>
+                                <div className="mb-7 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                                    <span className="bg-primary/10 text-primary rounded-full px-3 py-1.5">{evento.edicao}ª edição</span>
+                                    <span className="text-muted-foreground">{evento.situacao_label}</span>
                                 </div>
-
-                                {evento.situacao === 'running' ? (
-                                    <p role="status" className="flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />O evento está acontecendo agora.
-                                    </p>
-                                ) : evento.situacao === 'finished' ? (
-                                    <p role="status" className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
-                                        <CalendarClock className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Esta edição já terminou. Resultados em breve.
-                                    </p>
-                                ) : evento.inicia_em ? (
-                                    <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
-                                ) : null}
-
-                                <div className="flex flex-wrap items-center justify-center gap-3">
-                                    {!auth.user && (
-                                        <Button asChild size="lg">
-                                            <Link href={route('register')}>Criar conta e participar</Link>
-                                        </Button>
-                                    )}
-
-                                    {auth.user && evento.inscricoes_abertas && (
-                                        <Button asChild size="lg">
-                                            <Link href={route('registration.create')}>Fazer inscrição</Link>
-                                        </Button>
-                                    )}
-
-                                    {auth.user && !evento.inscricoes_abertas && (
-                                        <Button asChild size="lg">
-                                            <Link href={route('dashboard')}>Ir para o painel</Link>
-                                        </Button>
-                                    )}
-
-                                    <Button asChild variant="outline" size="lg">
-                                        <Link href={route('regulamento.show')}>Ver regulamento</Link>
+                                <h1
+                                    id="event-title"
+                                    className="max-w-2xl text-[clamp(2.75rem,5.5vw,5rem)] leading-[1.04] font-extrabold tracking-[-0.055em] text-balance"
+                                >
+                                    {evento.nome}
+                                </h1>
+                                <p className="text-primary mt-5 text-xl font-medium tracking-tight sm:text-2xl">
+                                    Boas ideias começam com um encontro.
+                                </p>
+                                <p className="text-muted-foreground mt-5 max-w-lg text-base leading-relaxed">
+                                    {evento.descricao ||
+                                        'Conecte-se com outras pessoas, explore novos desafios e transforme uma ideia em um projeto com a sua equipe.'}
+                                </p>
+                                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                    <Button asChild size="lg" className="h-12 gap-3 rounded-full px-6">
+                                        <Link href={route(action.href)}>
+                                            {action.label}
+                                            <ArrowUpRight className="size-4" aria-hidden="true" />
+                                        </Link>
+                                    </Button>
+                                    <Button asChild variant="outline" size="lg" className="h-12 rounded-full px-6">
+                                        <Link href={route('regulamento.show')}>Como funciona</Link>
                                     </Button>
                                 </div>
+                                <p className="text-muted-foreground mt-5 flex items-start gap-2 text-sm">
+                                    <Check className="text-primary mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                                    {registered
+                                        ? 'Sua inscrição está confirmada. Acompanhe os próximos passos no painel.'
+                                        : evento.inscricoes_abertas
+                                          ? 'Inscrições abertas. Crie sua conta para começar.'
+                                          : evento.situacao === 'running'
+                                            ? 'O hackathon está acontecendo. Acompanhe a agenda.'
+                                            : evento.situacao === 'finished'
+                                              ? 'Esta edição terminou. Consulte a página de resultados.'
+                                              : 'As inscrições não estão abertas no momento.'}
+                                </p>
+                            </div>
 
-                                {!evento.inscricoes_abertas && evento.situacao === 'published' && (
-                                    <p className="text-muted-foreground text-sm">As inscrições ainda não abriram ou já encerraram.</p>
-                                )}
-
-                                {estatisticas && (
-                                    <div className="border-border flex flex-wrap items-center justify-center gap-x-10 gap-y-4 border-t pt-8">
-                                        <div className="flex flex-col items-center gap-1">
-                                            <span className="text-2xl font-bold tabular-nums">{estatisticas.inscritos}</span>
-                                            <span className="text-muted-foreground text-xs tracking-wide uppercase">inscritos</span>
-                                        </div>
-                                        <div className="flex flex-col items-center gap-1">
-                                            <span className="text-2xl font-bold tabular-nums">{estatisticas.equipes}</span>
-                                            <span className="text-muted-foreground text-xs tracking-wide uppercase">equipes formadas</span>
-                                        </div>
-                                        {estatisticas.trilhas > 0 && (
-                                            <div className="flex flex-col items-center gap-1">
-                                                <span className="text-2xl font-bold tabular-nums">{estatisticas.trilhas}</span>
-                                                <span className="text-muted-foreground text-xs tracking-wide uppercase">trilhas</span>
-                                            </div>
-                                        )}
+                            <aside
+                                className="event-art relative flex min-h-[390px] flex-col justify-between overflow-hidden rounded-[2rem] p-7 sm:min-h-[460px] sm:p-10"
+                                aria-label="Sobre o encontro"
+                            >
+                                <div className="flex items-center justify-between gap-4">
+                                    <span className="text-xs font-medium tracking-[0.18em] uppercase">Ideias que se encontram</span>
+                                    <AppLogoIcon className="size-9 shrink-0 fill-current text-[#d6ecac]" />
+                                </div>
+                                <div className="py-10">
+                                    <p className="text-[clamp(3rem,5vw,4.5rem)] leading-[0.98] font-bold tracking-[-0.05em]">
+                                        Conectar.
+                                        <br />
+                                        <span className="text-[#d6ecac]">Criar.</span>
+                                        <br />
+                                        Transformar.
+                                    </p>
+                                    <p className="mt-6 max-w-64 text-sm leading-relaxed text-white/75">
+                                        Tecnologia ganha sentido quando a gente constrói junto.
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-3 border-t border-white/20 pt-5">
+                                    <CalendarDays className="size-5 shrink-0 text-[#d6ecac]" aria-hidden="true" />
+                                    <div className="text-sm">
+                                        <p className="font-semibold">{startDate || 'Acompanhe a programação'}</p>
+                                        <p className="mt-1 text-white/70">IFPR · Campus Pinhais</p>
                                     </div>
-                                )}
-                            </div>
-                        </motion.section>
+                                    <span className="ml-auto text-3xl font-light text-white/50" aria-hidden="true">
+                                        {String(evento.edicao).padStart(2, '0')}
+                                    </span>
+                                </div>
+                            </aside>
+                        </section>
 
-                        <section aria-labelledby="como-participar" className="flex flex-col gap-8">
-                            <div className="text-center">
-                                <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">3 passos</p>
-                                <h2 id="como-participar" className="mt-1 text-2xl font-bold tracking-tight">
-                                    Como participar
-                                </h2>
+                        {estatisticas && (
+                            <section
+                                aria-label="O evento em números"
+                                className="border-border grid grid-cols-2 gap-6 border-y py-7 sm:grid-cols-3 sm:gap-10"
+                            >
+                                {[
+                                    { value: estatisticas.inscritos, label: 'pessoas inscritas' },
+                                    { value: estatisticas.equipes, label: 'equipes formadas' },
+                                    ...(estatisticas.trilhas > 0 ? [{ value: estatisticas.trilhas, label: 'trilhas para explorar' }] : []),
+                                ].map((stat) => (
+                                    <div key={stat.label} className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+                                        <span className="text-3xl font-semibold tracking-tight tabular-nums">{stat.value}</span>
+                                        <span className="text-muted-foreground text-sm">{stat.label}</span>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+
+                        <section aria-labelledby="como-participar" className="py-16 sm:py-20">
+                            <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                                <div>
+                                    <p className="text-primary mb-3 text-xs font-semibold tracking-widest uppercase">Da primeira ideia à entrega</p>
+                                    <h2 id="como-participar" className="text-3xl font-bold tracking-tight sm:text-4xl">
+                                        Seu próximo desafio começa aqui.
+                                    </h2>
+                                </div>
+                                <Link
+                                    href={route('rubrica.show')}
+                                    className="text-primary inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold"
+                                >
+                                    Conheça os critérios
+                                    <ArrowRight className="size-4" aria-hidden="true" />
+                                </Link>
                             </div>
-                            <div className="border-border grid divide-y overflow-hidden rounded-xl border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                                {passos.map((passo, indice) => (
-                                    <motion.div
-                                        key={passo.titulo}
-                                        whileHover={reduzMovimento ? undefined : { backgroundColor: 'var(--muted)' }}
-                                        className="bg-card flex flex-col gap-3 p-6"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className="border-border text-muted-foreground flex size-7 shrink-0 items-center justify-center rounded-md border text-xs font-bold tabular-nums">
-                                                {String(indice + 1).padStart(2, '0')}
+                            <div className="grid gap-4 md:grid-cols-3">
+                                {steps.map((step, index) => (
+                                    <article key={step.title} className="border-border bg-card rounded-2xl border p-6 sm:p-8">
+                                        <div className="mb-8 flex items-center justify-between">
+                                            <span className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+                                                <step.icon className="size-5" aria-hidden="true" />
                                             </span>
-                                            <passo.icone className="text-primary h-5 w-5 shrink-0" aria-hidden="true" />
+                                            <span className="text-muted-foreground font-mono text-xs">0{index + 1}</span>
                                         </div>
-                                        <h3 className="font-semibold">{passo.titulo}</h3>
-                                        <p className="text-muted-foreground text-sm leading-relaxed">{passo.texto}</p>
-                                    </motion.div>
+                                        <h3 className="text-lg font-semibold tracking-tight">{step.title}</h3>
+                                        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">{step.text}</p>
+                                    </article>
                                 ))}
                             </div>
                         </section>
+
+                        <section className="bg-secondary flex flex-col items-center justify-between gap-8 rounded-2xl p-7 sm:p-10 lg:flex-row">
+                            <div className="max-w-md text-center lg:text-left">
+                                <h2 className="text-2xl font-bold tracking-tight">Faça parte desse encontro.</h2>
+                                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                                    Confira os horários e planeje sua participação nas atividades do hackathon.
+                                </p>
+                                <Link
+                                    href={route('agenda.index')}
+                                    className="text-primary mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold"
+                                >
+                                    Ver a agenda completa
+                                    <ArrowRight className="size-4" aria-hidden="true" />
+                                </Link>
+                            </div>
+                            {evento.inicia_em && evento.situacao === 'published' && (
+                                <ContadorEvento alvo={evento.inicia_em} rotulo="Faltam para o início" />
+                            )}
+                            {evento.situacao === 'finished' && (
+                                <Button asChild variant="outline" className="h-12">
+                                    <Link href={route('resultados.show')}>Consultar resultados</Link>
+                                </Button>
+                            )}
+                        </section>
                     </>
                 ) : (
-                    <section className="border-border bg-card flex flex-col items-center gap-4 rounded-xl border p-10 py-24 text-center sm:p-16">
-                        <span className="bg-primary text-primary-foreground flex size-14 items-center justify-center rounded-xl">
-                            <AppLogoIcon className="size-8 fill-current" />
+                    <section className="flex min-h-[60vh] flex-col items-center justify-center gap-5 py-16 text-center">
+                        <span className="bg-primary/10 text-primary flex size-16 items-center justify-center rounded-2xl">
+                            <AppLogoIcon className="size-9 fill-current" />
                         </span>
-                        <h1 className="text-2xl font-bold tracking-tight">Nenhum evento publicado no momento</h1>
-                        <p className="text-muted-foreground max-w-md">Assim que uma edição do hackathon for aberta, ela aparece aqui.</p>
+                        <h1 className="max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">O próximo encontro começa com uma ideia.</h1>
+                        <p className="text-muted-foreground max-w-md">
+                            Nenhum evento publicado no momento. Assim que uma edição do hackathon for aberta, ela aparece aqui.
+                        </p>
+                        <Button asChild variant="outline" className="h-12">
+                            <Link href={route('edicoes.index')}>
+                                Explorar edições anteriores
+                                <ArrowRight className="size-4" aria-hidden="true" />
+                            </Link>
+                        </Button>
                     </section>
                 )}
             </main>
-
             <RodapePublico />
         </div>
     );

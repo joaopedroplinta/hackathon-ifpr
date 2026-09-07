@@ -25,10 +25,12 @@ export default function Cookies() {
             <CabecalhoPublico />
 
             <motion.main
+                id="conteudo-publico"
+                tabIndex={-1}
                 initial="oculto"
                 animate="visivel"
                 variants={listaVariants}
-                className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
+                className="mx-auto flex w-full max-w-2xl scroll-mt-24 flex-col gap-6 p-4 pb-24 outline-none sm:p-6"
             >
                 <motion.header variants={itemVariants} className="pt-8 text-center sm:pt-12">
                     <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Cookies</h1>

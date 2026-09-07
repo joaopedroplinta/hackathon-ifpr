@@ -39,8 +39,8 @@ export default function RodapePublico() {
     const { app_version } = usePage<SharedData>().props;
 
     return (
-        <footer className="border-border border-t">
-            <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 p-4 py-12 sm:p-6 sm:py-16">
+        <footer className="border-border bg-card border-t">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
                 <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
                     <div className="flex flex-col gap-3">
                         <Link href={route('home')} className="font-display flex items-center gap-2 font-semibold tracking-tight">
@@ -72,7 +72,7 @@ export default function RodapePublico() {
                                     <li key={link.href}>
                                         <Link
                                             href={route(link.href)}
-                                            className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                                            className="text-muted-foreground hover:text-foreground inline-flex min-h-11 items-center text-sm transition-colors"
                                         >
                                             {link.label}
                                         </Link>

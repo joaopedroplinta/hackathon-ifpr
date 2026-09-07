@@ -1,7 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { CheckCircle2, ChevronRight, ScanLine, Users } from 'lucide-react';
+import { CalendarDays, CheckCircle2, ChevronRight, ScanLine, Users } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { PainelOrganizador } from '@/types/admin-dashboard';
 
@@ -45,10 +46,19 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
         <AppLayout breadcrumbs={[{ title: 'Painel', href: route('painel.dashboard') }]}>
             <Head title="Painel do organizador" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 sm:p-6">
-                <header>
-                    <h1 className="text-2xl font-bold tracking-tight">Painel do organizador</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">{evento.nome}</p>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-4 sm:p-8">
+                <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+                    <div>
+                        <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">Central de organização</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Visão geral do evento</h1>
+                        <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>
+                    </div>
+                    <Button asChild className="h-11">
+                        <Link href={route('painel.checkin.index')}>
+                            <ScanLine className="size-4" aria-hidden="true" />
+                            Fazer check-in
+                        </Link>
+                    </Button>
                 </header>
 
                 <section aria-labelledby="pendencias">
@@ -113,6 +123,17 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                         })}
                     </div>
                 </section>
+                <Link
+                    href={route('painel.agenda.index')}
+                    className="border-border bg-card hover:bg-muted/50 flex items-center gap-4 rounded-xl border p-5 transition-colors"
+                >
+                    <CalendarDays className="text-primary size-5 shrink-0" aria-hidden="true" />
+                    <div className="flex-1">
+                        <p className="font-semibold">Programação do evento</p>
+                        <p className="text-muted-foreground mt-1 text-sm">Organize atividades, horários e locais.</p>
+                    </div>
+                    <ChevronRight className="text-muted-foreground size-4 shrink-0" aria-hidden="true" />
+                </Link>
             </motion.div>
         </AppLayout>
     );

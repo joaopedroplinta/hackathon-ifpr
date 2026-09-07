@@ -141,7 +141,7 @@
     --chart-3: var(--amarelo-sinal);
     --chart-4: var(--verde-mata);
     --chart-5: #6b6e68;
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --sidebar-background: #ffffff;
     --sidebar-foreground: #14200f;
     --sidebar-primary: var(--verde-ifpr);
@@ -205,5 +205,62 @@
 
     body {
         @apply bg-background text-foreground;
+        -webkit-font-smoothing: antialiased;
     }
+
+    :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 4px;
+    }
+
+    ::selection {
+        background: var(--primary);
+        color: var(--primary-foreground);
+    }
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--foreground);
+    color: var(--background);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.event-art {
+    background: #183b2b;
+    color: #f3f5e9;
+    isolation: isolate;
+}
+
+.event-art::before,
+.event-art::after {
+    content: '';
+    position: absolute;
+    width: 75%;
+    aspect-ratio: 1;
+    border: 1px solid rgb(214 236 172 / 25%);
+    border-radius: 24%;
+    transform: rotate(-24deg);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.event-art::before {
+    right: -25%;
+    top: 5%;
+}
+
+.event-art::after {
+    right: -5%;
+    bottom: -35%;
+    background: rgb(214 236 172 / 5%);
 }

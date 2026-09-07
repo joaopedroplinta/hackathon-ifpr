@@ -114,7 +114,11 @@ export default function Resultados({ publicado, evento, podio_geral, podio_por_t
 
             <CabecalhoPublico />
 
-            <main className="mx-auto flex w-full max-w-3xl flex-col gap-16 p-4 pb-24 sm:gap-20 sm:p-6">
+            <main
+                id="conteudo-publico"
+                tabIndex={-1}
+                className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-16 p-4 pb-24 outline-none sm:gap-20 sm:p-6"
+            >
                 <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-16">
                     <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">Resultados</h1>
                     {evento && (

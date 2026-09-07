@@ -541,6 +541,12 @@ Semanas 0–7 e a identidade visual (§11) estão prontas. O que resta:
 
 ## 11. Identidade visual
 
+**Atualização de setembro de 2026:** página inicial, autenticação, navegação
+compartilhada e painéis receberam uma nova repaginada, descrita em
+[`docs/interface.md`](docs/interface.md). As notas dos PRs abaixo são
+históricas; consulte esse guia e os tokens de `resources/css/app.css` para
+continuar o trabalho atual.
+
 **Segunda versão desta seção.** A primeira identidade (puxando pro verde
 institucional com um conceito de "terminal": painel de log, prompt `$ `,
 badges `[status]` em JetBrains Mono) foi reprovada num pente-fino de UX —

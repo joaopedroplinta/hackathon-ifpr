@@ -37,9 +37,9 @@ export default function ContadorEvento({ alvo, rotulo }: Props) {
     ];
 
     return (
-        <div role="status" aria-live="polite" className="flex flex-col items-center gap-3">
+        <div role="timer" aria-live="off" aria-label={rotulo} className="flex flex-col items-center gap-3">
             <p className="text-muted-foreground text-xs tracking-wide uppercase">{rotulo}</p>
-            <div className="flex items-baseline gap-1.5 sm:gap-2.5">
+            <div className="flex flex-wrap items-baseline justify-center gap-1.5 sm:gap-2.5">
                 {partes.map((parte, indice) => (
                     <span key={parte.rotulo} className="flex items-baseline">
                         <span className="text-3xl font-medium tabular-nums sm:text-5xl">{String(parte.valor).padStart(2, '0')}</span>
