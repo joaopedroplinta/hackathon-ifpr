@@ -148,6 +148,20 @@ regressão funcional ponta a ponta; a matriz pública segue automatizada.
 
 ### Certificado PDF
 
+Atualização em 2026-09-08: nova composição institucional A4 horizontal com
+faixa lateral verde profunda, papel marfim, moldura e detalhes dourados,
+ornamentos geométricos e tipografia serifada. Nome com tamanho adaptativo,
+CPF/matrícula, participação, assinatura cadastrada e URL de validação
+clicável e impressa. Mantidos logo/cor do snapshot e o cuidado da correção
+do Claude para permanecer em uma página. Texto específico para jurado,
+mentoria e organização.
+
+Validação desta atualização: 11 testes de certificados/geração passaram
+(17 asserções); Pint e diff limpos. PDFs renderizados pelo DomPDF e
+inspecionados como imagem, com nome usual e nome de 255 caracteres,
+evento/projeto longos: ambos em uma página, sem sobreposição na amostra.
+Amostra fictícia local: `/tmp/hackathon-certificate-preview.pdf`.
+
 `resources/views/certificates/pdf.blade.php` foi redesenhado diretamente para
 o DomPDF: moldura editorial, faixa na cor configurada pelo evento, selo,
 hierarquia de título/nome, bloco de participação e rodapé de assinatura e
