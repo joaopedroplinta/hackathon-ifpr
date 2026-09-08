@@ -46,6 +46,8 @@ class EventController extends Controller
                 'voting_closes_at' => $event->voting_closes_at?->toIso8601String(),
                 'min_team_size' => $event->min_team_size,
                 'max_team_size' => $event->max_team_size,
+                'collect_shirt_size' => $event->collect_shirt_size,
+                'collect_dietary_notes' => $event->collect_dietary_notes,
                 'certificate_signer_name' => $event->certificate_signer_name,
                 'certificate_signer_role' => $event->certificate_signer_role,
                 'certificate_accent_color' => $event->certificate_accent_color,

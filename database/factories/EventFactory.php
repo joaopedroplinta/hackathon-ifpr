@@ -39,6 +39,8 @@ class EventFactory extends Factory
             'results_published_at' => null,
             'min_team_size' => 2,
             'max_team_size' => 5,
+            'collect_shirt_size' => false,
+            'collect_dietary_notes' => false,
         ];
     }
 

@@ -13,6 +13,8 @@ export type EventoExistente = {
     voting_closes_at: string | null;
     min_team_size: number;
     max_team_size: number;
+    collect_shirt_size: boolean;
+    collect_dietary_notes: boolean;
     certificate_signer_name: string | null;
     certificate_signer_role: string | null;
     certificate_accent_color: string | null;
@@ -31,6 +33,8 @@ export type EventoForm = {
     voting_closes_at: string;
     min_team_size: string;
     max_team_size: string;
+    collect_shirt_size: boolean;
+    collect_dietary_notes: boolean;
     certificate_signer_name: string;
     certificate_signer_role: string;
     certificate_accent_color: string;
@@ -48,6 +52,8 @@ export type NovoEventoForm = {
     voting_closes_at: string;
     min_team_size: string;
     max_team_size: string;
+    collect_shirt_size: boolean;
+    collect_dietary_notes: boolean;
     regulamento: File | null;
 };
 

@@ -37,6 +37,8 @@ class StoreEventRequest extends FormRequest
             'voting_closes_at' => ['nullable', 'date', 'after_or_equal:voting_opens_at'],
             'min_team_size' => ['required', 'integer', 'min:1'],
             'max_team_size' => ['required', 'integer', 'min:1', 'gte:min_team_size'],
+            'collect_shirt_size' => ['boolean'],
+            'collect_dietary_notes' => ['boolean'],
             // Opcional aqui -- diferente do upload avulso (UploadRegulationRequest),
             // criar o evento sem regulamento em mãos ainda é um caminho válido.
             'regulamento' => [

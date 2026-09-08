@@ -30,7 +30,7 @@ class EventRegistrationTest extends TestCase
 
     public function test_a_verified_user_can_register(): void
     {
-        $event = Event::factory()->aberto()->create();
+        $event = Event::factory()->aberto()->create(['collect_shirt_size' => true]);
         $user = $this->participante();
 
         $response = $this->actingAs($user)->post(route('registration.store'), [
@@ -140,7 +140,7 @@ class EventRegistrationTest extends TestCase
 
     public function test_dietary_notes_longer_than_the_limit_are_rejected(): void
     {
-        Event::factory()->aberto()->create();
+        Event::factory()->aberto()->create(['collect_dietary_notes' => true]);
 
         $this->actingAs($this->participante())
             ->post(route('registration.store'), [
@@ -153,10 +153,43 @@ class EventRegistrationTest extends TestCase
 
     public function test_an_invalid_shirt_size_is_rejected(): void
     {
-        Event::factory()->aberto()->create();
+        Event::factory()->aberto()->create(['collect_shirt_size' => true]);
 
         $this->actingAs($this->participante())
             ->post(route('registration.store'), ['shirt_size' => 'gigante'])
             ->assertSessionHasErrors('shirt_size');
+    }
+
+    public function test_registration_form_only_receives_optional_fields_enabled_by_the_event(): void
+    {
+        Event::factory()->aberto()->create([
+            'collect_shirt_size' => true,
+            'collect_dietary_notes' => false,
+        ]);
+
+        $this->actingAs($this->participante())
+            ->get(route('registration.create'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('coletar_camisa', true)
+                ->where('coletar_restricoes_alimentares', false));
+    }
+
+    public function test_disabled_optional_fields_are_not_persisted_even_when_sent_manually(): void
+    {
+        Event::factory()->aberto()->create([
+            'collect_shirt_size' => false,
+            'collect_dietary_notes' => false,
+        ]);
+
+        $this->actingAs($this->participante())
+            ->post(route('registration.store'), [
+                'shirt_size' => ShirtSize::M->value,
+                'dietary_notes' => 'Alergia a amendoim',
+            ])
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertNull(EventRegistration::firstOrFail()->shirt_size);
+        $this->assertNull(EventRegistration::firstOrFail()->dietary_notes);
     }
 }
