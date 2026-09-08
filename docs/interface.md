@@ -17,6 +17,13 @@ do Instituto Federal nem dependem de imagens externas.
   inscrição/painel, data em horário de São Paulo e explicação da participação.
 - Navegação pública: menu compacto abaixo de 1024px, página ativa indicada,
   acesso à conta e opção de aparência em ambas as versões.
+- Páginas públicas internas usam `PublicLayout`: contexto, título, descrição,
+  ação opcional e uma área de conteúdo com largura adequada à tarefa.
+- Agenda prioriza decisão rápida (dia, tipo, horário e local); projetos usam
+  busca e confirmação antes do voto; resultados mostram ranking em lista para
+  manter títulos e pontuações legíveis em qualquer tela.
+- Páginas institucionais longas usam navegação interna por seções, que também
+  recebe foco quando acionada por teclado.
 - Área interna: navegação agrupada por participação, avaliação, organização
   e administração; visibilidade por papel não substitui as Policies.
 - Participante: jornada existente acompanhada de uma próxima ação derivada

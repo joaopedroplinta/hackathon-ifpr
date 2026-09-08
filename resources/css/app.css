@@ -235,6 +235,22 @@
     transform: translateY(0);
 }
 
+.public-document section {
+    scroll-margin-top: 7rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 1rem;
+}
+
+.public-document :is(p, li) {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.public-document h2 {
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+}
+
 .event-art {
     background: #183b2b;
     color: #f3f5e9;

@@ -43,6 +43,7 @@ export default [
             'node_modules',
             'public',
             'bootstrap/ssr',
+            'tests/Browser',
             'tailwind.config.js',
             // Worktrees de agentes vivem dentro do repositorio e contem
             // copias completas do projeto. Sem isto o eslint varre tudo de
