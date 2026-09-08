@@ -5,10 +5,10 @@ import { FormEventHandler, useRef } from 'react';
 // Components...
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import HeadingSmall from '@/components/heading-small';
+import CampoSenha from '@/components/hackathon/campo-senha';
+import SecaoFormulario from '@/components/hackathon/secao-formulario';
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -33,17 +33,18 @@ export default function DeleteUser() {
     };
 
     return (
-        <div className="space-y-6">
-            <HeadingSmall title="Excluir conta" description="Excluir sua conta e todos os seus dados" />
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                    <p className="font-medium">Atenção</p>
-                    <p className="text-sm">Isso não pode ser desfeito. Prossiga com cuidado.</p>
+        <SecaoFormulario titulo="Excluir conta" instrucao="Exclua permanentemente sua conta e todos os seus dados.">
+            <div className="border-destructive/30 bg-destructive/10 space-y-4 rounded-xl border p-5" role="alert">
+                <div className="text-destructive space-y-1">
+                    <p className="font-semibold">Esta ação não pode ser desfeita.</p>
+                    <p className="text-sm leading-relaxed">Depois da exclusão, seus dados não poderão ser recuperados.</p>
                 </div>
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="destructive">Excluir conta</Button>
+                        <Button variant="destructive" className="min-h-11">
+                            Excluir conta
+                        </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogTitle>Tem certeza que quer excluir sua conta?</DialogTitle>
@@ -57,9 +58,8 @@ export default function DeleteUser() {
                                     Senha
                                 </Label>
 
-                                <Input
+                                <CampoSenha
                                     id="password"
-                                    type="password"
                                     name="password"
                                     ref={passwordInput}
                                     value={data.password}
@@ -89,6 +89,6 @@ export default function DeleteUser() {
                     </DialogContent>
                 </Dialog>
             </div>
-        </div>
+        </SecaoFormulario>
     );
 }

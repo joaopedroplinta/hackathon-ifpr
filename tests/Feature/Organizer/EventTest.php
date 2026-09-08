@@ -191,6 +191,22 @@ class EventTest extends TestCase
         $this->assertSame('Soluções para acesso à saúde', $event->description);
     }
 
+    public function test_staff_configures_optional_data_collected_during_registration(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
+                'collect_shirt_size' => true,
+                'collect_dietary_notes' => true,
+            ]))
+            ->assertSessionDoesntHaveErrors();
+
+        $event = Event::current();
+        $this->assertTrue($event->collect_shirt_size);
+        $this->assertTrue($event->collect_dietary_notes);
+    }
+
     public function test_staff_sets_the_certificate_signer(): void
     {
         Event::factory()->create();

@@ -1,10 +1,12 @@
 import { Head, useForm } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { AlertTriangle, Clock, LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { LinhaIncidente, TipoIncidente } from '@/types/incidentes';
@@ -24,13 +26,26 @@ const areaTexto =
 
 export default function IncidentesIndex({ incidentes, tipos, prazo_original, prazo_efetivo }: Props) {
     const form = useForm({ kind: '', description: '', deadline_extension_minutes: '0' });
+    const [confirmando, setConfirmando] = useState(false);
+
+    const registrar = () => {
+        form.post(route('painel.incidentes.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.reset();
+                setConfirmando(false);
+            },
+        });
+    };
 
     const declarar: FormEventHandler = (e) => {
         e.preventDefault();
-        form.post(route('painel.incidentes.store'), {
-            preserveScroll: true,
-            onSuccess: () => form.reset(),
-        });
+        if (Number(form.data.deadline_extension_minutes) > 0) {
+            setConfirmando(true);
+            return;
+        }
+
+        registrar();
     };
 
     const prazoEstendido = prazo_original !== null && prazo_efetivo !== null && prazo_original !== prazo_efetivo;
@@ -68,9 +83,30 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                     </div>
                 )}
 
-                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                <Dialog open={confirmando} onOpenChange={setConfirmando}>
+                    <DialogContent>
+                        <DialogTitle>Aplicar extensão para todas as equipes?</DialogTitle>
+                        <DialogDescription>
+                            Esta decisão altera o prazo efetivo da edição inteira. Registre somente uma extensão já aprovada pela organização.
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="secondary" disabled={form.processing}>
+                                    Revisar dados
+                                </Button>
+                            </DialogClose>
+                            <Button onClick={registrar} disabled={form.processing}>
+                                {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                Confirmar extensão
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
                     <h2 className="font-semibold">Declarar incidente</h2>
-                    <form onSubmit={declarar} className="mt-3 grid gap-4">
+                    <form onSubmit={declarar} className="mt-3 grid gap-4" noValidate>
+                        <ResumoErro erros={form.errors} />
                         <div className="grid gap-2">
                             <Label htmlFor="kind">Tipo</Label>
                             <select
@@ -137,7 +173,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                         <p className="text-muted-foreground text-sm">Que continue assim até o fim do evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                         {incidentes.map((i) => (
                             <li key={i.id} className="p-4">
                                 <div className="flex items-center justify-between gap-2">

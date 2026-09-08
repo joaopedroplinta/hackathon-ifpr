@@ -47,10 +47,10 @@ export default function AvisoCookies() {
                     .
                 </p>
                 <div className="flex shrink-0 gap-2">
-                    <Button variant="outline" size="sm" onClick={() => responder('recusado')}>
+                    <Button variant="outline" size="sm" className="min-h-11" onClick={() => responder('recusado')}>
                         Recusar
                     </Button>
-                    <Button size="sm" onClick={() => responder('aceito')}>
+                    <Button size="sm" className="min-h-11" onClick={() => responder('aceito')}>
                         Aceitar
                     </Button>
                 </div>

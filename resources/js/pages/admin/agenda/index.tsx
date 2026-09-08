@@ -4,6 +4,7 @@ import { CalendarDays, LoaderCircle, MapPin, Pencil, Trash2 } from 'lucide-react
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { LinhaItemAgenda } from '@/types/agenda-admin';
 
@@ -23,6 +24,7 @@ export default function ListaAgenda({ itens }: Props) {
     // Duplo clique não pode disparar a ação duas vezes -- em "despublicar"
     // isso alternaria de volta pra "publicado" sem querer.
     const [emAndamento, setEmAndamento] = useState<number | null>(null);
+    const [itemParaRemover, setItemParaRemover] = useState<LinhaItemAgenda | null>(null);
 
     const alternarPublicacao = (item: LinhaItemAgenda) => {
         setEmAndamento(item.id);
@@ -31,7 +33,11 @@ export default function ListaAgenda({ itens }: Props) {
 
     const remover = (item: LinhaItemAgenda) => {
         setEmAndamento(item.id);
-        router.delete(route('painel.agenda.destroy', item.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.agenda.destroy', item.id), {
+            preserveScroll: true,
+            onSuccess: () => setItemParaRemover(null),
+            onFinish: () => setEmAndamento(null),
+        });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -130,7 +136,7 @@ export default function ListaAgenda({ itens }: Props) {
                                             size="icon"
                                             aria-label={`Remover ${item.titulo}`}
                                             disabled={emAndamento === item.id}
-                                            onClick={() => remover(item)}
+                                            onClick={() => setItemParaRemover(item)}
                                             className="hover:text-destructive"
                                         >
                                             <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -141,6 +147,29 @@ export default function ListaAgenda({ itens }: Props) {
                         ))}
                     </ul>
                 )}
+
+                <Dialog open={itemParaRemover !== null} onOpenChange={(aberto) => !aberto && setItemParaRemover(null)}>
+                    <DialogContent>
+                        <DialogTitle>Excluir item da agenda?</DialogTitle>
+                        <DialogDescription>
+                            {itemParaRemover ? `“${itemParaRemover.titulo}” será removido da programação e deixará de aparecer no site público.` : ''}
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="secondary">Cancelar</Button>
+                            </DialogClose>
+                            <Button
+                                variant="destructive"
+                                disabled={itemParaRemover === null || emAndamento === itemParaRemover?.id}
+                                onClick={() => {
+                                    if (itemParaRemover) remover(itemParaRemover);
+                                }}
+                            >
+                                {emAndamento === itemParaRemover?.id ? 'Excluindo…' : 'Excluir item'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </motion.div>
         </AppLayout>
     );

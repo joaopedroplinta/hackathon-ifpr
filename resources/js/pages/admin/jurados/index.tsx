@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { History, LoaderCircle, RefreshCw, Scale, Shuffle, Trash2, Users } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -111,7 +112,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </Button>
                 </header>
 
-                <form onSubmit={salvarConfig} className="mb-6 flex items-end gap-3">
+                <form onSubmit={salvarConfig} className="border-border bg-card mb-6 flex items-end gap-3 rounded-2xl border p-4" noValidate>
                     <div>
                         <Label htmlFor="judges_per_submission">Jurados por submissão</Label>
                         <Input
@@ -142,46 +143,48 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     )}
                 </section>
 
-                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
                     <h2 className="font-semibold">Atribuir manualmente</h2>
-                    <form onSubmit={atribuirManual} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                            <Label htmlFor="submission_id">Submissão</Label>
-                            <select
-                                id="submission_id"
-                                value={atribuirForm.data.submission_id}
-                                onChange={(e) => atribuirForm.setData('submission_id', e.target.value)}
-                                className={campo}
-                            >
-                                <option value="">Selecione</option>
-                                {submissoes.map((s) => (
-                                    <option key={s.id} value={s.id}>
-                                        {s.equipe} — {s.titulo}
-                                    </option>
-                                ))}
-                            </select>
+                    <form onSubmit={atribuirManual} className="mt-3 grid gap-3" noValidate>
+                        <ResumoErro erros={atribuirForm.errors} />
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                            <div className="flex-1">
+                                <Label htmlFor="submission_id">Submissão</Label>
+                                <select
+                                    id="submission_id"
+                                    value={atribuirForm.data.submission_id}
+                                    onChange={(e) => atribuirForm.setData('submission_id', e.target.value)}
+                                    className={campo}
+                                >
+                                    <option value="">Selecione</option>
+                                    {submissoes.map((s) => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.equipe} — {s.titulo}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex-1">
+                                <Label htmlFor="judge_id">Jurado</Label>
+                                <select
+                                    id="judge_id"
+                                    value={atribuirForm.data.judge_id}
+                                    onChange={(e) => atribuirForm.setData('judge_id', e.target.value)}
+                                    className={campo}
+                                >
+                                    <option value="">Selecione</option>
+                                    {jurados.map((j) => (
+                                        <option key={j.id} value={j.id}>
+                                            {j.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <Button type="submit" disabled={atribuirForm.processing}>
+                                Atribuir
+                            </Button>
                         </div>
-                        <div className="flex-1">
-                            <Label htmlFor="judge_id">Jurado</Label>
-                            <select
-                                id="judge_id"
-                                value={atribuirForm.data.judge_id}
-                                onChange={(e) => atribuirForm.setData('judge_id', e.target.value)}
-                                className={campo}
-                            >
-                                <option value="">Selecione</option>
-                                {jurados.map((j) => (
-                                    <option key={j.id} value={j.id}>
-                                        {j.nome}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <Button type="submit" disabled={atribuirForm.processing}>
-                            Atribuir
-                        </Button>
                     </form>
-                    {atribuirForm.errors.judge_id && <p className="mt-2 text-sm text-red-600">{atribuirForm.errors.judge_id}</p>}
                 </section>
 
                 <h2 className="mb-3 font-semibold">Submissões</h2>
@@ -190,7 +193,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                 ) : (
                     <ul className="mb-6 flex flex-col gap-3">
                         {submissoes.map((submissao) => (
-                            <li key={submissao.id} className="border-border bg-card rounded-xl border p-4">
+                            <li key={submissao.id} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
                                 <p className="font-semibold">{submissao.titulo}</p>
                                 <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
 
@@ -276,7 +279,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </ul>
                 )}
 
-                <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                <section className="border-border bg-card rounded-2xl border p-4 sm:p-6">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <Scale className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Conflitos de interesse
@@ -309,51 +312,54 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                         </ul>
                     )}
 
-                    <form onSubmit={criarConflito} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                            <Label htmlFor="conflito_judge_id">Jurado</Label>
-                            <select
-                                id="conflito_judge_id"
-                                value={conflitoForm.data.judge_id}
-                                onChange={(e) => conflitoForm.setData('judge_id', e.target.value)}
-                                className={campo}
-                            >
-                                <option value="">Selecione</option>
-                                {jurados.map((j) => (
-                                    <option key={j.id} value={j.id}>
-                                        {j.nome}
-                                    </option>
-                                ))}
-                            </select>
+                    <form onSubmit={criarConflito} className="mt-4 grid gap-3" noValidate>
+                        <ResumoErro erros={conflitoForm.errors} />
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                            <div className="flex-1">
+                                <Label htmlFor="conflito_judge_id">Jurado</Label>
+                                <select
+                                    id="conflito_judge_id"
+                                    value={conflitoForm.data.judge_id}
+                                    onChange={(e) => conflitoForm.setData('judge_id', e.target.value)}
+                                    className={campo}
+                                >
+                                    <option value="">Selecione</option>
+                                    {jurados.map((j) => (
+                                        <option key={j.id} value={j.id}>
+                                            {j.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex-1">
+                                <Label htmlFor="conflito_team_id">Equipe</Label>
+                                <select
+                                    id="conflito_team_id"
+                                    value={conflitoForm.data.team_id}
+                                    onChange={(e) => conflitoForm.setData('team_id', e.target.value)}
+                                    className={campo}
+                                >
+                                    <option value="">Selecione</option>
+                                    {opcoes.equipes.map((equipe) => (
+                                        <option key={equipe.id} value={equipe.id}>
+                                            {equipe.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex-1">
+                                <Label htmlFor="reason">Motivo (opcional)</Label>
+                                <Input
+                                    id="reason"
+                                    value={conflitoForm.data.reason}
+                                    onChange={(e) => conflitoForm.setData('reason', e.target.value)}
+                                    placeholder="Ex.: Orientador da equipe"
+                                />
+                            </div>
+                            <Button type="submit" disabled={conflitoForm.processing}>
+                                Registrar
+                            </Button>
                         </div>
-                        <div className="flex-1">
-                            <Label htmlFor="conflito_team_id">Equipe</Label>
-                            <select
-                                id="conflito_team_id"
-                                value={conflitoForm.data.team_id}
-                                onChange={(e) => conflitoForm.setData('team_id', e.target.value)}
-                                className={campo}
-                            >
-                                <option value="">Selecione</option>
-                                {opcoes.equipes.map((equipe) => (
-                                    <option key={equipe.id} value={equipe.id}>
-                                        {equipe.nome}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="flex-1">
-                            <Label htmlFor="reason">Motivo (opcional)</Label>
-                            <Input
-                                id="reason"
-                                value={conflitoForm.data.reason}
-                                onChange={(e) => conflitoForm.setData('reason', e.target.value)}
-                                placeholder="Ex.: Orientador da equipe"
-                            />
-                        </div>
-                        <Button type="submit" disabled={conflitoForm.processing}>
-                            Registrar
-                        </Button>
                     </form>
                 </section>
             </motion.div>

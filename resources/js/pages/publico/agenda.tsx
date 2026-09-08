@@ -1,218 +1,194 @@
-import { Head } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import EstadoVazio from '@/components/hackathon/estado-vazio';
+import Status from '@/components/hackathon/status';
+import { Button } from '@/components/ui/button';
+import PublicLayout from '@/layouts/public-layout';
+import { EventoPublico, ItemAgenda } from '@/types/publico';
 import { CalendarClock, CalendarX2, Download, MapPin, Mic } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
-import RodapePublico from '@/components/hackathon/rodape-publico';
-import { Button } from '@/components/ui/button';
-import { EventoPublico, ItemAgenda, TipoItemAgenda } from '@/types/publico';
-
-interface Props {
-    evento: EventoPublico | { nome: string } | null;
-    itens: ItemAgenda[];
-}
-
-const corDoTipo: Record<TipoItemAgenda, string> = {
-    palestra: 'bg-blue-500/15 text-blue-700 dark:text-blue-400',
-    workshop: 'bg-violet-500/15 text-violet-700 dark:text-violet-400',
-    checkpoint: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
-    refeicao: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
-    deadline: 'bg-red-500/15 text-red-700 dark:text-red-400',
-};
-
-function formatarHora(iso: string): string {
-    return new Date(iso).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
-}
-
-function chaveDoDia(iso: string): string {
-    return new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: 'long', weekday: 'long' });
-}
-
-/** Agora, atualizado a cada 30s -- não precisa de mais precisão que isso pra destacar "acontecendo agora". */
-function useAgora(): number {
-    const [agora, setAgora] = useState(() => Date.now());
-
-    useEffect(() => {
-        const id = window.setInterval(() => setAgora(Date.now()), 30_000);
-
-        return () => window.clearInterval(id);
-    }, []);
-
-    return agora;
-}
+type Props = { evento: EventoPublico | { nome: string } | null; itens: ItemAgenda[] };
+const dateKey = (iso: string) =>
+    new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso));
+const dayLabel = (iso: string) =>
+    new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'long', day: 'numeric', month: 'long' });
+const timeLabel = (iso: string) => new Date(iso).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
 
 export default function Agenda({ evento, itens }: Props) {
-    const agora = useAgora();
-    const reduzMovimento = useReducedMotion();
-
-    const dias = itens.reduce<Record<string, ItemAgenda[]>>((acc, item) => {
-        const dia = chaveDoDia(item.inicia_em);
-        (acc[dia] ??= []).push(item);
-
-        return acc;
+    const [now, setNow] = useState(() => Date.now());
+    const [day, setDay] = useState('');
+    const [type, setType] = useState('');
+    useEffect(() => {
+        const timer = window.setInterval(() => setNow(Date.now()), 30000);
+        return () => window.clearInterval(timer);
+    }, []);
+    const sorted = [...itens].sort((a, b) => new Date(a.inicia_em).getTime() - new Date(b.inicia_em).getTime());
+    const days = Array.from(new Map(sorted.map((item) => [dateKey(item.inicia_em), dayLabel(item.inicia_em)])).entries());
+    const types = Array.from(new Map(sorted.map((item) => [item.tipo, item.tipo_label])).entries());
+    const filtered = sorted.filter((item) => (!day || dateKey(item.inicia_em) === day) && (!type || item.tipo === type));
+    const groups = filtered.reduce<Record<string, ItemAgenda[]>>((all, item) => {
+        (all[dateKey(item.inicia_em)] ??= []).push(item);
+        return all;
     }, {});
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
-    };
-
-    const listaVariants: Variants = {
-        oculto: {},
-        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.08 } },
-    };
-
-    const itemVariants: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, x: -12 },
-        visivel: { opacity: 1, x: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
-    };
-
     return (
-        <div className="bg-background text-foreground min-h-svh">
-            <Head title="Agenda" />
-
-            <CabecalhoPublico />
-
-            <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 p-4 pb-24 sm:p-6">
-                <motion.header
-                    initial="oculto"
-                    animate="visivel"
-                    variants={fadeIn}
-                    className="flex flex-col items-center gap-3 pt-8 text-center sm:pt-12"
-                >
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Agenda</h1>
-                        {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
-                    </div>
-
-                    {itens.length > 0 && (
-                        <Button asChild variant="outline">
-                            <a href={route('agenda.ics')}>
-                                <Download className="h-4 w-4" aria-hidden="true" />
-                                Baixar (.ics)
-                            </a>
-                        </Button>
-                    )}
-                </motion.header>
-
-                {itens.length === 0 ? (
-                    <motion.div
-                        initial="oculto"
-                        animate="visivel"
-                        variants={fadeIn}
-                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
-                    >
-                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                            <CalendarX2 className="text-muted-foreground size-5" aria-hidden="true" />
-                        </span>
-                        <p className="font-semibold">Agenda ainda não publicada</p>
-                        <p className="text-muted-foreground text-sm">Assim que a organização publicar os horários, eles aparecem aqui.</p>
-                    </motion.div>
-                ) : (
-                    Object.entries(dias).map(([dia, itensDoDia]) => (
-                        <section key={dia} aria-labelledby={`dia-${dia}`}>
-                            <h2 id={`dia-${dia}`} className="text-muted-foreground mb-4 text-xs font-semibold tracking-wide uppercase">
-                                {dia}
-                            </h2>
-
-                            <motion.ol
-                                initial="oculto"
-                                whileInView="visivel"
-                                viewport={{ once: true, margin: '-40px' }}
-                                variants={listaVariants}
-                                className="flex flex-col"
+        <PublicLayout
+            titulo="Agenda"
+            contexto={evento?.nome}
+            descricao="Planeje seu dia: oficinas, encontros e momentos importantes do hackathon."
+            acao={
+                itens.length > 0 && (
+                    <Button asChild variant="outline" className="h-11">
+                        <a href={route('agenda.ics')}>
+                            <Download className="size-4" aria-hidden="true" />
+                            Adicionar ao calendário (.ics)
+                        </a>
+                    </Button>
+                )
+            }
+        >
+            {itens.length === 0 ? (
+                <EstadoVazio
+                    icon={CalendarX2}
+                    titulo="Agenda ainda não publicada"
+                    descricao="Assim que a organização publicar os horários, eles aparecem aqui."
+                    acao={{ href: route('home'), texto: 'Voltar ao evento' }}
+                />
+            ) : (
+                <div className="grid items-start gap-8 lg:grid-cols-[15rem_minmax(0,1fr)]">
+                    <aside className="border-border bg-card flex flex-col gap-5 rounded-2xl border p-5 lg:sticky lg:top-28">
+                        <h2 className="font-semibold">Sua programação</h2>
+                        <div>
+                            <label htmlFor="agenda-day" className="mb-2 block text-sm">
+                                Dia
+                            </label>
+                            <select
+                                id="agenda-day"
+                                value={day}
+                                onChange={(e) => setDay(e.target.value)}
+                                className="border-input bg-background h-11 w-full min-w-0 rounded-lg border px-3 text-sm"
                             >
-                                {itensDoDia.map((item, indice) => {
-                                    const emAndamento = agora >= new Date(item.inicia_em).getTime() && agora <= new Date(item.termina_em).getTime();
-                                    const ultimoDoDia = indice === itensDoDia.length - 1;
-
-                                    return (
-                                        <motion.li
-                                            key={item.id}
-                                            variants={itemVariants}
-                                            className="grid grid-cols-[1.25rem_1fr] gap-x-3 sm:grid-cols-[1.5rem_1fr]"
-                                        >
-                                            {/* trilho do tempo: bolinha por item, ligada por uma linha -- a mesma
-                                                metáfora de log/timeline do resto da página pública. */}
-                                            <div className="flex flex-col items-center">
-                                                <span className="relative mt-1.5 flex size-3 shrink-0 items-center justify-center">
-                                                    {emAndamento && (
-                                                        <span
-                                                            className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-                                                            aria-hidden="true"
-                                                        />
-                                                    )}
-                                                    <span
-                                                        className={`relative inline-flex size-2.5 rounded-full ${
-                                                            emAndamento || item.destaque ? 'bg-primary' : 'bg-border'
-                                                        }`}
-                                                    />
-                                                </span>
-                                                {!ultimoDoDia && <span className="bg-border mt-1 w-px flex-1" aria-hidden="true" />}
-                                            </div>
-
-                                            <div
-                                                className={`border-border bg-card mb-3 rounded-xl border p-4 ${emAndamento ? 'border-primary/40 ring-primary/20 ring-2' : ''}`}
+                                <option value="">Todos os dias</option>
+                                {days.map(([key, label]) => (
+                                    <option key={key} value={key}>
+                                        {label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="agenda-type" className="mb-2 block text-sm">
+                                Atividade
+                            </label>
+                            <select
+                                id="agenda-type"
+                                value={type}
+                                onChange={(e) => setType(e.target.value)}
+                                className="border-input bg-background h-11 w-full rounded-lg border px-3 text-sm"
+                            >
+                                <option value="">Todos os tipos</option>
+                                {types.map(([key, label]) => (
+                                    <option key={key} value={key}>
+                                        {label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        {(day || type) && (
+                            <Button
+                                variant="ghost"
+                                className="h-11"
+                                onClick={() => {
+                                    setDay('');
+                                    setType('');
+                                }}
+                            >
+                                Limpar filtros
+                            </Button>
+                        )}
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                            Horários de Brasília (São Paulo). O arquivo de calendário inclui toda a programação publicada.
+                        </p>
+                    </aside>
+                    <div className="min-w-0 space-y-8">
+                        <p role="status" className="text-muted-foreground text-sm">
+                            {filtered.length} {filtered.length === 1 ? 'atividade' : 'atividades'}
+                        </p>
+                        {filtered.length === 0 && (
+                            <EstadoVazio
+                                icon={CalendarX2}
+                                titulo="Nenhuma atividade com estes filtros"
+                                descricao="Escolha outro dia ou tipo de atividade."
+                            />
+                        )}
+                        {Object.entries(groups).map(([key, items]) => (
+                            <section key={key} aria-labelledby={'day-' + key}>
+                                <h2 id={'day-' + key} className="mb-4 text-lg font-semibold capitalize">
+                                    {dayLabel(items[0].inicia_em)}
+                                </h2>
+                                <ol className="space-y-4">
+                                    {items.map((item) => {
+                                        const live = now >= new Date(item.inicia_em).getTime() && now < new Date(item.termina_em).getTime();
+                                        return (
+                                            <li
+                                                key={item.id}
+                                                className={`border-border bg-card grid min-w-0 gap-4 rounded-2xl border p-5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:p-6 ${live ? 'border-primary/50' : ''}`}
                                             >
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="text-muted-foreground text-sm tabular-nums">
-                                                        {formatarHora(item.inicia_em)}–{formatarHora(item.termina_em)}
-                                                    </span>
-                                                    <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${corDoTipo[item.tipo]}`}>
-                                                        {item.tipo_label}
-                                                    </span>
-                                                    {item.trilha && (
-                                                        <span
-                                                            className="inline-flex items-center gap-1.5 text-xs"
-                                                            style={{ color: item.trilha.cor ?? undefined }}
-                                                        >
-                                                            <span
-                                                                className="h-2 w-2 rounded-full"
-                                                                style={{ backgroundColor: item.trilha.cor ?? 'currentColor' }}
-                                                                aria-hidden="true"
-                                                            />
-                                                            {item.trilha.nome}
-                                                        </span>
-                                                    )}
-                                                    {emAndamento && (
-                                                        <span role="status" className="text-primary flex items-center gap-1 text-xs font-medium">
-                                                            <CalendarClock className="h-3 w-3 shrink-0" aria-hidden="true" />
-                                                            Acontecendo agora
-                                                        </span>
-                                                    )}
+                                                <div className="text-sm tabular-nums">
+                                                    <time dateTime={item.inicia_em} className="text-lg font-semibold">
+                                                        {timeLabel(item.inicia_em)}
+                                                    </time>
+                                                    <p className="text-muted-foreground mt-1">
+                                                        até <time dateTime={item.termina_em}>{timeLabel(item.termina_em)}</time>
+                                                    </p>
                                                 </div>
-
-                                                <p className="mt-2 font-semibold">{item.titulo}</p>
-                                                {item.descricao && <p className="text-muted-foreground mt-1 text-sm">{item.descricao}</p>}
-
-                                                {(item.local || item.palestrante) && (
-                                                    <div className="text-muted-foreground mt-2 flex flex-wrap gap-3 text-xs">
-                                                        {item.local && (
-                                                            <span className="flex items-center gap-1">
-                                                                <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
-                                                                {item.local}
-                                                            </span>
+                                                <div className="min-w-0">
+                                                    <div className="mb-3 flex flex-wrap gap-2">
+                                                        <Status tom={item.destaque ? 'atencao' : 'neutro'}>{item.tipo_label}</Status>
+                                                        {live && (
+                                                            <Status tom="sucesso" icon={CalendarClock}>
+                                                                Acontecendo agora
+                                                            </Status>
                                                         )}
-                                                        {item.palestrante && (
-                                                            <span className="flex items-center gap-1">
-                                                                <Mic className="h-3 w-3 shrink-0" aria-hidden="true" />
-                                                                {item.palestrante}
+                                                        {item.trilha && (
+                                                            <span className="text-muted-foreground inline-flex items-center gap-2 text-xs">
+                                                                <span
+                                                                    className="size-2 shrink-0 rounded-full"
+                                                                    style={{ backgroundColor: item.trilha.cor ?? 'var(--primary)' }}
+                                                                    aria-hidden="true"
+                                                                />
+                                                                {item.trilha.nome}
                                                             </span>
                                                         )}
                                                     </div>
-                                                )}
-                                            </div>
-                                        </motion.li>
-                                    );
-                                })}
-                            </motion.ol>
-                        </section>
-                    ))
-                )}
-            </main>
-
-            <RodapePublico />
-        </div>
+                                                    <h3 className="text-lg font-semibold break-words">{item.titulo}</h3>
+                                                    {item.descricao && (
+                                                        <p className="text-muted-foreground mt-2 text-sm leading-relaxed break-words">
+                                                            {item.descricao}
+                                                        </p>
+                                                    )}
+                                                    <div className="text-muted-foreground mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                                                        {item.local && (
+                                                            <span className="flex min-w-0 items-start gap-2">
+                                                                <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                                                                <span className="break-words">{item.local}</span>
+                                                            </span>
+                                                        )}
+                                                        {item.palestrante && (
+                                                            <span className="flex min-w-0 items-start gap-2">
+                                                                <Mic className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                                                                <span className="break-words">{item.palestrante}</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ol>
+                            </section>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </PublicLayout>
     );
 }

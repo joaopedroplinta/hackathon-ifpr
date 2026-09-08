@@ -2,6 +2,8 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import CampoSenha from '@/components/hackathon/campo-senha';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import PasswordRequirements from '@/components/password-requirements';
 import { Button } from '@/components/ui/button';
@@ -40,7 +42,8 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         <AuthLayout title="Redefinir senha" description="Digite sua nova senha abaixo">
             <Head title="Redefinir senha" />
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} noValidate>
+                <ResumoErro erros={errors} />
                 <div className="grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
@@ -59,9 +62,8 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                     <div className="grid gap-2">
                         <Label htmlFor="password">Nova senha</Label>
-                        <Input
+                        <CampoSenha
                             id="password"
-                            type="password"
                             name="password"
                             autoComplete="new-password"
                             value={data.password}
@@ -77,9 +79,8 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                     <div className="grid gap-2">
                         <Label htmlFor="password_confirmation">Confirmar senha</Label>
-                        <Input
+                        <CampoSenha
                             id="password_confirmation"
-                            type="password"
                             name="password_confirmation"
                             autoComplete="new-password"
                             value={data.password_confirmation}

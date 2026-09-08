@@ -36,6 +36,8 @@ class Event extends Model
         'voting_closes_at',
         'min_team_size',
         'max_team_size',
+        'collect_shirt_size',
+        'collect_dietary_notes',
         'certificate_signer_name',
         'certificate_signer_role',
         'certificate_accent_color',
@@ -59,6 +61,8 @@ class Event extends Model
             'edition' => 'integer',
             'min_team_size' => 'integer',
             'max_team_size' => 'integer',
+            'collect_shirt_size' => 'boolean',
+            'collect_dietary_notes' => 'boolean',
             'judges_per_submission' => 'integer',
         ];
     }

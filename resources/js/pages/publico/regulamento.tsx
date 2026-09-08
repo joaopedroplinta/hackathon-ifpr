@@ -1,9 +1,5 @@
-import { Head } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, GitCommitVertical, ScrollText, Trophy, Users } from 'lucide-react';
 
-import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
-import RodapePublico from '@/components/hackathon/rodape-publico';
 import { ArquivoRegulamento, EventoRegulamento } from '@/types/regulamento';
 
 interface Props {
@@ -11,50 +7,27 @@ interface Props {
     regulamento: ArquivoRegulamento;
 }
 
+import DocumentoPublico from '@/components/hackathon/documento-publico';
+import PublicLayout from '@/layouts/public-layout';
+
 export default function Regulamento({ evento, regulamento }: Props) {
-    const reduzMovimento = useReducedMotion();
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
-    };
-
-    const listaVariants: Variants = {
-        oculto: {},
-        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.08, delayChildren: reduzMovimento ? 0 : 0.1 } },
-    };
-
-    const itemVariants: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
-    };
-
     return (
-        <div className="bg-background text-foreground min-h-svh">
-            <Head title="Regulamento" />
-
-            <CabecalhoPublico />
-
-            <motion.main
-                initial="oculto"
-                animate="visivel"
-                variants={listaVariants}
-                className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 pb-24 sm:p-6"
+        <PublicLayout
+            titulo="Regulamento"
+            descricao="Regras definidas antes das inscrições. Valem para todas as equipes, sem exceção."
+            contexto={evento?.nome}
+        >
+            <DocumentoPublico
+                secoes={[
+                    { id: 'secao-1', titulo: 'Critério de desempate' },
+                    { id: 'secao-2', titulo: 'Se o sistema cair no dia' },
+                    { id: 'secao-3', titulo: 'Equipes e prazo' },
+                    { id: 'secao-4', titulo: 'Regras específicas desta edição' },
+                ]}
             >
-                <motion.header variants={fadeIn} className="pt-8 text-center sm:pt-12">
-                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Regulamento</h1>
-                    {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
-                    <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-                        Regras definidas antes das inscrições. Valem para todas as equipes, sem exceção.
-                    </p>
-                </motion.header>
-
                 {regulamento.tem_arquivo && (
-                    <motion.a
-                        variants={itemVariants}
+                    <a
                         href={route('regulamento.download')}
-                        whileHover={{ y: -2 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                         className="border-border bg-card hover:bg-muted/50 flex items-center gap-3 rounded-xl border p-4 transition-colors"
                     >
                         <Download className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
@@ -62,10 +35,10 @@ export default function Regulamento({ evento, regulamento }: Props) {
                             <p className="text-sm font-semibold">Baixar PDF do edital</p>
                             {regulamento.atualizado_em && <p className="text-muted-foreground text-xs">Atualizado em {regulamento.atualizado_em}</p>}
                         </div>
-                    </motion.a>
+                    </a>
                 )}
 
-                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                <section id="secao-1" tabIndex={-1} className="border-border bg-card rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <Trophy className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Critério de desempate
@@ -80,9 +53,9 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         Empate que sobrevive aos três critérios é empate de verdade: a organização mostra a mesma colocação para as equipes
                         envolvidas.
                     </p>
-                </motion.section>
+                </section>
 
-                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                <section id="secao-2" tabIndex={-1} className="border-border bg-card rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <GitCommitVertical className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Se o sistema cair no dia
@@ -91,9 +64,9 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         Vale o horário do último commit no repositório informado pela equipe, feito até o prazo. A submissão no sistema pode ser
                         regularizada depois pela organização.
                     </p>
-                </motion.section>
+                </section>
 
-                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                <section id="secao-3" tabIndex={-1} className="border-border bg-card rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <Users className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Equipes e prazo
@@ -108,9 +81,9 @@ export default function Regulamento({ evento, regulamento }: Props) {
                     ) : (
                         <p className="text-muted-foreground mt-2 text-sm">Nenhum evento em cartaz no momento.</p>
                     )}
-                </motion.section>
+                </section>
 
-                <motion.section variants={itemVariants} className="border-border bg-card rounded-xl border p-4">
+                <section id="secao-4" tabIndex={-1} className="border-border bg-card rounded-xl border p-4">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <ScrollText className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         Regras específicas desta edição
@@ -119,10 +92,8 @@ export default function Regulamento({ evento, regulamento }: Props) {
                         Uso de IA, originalidade e o que desclassifica uma submissão estão detalhados no PDF do edital
                         {regulamento.tem_arquivo ? ' acima' : ', quando publicado'}.
                     </p>
-                </motion.section>
-            </motion.main>
-
-            <RodapePublico />
-        </div>
+                </section>
+            </DocumentoPublico>
+        </PublicLayout>
     );
 }

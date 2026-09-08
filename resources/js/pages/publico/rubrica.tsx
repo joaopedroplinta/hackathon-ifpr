@@ -1,118 +1,79 @@
-import { Head } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import EstadoVazio from '@/components/hackathon/estado-vazio';
+import PublicLayout from '@/layouts/public-layout';
+import { Criterio } from '@/types/rubrica';
 import { ClipboardList, Scale } from 'lucide-react';
 
-import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
-import RodapePublico from '@/components/hackathon/rodape-publico';
-import { Criterio } from '@/types/rubrica';
-
-interface Props {
-    evento: { nome: string } | null;
-    criterios: Criterio[];
-}
+type Props = { evento: { nome: string } | null; criterios: Criterio[] };
 
 export default function Rubrica({ evento, criterios }: Props) {
-    const somaPesos = criterios.reduce((soma, c) => soma + c.peso, 0);
-    const reduzMovimento = useReducedMotion();
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
-    };
-
-    const listaVariants: Variants = {
-        oculto: {},
-        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.1 } },
-    };
-
-    const itemVariants: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 14 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' } },
-    };
-
+    const totalWeight = criterios.reduce((sum, criterion) => sum + criterion.peso, 0);
     return (
-        <div className="bg-background text-foreground min-h-svh">
-            <Head title="Rubrica" />
-
-            <CabecalhoPublico />
-
-            <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 pb-24 sm:p-6">
-                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
-                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Rubrica de avaliação</h1>
-                    {evento && <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>}
-                    <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-                        Cada jurado avalia com estes critérios. A nota da avaliação é a média ponderada pelos pesos abaixo.
-                    </p>
-                </motion.header>
-
-                {criterios.length === 0 ? (
-                    <motion.div
-                        initial="oculto"
-                        animate="visivel"
-                        variants={fadeIn}
-                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
-                    >
-                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                            <ClipboardList className="text-muted-foreground size-5" aria-hidden="true" />
-                        </span>
-                        <p className="font-semibold">Rubrica ainda não publicada</p>
-                        <p className="text-muted-foreground text-sm">A organização ainda está definindo os critérios de avaliação.</p>
-                    </motion.div>
-                ) : (
-                    <>
-                        <motion.ol
-                            initial="oculto"
-                            animate="visivel"
-                            variants={listaVariants}
-                            className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border"
-                        >
-                            {criterios.map((criterio, indice) => {
-                                const proporcao = somaPesos > 0 ? (criterio.peso / somaPesos) * 100 : 0;
-
-                                return (
-                                    <motion.li key={criterio.id} variants={itemVariants} className="p-4">
-                                        <div className="flex items-start gap-3">
-                                            <span className="border-border text-muted-foreground flex size-7 shrink-0 items-center justify-center rounded-md border text-xs font-bold tabular-nums">
-                                                {String(indice + 1).padStart(2, '0')}
-                                            </span>
-                                            <div className="min-w-0 flex-1">
-                                                <div className="flex flex-wrap items-center justify-between gap-2">
-                                                    <p className="font-semibold">{criterio.nome}</p>
-                                                    <span className="text-muted-foreground flex items-center gap-1 text-xs">
-                                                        <Scale className="h-3 w-3 shrink-0" aria-hidden="true" />
-                                                        peso {criterio.peso} · nota até {criterio.nota_maxima}
-                                                    </span>
+        <PublicLayout titulo="Critérios de avaliação" contexto={evento?.nome} descricao="Entenda o que os jurados vão observar no seu projeto.">
+            {criterios.length === 0 ? (
+                <EstadoVazio
+                    icon={ClipboardList}
+                    titulo="Rubrica ainda não publicada"
+                    descricao="A organização ainda está definindo os critérios de avaliação."
+                    acao={{ href: route('regulamento.show'), texto: 'Consultar regulamento' }}
+                />
+            ) : (
+                <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                    <ol className="grid min-w-0 gap-4">
+                        {criterios.map((criterion, index) => {
+                            const share = totalWeight > 0 ? (criterion.peso / totalWeight) * 100 : 0;
+                            return (
+                                <li key={criterion.id} className="border-border bg-card rounded-2xl border p-5 sm:p-8">
+                                    <div className="flex items-start gap-4">
+                                        <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm">
+                                            {String(index + 1).padStart(2, '0')}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <h2 className="text-xl font-semibold tracking-tight break-words">{criterion.nome}</h2>
+                                            {criterion.descricao && (
+                                                <p className="text-muted-foreground mt-3 text-sm leading-relaxed break-words">
+                                                    {criterion.descricao}
+                                                </p>
+                                            )}
+                                            <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+                                                <div>
+                                                    <dt className="text-muted-foreground text-xs">Peso</dt>
+                                                    <dd className="mt-1 font-semibold">{criterion.peso.toLocaleString('pt-BR')}</dd>
                                                 </div>
-                                                {criterio.descricao && <p className="text-muted-foreground mt-1 text-sm">{criterio.descricao}</p>}
-
-                                                {/* peso vira largura de verdade -- o próprio critério mais
-                                                    importante da nota literalmente ocupa mais espaço aqui. */}
-                                                <div className="bg-muted mt-3 h-1.5 w-full overflow-hidden rounded-full">
-                                                    <motion.div
-                                                        className="bg-primary h-full rounded-full"
-                                                        initial={{ width: 0 }}
-                                                        whileInView={{ width: `${proporcao}%` }}
-                                                        viewport={{ once: true }}
-                                                        transition={
-                                                            reduzMovimento
-                                                                ? { duration: 0 }
-                                                                : { duration: 0.7, ease: 'easeOut', delay: indice * 0.08 }
-                                                        }
-                                                    />
+                                                <div>
+                                                    <dt className="text-muted-foreground text-xs">Nota máxima</dt>
+                                                    <dd className="mt-1 font-semibold">{criterion.nota_maxima.toLocaleString('pt-BR')}</dd>
                                                 </div>
+                                                <div>
+                                                    <dt className="text-muted-foreground text-xs">Participação nos pesos</dt>
+                                                    <dd className="mt-1 font-semibold">
+                                                        {share.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                            <div className="bg-muted mt-5 h-1.5 overflow-hidden rounded-full" aria-hidden="true">
+                                                <div className="bg-primary h-full rounded-full" style={{ width: share + '%' }} />
                                             </div>
                                         </div>
-                                    </motion.li>
-                                );
-                            })}
-                        </motion.ol>
-
-                        <p className="text-muted-foreground text-xs">Soma dos pesos: {somaPesos}.</p>
-                    </>
-                )}
-            </main>
-
-            <RodapePublico />
-        </div>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ol>
+                    <aside className="bg-secondary rounded-2xl p-6 lg:sticky lg:top-28">
+                        <Scale className="text-primary mb-4 size-6" aria-hidden="true" />
+                        <h2 className="font-semibold">Como ler a rubrica</h2>
+                        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                            Cada jurado avalia com estes critérios. A nota da avaliação é a média ponderada pelos pesos abaixo.
+                        </p>
+                        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                            Um peso maior dá mais influência ao critério. Observe também a nota máxima de cada um.
+                        </p>
+                        <p className="border-border mt-5 border-t pt-4 text-sm">
+                            Soma dos pesos: <strong>{totalWeight.toLocaleString('pt-BR')}</strong>
+                        </p>
+                    </aside>
+                </div>
+            )}
+        </PublicLayout>
     );
 }

@@ -156,7 +156,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                     </section>
                 )}
 
-                <form onSubmit={buscar} className="mb-4 flex flex-col gap-3 md:flex-row md:items-end">
+                <form onSubmit={buscar} className="border-border bg-card mb-4 flex flex-col gap-3 rounded-2xl border p-4 md:flex-row md:items-end">
                     <div className="flex-1">
                         <Label htmlFor="busca">Buscar por equipe ou título</Label>
                         <Input
@@ -217,7 +217,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                         </p>
                     </div>
                 ) : (
-                    <div className={`border-border bg-card overflow-x-auto rounded-xl border transition-opacity ${carregando ? 'opacity-60' : ''}`}>
+                    <div className={`border-border bg-card overflow-x-auto rounded-2xl border transition-opacity ${carregando ? 'opacity-60' : ''}`}>
                         <table className="w-full min-w-[48rem] text-sm">
                             <caption className="sr-only">Submissões do evento</caption>
                             <thead className="bg-muted/50 text-left">

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Participant;
 
 use App\Enums\ShirtSize;
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,9 +22,13 @@ class StoreEventRegistrationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $event = Event::current();
+
         return [
-            'shirt_size' => ['nullable', Rule::enum(ShirtSize::class)],
-            'dietary_notes' => ['nullable', 'string', 'max:500'],
+            // excludeIf impede que um POST forjado grave dados que esta
+            // edição não solicitou; o front apenas espelha essa regra.
+            'shirt_size' => [Rule::excludeIf(! $event?->collect_shirt_size), 'nullable', Rule::enum(ShirtSize::class)],
+            'dietary_notes' => [Rule::excludeIf(! $event?->collect_dietary_notes), 'nullable', 'string', 'max:500'],
             'phone' => ['nullable', 'string', 'max:20'],
             'course' => ['nullable', 'string', 'max:120'],
         ];

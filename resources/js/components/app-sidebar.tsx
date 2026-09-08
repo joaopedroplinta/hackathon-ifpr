@@ -31,6 +31,16 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
+        title: 'Minha equipe',
+        url: '/equipe',
+        icon: Users,
+    },
+    {
+        title: 'Meu projeto',
+        url: '/submissao',
+        icon: FileText,
+    },
+    {
         title: 'Crachá',
         url: '/credencial',
         icon: QrCode,
@@ -138,12 +148,6 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { auth, app_version } = usePage<SharedData>().props;
-    const navItems = [
-        ...mainNavItems,
-        ...(auth?.is_judge ? judgeNavItems : []),
-        ...(auth?.is_staff ? staffNavItems : []),
-        ...(auth?.is_admin ? adminNavItems : []),
-    ];
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -160,7 +164,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={navItems} />
+                <NavMain items={mainNavItems} label="Sua participação" />
+                {auth?.is_judge && <NavMain items={judgeNavItems} label="Avaliação" />}
+                {auth?.is_staff && <NavMain items={staffNavItems} label="Organização" />}
+                {auth?.is_admin && <NavMain items={adminNavItems} label="Administração" />}
             </SidebarContent>
 
             <SidebarFooter>

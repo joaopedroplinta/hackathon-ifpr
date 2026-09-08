@@ -21,19 +21,19 @@ export default function VerifyEmail({ status }: { status?: string }) {
             <Head title="Verificação de e-mail" />
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div role="status" className="bg-primary/10 text-primary mb-5 rounded-xl p-3 text-center text-sm font-medium">
                     Enviamos um novo link de verificação para o e-mail informado no cadastro.
                 </div>
             )}
 
             <form onSubmit={submit} className="space-y-6 text-center">
-                <Button disabled={processing} variant="secondary">
+                <Button disabled={processing} className="h-11 w-full">
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     Reenviar e-mail de verificação
                 </Button>
 
-                <TextLink href={route('logout')} method="post" className="mx-auto block text-sm">
-                    Sair
+                <TextLink href={route('logout')} method="post" className="inline-flex min-h-11 items-center text-sm">
+                    Sair desta conta
                 </TextLink>
             </form>
         </AuthLayout>

@@ -24,6 +24,8 @@ class EventRegistrationController extends Controller
 
         return Inertia::render('inscricao/criar', [
             'tamanhos' => ShirtSize::options(),
+            'coletar_camisa' => $event->collect_shirt_size,
+            'coletar_restricoes_alimentares' => $event->collect_dietary_notes,
         ]);
     }
 

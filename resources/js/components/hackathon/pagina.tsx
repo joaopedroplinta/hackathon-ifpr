@@ -1,0 +1,69 @@
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { type ReactNode } from 'react';
+
+import { cn } from '@/lib/utils';
+
+const larguras = {
+    // Formulário: uma coluna, sem esticar rótulo/campo em telas largas.
+    formulario: 'max-w-2xl',
+    // Leitura: prosa institucional (privacidade, regulamento, rubrica).
+    leitura: 'max-w-3xl',
+    // Operação: listagem, painel com aside, maioria das telas internas.
+    operacao: 'max-w-5xl',
+    // Painel: dashboards com duas colunas largas (participante, avaliação).
+    painel: 'max-w-6xl',
+} as const;
+
+type Largura = keyof typeof larguras;
+
+type ContainerPaginaProps = {
+    largura?: Largura;
+    className?: string;
+    children: ReactNode;
+};
+
+/**
+ * Container padrão das páginas internas (dentro do AppLayout): largura por
+ * função, não por preferência estética, e entrada suave respeitando
+ * prefers-reduced-motion -- mesmo padrão usado em dashboard.tsx e admin/index.tsx.
+ */
+export function ContainerPagina({ largura = 'operacao', className, children }: ContainerPaginaProps) {
+    const reduzMovimento = useReducedMotion();
+    const fadeIn: Variants = {
+        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
+        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
+    };
+
+    return (
+        <motion.div
+            initial="oculto"
+            animate="visivel"
+            variants={fadeIn}
+            className={cn('mx-auto flex w-full flex-col gap-8 p-4 sm:p-8', larguras[largura], className)}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
+type CabecalhoPaginaProps = {
+    eyebrow?: string;
+    titulo: string;
+    descricao?: ReactNode;
+    acao?: ReactNode;
+    className?: string;
+};
+
+/** Cabeçalho de página: eyebrow opcional, título, contexto e uma ação principal. */
+export function CabecalhoPagina({ eyebrow, titulo, descricao, acao, className }: CabecalhoPaginaProps) {
+    return (
+        <header className={cn('flex flex-col justify-between gap-4 sm:flex-row sm:items-center', className)}>
+            <div className="min-w-0">
+                {eyebrow && <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">{eyebrow}</p>}
+                <h1 className="text-3xl font-bold tracking-tight text-balance">{titulo}</h1>
+                {descricao && <div className="text-muted-foreground mt-2 text-sm leading-relaxed">{descricao}</div>}
+            </div>
+            {acao && <div className="flex flex-wrap gap-2">{acao}</div>}
+        </header>
+    );
+}

@@ -8,11 +8,16 @@ import { type BreadcrumbItem } from '@/types';
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: { children: React.ReactNode; breadcrumbs?: BreadcrumbItem[] }) {
     return (
         <AppShell variant="sidebar">
+            <a href="#conteudo" className="skip-link">
+                Pular para o conteúdo
+            </a>
             <AppSidebar />
             <AppContent variant="sidebar">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 <FlashMessages />
-                {children}
+                <div id="conteudo" tabIndex={-1} className="min-w-0 flex-1 outline-none">
+                    {children}
+                </div>
             </AppContent>
         </AppShell>
     );

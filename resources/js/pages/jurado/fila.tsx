@@ -23,15 +23,26 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
         <AppLayout breadcrumbs={[{ title: 'Avaliar', href: route('jurado.index') }]}>
             <Head title="Avaliar" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Suas submissões</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-8">
+                <header className="mb-8">
+                    <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">Espaço do jurado</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Suas submissões</h1>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        Selecione um projeto para avaliar. Você pode salvar o rascunho e continuar depois.
+                    </p>
                     {progresso.total > 0 && (
                         <>
                             <p className="text-muted-foreground mt-1 text-sm">
-                                {progresso.avaliadas} de {progresso.total} avaliadas
+                                {progresso.avaliadas} de {progresso.total} avaliações enviadas · {progresso.total - progresso.avaliadas} pendentes
                             </p>
-                            <div className="bg-muted mt-2 h-2 w-full overflow-hidden rounded-full" role="progressbar" aria-valuenow={percentual}>
+                            <div
+                                className="bg-muted mt-3 h-2 w-full overflow-hidden rounded-full"
+                                role="progressbar"
+                                aria-label="Progresso das avaliações"
+                                aria-valuenow={percentual}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                            >
                                 <motion.div
                                     className="bg-primary h-full rounded-full"
                                     initial={{ width: 0 }}
@@ -52,16 +63,16 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                         <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                         {submissoes.map((s) => (
                             <motion.li key={s.submission_id}>
                                 <Link
                                     href={route('jurado.avaliar.show', s.submission_id)}
-                                    className="hover:bg-muted/50 flex min-h-11 items-center justify-between gap-3 p-4 transition-colors"
+                                    className="hover:bg-muted/50 focus-visible:ring-ring flex min-h-20 flex-wrap items-center justify-between gap-3 p-5 transition-colors focus-visible:ring-2 focus-visible:outline-none sm:p-6"
                                 >
                                     <div className="min-w-0">
-                                        <p className="truncate font-semibold">{s.titulo}</p>
-                                        <p className="text-muted-foreground truncate text-xs">{s.equipe}</p>
+                                        <p className="font-semibold break-words">{s.titulo}</p>
+                                        <p className="text-muted-foreground mt-1 text-sm break-words">{s.equipe}</p>
                                     </div>
                                     <span className="flex shrink-0 items-center gap-1.5 text-xs">
                                         {s.enviada ? (

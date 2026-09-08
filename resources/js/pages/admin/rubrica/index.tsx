@@ -3,7 +3,9 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { ClipboardList, LoaderCircle, Trash2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -15,6 +17,7 @@ interface Props {
 
 export default function ListaRubricas({ rubricas }: Props) {
     const [emAndamento, setEmAndamento] = useState<number | null>(null);
+    const [rubricaParaRemover, setRubricaParaRemover] = useState<LinhaRubrica | null>(null);
     const { data, setData, post, processing, errors, reset } = useForm({ name: '' });
 
     const criar: FormEventHandler = (e) => {
@@ -29,7 +32,11 @@ export default function ListaRubricas({ rubricas }: Props) {
 
     const remover = (rubrica: LinhaRubrica) => {
         setEmAndamento(rubrica.id);
-        router.delete(route('painel.rubrica.destroy', rubrica.id), { preserveScroll: true, onFinish: () => setEmAndamento(null) });
+        router.delete(route('painel.rubrica.destroy', rubrica.id), {
+            preserveScroll: true,
+            onSuccess: () => setRubricaParaRemover(null),
+            onFinish: () => setEmAndamento(null),
+        });
     };
 
     const reduzMovimento = useReducedMotion();
@@ -49,26 +56,24 @@ export default function ListaRubricas({ rubricas }: Props) {
                     <p className="text-muted-foreground mt-1 text-sm">Só a rubrica ativa conta pro cálculo e aparece pro jurado e pro público.</p>
                 </header>
 
-                <form onSubmit={criar} className="mb-6 flex items-end gap-3">
-                    <div className="flex-1">
-                        <Label htmlFor="name">Nova rubrica</Label>
-                        <Input
-                            id="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            placeholder="Ex.: Rubrica 2026"
-                            aria-describedby={errors.name ? 'name-erro' : undefined}
-                        />
-                        {errors.name && (
-                            <p id="name-erro" className="mt-1 text-sm text-red-600">
-                                {errors.name}
-                            </p>
-                        )}
+                <form onSubmit={criar} className="border-border bg-card mb-6 grid gap-3 rounded-2xl border p-4" noValidate>
+                    <ResumoErro erros={errors} />
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                        <div className="flex-1">
+                            <Label htmlFor="name">Nova rubrica</Label>
+                            <Input
+                                id="name"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                placeholder="Ex.: Rubrica 2026"
+                                aria-describedby={errors.name ? 'name-erro' : undefined}
+                            />
+                        </div>
+                        <Button type="submit" disabled={processing}>
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                            Criar
+                        </Button>
                     </div>
-                    <Button type="submit" disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                        Criar
-                    </Button>
                 </form>
 
                 {rubricas.length === 0 ? (
@@ -80,7 +85,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                         <p className="text-muted-foreground text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                         {rubricas.map((rubrica) => (
                             <li key={rubrica.id} className="p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -117,7 +122,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                                             size="icon"
                                             aria-label={`Remover ${rubrica.nome}`}
                                             disabled={emAndamento === rubrica.id}
-                                            onClick={() => remover(rubrica)}
+                                            onClick={() => setRubricaParaRemover(rubrica)}
                                             className="hover:text-destructive"
                                         >
                                             <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -128,6 +133,31 @@ export default function ListaRubricas({ rubricas }: Props) {
                         ))}
                     </ul>
                 )}
+
+                <Dialog open={rubricaParaRemover !== null} onOpenChange={(aberto) => !aberto && setRubricaParaRemover(null)}>
+                    <DialogContent>
+                        <DialogTitle>Excluir rubrica?</DialogTitle>
+                        <DialogDescription>
+                            {rubricaParaRemover
+                                ? `A rubrica “${rubricaParaRemover.nome}” e seus critérios serão removidos. Esta ação não pode ser desfeita.`
+                                : ''}
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="secondary">Cancelar</Button>
+                            </DialogClose>
+                            <Button
+                                variant="destructive"
+                                disabled={rubricaParaRemover === null || emAndamento === rubricaParaRemover?.id}
+                                onClick={() => {
+                                    if (rubricaParaRemover) remover(rubricaParaRemover);
+                                }}
+                            >
+                                {emAndamento === rubricaParaRemover?.id ? 'Excluindo…' : 'Excluir rubrica'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </motion.div>
         </AppLayout>
     );

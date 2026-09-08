@@ -3,6 +3,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -25,10 +26,15 @@ export default function ForgotPassword({ status }: { status?: string }) {
         <AuthLayout title="Esqueceu a senha?" description="Informe seu e-mail para receber o link de redefinição">
             <Head title="Esqueceu a senha" />
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div role="status" className="bg-primary/10 text-primary rounded-xl p-3 text-center text-sm font-medium">
+                    {status}
+                </div>
+            )}
 
             <div className="space-y-6">
-                <form onSubmit={submit}>
+                <form onSubmit={submit} noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
                         <Input

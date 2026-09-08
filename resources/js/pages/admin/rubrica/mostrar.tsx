@@ -1,8 +1,10 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, Pencil, Trash2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import ConfirmarAcao from '@/components/hackathon/confirmar-acao';
+import { CabecalhoPagina, ContainerPagina } from '@/components/hackathon/pagina';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,13 +62,6 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         });
     };
 
-    const reduzMovimento = useReducedMotion();
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' } },
-    };
-
     return (
         <AppLayout
             breadcrumbs={[
@@ -76,20 +71,21 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
         >
             <Head title={`Rubrica — ${rubrica.nome}`} />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-2xl font-bold tracking-tight">{rubrica.nome}</h1>
+            <ContainerPagina largura="formulario">
+                <CabecalhoPagina
+                    eyebrow="Avaliação"
+                    titulo={rubrica.nome}
+                    descricao={`Soma dos pesos: ${somaPesos}. Ajuste os critérios e as escalas que a banca usará.`}
+                    acao={
                         <span
-                            className={`inline-block rounded-full px-2 py-0.5 text-xs ${
+                            className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
                                 rubrica.ativa ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400' : 'bg-muted text-muted-foreground'
                             }`}
                         >
                             {rubrica.ativa ? 'Ativa' : 'Inativa'}
                         </span>
-                    </div>
-                    <p className="text-muted-foreground mt-1 text-sm">Soma dos pesos: {somaPesos}.</p>
-                </header>
+                    }
+                />
 
                 {criterios.length === 0 ? (
                     <p className="text-muted-foreground mb-6 text-sm">Nenhum critério ainda. Adicione o primeiro abaixo.</p>
@@ -98,7 +94,8 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                         {criterios.map((criterio) =>
                             editandoId === criterio.id ? (
                                 <li key={criterio.id} className="border-border bg-card rounded-xl border p-4">
-                                    <form onSubmit={salvarEdicao} className="grid gap-3">
+                                    <form onSubmit={salvarEdicao} className="grid gap-3" noValidate>
+                                        <ResumoErro erros={editarForm.errors} />
                                         <div className="grid gap-2">
                                             <Label htmlFor={`edit-name-${criterio.id}`}>Nome</Label>
                                             <Input
@@ -170,16 +167,25 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                                             >
                                                 <Pencil className="h-4 w-4" aria-hidden="true" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                aria-label={`Remover ${criterio.nome}`}
-                                                disabled={removendoId === criterio.id}
-                                                onClick={() => remover(criterio)}
-                                                className="hover:text-destructive"
-                                            >
-                                                <Trash2 className="h-4 w-4" aria-hidden="true" />
-                                            </Button>
+                                            <ConfirmarAcao
+                                                titulo="Excluir critério?"
+                                                descricao={`O critério “${criterio.nome}” será removido da rubrica. Esta ação não pode ser desfeita.`}
+                                                textoConfirmar="Excluir critério"
+                                                destrutiva
+                                                processando={removendoId === criterio.id}
+                                                onConfirmar={() => remover(criterio)}
+                                                trigger={
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        aria-label={`Remover ${criterio.nome}`}
+                                                        disabled={removendoId === criterio.id}
+                                                        className="hover:text-destructive"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                                    </Button>
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 </li>
@@ -190,7 +196,8 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
 
                 <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
                     <h2 className="font-semibold">Novo critério</h2>
-                    <form onSubmit={criarCriterio} className="mt-4 grid gap-3">
+                    <form onSubmit={criarCriterio} className="mt-4 grid gap-3" noValidate>
+                        <ResumoErro erros={novoForm.errors} />
                         <div className="grid gap-2">
                             <Label htmlFor="name">Nome</Label>
                             <Input
@@ -245,7 +252,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                 <Link href={route('painel.rubrica.index')} className="text-muted-foreground mt-6 inline-block text-sm hover:underline">
                     ← Voltar para a lista
                 </Link>
-            </motion.div>
+            </ContainerPagina>
         </AppLayout>
     );
 }

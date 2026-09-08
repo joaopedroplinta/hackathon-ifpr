@@ -32,6 +32,8 @@ class UpdateEventRequest extends FormRequest
             'voting_closes_at' => ['nullable', 'date', 'after_or_equal:voting_opens_at'],
             'min_team_size' => ['required', 'integer', 'min:1'],
             'max_team_size' => ['required', 'integer', 'min:1', 'gte:min_team_size'],
+            'collect_shirt_size' => ['boolean'],
+            'collect_dietary_notes' => ['boolean'],
             'certificate_signer_name' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_role'],
             'certificate_signer_role' => ['nullable', 'string', 'max:120', 'required_with:certificate_signer_name'],
             'certificate_accent_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],

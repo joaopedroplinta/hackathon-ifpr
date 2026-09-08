@@ -1,203 +1,121 @@
-import { Head, Link } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { History, Medal, Trophy, Users } from 'lucide-react';
-
-import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
-import RodapePublico from '@/components/hackathon/rodape-publico';
+import EstadoVazio from '@/components/hackathon/estado-vazio';
+import Status from '@/components/hackathon/status';
+import { Button } from '@/components/ui/button';
+import PublicLayout from '@/layouts/public-layout';
 import { LinhaPodio, PremioPopular } from '@/types/resultado-publico';
+import { Link } from '@inertiajs/react';
+import { History, Trophy, Users } from 'lucide-react';
 
-interface Props {
+type Props = {
     publicado: boolean;
     evento: { nome: string; edicao: number } | null;
     podio_geral: LinhaPodio[];
     podio_por_trilha: Record<string, LinhaPodio[]>;
     premio_popular: PremioPopular | null;
-}
-
-const corDaPosicao: Record<number, string> = {
-    1: 'text-amber-500 dark:text-amber-400',
-    2: 'text-slate-400 dark:text-slate-300',
-    3: 'text-amber-700 dark:text-amber-600',
 };
 
-// 2º-1º-3º: ordem visual de um pódio físico, não a ordem de colocação.
-const ORDEM_DEGRAUS = [2, 1, 3];
-
-const ALTURA_DEGRAU: Record<number, string> = {
-    1: 'h-28 sm:h-32',
-    2: 'h-20 sm:h-24',
-    3: 'h-14 sm:h-16',
-};
-
-const ALTURA_DEGRAU_COMPACTA: Record<number, string> = {
-    1: 'h-16 sm:h-20',
-    2: 'h-12 sm:h-14',
-    3: 'h-8 sm:h-10',
-};
-
-function Podio({ linhas, compacto = false }: { linhas: LinhaPodio[]; compacto?: boolean }) {
-    const reduzMovimento = useReducedMotion();
-    const porPosicao = new Map(linhas.map((linha) => [linha.posicao, linha]));
-    const alturas = compacto ? ALTURA_DEGRAU_COMPACTA : ALTURA_DEGRAU;
-
-    const containerVariants: Variants = {
-        oculto: {},
-        visivel: { transition: { staggerChildren: reduzMovimento ? 0 : 0.15 } },
-    };
-
-    const degrauVariants: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 28 },
-        visivel: {
-            opacity: 1,
-            y: 0,
-            transition: reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 24 },
-        },
-    };
-
+function Ranking({ linhas }: { linhas: LinhaPodio[] }) {
     return (
-        <motion.div
-            initial="oculto"
-            whileInView="visivel"
-            viewport={{ once: true, margin: '-60px' }}
-            variants={containerVariants}
-            className="flex items-end justify-center gap-3 sm:gap-4"
-        >
-            {ORDEM_DEGRAUS.map((posicao) => {
-                const linha = porPosicao.get(posicao);
-
-                if (!linha) {
-                    return null;
-                }
-
-                return (
-                    <motion.div
-                        key={posicao}
-                        variants={degrauVariants}
-                        className={`flex flex-col items-center gap-2 ${compacto ? 'w-20 sm:w-24' : 'w-24 sm:w-28'}`}
-                    >
-                        <Medal className={`h-6 w-6 shrink-0 ${corDaPosicao[posicao]}`} aria-hidden="true" />
-
-                        <div className="w-full min-w-0 text-center">
-                            <p title={linha.titulo} className="truncate text-sm font-medium">
-                                {linha.titulo}
-                            </p>
-                            <p title={linha.equipe} className="text-muted-foreground truncate text-xs">
-                                {linha.equipe}
-                                {linha.trilha && ` · ${linha.trilha}`}
-                            </p>
-                            <p className="mt-1 text-sm font-medium tabular-nums">{linha.nota_final.toFixed(2)}</p>
-                        </div>
-
-                        <div
-                            className={`border-border bg-card flex w-full items-start justify-center rounded-t-lg border border-b-0 pt-2 ${alturas[posicao]}`}
+        <ol className="border-border bg-card divide-y overflow-hidden rounded-2xl border">
+            {[...linhas]
+                .sort((a, b) => a.posicao - b.posicao)
+                .map((row, index) => (
+                    <li key={index} className="flex items-start gap-4 p-5 sm:p-6">
+                        <span
+                            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-lg font-semibold ${row.posicao === 1 ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}
                         >
-                            <span className="text-muted-foreground text-lg font-bold">{posicao}º</span>
+                            {row.posicao}º
+                        </span>
+                        <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold break-words">{row.titulo}</h3>
+                            <p className="text-muted-foreground mt-1 text-sm break-words">
+                                {row.equipe}
+                                {row.trilha && ' · ' + row.trilha}
+                            </p>
+                            <p className="mt-3 text-sm">
+                                <span className="text-muted-foreground">Nota final </span>
+                                <strong className="tabular-nums">
+                                    {row.nota_final.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </strong>
+                            </p>
                         </div>
-                    </motion.div>
-                );
-            })}
-        </motion.div>
+                    </li>
+                ))}
+        </ol>
     );
 }
 
 export default function Resultados({ publicado, evento, podio_geral, podio_por_trilha, premio_popular }: Props) {
-    const reduzMovimento = useReducedMotion();
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
-    };
-
     return (
-        <div className="bg-background text-foreground min-h-svh">
-            <Head title="Resultados" />
-
-            <CabecalhoPublico />
-
-            <main className="mx-auto flex w-full max-w-3xl flex-col gap-16 p-4 pb-24 sm:gap-20 sm:p-6">
-                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-16">
-                    <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">Resultados</h1>
-                    {evento && (
-                        <p className="text-muted-foreground mt-2 text-sm">
-                            {evento.nome} · Edição {evento.edicao}
-                        </p>
-                    )}
-                    <Link
-                        href={route('edicoes.index')}
-                        className="text-muted-foreground hover:text-foreground mt-3 inline-flex items-center gap-1.5 text-xs"
-                    >
-                        <History className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                        Ver edições anteriores
+        <PublicLayout
+            titulo="Resultados"
+            contexto={evento ? evento.nome + ' · Edição ' + evento.edicao : undefined}
+            descricao="Conheça os projetos reconhecidos nesta edição."
+            acao={
+                <Button asChild variant="outline" className="h-11">
+                    <Link href={route('edicoes.index')}>
+                        <History className="size-4" aria-hidden="true" />
+                        Edições anteriores
                     </Link>
-                </motion.header>
-
-                {!publicado ? (
-                    <motion.div
-                        initial="oculto"
-                        animate="visivel"
-                        variants={fadeIn}
-                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
-                    >
-                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                            <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
-                        </span>
-                        <p className="font-semibold">Resultado ainda não publicado</p>
-                        <p className="text-muted-foreground text-sm">A organização está conferindo as notas antes de divulgar a colocação.</p>
-                    </motion.div>
-                ) : (
-                    <>
-                        <section aria-labelledby="podio-geral">
-                            <h2 id="podio-geral" className="mb-8 flex items-center justify-center gap-2 text-center font-bold">
-                                <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Button>
+            }
+        >
+            {!publicado ? (
+                <EstadoVazio
+                    icon={Trophy}
+                    titulo="Resultado ainda não publicado"
+                    descricao="A classificação será exibida depois da publicação pela organização."
+                    acao={{ href: route('rubrica.show'), texto: 'Entender os critérios' }}
+                />
+            ) : (
+                <div className="space-y-10">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h2 className="text-2xl font-semibold tracking-tight">Destaques da edição</h2>
+                        <Status tom="sucesso">Resultado publicado</Status>
+                    </div>
+                    <section aria-labelledby="podio-geral" className="grid items-start gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
+                        <div className="event-art relative overflow-hidden rounded-2xl p-7">
+                            <Trophy className="size-8 text-[#d6ecac]" aria-hidden="true" />
+                            <h2 id="podio-geral" className="mt-5 text-2xl font-semibold">
                                 Pódio geral
                             </h2>
-                            {podio_geral.length === 0 ? (
-                                <p className="text-muted-foreground text-center text-sm">Nenhuma submissão pontuada ainda.</p>
-                            ) : (
-                                <Podio linhas={podio_geral} />
-                            )}
+                            <p className="mt-3 text-sm leading-relaxed text-white/80">
+                                As melhores colocações da edição, conforme a avaliação dos jurados e as regras de desempate.
+                            </p>
+                        </div>
+                        {podio_geral.length ? <Ranking linhas={podio_geral} /> : <EstadoVazio titulo="Nenhuma submissão pontuada ainda." />}
+                    </section>
+                    {Object.keys(podio_por_trilha).length > 0 && (
+                        <section aria-labelledby="podio-trilhas">
+                            <h2 id="podio-trilhas" className="mb-5 text-2xl font-semibold tracking-tight">
+                                Pódio por trilha
+                            </h2>
+                            <div className="grid items-start gap-6 lg:grid-cols-2">
+                                {Object.entries(podio_por_trilha).map(([track, rows]) => (
+                                    <section key={track}>
+                                        <h3 className="mb-3 font-semibold break-words">{track}</h3>
+                                        <Ranking linhas={rows} />
+                                    </section>
+                                ))}
+                            </div>
                         </section>
-
-                        {Object.keys(podio_por_trilha).length > 0 && (
-                            <section aria-labelledby="podio-trilhas">
-                                <h2 id="podio-trilhas" className="mb-8 text-center font-bold">
-                                    Pódio por trilha
-                                </h2>
-                                <div className="grid gap-10 sm:grid-cols-2">
-                                    {Object.entries(podio_por_trilha).map(([trilha, linhas]) => (
-                                        <div key={trilha} className="flex flex-col items-center gap-4">
-                                            <p className="text-muted-foreground text-sm font-semibold">{trilha}</p>
-                                            <Podio linhas={linhas} compacto />
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-
-                        {premio_popular && (
-                            <motion.section
-                                initial="oculto"
-                                whileInView="visivel"
-                                viewport={{ once: true, margin: '-60px' }}
-                                variants={fadeIn}
-                                aria-labelledby="premio-popular"
-                                className="border-border bg-card rounded-xl border p-6 text-center sm:p-8"
-                            >
-                                <h2 id="premio-popular" className="flex items-center justify-center gap-2 font-bold">
-                                    <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    )}
+                    {premio_popular && (
+                        <section aria-labelledby="premio-popular" className="bg-secondary flex flex-col gap-5 rounded-2xl p-6 sm:flex-row sm:p-8">
+                            <Users className="text-primary size-8 shrink-0" aria-hidden="true" />
+                            <div className="min-w-0">
+                                <h2 id="premio-popular" className="text-primary text-sm font-semibold">
                                     Prêmio popular
                                 </h2>
-                                <p className="mt-3 font-semibold">{premio_popular.titulo}</p>
-                                <p className="text-muted-foreground text-sm">
+                                <p className="mt-2 text-2xl font-semibold tracking-tight break-words">{premio_popular.titulo}</p>
+                                <p className="text-muted-foreground mt-2 break-words">
                                     {premio_popular.equipe} · {premio_popular.votos} {premio_popular.votos === 1 ? 'voto' : 'votos'}
                                 </p>
-                            </motion.section>
-                        )}
-                    </>
-                )}
-            </main>
-
-            <RodapePublico />
-        </div>
+                            </div>
+                        </section>
+                    )}
+                </div>
+            )}
+        </PublicLayout>
     );
 }

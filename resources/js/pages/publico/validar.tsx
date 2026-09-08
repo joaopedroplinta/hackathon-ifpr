@@ -1,91 +1,51 @@
-import { Head } from '@inertiajs/react';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { Award, CircleAlert, ShieldCheck } from 'lucide-react';
-
-import CabecalhoPublico from '@/components/hackathon/cabecalho-publico';
-import RodapePublico from '@/components/hackathon/rodape-publico';
+import EstadoVazio from '@/components/hackathon/estado-vazio';
+import Status from '@/components/hackathon/status';
+import PublicLayout from '@/layouts/public-layout';
 import { ValidacaoCertificado } from '@/types/validacao-certificado';
+import { CircleAlert, ShieldCheck } from 'lucide-react';
 
 export default function ValidarCertificado(props: ValidacaoCertificado) {
-    const reduzMovimento = useReducedMotion();
-
-    const fadeIn: Variants = {
-        oculto: reduzMovimento ? {} : { opacity: 0, y: 12 },
-        visivel: { opacity: 1, y: 0, transition: reduzMovimento ? { duration: 0 } : { duration: 0.5, ease: 'easeOut' } },
-    };
-
     return (
-        <div className="bg-background text-foreground min-h-svh">
-            <Head title="Validar certificado" />
-
-            <CabecalhoPublico />
-
-            <main className="mx-auto flex w-full max-w-md flex-col gap-8 p-4 pb-24 sm:p-6">
-                <motion.header initial="oculto" animate="visivel" variants={fadeIn} className="pt-8 text-center sm:pt-12">
-                    <h1 className="text-3xl font-bold tracking-tight">Validar certificado</h1>
-                    <p className="text-muted-foreground mt-2 text-sm">Confirma se um certificado foi mesmo emitido por este evento.</p>
-                </motion.header>
-
-                {!props.encontrado ? (
-                    <motion.div
-                        initial="oculto"
-                        animate="visivel"
-                        variants={fadeIn}
-                        className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center"
-                    >
-                        <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                            <CircleAlert className="text-muted-foreground size-5" aria-hidden="true" />
-                        </span>
-                        <p className="font-semibold">Certificado não encontrado</p>
-                        <p className="text-muted-foreground text-sm">Confira se o link ou o código foi copiado corretamente.</p>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        initial={reduzMovimento ? false : { opacity: 0, y: 16, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 24 }}
-                        className="border-primary/40 bg-card rounded-xl border p-6"
-                    >
-                        <motion.div
-                            initial={reduzMovimento ? false : { opacity: 0, scale: 0.7 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={reduzMovimento ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 18, delay: 0.15 }}
-                            className="mb-4 flex items-center gap-2 text-emerald-700 dark:text-emerald-400"
-                        >
-                            <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden="true" />
-                            <p className="font-semibold">Certificado válido</p>
-                        </motion.div>
-
-                        <dl className="flex flex-col gap-3 text-sm">
-                            <div>
-                                <dt className="text-muted-foreground">Nome</dt>
-                                <dd className="font-medium">{props.nome}</dd>
-                            </div>
-                            <div>
-                                <dt className="text-muted-foreground">Tipo</dt>
-                                <dd className="flex items-center gap-1.5 font-medium">
-                                    <Award className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    {props.tipo_label}
-                                </dd>
-                            </div>
-                            <div>
-                                <dt className="text-muted-foreground">Evento</dt>
-                                <dd className="font-medium">{props.evento}</dd>
-                            </div>
-                            <div>
-                                <dt className="text-muted-foreground">Carga horária</dt>
-                                <dd className="font-medium">{props.carga_horaria} horas</dd>
-                            </div>
-                            <div>
-                                <dt className="text-muted-foreground">Emitido em</dt>
-                                <dd className="font-medium">{props.emitido_em}</dd>
-                            </div>
+        <PublicLayout titulo="Validar certificado" descricao="Confira a autenticidade de um certificado emitido pela plataforma.">
+            {!props.encontrado ? (
+                <EstadoVazio
+                    icon={CircleAlert}
+                    titulo="Certificado não encontrado"
+                    descricao="Confira se o link ou o código foi copiado corretamente. Não foi possível confirmar um certificado com este endereço."
+                    acao={{ href: route('home'), texto: 'Voltar ao evento' }}
+                />
+            ) : (
+                <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                    <section className="border-border bg-card overflow-hidden rounded-2xl border">
+                        <div className="border-border border-b p-6 sm:p-8">
+                            <Status tom="sucesso">Certificado válido</Status>
+                            <p className="text-muted-foreground mt-6 text-sm">Emitido para</p>
+                            <h2 className="mt-2 text-2xl font-semibold tracking-tight break-words sm:text-3xl">{props.nome}</h2>
+                        </div>
+                        <dl className="grid gap-6 p-6 sm:grid-cols-2 sm:p-8">
+                            {[
+                                ['Evento', props.evento],
+                                ['Tipo', props.tipo_label],
+                                ['Carga horária', props.carga_horaria + ' horas'],
+                                ['Emitido em', props.emitido_em],
+                            ].map(([label, value]) => (
+                                <div key={label} className="min-w-0">
+                                    <dt className="text-muted-foreground text-xs">{label}</dt>
+                                    <dd className="mt-2 font-medium break-words">{value}</dd>
+                                </div>
+                            ))}
                         </dl>
-                    </motion.div>
-                )}
-            </main>
-
-            <RodapePublico />
-        </div>
+                    </section>
+                    <aside className="bg-secondary rounded-2xl p-6">
+                        <ShieldCheck className="text-primary size-6" aria-hidden="true" />
+                        <h2 className="mt-4 font-semibold">Verificação pública</h2>
+                        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                            Os dados ao lado correspondem ao registro emitido pelo sistema. Compare o nome, o evento e a carga horária com o documento
+                            recebido.
+                        </p>
+                    </aside>
+                </div>
+            )}
+        </PublicLayout>
     );
 }

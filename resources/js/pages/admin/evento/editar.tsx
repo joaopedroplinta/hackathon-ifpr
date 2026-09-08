@@ -5,6 +5,7 @@ import { FormEventHandler } from 'react';
 
 import PainelLogoCertificado from '@/components/hackathon/painel-logo-certificado';
 import PainelRegulamento from '@/components/hackathon/painel-regulamento';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,6 +61,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
         voting_closes_at: deIsoParaDatetimeLocal(evento.voting_closes_at),
         min_team_size: String(evento.min_team_size),
         max_team_size: String(evento.max_team_size),
+        collect_shirt_size: evento.collect_shirt_size,
+        collect_dietary_notes: evento.collect_dietary_notes,
         certificate_signer_name: evento.certificate_signer_name ?? '',
         certificate_signer_role: evento.certificate_signer_role ?? '',
         certificate_accent_color: evento.certificate_accent_color ?? '',
@@ -100,7 +103,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                     Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
                 </p>
 
-                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
+                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8" noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome do evento</Label>
                         <Input
@@ -170,6 +174,29 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                             />
                             <InputError id="registration_closes_at-erro" message={errors.registration_closes_at} />
                         </div>
+                    </fieldset>
+
+                    <fieldset className="border-border grid gap-3 rounded-xl border p-4">
+                        <legend className="px-1 text-sm font-semibold">Dados solicitados na inscrição</legend>
+                        <p className="text-muted-foreground text-sm">Ative somente dados necessários para itens oferecidos nesta edição.</p>
+                        <label className="flex min-h-11 items-center gap-3 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={data.collect_shirt_size}
+                                onChange={(e) => setData('collect_shirt_size', e.target.checked)}
+                                className="accent-primary size-4"
+                            />
+                            Solicitar tamanho de camiseta
+                        </label>
+                        <label className="flex min-h-11 items-center gap-3 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={data.collect_dietary_notes}
+                                onChange={(e) => setData('collect_dietary_notes', e.target.checked)}
+                                className="accent-primary size-4"
+                            />
+                            Solicitar restrições alimentares
+                        </label>
                     </fieldset>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">

@@ -4,6 +4,8 @@ import { LoaderCircle, MapPin, Search, UserRound } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import LeitorQr from '@/components/hackathon/leitor-qr';
+import ResumoErro from '@/components/hackathon/resumo-erro';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +25,7 @@ const campo =
 export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }: Props) {
     const [termoBusca, setTermoBusca] = useState(busca ?? '');
     const [buscando, setBuscando] = useState(false);
+    const [erroLeitura, setErroLeitura] = useState<string | null>(null);
 
     const checkpointForm = useForm({ name: '', type: '' });
 
@@ -47,6 +50,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
         try {
             const destino = new URL(texto);
             if (destino.origin === window.location.origin) {
+                setErroLeitura(null);
                 router.visit(destino.pathname + destino.search);
                 return;
             }
@@ -54,7 +58,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
             // não era uma URL válida -- cai no fallback abaixo
         }
 
-        window.location.href = texto;
+        setErroLeitura('Este QR Code não pertence a este sistema. Confira o crachá e tente novamente.');
     };
 
     const reduzMovimento = useReducedMotion();
@@ -77,42 +81,47 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                 </header>
 
                 {checkpoints.length === 0 ? (
-                    <section className="border-border bg-card rounded-xl border p-6">
+                    <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
                         <h2 className="font-semibold">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
                             Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
                         </p>
 
-                        <form onSubmit={criarCheckpoint} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                            <div className="grid flex-1 gap-2">
-                                <Label htmlFor="name">Nome</Label>
-                                <Input
-                                    id="name"
-                                    value={checkpointForm.data.name}
-                                    onChange={(e) => checkpointForm.setData('name', e.target.value)}
-                                    placeholder="Ex.: Entrada"
-                                />
+                        <form onSubmit={criarCheckpoint} className="flex flex-col gap-3" noValidate>
+                            <ResumoErro erros={checkpointForm.errors} />
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                                <div className="grid flex-1 gap-2">
+                                    <Label htmlFor="name">Nome</Label>
+                                    <Input
+                                        id="name"
+                                        value={checkpointForm.data.name}
+                                        onChange={(e) => checkpointForm.setData('name', e.target.value)}
+                                        placeholder="Ex.: Entrada"
+                                    />
+                                    <InputError message={checkpointForm.errors.name} />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="type">Tipo</Label>
+                                    <select
+                                        id="type"
+                                        value={checkpointForm.data.type}
+                                        onChange={(e) => checkpointForm.setData('type', e.target.value)}
+                                        className={`sm:w-40 ${campo}`}
+                                    >
+                                        <option value="">Selecione</option>
+                                        {opcoes.tipos.map((tipo) => (
+                                            <option key={tipo.valor} value={tipo.valor}>
+                                                {tipo.rotulo}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <InputError message={checkpointForm.errors.type} />
+                                </div>
+                                <Button type="submit" disabled={checkpointForm.processing}>
+                                    {checkpointForm.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                    Criar
+                                </Button>
                             </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="type">Tipo</Label>
-                                <select
-                                    id="type"
-                                    value={checkpointForm.data.type}
-                                    onChange={(e) => checkpointForm.setData('type', e.target.value)}
-                                    className={`sm:w-40 ${campo}`}
-                                >
-                                    <option value="">Selecione</option>
-                                    {opcoes.tipos.map((tipo) => (
-                                        <option key={tipo.valor} value={tipo.valor}>
-                                            {tipo.rotulo}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <Button type="submit" disabled={checkpointForm.processing}>
-                                {checkpointForm.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                                Criar
-                            </Button>
                         </form>
                     </section>
                 ) : (
@@ -128,6 +137,11 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
 
                         <div className="mb-6">
                             <LeitorQr onDecode={lerQrCode} />
+                            {erroLeitura && (
+                                <p role="alert" className="text-destructive mt-3 text-sm">
+                                    {erroLeitura}
+                                </p>
+                            )}
                         </div>
 
                         <div className="text-muted-foreground mb-6 flex items-center gap-3 text-xs">
@@ -136,7 +150,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                             <span className="bg-border h-px flex-1" />
                         </div>
 
-                        <form onSubmit={buscar} className="mb-6 flex gap-3">
+                        <form onSubmit={buscar} className="border-border bg-card mb-6 flex gap-3 rounded-2xl border p-4">
                             <div className="flex-1">
                                 <Label htmlFor="busca" className="sr-only">
                                     Buscar por nome
@@ -160,7 +174,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 {resultados.length === 0 ? (
                                     <p className="text-muted-foreground text-sm">Ninguém inscrito neste evento bate com "{busca}".</p>
                                 ) : (
-                                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                                         {resultados.map((pessoa) => (
                                             <li key={pessoa.id} className="flex items-center justify-between gap-3 p-3">
                                                 <div className="flex items-center gap-3">

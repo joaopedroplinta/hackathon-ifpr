@@ -139,7 +139,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     </section>
                 )}
 
-                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
                     <h2 className="font-semibold">Arquivos</h2>
 
                     {arquivos.length === 0 ? (
@@ -179,7 +179,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     ) : (
                         <ol className="flex flex-col gap-4">
                             {versoes.map((versao) => (
-                                <li key={versao.versao} className="border-border bg-card rounded-xl border p-4">
+                                <li key={versao.versao} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <div className="flex items-center gap-2 text-sm font-semibold">
                                             <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />

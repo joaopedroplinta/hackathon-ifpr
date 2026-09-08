@@ -4,6 +4,7 @@ import { AlertTriangle, LoaderCircle, RefreshCw, Send, Trophy } from 'lucide-rea
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { LinhaResultado, Pendencias } from '@/types/resultados';
 
@@ -85,26 +86,29 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                     </div>
                 </header>
 
-                {confirmandoComPendencia && (
-                    <div className="mb-6 rounded-xl border border-amber-600/40 bg-amber-600/10 p-4">
-                        <p className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
-                            <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
-                            Há pendências na lista abaixo. Publicar mesmo assim?
-                        </p>
-                        <div className="mt-3 flex gap-2">
-                            <Button size="sm" onClick={() => publicar(true)} disabled={publicando}>
+                <Dialog open={confirmandoComPendencia} onOpenChange={setConfirmandoComPendencia}>
+                    <DialogContent>
+                        <DialogTitle>Publicar resultados com pendências?</DialogTitle>
+                        <DialogDescription>
+                            Existem submissões sem nota, avaliações incompletas ou empates pendentes. A publicação ficará visível ao público e deve
+                            ser feita somente se essa decisão estiver confirmada.
+                        </DialogDescription>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="secondary" disabled={publicando}>
+                                    Voltar e revisar
+                                </Button>
+                            </DialogClose>
+                            <Button onClick={() => publicar(true)} disabled={publicando}>
                                 {publicando && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                                Confirmar publicação mesmo com pendências
+                                Publicar mesmo assim
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setConfirmandoComPendencia(false)}>
-                                Cancelar
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
 
                 {temPendencia && (
-                    <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                    <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
                         <h2 className="flex items-center gap-2 font-semibold">
                             <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             Pendências
@@ -159,7 +163,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                         <p className="text-muted-foreground text-sm">Clique em &quot;Recalcular&quot; para gerar o ranking.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-xl border">
+                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
                         <table className="w-full min-w-[36rem] text-sm">
                             <thead>
                                 <tr className="text-muted-foreground border-border border-b text-left">

@@ -2,7 +2,9 @@ import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import CampoSenha from '@/components/hackathon/campo-senha';
 import { GoogleLoginButton } from '@/components/hackathon/google-login-button';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -48,7 +50,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <span className="border-border absolute inset-x-0 top-1/2 border-t" aria-hidden="true" />
                 </div>
 
-                <form className="flex flex-col gap-6" onSubmit={submit}>
+                <form className="flex flex-col gap-6" onSubmit={submit} noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="grid gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="email">E-mail</Label>
@@ -75,9 +78,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     </TextLink>
                                 )}
                             </div>
-                            <Input
+                            <CampoSenha
                                 id="password"
-                                type="password"
                                 required
                                 tabIndex={2}
                                 autoComplete="current-password"
@@ -116,7 +118,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </form>
             </div>
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div role="status" className="bg-primary/10 text-primary rounded-xl p-3 text-center text-sm font-medium">
+                    {status}
+                </div>
+            )}
         </AuthLayout>
     );
 }
