@@ -11,17 +11,13 @@ com dados do `DemoSeeder` (evento passado encerrado + evento atual com
 inscrições abertas). Contas de teste: ver seção "Contas" no fim deste
 arquivo.
 
-**Limitação de ambiente registrada — não contornada:** o `resize_window` do
-navegador automatizado desta sessão não altera a janela real (`window.innerWidth`
-permanece 1920px após qualquer chamada), e não há emulação de dispositivo
-exposta pela ferramenta. **Não foi possível capturar screenshot real em
-320/390/768px nesta sessão.** Onde a coluna "Validação" diz "código", a
-verificação de responsividade foi feita por leitura das classes Tailwind
-(mobile-first, breakpoints `sm/md/lg`, `overflow-x-auto`, alvo de toque
-`size-11`/`h-11`/`min-h-11`), não por captura visual. Isso não substitui
-verificação visual real em 320/390px — pendente de ambiente com emulação de
-dispositivo funcional (browser local do usuário, ou outra sessão com esse
-suporte).
+**Evidência visual do Lote A:** `tests/Browser/public-ui.mjs` executou a
+matriz com Chromium em 320, 390, 768 e 1440px, nos temas claro e escuro,
+com dados fictícios isolados. As 80 verificações não encontraram overflow
+horizontal nem erro de página. As 40 capturas de 390 e 1440px estão em
+`/tmp/hackathon-lote-a-evidence/` nesta sessão; não são versionadas por serem
+artefatos locais. O navegador não gravou dados de voto no banco: as respostas
+de Inertia foram simuladas no teste.
 
 Legenda de status de implementação: `feito` (revisado e ajustado nesta
 tarefa), `ja-conforme` (auditado, já seguia o padrão, sem mudança de
@@ -43,11 +39,10 @@ Criados em `resources/js/components/hackathon/`:
 - `resumo-erro.tsx` — `ResumoErro` (banner de erro de formulário para leitor de tela).
 - `confirmar-acao.tsx` — `ConfirmarAcao` (Dialog de confirmação para ação sensível/destrutiva).
 
-Ainda não aplicados a nenhuma página existente — serão adotados conforme o
-lote correspondente for auditado, não retroativamente em massa (evita
-"marcar pronto só porque o layout pai mudou", vedado pela seção 9).
-Validação: `código` (compilam, `tsc`/`eslint` limpos); sem tela própria para
-screenshot.
+No Lote A, `EstadoVazio`, `Status` e `ResumoErro` já são usados. Também foram
+criados `layouts/public-layout.tsx`, para manter cabeçalho e contexto
+consistentes nas páginas públicas, e `documento-publico.tsx`, para navegação
+por seções em regulamento, privacidade e cookies.
 
 ## Correção transversal já aplicada
 
@@ -61,52 +56,156 @@ screenshot.
 
 ## Lote A — Público (10/10 auditadas)
 
-| Página | Papel/rota | Estados vistos | Arquivos alterados | Implementação | Validação |
-|---|---|---|---|---|---|
-| `publico/inicio.tsx` | `home` | evento publicado c/ inscrições abertas, não-inscrito | Ajustado texto do passo 3 (vídeo não podia parecer obrigatório — inconsistente com "(opcional)" em `submissao/minha.tsx`); `id`/`tabIndex` no `<main>` | feito | navegador (desktop claro/escuro, skip link, sem erro de console); mobile: código |
-| `publico/agenda.tsx` | `agenda.index` | com itens (evento atual sem agenda ainda — não testado com itens reais) | `id`/`tabIndex` no `<main>` | feito | código (ícone/hora/trilha/estado "agora" e vazio já conformes na leitura; não exercitado ao vivo com itens) |
-| `publico/projetos.tsx` | `projetos.index` | sem itens (evento atual ainda sem submissão) | `id`/`tabIndex`; adicionada explicação pré-voto ("só 1 voto, não dá pra trocar" — confirmado contra `CastPopularVote`, que não tem update/destroy); adicionado estado "votação não aberta" que faltava (antes só cobria aberta-sem-permissão) | feito | código (estado vazio exercitado ao vivo; voto/já-votado/fechada não exercitados com dado real) |
-| `publico/rubrica.tsx` | `rubrica.show` | com critérios (evento piloto) | `id`/`tabIndex` no `<main>` | feito | código |
-| `publico/regulamento.tsx` | `regulamento.show` | — | `id`/`tabIndex` no `motion.main` | feito | código |
-| `publico/resultados.tsx` | `resultados.show`, `resultados.show.edicao` | — | `id`/`tabIndex` no `<main>` | feito | código |
-| `publico/edicoes.tsx` | `edicoes.index` | — | `id`/`tabIndex` no `<main>` | feito | código |
-| `publico/validar.tsx` | `certificates.validate` | — | `id`/`tabIndex` no `<main>` | feito | código |
-| `publico/privacidade.tsx` | `privacidade.show` | — | `id`/`tabIndex` no `motion.main`; conteúdo jurídico não tocado | feito | código |
-| `publico/cookies.tsx` | `cookies.show` | — | `id`/`tabIndex` no `motion.main`; conteúdo não tocado | feito | código |
+| Página                    | Papel/rota                                  | Estados vistos                             | Arquivos alterados                                                          | Implementação | Validação                            |
+| ------------------------- | ------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------- | ------------- | ------------------------------------ |
+| `publico/inicio.tsx`      | `home`                                      | publicado, sem evento                      | repaginada anterior revisada; CTA contextual e texto de submissão corrigido | feito         | navegador, 4 tamanhos e 2 temas      |
+| `publico/agenda.tsx`      | `agenda.index`                              | itens, filtro vazio, agenda vazia          | filtros por dia/tipo, horários, localização e download agrupados            | feito         | navegador, filtros e matriz visual   |
+| `publico/projetos.tsx`    | `projetos.index`                            | busca, vazio, voto, erro, sucesso, fechado | busca, confirmação explícita, bloqueio concorrente e recibo de voto         | feito         | navegador; resposta de voto simulada |
+| `publico/rubrica.tsx`     | `rubrica.show`                              | critérios, vazia                           | comparação de peso/nota e guia de leitura                                   | feito         | navegador                            |
+| `publico/regulamento.tsx` | `regulamento.show`                          | arquivo/prazos                             | leitura por seções e navegação lateral; conteúdo preservado                 | feito         | navegador                            |
+| `publico/resultados.tsx`  | `resultados.show`, `resultados.show.edicao` | publicado e não publicado                  | ranking legível, trilhas e prêmio popular                                   | feito         | navegador                            |
+| `publico/edicoes.tsx`     | `edicoes.index`                             | lista e vazia                              | cartões de edição e próximo passo                                           | feito         | navegador                            |
+| `publico/validar.tsx`     | `certificates.validate`                     | encontrado e não encontrado                | comprovante estruturado e orientação de validação                           | feito         | navegador                            |
+| `publico/privacidade.tsx` | `privacidade.show`                          | conteúdo completo                          | leitura por seções; conteúdo jurídico preservado                            | feito         | navegador                            |
+| `publico/cookies.tsx`     | `cookies.show`                              | conteúdo completo                          | leitura por seções; conteúdo preservado                                     | feito         | navegador                            |
 
-**Pendente do Lote A antes de fechar de verdade:** exercitar `agenda.tsx` com
-itens reais de agenda (evento piloto tem `schedule_items`? conferir), exercitar
-`projetos.tsx` com voto e resultado publicado, capturar 320/390/768px em
-ambiente com emulação de dispositivo funcional, e testar o download `.ics`
-de fato abre/importa.
+**Limite conhecido do Lote A:** o download `.ics` foi preservado e o link foi
+verificado na interface; a importação em aplicativo de calendário não foi
+automatizada. O fluxo de voto foi testado contra uma resposta Inertia simulada
+e os 48 testes públicos/da votação passaram contra PostgreSQL.
 
-## Lotes B a F (39/49) — pendentes
+## Lote B — Autenticação e conta (9/9 auditadas)
 
-Ainda não auditados nesta sessão: `auth/*` (6), `settings/*` (3, Lote B);
-`dashboard.tsx` (já tocado na etapa anterior, falta revisão desta tarefa),
-`inscricao/criar.tsx`, `equipe/*` (4), `submissao/minha.tsx`,
-`credencial/mostrar.tsx`, `certificados/index.tsx` (Lote C);
-`jurado/avaliar.tsx` (Lote D, `jurado/fila.tsx` já tocado na etapa anterior);
-os 18 itens do Lote E (`admin/*`); `errors/erro.tsx` e os componentes
-transversais do Lote F.
+| Página | Papel/rota | Estados revisados | Arquivos/resultado | Implementação | Validação/evidência |
+| --- | --- | --- | --- | --- | --- |
+| `auth/login.tsx` | `login` | credencial inválida, processamento, retorno | resumo de erro, hierarquia e campo de senha | feito | código; captura pendente |
+| `auth/register.tsx` | `register` | requisitos, erros, processamento | erros próximos e campo de senha | feito | código; captura pendente |
+| `auth/forgot-password.tsx` | `password.request` | envio, confirmação, nova tentativa | status e resumo de erro | feito | código; captura pendente |
+| `auth/reset-password.tsx` | `password.reset` | token, requisitos, confirmação | status, erros e campo de senha | feito | código; captura pendente |
+| `auth/confirm-password.tsx` | `password.confirm` | explicação, senha inválida, retorno | contexto, erro e campo de senha | feito | código; captura pendente |
+| `auth/verify-email.tsx` | `verification.notice` | reenvio, feedback, saída | ação principal e status | feito | código; captura pendente |
+| `settings/profile.tsx` | `profile.edit` | foto, dados, salvar, exclusão | seções, resumo de erro e ação destrutiva separada | feito | código; captura pendente |
+| `settings/password.tsx` | `password.edit` | requisitos, erro, atualização | seção e mostrar/ocultar senha | feito | código; captura pendente |
+| `settings/appearance.tsx` | `appearance.edit` | claro, escuro, sistema | seleção acessível e estado atual | feito | código; captura pendente |
 
-Continuação planejada na ordem da seção 6 do plano (jornada do
-participante → dia do evento → gestão restante → fechamento).
+Também foi auditado `layouts/settings/layout.tsx`: usa a URL do Inertia e
+oferece navegação responsiva; não depende de `window` durante o render.
+
+## Lote C — Participante (9/9 auditadas)
+
+| Página | Papel/rota | Estados revisados | Arquivos/resultado | Implementação | Validação/evidência |
+| --- | --- | --- | --- | --- | --- |
+| `dashboard.tsx` | `dashboard` | papéis acumulados, perfil incompleto, próxima ação | aviso de dados do certificado e jornada existente auditada | feito | código; 9 testes/113 asserções; captura pendente |
+| `inscricao/criar.tsx` | `inscricao.create` | janela, erro, campos opcionais | seções, erros e coleta condicional | feito | código; captura pendente |
+| `equipe/sem-equipe.tsx` | `equipe.sem-equipe` | criar, entrar, bloqueio | orientação existente auditada | ja-conforme | código; captura pendente |
+| `equipe/criar.tsx` | `equipe.create` | tamanho, trilha, erro, envio | seção e resumo de erro | feito | código; captura pendente |
+| `equipe/entrar.tsx` | `equipe.join` | código inválido, equipe cheia, envio | seção e resumo de erro | feito | código; captura pendente |
+| `equipe/minha.tsx` | `equipe.minha` | membros, convite, saída, remoção | fallback de cópia e confirmações | feito | código; captura pendente |
+| `submissao/minha.tsx` | `submissao.minha` | rascunho, envio, prazo, bloqueio | resumo de erro e ações agrupadas | feito | código; captura pendente |
+| `credencial/mostrar.tsx` | `credencial.show` | QR, identificação, instrução | leitura em celular auditada | feito | código; captura pendente; leitura real do QR pendente |
+| `certificados/index.tsx` | `certificados.index` | disponível, vazio, download | cartões e estados de certificado | feito | código; captura pendente |
+
+## Lote D — Jurado (2/2 auditadas)
+
+| Página | Papel/rota | Estados revisados | Arquivos/resultado | Implementação | Validação/evidência |
+| --- | --- | --- | --- | --- | --- |
+| `jurado/fila.tsx` | `jurado.fila` | pendente, enviada, vazia, títulos longos | progresso e pendências visíveis | feito | código; captura pendente |
+| `jurado/avaliar.tsx` | `jurado.avaliar` | zero, vazio, rascunho, erro, envio final | escala, peso, erros e estado explícitos | feito | código; captura pendente |
+
+## Lote E — Organização e administração (18/18 auditadas)
+
+| Página | Papel/rota | Estados revisados | Arquivos/resultado | Implementação | Validação/evidência |
+| --- | --- | --- | --- | --- | --- |
+| `admin/index.tsx` | `painel.index` | indicadores, prioridades, atalhos | painel existente auditado | ja-conforme | código; captura pendente |
+| `admin/sem-evento.tsx` | `painel.sem-evento` | primeiro acesso, permissão | orientação existente auditada | ja-conforme | código; captura pendente |
+| `admin/evento/criar.tsx` | `painel.evento.create` | dados, janelas, erros | seções de formulário e resumo | feito | código; captura pendente |
+| `admin/evento/editar.tsx` | `painel.evento.edit` | calendário, limites, certificado, salvar | seções e coleta opcional de inscrição | feito | código; captura pendente |
+| `admin/agenda/index.tsx` | `painel.agenda.index` | vazio, publicação, exclusão | lista operacional e confirmação | feito | código; captura pendente |
+| `admin/agenda/formulario.tsx` | `painel.agenda.create/edit` | tipo, datas, relações, erro | campos condicionais e feedback | feito | código; captura pendente |
+| `admin/checkin/index.tsx` | `painel.checkin.index` | scanner, origem inválida, busca manual | fallback manual e validação de origem do QR | feito | código; captura pendente |
+| `admin/checkin/confirmar.tsx` | `painel.checkin.confirm` | checkpoint, repetição, envio | confirmação e resumo de erro | feito | código; captura pendente |
+| `admin/incidentes/index.tsx` | `painel.incidentes.index` | histórico, extensão, erro | confirmação para extensão de prazo | feito | código; captura pendente |
+| `admin/submissoes/index.tsx` | `painel.submissoes.index` | filtro, vazio, paginação, exportação | filtros e tabela operacional | feito | código; captura pendente |
+| `admin/submissoes/mostrar.tsx` | `painel.submissoes.show` | arquivo, histórico, situação | detalhe e ações sensíveis auditados | feito | código; captura pendente |
+| `admin/submissoes/lancar.tsx` | `painel.submissoes.lancar` | contingência, origem, erro | resumo de erro e fluxo rápido | feito | código; captura pendente |
+| `admin/rubrica/index.tsx` | `painel.rubrica.index` | criar, ativar, excluir | lista, resumo de erro e confirmação | feito | código; captura pendente |
+| `admin/rubrica/mostrar.tsx` | `painel.rubrica.show` | critérios, edição, exclusão | `ConfirmarAcao`, estrutura e resumo de erro | feito | código; captura pendente |
+| `admin/jurados/index.tsx` | `painel.jurados.index` | carga, conflito, distribuição, reabertura | controles operacionais auditados | feito | código; captura pendente |
+| `admin/resultados/index.tsx` | `painel.resultados.index` | recalcular, pendências, publicar | confirmação de publicação e feedback | feito | código; captura pendente |
+| `admin/certificados/index.tsx` | `painel.certificados.index` | emissão, tipo, situação, download | formulário e lista auditados | feito | código; captura pendente |
+| `admin/usuarios/index.tsx` | `painel.usuarios.index` | papéis, filtro, processamento | gestão de papéis auditada | feito | código; captura pendente |
+
+## Lote F — Erros e superfícies transversais (1/1 auditada)
+
+| Página/superfície | Papel/rota | Estados revisados | Arquivos/resultado | Implementação | Validação/evidência |
+| --- | --- | --- | --- | --- | --- |
+| `errors/erro.tsx` e componentes transversais | erros, modais, menus, avisos e navegação | 403/404/500, teclado, foco, tema, upload, QR | orientação por status; skip link, alvos de toque e fallbacks auditados | feito | código; captura autenticada pendente |
+
+Permanecem pendentes a captura visual autenticada das áreas internas e a
+regressão funcional ponta a ponta; a matriz pública segue automatizada.
+
+## Alterações posteriores aos lotes
+
+### Certificado PDF
+
+`resources/views/certificates/pdf.blade.php` foi redesenhado diretamente para
+o DomPDF: moldura editorial, faixa na cor configurada pelo evento, selo,
+hierarquia de título/nome, bloco de participação e rodapé de assinatura e
+validação. Logo e cor continuam sendo lidos do snapshot salvo no momento da
+emissão; portanto PDFs já gerados não são alterados retroativamente. A
+compilação das views (`php artisan view:cache`) e Pint passaram. Validação:
+`código`.
+
+### Coleta opcional na inscrição
+
+A migration `2026_09_07_100000_add_registration_data_collection_to_events_table.php`
+adiciona `collect_shirt_size` e `collect_dietary_notes`, ambos desligados por
+padrão. A organização ativa cada finalidade em Evento; a inscrição mostra só
+os campos habilitados e o Form Request os exclui de POSTs forjados quando a
+coleta está desligada. Foram adicionados testes de configuração, exibição e
+persistência. Requer `php artisan migrate`. Validação: `código`.
+
+### Correções após fluxo ponta a ponta (2026-09-08)
+
+Os fluxos reais revisados externamente encontraram três regressões, todas
+corrigidas nesta sessão:
+
+- `ResetPasswordQueued` substitui a notificação padrão do Laravel. O e-mail
+  de redefinição de senha agora é enfileirado e inteiramente em português;
+  `User::sendPasswordResetNotification()` garante seu uso pelo broker.
+- O status de solicitação de redefinição usa
+  `auth.password_reset_link_sent` em `lang/pt_BR/auth.php`, sem texto inglês
+  residual e sem revelar se o e-mail existe.
+- `jurado/avaliar.tsx` reconhece uma rubrica sem critérios: comunica que a
+  organização deve configurá-la e mantém o envio desabilitado, em vez de
+  informar incorretamente que a avaliação está pronta.
+
+Os testes específicos de senha/notificação e avaliação passaram com **15
+testes e 48 asserções**. Validação da interface de jurado: `código`; uma
+nova captura autenticada continua pendente.
 
 ## Regressão funcional (seção 8.2) — não executada ainda
 
 Nenhum dos 6 fluxos da seção 8.2 foi percorrido ponta a ponta nesta sessão.
 
-## Comandos de verificação
+## Comandos de verificação executados
 
 ```
-npx tsc --noEmit        # limpo após componentes + Lote A
-npm run lint:check      # limpo após componentes + Lote A
+npx tsc --noEmit
+npm run lint:check
+./vendor/bin/pint --test
+npm run format:check
+npm run build -- --logLevel error
+git diff --check
+/usr/bin/zsh -lc 'PLAYWRIGHT_MODULE=/tmp/hackathon-public-review/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/tmp/hackathon-public-review/browsers node tests/Browser/public-ui.mjs'
 ```
 
-Ainda não executados nesta sessão: `./vendor/bin/pint --test`,
-`npm run format:check`, `npm run build`, `./vendor/bin/pest`,
-`git diff --check`.
+TypeScript, lint, Pint, Prettier, build, diff e Playwright passaram na última
+rodada registrada; o Playwright validou 80 combinações de viewport/tema e 10
+interações públicas. Em 2026-09-07, `./vendor/bin/pest` também passou com
+**458 testes e 2170 asserções**. A primeira tentativa falhou somente porque o
+sandbox não alcançava o PostgreSQL local; repetido com acesso ao ambiente, o
+container saudável respondeu normalmente.
 
 ## Contas de teste (banco local, senha `password`)
 
