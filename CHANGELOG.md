@@ -10,6 +10,74 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.1.0] - 2026-09-08
+
+Fecha duas das quatro decisões organizacionais que ficaram em aberto na
+1.0.0: hospedagem fora do Brasil (autorizada pela orientadora) e provedor
+de e-mail em produção, ambas em 2026-08-22
+([#71](https://github.com/joaopedroplinta/hackathon-ifpr/issues/71),
+[#78](https://github.com/joaopedroplinta/hackathon-ifpr/issues/78)).
+Restam só a nomeação formal do DPO
+([#83](https://github.com/joaopedroplinta/hackathon-ifpr/issues/83)) e o
+ensaio ao vivo com a equipe de organização
+([#86](https://github.com/joaopedroplinta/hackathon-ifpr/issues/86)), nenhuma
+delas código. O grosso desta versão é a repaginada completa da interface
+(público, participante, organizador e jurado) e a personalização do
+certificado em PDF.
+
+### Adicionado
+
+- Tela de administração para conceder e revogar papéis de usuário (#111)
+- Requisitos de senha exibidos como checklist ao vivo durante o cadastro
+  (#112)
+- Template de e-mail transacional redesenhado com a identidade visual da
+  marca, em vez do template padrão do Laravel (#117)
+- Certificado em PDF passa a trazer CPF, matrícula e equipe/projeto de quem
+  recebe (#121), bloco de assinatura com nome e cargo (#123), e agora a
+  organização pode personalizar logo e cor de destaque por evento (#132)
+- Tela de criação do primeiro evento, com anexo do regulamento no mesmo
+  fluxo (#125, #128)
+- Repaginada completa da interface: página pública (Lote A) e componentes
+  compartilhados (`ContainerPagina`, `EstadoVazio`, `Status`,
+  `ConfirmarAcao` e outros em `components/hackathon/`), experiência do
+  evento público, fluxos autenticados (conta, equipe, submissão, jurado) e
+  novo ícone do sistema ("Encontro", substituindo o prompt de terminal
+  anterior) (#136, #138)
+- Organizador pode habilitar ou desabilitar, por evento, a coleta de
+  tamanho de camiseta e restrição alimentar na inscrição — desligado por
+  padrão, para não pedir dado sem finalidade (#138)
+- Dashboard do participante passa a lembrar de completar o perfil
+  institucional antes de emitir certificado (#138)
+
+### Alterado
+
+- Rotas do organizador reorganizadas: prefixo `/admin` separado das rotas
+  de staff, que passam a viver sob `/painel` (#134)
+- PHP de produção rebaixado de 8.5 para 8.4 — a imagem `php:8.5-cli-alpine`
+  tinha um bug de extensão que impedia instalar o opcache; no 8.4 o
+  opcache volta a funcionar e ficou reativado ([#137](https://github.com/joaopedroplinta/hackathon-ifpr/pull/137))
+- Armazenamento de upload migrado para Railway Volume, resolvendo a
+  persistência entre deploys que antes dependia do disco efêmero do
+  container (#131)
+
+### Corrigido
+
+- Notificação de verificação de e-mail agora vai pela fila em vez de
+  bloquear a requisição, e o conteúdo do e-mail passou a ser
+  inteiramente em português (#113, #115)
+- E-mail de redefinição de senha e a mensagem da tela "esqueci minha
+  senha" estavam em inglês (template padrão do `Illuminate\Auth\
+  Notifications\ResetPassword`, nunca customizado) — agora totalmente em
+  português e sem revelar se a conta existe (#138)
+- Healthcheck do worker/scheduler não podia ficar no `railway.json`
+  compartilhado com o serviço web (#114)
+- Verde residual da identidade anterior ao redesenho ainda aparecia no
+  favicon e em gráficos (#119)
+- Tela em branco (404 cru) quando não havia evento publicado, trocada por
+  uma tela de orientação (#127); texto de referência interna que vazava
+  pra tela de usuários sem contexto pro leitor (#129); link de logout que
+  faltava no cabeçalho das páginas públicas (#126)
+
 ## [1.0.0] - 2026-08-21
 
 Fecha o desenvolvimento de funcionalidades: todas as fases do evento
@@ -123,7 +191,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/joaopedroplinta/hackathon-ifpr/releases/tag/v0.6.0
