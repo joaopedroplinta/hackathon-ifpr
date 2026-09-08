@@ -19,7 +19,7 @@ ARG VITE_APP_NAME="Hackathon IFPR"
 ENV VITE_APP_NAME=$VITE_APP_NAME
 RUN npm run build
 
-FROM php:8.5-cli-alpine AS app
+FROM php:8.4-cli-alpine AS app
 
 RUN apk add --no-cache \
     postgresql-dev \
@@ -30,12 +30,22 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_pgsql pgsql gd zip bcmath intl mbstring exif pcntl
-# opcache fica de fora de propósito: quebra o build nessa imagem
-# php:8.5-cli-alpine (bug da extensão nessa versão recente do PHP, não do
-# Dockerfile -- `docker-php-ext-install opcache` falha isolado, sem gd/zip/
-# etc envolvidos). Ganho de performance, não requisito -- não vale travar a
-# demo por isso.
+    && docker-php-ext-install pdo_pgsql pgsql gd zip bcmath intl mbstring exif pcntl opcache
+# Na imagem php:8.5-cli-alpine (antes da troca pro 8.4 acima),
+# `docker-php-ext-install opcache` falhava isolado -- bug da extensão
+# nessa versão do PHP, não do Dockerfile. enable_cli=1 é obrigatório aqui:
+# o processo que atende HTTP é `php artisan serve` (SAPI cli, sem fpm/nginx
+# -- ver comentário no topo do arquivo), então sem isso o opcache não pega
+# no processo que importa. validate_timestamps=0 porque a imagem é
+# reconstruída a cada deploy -- checar mtime de arquivo em toda requisição
+# não tem o que pegar.
+RUN { \
+    echo 'opcache.enable=1'; \
+    echo 'opcache.enable_cli=1'; \
+    echo 'opcache.validate_timestamps=0'; \
+    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.max_accelerated_files=20000'; \
+    } > /usr/local/etc/php/conf.d/opcache-prod.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
