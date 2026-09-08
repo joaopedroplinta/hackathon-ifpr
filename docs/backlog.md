@@ -134,6 +134,14 @@ de injeção no dompdf) em vez de template inteiro customizável. Design
 congelado por certificado (`payload.template`) no momento da emissão —
 trocar cor/logo depois não altera certificado já emitido.
 
+**Fechado depois do sprint (2026-09-08):** novo modelo visual do certificado —
+[PR #139](https://github.com/joaopedroplinta/hackathon-ifpr/pull/139) — ✅.
+Layout institucional A4 paisagem com faixa lateral, moldura e tipografia
+serifada, mantendo o snapshot de cor/logo por certificado (`payload.template`)
+já existente. Corrigido de brinde um bug real do template anterior: um
+`min-height` pensado pra retrato sobrava pra uma segunda página quase em
+branco em todo certificado emitido em paisagem.
+
 ---
 
 ## Épico 8 — Regulamento e Transparência
