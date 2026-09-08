@@ -29,6 +29,11 @@ Thumbs.db
 .claude/settings.local.json
 .claude/worktrees
 
+# Estado/config local de outras ferramentas de agente (Codex CLI) — não é
+# trabalho do projeto e o config.toml pode carregar credencial de MCP server.
+/.codex
+/.agents
+
 # Plano B: dumps e planilhas do dia do evento nunca vão pro repositório
 /backups
 *.dump
