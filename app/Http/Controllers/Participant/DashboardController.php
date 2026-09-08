@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Team;
+use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,9 +26,13 @@ class DashboardController extends Controller
     {
         $user = request()->user();
         $event = Event::current();
+        $perfilCertificado = $this->perfilCertificado($user);
 
         if (! $event) {
-            return Inertia::render('dashboard', ['trilha' => null]);
+            return Inertia::render('dashboard', [
+                'trilha' => null,
+                'perfil_certificado' => $perfilCertificado,
+            ]);
         }
 
         $inscrito = $event->isRegistered($user);
@@ -42,7 +47,34 @@ class DashboardController extends Controller
                 $this->passoSubmissao($event, $team, $submission),
                 $this->passoResultado($event),
             ],
+            'perfil_certificado' => $perfilCertificado,
         ]);
+    }
+
+    /**
+     * Dados exibidos no certificado. A pendência é calculada aqui para que a
+     * dashboard não replique a regra de vínculo/matrícula no navegador.
+     *
+     * @return array{pendente: bool, campos: list<string>}
+     */
+    private function perfilCertificado(User $user): array
+    {
+        $campos = [];
+
+        if (blank($user->cpf)) {
+            $campos[] = 'CPF';
+        }
+
+        if ($user->tipo_vinculo === null) {
+            $campos[] = 'vínculo institucional';
+        } elseif (($campoMatricula = $user->tipo_vinculo->exigeMatricula()) && blank($user->{$campoMatricula})) {
+            $campos[] = $campoMatricula === 'matricula_suap' ? 'matrícula SUAP' : 'matrícula SIAPE';
+        }
+
+        return [
+            'pendente' => $campos !== [],
+            'campos' => $campos,
+        ];
     }
 
     /** @return array{chave: string, titulo: string, descricao: string, status: string, href: string|null} */

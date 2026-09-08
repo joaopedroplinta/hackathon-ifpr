@@ -1,16 +1,17 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { ArrowRight, Award, Calendar, Check, ChevronRight, ClipboardCheck, LayoutGrid, Lock, QrCode } from 'lucide-react';
+import { ArrowRight, Award, Calendar, Check, ChevronRight, ClipboardCheck, FileWarning, LayoutGrid, Lock, QrCode } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
-import { type PassoTrilha } from '@/types/dashboard';
+import { type PassoTrilha, type PerfilCertificado } from '@/types/dashboard';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Início', href: '/dashboard' }];
 
 interface Props {
     trilha: PassoTrilha[] | null;
+    perfil_certificado: PerfilCertificado;
 }
 
 function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTrilha; indice: number; total: number; reduzMovimento: boolean | null }) {
@@ -65,7 +66,7 @@ function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTril
     );
 }
 
-export default function Dashboard({ trilha }: Props) {
+export default function Dashboard({ trilha, perfil_certificado: perfilCertificado }: Props) {
     const { auth, evento } = usePage<SharedData>().props;
     const reduzMovimento = useReducedMotion();
     const completed = trilha?.filter((step) => step.status === 'concluido').length ?? 0;
@@ -113,6 +114,29 @@ export default function Dashboard({ trilha }: Props) {
                         )}
                     </div>
                 </header>
+
+                {perfilCertificado.pendente && (
+                    <section
+                        className="flex flex-col gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+                        aria-labelledby="perfil-certificado-titulo"
+                    >
+                        <div className="flex gap-3">
+                            <FileWarning className="mt-0.5 size-5 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden="true" />
+                            <div>
+                                <h2 id="perfil-certificado-titulo" className="font-semibold">
+                                    Complete seu perfil para o certificado
+                                </h2>
+                                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                                    Faltam {perfilCertificado.campos.join(' e ')}. Essas informações aparecem no certificado e ajudam a garantir sua
+                                    validade.
+                                </p>
+                            </div>
+                        </div>
+                        <Button asChild variant="outline" className="bg-background h-11 shrink-0 border-amber-600/40 hover:bg-amber-500/10">
+                            <Link href={route('profile.edit')}>Completar perfil</Link>
+                        </Button>
+                    </section>
+                )}
 
                 {trilha ? (
                     <div className="grid items-start gap-6 lg:grid-cols-[1.35fr_1fr]">

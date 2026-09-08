@@ -7,3 +7,8 @@ export type PassoTrilha = {
     status: StatusPasso;
     href: string | null;
 };
+
+export type PerfilCertificado = {
+    pendente: boolean;
+    campos: string[];
+};

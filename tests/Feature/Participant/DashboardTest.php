@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\TipoVinculo;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\Submission;
@@ -41,6 +42,36 @@ class DashboardTest extends TestCase
             ->get('/dashboard')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page->component('dashboard')->where('trilha', null));
+    }
+
+    public function test_dashboard_indica_os_dados_necessarios_para_o_certificado(): void
+    {
+        $user = User::factory()->create(['cpf' => null, 'tipo_vinculo' => TipoVinculo::AlunoIfpr]);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('dashboard')
+                ->where('perfil_certificado.pendente', true)
+                ->where('perfil_certificado.campos', ['CPF', 'matrícula SUAP'])
+            );
+    }
+
+    public function test_dashboard_nao_exibe_aviso_com_perfil_pronto_para_certificado(): void
+    {
+        $user = User::factory()->create([
+            'cpf' => '52998224725',
+            'tipo_vinculo' => TipoVinculo::ProfessorIfpr,
+            'matricula_siape' => '1234567',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('dashboard')
+                ->where('perfil_certificado.pendente', false)
+                ->where('perfil_certificado.campos', [])
+            );
     }
 
     public function test_usuario_nao_inscrito_ve_so_o_passo_de_inscricao_disponivel()
