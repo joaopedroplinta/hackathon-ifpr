@@ -3,6 +3,8 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Award, CircleCheck, Clock, FileText } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -49,69 +51,64 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     </p>
                 </header>
 
-                <section className="border-border bg-card mb-6 rounded-xl border p-4 sm:p-6">
+                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
                     <h2 className="font-semibold">Emitir certificado avulso</h2>
-                    <form onSubmit={emitir} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                            <Label htmlFor="user_id">Pessoa</Label>
-                            <select
-                                id="user_id"
-                                value={form.data.user_id}
-                                onChange={(e) => form.setData('user_id', e.target.value)}
-                                className={campo}
-                                aria-describedby={form.errors.user_id ? 'user_id-erro' : undefined}
-                            >
-                                <option value="">Selecione</option>
-                                {pessoas.map((p) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.nome}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="flex-1">
-                            <Label htmlFor="type">Tipo</Label>
-                            <select
-                                id="type"
-                                value={form.data.type}
-                                onChange={(e) => form.setData('type', e.target.value)}
-                                className={campo}
-                                aria-describedby={form.errors.type ? 'type-erro' : undefined}
-                            >
-                                <option value="">Selecione</option>
-                                {tipos.map((t) => (
-                                    <option key={t.value} value={t.value}>
-                                        {t.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        {form.data.type === 'colocacao' && (
+                    <form onSubmit={emitir} className="mt-3 grid gap-3" noValidate>
+                        <ResumoErro erros={form.errors} />
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                             <div className="flex-1">
-                                <Label htmlFor="colocacao">Texto da colocação</Label>
-                                <input
-                                    id="colocacao"
-                                    value={form.data.colocacao}
-                                    onChange={(e) => form.setData('colocacao', e.target.value)}
-                                    placeholder="Ex.: 1º lugar geral"
+                                <Label htmlFor="user_id">Pessoa</Label>
+                                <select
+                                    id="user_id"
+                                    value={form.data.user_id}
+                                    onChange={(e) => form.setData('user_id', e.target.value)}
                                     className={campo}
-                                />
+                                    aria-describedby={form.errors.user_id ? 'user_id-erro' : undefined}
+                                >
+                                    <option value="">Selecione</option>
+                                    {pessoas.map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                                <InputError id="user_id-erro" message={form.errors.user_id} />
                             </div>
-                        )}
-                        <Button type="submit" disabled={form.processing}>
-                            {form.processing ? 'Emitindo…' : 'Emitir'}
-                        </Button>
+                            <div className="flex-1">
+                                <Label htmlFor="type">Tipo</Label>
+                                <select
+                                    id="type"
+                                    value={form.data.type}
+                                    onChange={(e) => form.setData('type', e.target.value)}
+                                    className={campo}
+                                    aria-describedby={form.errors.type ? 'type-erro' : undefined}
+                                >
+                                    <option value="">Selecione</option>
+                                    {tipos.map((t) => (
+                                        <option key={t.value} value={t.value}>
+                                            {t.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <InputError id="type-erro" message={form.errors.type} />
+                            </div>
+                            {form.data.type === 'colocacao' && (
+                                <div className="flex-1">
+                                    <Label htmlFor="colocacao">Texto da colocação</Label>
+                                    <input
+                                        id="colocacao"
+                                        value={form.data.colocacao}
+                                        onChange={(e) => form.setData('colocacao', e.target.value)}
+                                        placeholder="Ex.: 1º lugar geral"
+                                        className={campo}
+                                    />
+                                </div>
+                            )}
+                            <Button type="submit" disabled={form.processing}>
+                                {form.processing ? 'Emitindo…' : 'Emitir'}
+                            </Button>
+                        </div>
                     </form>
-                    {form.errors.user_id && (
-                        <p id="user_id-erro" className="mt-2 text-sm text-red-600">
-                            {form.errors.user_id}
-                        </p>
-                    )}
-                    {form.errors.type && (
-                        <p id="type-erro" className="mt-2 text-sm text-red-600">
-                            {form.errors.type}
-                        </p>
-                    )}
                 </section>
 
                 <h2 className="mb-3 font-semibold">Emitidos</h2>
@@ -124,7 +121,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                         <p className="text-muted-foreground text-sm">Rode o comando de emissão em lote ou emita um avulso acima.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-xl border">
+                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
                         <table className="w-full min-w-[32rem] text-sm">
                             <thead>
                                 <tr className="text-muted-foreground border-border border-b text-left">

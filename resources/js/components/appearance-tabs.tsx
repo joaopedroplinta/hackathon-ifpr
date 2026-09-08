@@ -13,13 +13,21 @@ export default function AppearanceToggleTab({ className = '', ...props }: HTMLAt
     ];
 
     return (
-        <div className={cn('inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800', className)} {...props}>
+        <div
+            role="radiogroup"
+            aria-label="Tema da interface"
+            className={cn('bg-muted grid w-full grid-cols-3 gap-2 rounded-2xl p-2', className)}
+            {...props}
+        >
             {tabs.map(({ value, icon: Icon, label }) => (
                 <button
                     key={value}
+                    type="button"
+                    role="radio"
+                    aria-checked={appearance === value}
                     onClick={() => updateAppearance(value)}
                     className={cn(
-                        'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
+                        'flex min-h-11 items-center justify-center rounded-xl px-3.5 py-2 transition-colors',
                         appearance === value
                             ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
                             : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',

@@ -1,10 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Check, Copy, Crown, LogOut, UserMinus } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import PainelConvites from '@/components/hackathon/painel-convites';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 
 type Membro = {
@@ -38,15 +39,23 @@ interface Props {
 
 function CodigoConvite({ codigo }: { codigo: string }) {
     const [copiado, setCopiado] = useState(false);
+    const [erro, setErro] = useState(false);
 
     const copiar = async () => {
-        await navigator.clipboard.writeText(codigo);
-        setCopiado(true);
-        window.setTimeout(() => setCopiado(false), 2000);
+        try {
+            if (!navigator.clipboard) throw new Error('Clipboard indisponível');
+            await navigator.clipboard.writeText(codigo);
+            setErro(false);
+            setCopiado(true);
+            window.setTimeout(() => setCopiado(false), 2000);
+        } catch {
+            setCopiado(false);
+            setErro(true);
+        }
     };
 
     return (
-        <div className="border-border bg-card rounded-xl border p-6">
+        <div className="border-border bg-card rounded-2xl border p-6 sm:p-8">
             <h2 className="font-semibold">Código de convite</h2>
             <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
 
@@ -64,7 +73,57 @@ function CodigoConvite({ codigo }: { codigo: string }) {
                     )}
                 </Button>
             </div>
+            {erro && (
+                <p role="alert" className="text-destructive mt-3 text-sm">
+                    Não foi possível copiar. Selecione e copie o código manualmente.
+                </p>
+            )}
         </div>
+    );
+}
+
+function AcaoConfirmada({
+    titulo,
+    descricao,
+    confirmar,
+    onConfirmar,
+    variante = 'outline',
+    children,
+}: {
+    titulo: string;
+    descricao: string;
+    confirmar: string;
+    onConfirmar: (onFinish: () => void) => void;
+    variante?: 'outline' | 'destructive';
+    children: ReactNode;
+}) {
+    const [processando, setProcessando] = useState(false);
+
+    const executar = () => {
+        setProcessando(true);
+        onConfirmar(() => setProcessando(false));
+    };
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant={variante} size="sm">
+                    {children}
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogTitle>{titulo}</DialogTitle>
+                <DialogDescription>{descricao}</DialogDescription>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button variant="secondary">Cancelar</Button>
+                    </DialogClose>
+                    <Button variant={variante === 'destructive' ? 'destructive' : 'default'} disabled={processando} onClick={executar}>
+                        {processando ? 'Processando…' : confirmar}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }
 
@@ -87,7 +146,7 @@ function Lideranca({ equipe }: { equipe: Props['equipe'] }) {
     };
 
     return (
-        <section className="border-border bg-card rounded-xl border p-6">
+        <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
             <h2 className="font-semibold">Passar a liderança</h2>
             <p className="text-muted-foreground mt-1 text-sm">
                 Quem receber a liderança passa a poder convidar, editar e submeter pela equipe. Você continua na equipe como integrante.
@@ -128,7 +187,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
         <AppLayout breadcrumbs={[{ title: 'Equipe', href: route('teams.show') }]}>
             <Head title={equipe.nome} />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4 sm:p-6">
                 <header>
                     <h1 className="text-2xl font-bold tracking-tight">{equipe.nome}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
@@ -139,7 +198,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
                 <CodigoConvite codigo={equipe.codigo_convite} />
 
-                <section className="border-border bg-card rounded-xl border p-6">
+                <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <h2 className="font-semibold">Integrantes</h2>
                         <span className="text-muted-foreground text-sm">
@@ -175,18 +234,18 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                                     </span>
                                 )}
                                 {membro.pode_remover && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        aria-label={`Remover ${membro.nome} da equipe`}
-                                        onClick={() =>
-                                            router.delete(route('teams.members.remove', membro.id), {
-                                                preserveScroll: true,
-                                            })
+                                    <AcaoConfirmada
+                                        titulo={`Remover ${membro.nome}?`}
+                                        descricao="A pessoa poderá entrar novamente enquanto o prazo de equipes estiver aberto."
+                                        confirmar="Remover integrante"
+                                        variante="destructive"
+                                        onConfirmar={(onFinish) =>
+                                            router.delete(route('teams.members.remove', membro.id), { preserveScroll: true, onFinish })
                                         }
                                     >
                                         <UserMinus className="h-4 w-4" aria-hidden="true" />
-                                    </Button>
+                                        <span className="sr-only">Remover {membro.nome}</span>
+                                    </AcaoConfirmada>
                                 )}
                             </li>
                         ))}
@@ -206,17 +265,27 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                     const sozinho = equipe.membros.length === 1;
 
                     return (
-                        <section className="border-border bg-card rounded-xl border p-6">
+                        <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
                             <h2 className="font-semibold">Sair da equipe</h2>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 {sozinho
                                     ? 'Você é a única pessoa na equipe. Ao sair, ela será desfeita.'
                                     : 'Você poderá entrar em outra equipe depois, enquanto o prazo permitir.'}
                             </p>
-                            <Button variant="outline" className="mt-4" onClick={() => router.delete(route('teams.leave', eu.id))}>
+                            <AcaoConfirmada
+                                titulo="Sair da equipe?"
+                                descricao={
+                                    sozinho
+                                        ? 'A equipe será desfeita porque você é a única pessoa integrante.'
+                                        : 'Você poderá entrar em outra equipe enquanto o prazo estiver aberto.'
+                                }
+                                confirmar="Sair da equipe"
+                                variante="outline"
+                                onConfirmar={(onFinish) => router.delete(route('teams.leave', eu.id), { preserveScroll: true, onFinish })}
+                            >
                                 <LogOut className="h-4 w-4" aria-hidden="true" />
                                 Sair da equipe
-                            </Button>
+                            </AcaoConfirmada>
                         </section>
                     );
                 })()}

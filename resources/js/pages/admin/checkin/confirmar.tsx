@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle, UserRound } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -40,7 +41,7 @@ export default function ConfirmarCheckin({
     via,
     confirmar_url,
 }: Props) {
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         checkpoint_id: checkpoint_selecionado_id ? String(checkpoint_selecionado_id) : '',
         via: via ?? '',
     });
@@ -62,7 +63,7 @@ export default function ConfirmarCheckin({
             <Head title={`Check-in — ${participante.nome}`} />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-sm p-4 sm:p-6">
-                <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-6 text-center">
+                <div className="border-border bg-card flex flex-col items-center gap-3 rounded-2xl border p-6 text-center sm:p-8">
                     {participante.avatar_url ? (
                         <img src={participante.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
                     ) : (
@@ -94,7 +95,8 @@ export default function ConfirmarCheckin({
                             </p>
                         </div>
                     ) : (
-                        <form onSubmit={confirmar} className="mt-2 w-full">
+                        <form onSubmit={confirmar} className="mt-2 w-full" noValidate>
+                            <ResumoErro erros={errors} />
                             <div className="grid gap-2 text-left">
                                 <Label htmlFor="checkpoint_id">Checkpoint</Label>
                                 <select
@@ -109,6 +111,7 @@ export default function ConfirmarCheckin({
                                         </option>
                                     ))}
                                 </select>
+                                {errors.checkpoint_id && <p className="text-destructive text-sm">{errors.checkpoint_id}</p>}
                             </div>
 
                             <Button type="submit" disabled={processing} className="mt-4 w-full">

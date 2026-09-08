@@ -3,6 +3,8 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
+import SecaoFormulario from '@/components/hackathon/secao-formulario';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,28 +49,33 @@ export default function EntrarNaEquipe() {
                     </p>
                 </header>
 
-                <form onSubmit={submit} className="border-border bg-card grid gap-6 rounded-xl border p-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="invite_code">Código de convite</Label>
-                        <Input
-                            id="invite_code"
-                            value={data.invite_code}
-                            onChange={(e) => setData('invite_code', e.target.value)}
-                            required
-                            autoFocus
-                            autoComplete="off"
-                            maxLength={8}
-                            placeholder="Ex.: AS3DYP"
-                            className="font-mono text-lg tracking-[0.3em] uppercase"
-                            aria-describedby={errors.invite_code ? 'invite_code-erro' : undefined}
-                        />
-                        <InputError id="invite_code-erro" message={errors.invite_code} />
-                    </div>
+                <form onSubmit={submit} className="space-y-6" noValidate>
+                    <ResumoErro erros={errors} />
+                    <SecaoFormulario titulo="Código de convite" instrucao="O código não diferencia maiúsculas e minúsculas.">
+                        <div className="grid gap-2">
+                            <Label htmlFor="invite_code">Código de convite</Label>
+                            <Input
+                                id="invite_code"
+                                value={data.invite_code}
+                                onChange={(e) => setData('invite_code', e.target.value)}
+                                required
+                                autoFocus
+                                autoComplete="off"
+                                maxLength={8}
+                                placeholder="Ex.: AS3DYP"
+                                className="font-mono text-lg tracking-[0.3em] uppercase"
+                                aria-describedby={errors.invite_code ? 'invite_code-erro' : undefined}
+                            />
+                            <InputError id="invite_code-erro" message={errors.invite_code} />
+                        </div>
 
-                    <Button type="submit" disabled={processing} className="w-full sm:w-auto">
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        {processing ? 'Entrando…' : 'Entrar na equipe'}
-                    </Button>
+                        <div className="border-border border-t pt-5">
+                            <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                {processing ? 'Entrando…' : 'Entrar na equipe'}
+                            </Button>
+                        </div>
+                    </SecaoFormulario>
                 </form>
             </motion.div>
         </AppLayout>

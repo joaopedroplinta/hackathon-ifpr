@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, Users as UsersIcon } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -57,7 +58,8 @@ function EditarPapeis({ usuario, opcoesPapeis }: { usuario: LinhaUsuario; opcoes
                 <DialogTitle>Papéis de {usuario.nome}</DialogTitle>
                 <DialogDescription>Papéis acumulam — marque quantos fizerem sentido para esta pessoa.</DialogDescription>
 
-                <form onSubmit={salvar} className="flex flex-col gap-4">
+                <form onSubmit={salvar} className="flex flex-col gap-4" noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="flex flex-col gap-3">
                         {opcoesPapeis.map((papel) => {
                             const bloqueadoParaSiMesmo = usuario.sou_eu && papel.value === 'admin';
@@ -119,7 +121,7 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
                     <p className="text-muted-foreground mt-1 text-sm">Conceder ou remover papel (jurado, organizador, admin). Papéis acumulam.</p>
                 </header>
 
-                <form onSubmit={buscar} className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                <form onSubmit={buscar} className="border-border bg-card mb-4 flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-end">
                     <div className="flex-1">
                         <Label htmlFor="busca">Buscar por nome ou e-mail</Label>
                         <Input
@@ -157,7 +159,7 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
                         <p className="text-muted-foreground text-sm">Tente outro nome ou e-mail, ou limpe a busca.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-xl border">
+                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
                         <table className="w-full min-w-[40rem] text-sm">
                             <caption className="sr-only">Usuários e seus papéis</caption>
                             <thead className="bg-muted/50 text-left">

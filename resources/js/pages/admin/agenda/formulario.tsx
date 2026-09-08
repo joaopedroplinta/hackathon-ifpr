@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -86,7 +87,8 @@ export default function FormularioAgenda({ item, opcoes }: Props) {
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <h1 className="mb-6 text-2xl font-bold tracking-tight">{editando ? 'Editar item' : 'Novo item da agenda'}</h1>
 
-                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
+                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8" noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="title">Título</Label>
                         <Input

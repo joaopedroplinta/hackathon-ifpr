@@ -3,6 +3,8 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
+import SecaoFormulario from '@/components/hackathon/secao-formulario';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,60 +62,65 @@ export default function CriarEquipe({ trilhas, limites }: Props) {
                     </p>
                 </header>
 
-                <form onSubmit={submit} className="border-border bg-card grid gap-6 rounded-xl border p-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Nome da equipe</Label>
-                        <Input
-                            id="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            required
-                            autoFocus
-                            maxLength={60}
-                            placeholder="Ex.: Os Devs"
-                            aria-describedby={errors.name ? 'name-erro' : undefined}
-                        />
-                        <InputError id="name-erro" message={errors.name} />
-                    </div>
-
-                    {trilhas.length > 0 && (
+                <form onSubmit={submit} className="space-y-6" noValidate>
+                    <ResumoErro erros={errors} />
+                    <SecaoFormulario titulo="Defina sua equipe" instrucao="Você será a pessoa líder e poderá convidar os demais integrantes depois.">
                         <div className="grid gap-2">
-                            <Label htmlFor="track_id">Trilha</Label>
-                            <Select value={data.track_id} onValueChange={(value) => setData('track_id', value)}>
-                                <SelectTrigger id="track_id">
-                                    <SelectValue placeholder="Selecione (pode decidir depois)" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {trilhas.map((trilha) => (
-                                        <SelectItem key={trilha.id} value={String(trilha.id)}>
-                                            {trilha.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.track_id} />
+                            <Label htmlFor="name">Nome da equipe</Label>
+                            <Input
+                                id="name"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                required
+                                autoFocus
+                                maxLength={60}
+                                placeholder="Ex.: Os Devs"
+                                aria-describedby={errors.name ? 'name-erro' : undefined}
+                            />
+                            <InputError id="name-erro" message={errors.name} />
                         </div>
-                    )}
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="description">Descrição</Label>
-                        <textarea
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
-                            rows={3}
-                            maxLength={1000}
-                            placeholder="Em uma frase, o que vocês pretendem construir."
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-                            aria-describedby={errors.description ? 'description-erro' : undefined}
-                        />
-                        <InputError id="description-erro" message={errors.description} />
-                    </div>
+                        {trilhas.length > 0 && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="track_id">Trilha</Label>
+                                <Select value={data.track_id} onValueChange={(value) => setData('track_id', value)}>
+                                    <SelectTrigger id="track_id">
+                                        <SelectValue placeholder="Selecione (pode decidir depois)" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {trilhas.map((trilha) => (
+                                            <SelectItem key={trilha.id} value={String(trilha.id)}>
+                                                {trilha.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <InputError message={errors.track_id} />
+                            </div>
+                        )}
 
-                    <Button type="submit" disabled={processing} className="w-full sm:w-auto">
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        {processing ? 'Criando…' : 'Criar equipe'}
-                    </Button>
+                        <div className="grid gap-2">
+                            <Label htmlFor="description">Descrição</Label>
+                            <textarea
+                                id="description"
+                                value={data.description}
+                                onChange={(e) => setData('description', e.target.value)}
+                                rows={3}
+                                maxLength={1000}
+                                placeholder="Em uma frase, o que vocês pretendem construir."
+                                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                aria-describedby={errors.description ? 'description-erro' : undefined}
+                            />
+                            <InputError id="description-erro" message={errors.description} />
+                        </div>
+
+                        <div className="border-border border-t pt-5">
+                            <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                {processing ? 'Criando…' : 'Criar equipe'}
+                            </Button>
+                        </div>
+                    </SecaoFormulario>
                 </form>
             </motion.div>
         </AppLayout>

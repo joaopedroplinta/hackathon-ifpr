@@ -2,7 +2,9 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import CampoSenha from '@/components/hackathon/campo-senha';
 import { GoogleLoginButton } from '@/components/hackathon/google-login-button';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import PasswordRequirements from '@/components/password-requirements';
 import TextLink from '@/components/text-link';
@@ -46,7 +48,8 @@ export default function Register() {
                 </div>
             </div>
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
+            <form className="flex flex-col gap-6" onSubmit={submit} noValidate>
+                <ResumoErro erros={errors} />
                 <div className="grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome</Label>
@@ -83,9 +86,8 @@ export default function Register() {
 
                     <div className="grid gap-2">
                         <Label htmlFor="password">Senha</Label>
-                        <Input
+                        <CampoSenha
                             id="password"
-                            type="password"
                             required
                             tabIndex={3}
                             autoComplete="new-password"
@@ -101,9 +103,8 @@ export default function Register() {
 
                     <div className="grid gap-2">
                         <Label htmlFor="password_confirmation">Confirmar senha</Label>
-                        <Input
+                        <CampoSenha
                             id="password_confirmation"
-                            type="password"
                             required
                             tabIndex={4}
                             autoComplete="new-password"

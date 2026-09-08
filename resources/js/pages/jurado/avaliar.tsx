@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -81,7 +82,8 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
         form.post(route('jurado.avaliar.enviar', submissao.id), { preserveScroll: true });
     };
 
-    const todasPreenchidas = form.data.scores.every((s) => s.score !== null);
+    const haCriterios = criterios.length > 0;
+    const todasPreenchidas = haCriterios && form.data.scores.every((s) => s.score !== null);
 
     // O Laravel devolve erro de item de array como "scores.0.score", mas o
     // tipo de InertiaFormProps só indexa por chave direta do form -- daí o
@@ -105,6 +107,14 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
             <Head title={`Avaliar — ${submissao.titulo}`} />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4 sm:p-6">
+                <header className="border-border border-b pb-5">
+                    <p className="text-primary text-xs font-semibold tracking-widest uppercase">Avaliação de projeto</p>
+                    <h1 className="mt-2 text-2xl font-bold tracking-tight">Atribua uma nota a cada critério</h1>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        A nota zero é válida. Deixe o campo vazio apenas enquanto ainda não tiver definido a avaliação.
+                    </p>
+                </header>
+
                 {somenteLeitura && (
                     <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-4 text-sm text-emerald-700 dark:text-emerald-400">
                         <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -120,7 +130,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
                     <section className="border-border bg-card flex shrink-0 flex-col gap-4 rounded-xl border p-6 lg:sticky lg:top-20 lg:w-80">
                         <div>
-                            <h1 className="text-xl font-bold tracking-tight">{submissao.titulo}</h1>
+                            <h2 className="text-xl font-bold tracking-tight">{submissao.titulo}</h2>
                             <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
                         </div>
 
@@ -149,6 +159,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                     </section>
 
                     <section className="flex min-w-0 flex-1 flex-col gap-4">
+                        <ResumoErro titulo="Revise a avaliação antes de enviar" erros={errosPorIndice} />
                         {criterios.length === 0 ? (
                             <div className="border-border bg-card rounded-xl border p-6 text-sm">
                                 Nenhuma rubrica ativa para este evento. Fale com o organizador antes de avaliar.
@@ -159,7 +170,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                 const erroNota = errosPorIndice[`scores.${indice}.score`];
 
                                 return (
-                                    <div key={criterio.id} className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                                    <div key={criterio.id} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
                                         <div className="flex items-baseline justify-between gap-3">
                                             <Label htmlFor={`score-${criterio.id}`} className="font-semibold">
                                                 {criterio.nome}
@@ -199,7 +210,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                             })
                         )}
 
-                        <div className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                        <div className="border-border bg-card rounded-2xl border p-4 sm:p-6">
                             <Label htmlFor="overall_comment">Comentário geral (opcional)</Label>
                             <textarea
                                 id="overall_comment"
@@ -228,7 +239,15 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                 <div className="border-border/60 bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky bottom-0 z-30 border-t p-4 backdrop-blur-md sm:p-6">
                     <div className="mx-auto flex w-full max-w-5xl flex-col gap-2">
                         <p className="text-muted-foreground text-right text-xs" aria-live="polite">
-                            {form.processing ? 'Salvando rascunho…' : form.recentlySuccessful ? 'Rascunho salvo.' : ''}
+                            {form.processing
+                                ? 'Salvando rascunho…'
+                                : form.recentlySuccessful
+                                  ? 'Rascunho salvo.'
+                                  : !haCriterios
+                                    ? 'Sem critérios definidos. Aguarde a configuração da rubrica pela organização.'
+                                    : todasPreenchidas
+                                      ? 'Todos os critérios foram preenchidos. Você já pode enviar.'
+                                      : 'Preencha uma nota em todos os critérios para liberar o envio.'}
                         </p>
                         <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} size="lg" className="w-full">
                             {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}

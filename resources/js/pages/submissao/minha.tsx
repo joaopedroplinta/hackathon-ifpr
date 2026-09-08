@@ -6,6 +6,7 @@ import { FormEventHandler } from 'react';
 import ContadorPrazo from '@/components/hackathon/contador-prazo';
 import HistoricoEnvios from '@/components/hackathon/historico-envios';
 import PainelArquivos from '@/components/hackathon/painel-arquivos';
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -82,110 +83,113 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                 )}
 
                 {pode_editar ? (
-                    <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="title">Título do projeto</Label>
-                            <Input
-                                id="title"
-                                value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
-                                maxLength={120}
-                                autoFocus
-                                placeholder="Ex.: Painel de alertas de enchente"
-                                aria-describedby={errors.title ? 'title-erro' : undefined}
-                            />
-                            <InputError id="title-erro" message={errors.title} />
-                        </div>
+                    <form onSubmit={enviar} className="space-y-6" noValidate>
+                        <ResumoErro erros={errors} />
+                        <div className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8">
+                            <div className="grid gap-2">
+                                <Label htmlFor="title">Título do projeto</Label>
+                                <Input
+                                    id="title"
+                                    value={data.title}
+                                    onChange={(e) => setData('title', e.target.value)}
+                                    maxLength={120}
+                                    autoFocus
+                                    placeholder="Ex.: Painel de alertas de enchente"
+                                    aria-describedby={errors.title ? 'title-erro' : undefined}
+                                />
+                                <InputError id="title-erro" message={errors.title} />
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="summary">Resumo</Label>
-                            <textarea
-                                id="summary"
-                                value={data.summary}
-                                onChange={(e) => setData('summary', e.target.value)}
-                                rows={3}
-                                maxLength={300}
-                                placeholder="Em duas ou três frases: que problema vocês resolvem e para quem."
-                                className={areaTexto}
-                                aria-describedby={errors.summary ? 'summary-erro' : 'summary-ajuda'}
-                            />
-                            <p id="summary-ajuda" className="text-muted-foreground text-xs">
-                                É o primeiro texto que o jurado lê. Máximo de 300 caracteres.
-                            </p>
-                            <InputError id="summary-erro" message={errors.summary} />
-                        </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="summary">Resumo</Label>
+                                <textarea
+                                    id="summary"
+                                    value={data.summary}
+                                    onChange={(e) => setData('summary', e.target.value)}
+                                    rows={3}
+                                    maxLength={300}
+                                    placeholder="Em duas ou três frases: que problema vocês resolvem e para quem."
+                                    className={areaTexto}
+                                    aria-describedby={errors.summary ? 'summary-erro' : 'summary-ajuda'}
+                                />
+                                <p id="summary-ajuda" className="text-muted-foreground text-xs">
+                                    É o primeiro texto que o jurado lê. Máximo de 300 caracteres.
+                                </p>
+                                <InputError id="summary-erro" message={errors.summary} />
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="repo_url">Link do repositório</Label>
-                            <Input
-                                id="repo_url"
-                                type="text"
-                                inputMode="url"
-                                value={data.repo_url}
-                                onChange={(e) => setData('repo_url', e.target.value)}
-                                maxLength={255}
-                                placeholder="https://github.com/equipe/projeto"
-                                aria-describedby={errors.repo_url ? 'repo_url-erro' : 'repo_url-ajuda'}
-                            />
-                            <p id="repo_url-ajuda" className="text-muted-foreground text-xs">
-                                Obrigatório no envio: o horário do último commit é o que comprova o trabalho de vocês se a internet cair.
-                            </p>
-                            <InputError id="repo_url-erro" message={errors.repo_url} />
-                        </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="repo_url">Link do repositório</Label>
+                                <Input
+                                    id="repo_url"
+                                    type="text"
+                                    inputMode="url"
+                                    value={data.repo_url}
+                                    onChange={(e) => setData('repo_url', e.target.value)}
+                                    maxLength={255}
+                                    placeholder="https://github.com/equipe/projeto"
+                                    aria-describedby={errors.repo_url ? 'repo_url-erro' : 'repo_url-ajuda'}
+                                />
+                                <p id="repo_url-ajuda" className="text-muted-foreground text-xs">
+                                    Obrigatório no envio: o horário do último commit é o que comprova o trabalho de vocês se a internet cair.
+                                </p>
+                                <InputError id="repo_url-erro" message={errors.repo_url} />
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="video_url">Link do vídeo (opcional)</Label>
-                            <Input
-                                id="video_url"
-                                type="text"
-                                inputMode="url"
-                                value={data.video_url}
-                                onChange={(e) => setData('video_url', e.target.value)}
-                                maxLength={255}
-                                placeholder="https://youtube.com/..."
-                                aria-describedby={errors.video_url ? 'video_url-erro' : undefined}
-                            />
-                            <InputError id="video_url-erro" message={errors.video_url} />
-                        </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="video_url">Link do vídeo (opcional)</Label>
+                                <Input
+                                    id="video_url"
+                                    type="text"
+                                    inputMode="url"
+                                    value={data.video_url}
+                                    onChange={(e) => setData('video_url', e.target.value)}
+                                    maxLength={255}
+                                    placeholder="https://youtube.com/..."
+                                    aria-describedby={errors.video_url ? 'video_url-erro' : undefined}
+                                />
+                                <InputError id="video_url-erro" message={errors.video_url} />
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="deploy_url">Link do projeto no ar (opcional)</Label>
-                            <Input
-                                id="deploy_url"
-                                type="text"
-                                inputMode="url"
-                                value={data.deploy_url}
-                                onChange={(e) => setData('deploy_url', e.target.value)}
-                                maxLength={255}
-                                placeholder="https://projeto.exemplo.com"
-                                aria-describedby={errors.deploy_url ? 'deploy_url-erro' : undefined}
-                            />
-                            <InputError id="deploy_url-erro" message={errors.deploy_url} />
-                        </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="deploy_url">Link do projeto no ar (opcional)</Label>
+                                <Input
+                                    id="deploy_url"
+                                    type="text"
+                                    inputMode="url"
+                                    value={data.deploy_url}
+                                    onChange={(e) => setData('deploy_url', e.target.value)}
+                                    maxLength={255}
+                                    placeholder="https://projeto.exemplo.com"
+                                    aria-describedby={errors.deploy_url ? 'deploy_url-erro' : undefined}
+                                />
+                                <InputError id="deploy_url-erro" message={errors.deploy_url} />
+                            </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="description">Descrição (opcional)</Label>
-                            <textarea
-                                id="description"
-                                value={data.description}
-                                onChange={(e) => setData('description', e.target.value)}
-                                rows={6}
-                                maxLength={5000}
-                                placeholder="Como funciona, o que foi construído no hackathon e o que ficou de fora."
-                                className={areaTexto}
-                                aria-describedby={errors.description ? 'description-erro' : undefined}
-                            />
-                            <InputError id="description-erro" message={errors.description} />
-                        </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="description">Descrição (opcional)</Label>
+                                <textarea
+                                    id="description"
+                                    value={data.description}
+                                    onChange={(e) => setData('description', e.target.value)}
+                                    rows={6}
+                                    maxLength={5000}
+                                    placeholder="Como funciona, o que foi construído no hackathon e o que ficou de fora."
+                                    className={areaTexto}
+                                    aria-describedby={errors.description ? 'description-erro' : undefined}
+                                />
+                                <InputError id="description-erro" message={errors.description} />
+                            </div>
 
-                        <div className="flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
-                            <Button type="submit" disabled={processing} className="w-full sm:w-auto">
-                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
-                                {processing ? 'Enviando…' : submissao?.foi_enviada ? 'Reenviar projeto' : 'Enviar projeto'}
-                            </Button>
-                            <Button type="button" variant="outline" disabled={processing} onClick={salvarRascunho} className="w-full sm:w-auto">
-                                Salvar rascunho
-                            </Button>
+                            <div className="flex flex-col gap-3 sm:flex-row-reverse sm:justify-start">
+                                <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                    {processing ? 'Enviando…' : submissao?.foi_enviada ? 'Reenviar projeto' : 'Enviar projeto'}
+                                </Button>
+                                <Button type="button" variant="outline" disabled={processing} onClick={salvarRascunho} className="w-full sm:w-auto">
+                                    Salvar rascunho
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 ) : (

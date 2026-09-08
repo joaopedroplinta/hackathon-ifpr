@@ -33,7 +33,7 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                     {progresso.total > 0 && (
                         <>
                             <p className="text-muted-foreground mt-1 text-sm">
-                                {progresso.avaliadas} de {progresso.total} avaliadas
+                                {progresso.avaliadas} de {progresso.total} avaliações enviadas · {progresso.total - progresso.avaliadas} pendentes
                             </p>
                             <div
                                 className="bg-muted mt-3 h-2 w-full overflow-hidden rounded-full"
@@ -63,12 +63,12 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                         <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                         {submissoes.map((s) => (
                             <motion.li key={s.submission_id}>
                                 <Link
                                     href={route('jurado.avaliar.show', s.submission_id)}
-                                    className="hover:bg-muted/50 flex min-h-20 flex-wrap items-center justify-between gap-3 p-5 transition-colors sm:p-6"
+                                    className="hover:bg-muted/50 focus-visible:ring-ring flex min-h-20 flex-wrap items-center justify-between gap-3 p-5 transition-colors focus-visible:ring-2 focus-visible:outline-none sm:p-6"
                                 >
                                     <div className="min-w-0">
                                         <p className="font-semibold break-words">{s.titulo}</p>

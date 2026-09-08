@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 
 import AppearanceTabs from '@/components/appearance-tabs';
-import HeadingSmall from '@/components/heading-small';
+import SecaoFormulario from '@/components/hackathon/secao-formulario';
 import { type BreadcrumbItem } from '@/types';
 
 import AppLayout from '@/layouts/app-layout';
@@ -20,10 +20,9 @@ export default function Appearance() {
             <Head title="Aparência" />
 
             <SettingsLayout>
-                <div className="space-y-6">
-                    <HeadingSmall title="Aparência" description="Escolha entre tema claro, escuro ou o padrão do sistema" />
+                <SecaoFormulario titulo="Aparência" instrucao="Escolha entre tema claro, escuro ou a preferência definida no seu dispositivo.">
                     <AppearanceTabs />
-                </div>
+                </SecaoFormulario>
             </SettingsLayout>
         </AppLayout>
     );

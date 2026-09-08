@@ -35,9 +35,9 @@ export default function MeusCertificados({ certificados }: Props) {
                         <p className="text-muted-foreground text-sm">Eles aparecem aqui depois que a organização emitir, geralmente após o evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
                         {certificados.map((c) => (
-                            <li key={c.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+                            <li key={c.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                                 <div>
                                     <p className="font-semibold">{c.tipo_label}</p>
                                     <p className="text-muted-foreground text-sm">
@@ -46,7 +46,7 @@ export default function MeusCertificados({ certificados }: Props) {
                                 </div>
 
                                 {c.pronto ? (
-                                    <Button asChild size="sm">
+                                    <Button asChild className="min-h-11" size="sm">
                                         <a href={route('certificates.download', c.id)}>
                                             <Download className="h-4 w-4" aria-hidden="true" />
                                             Baixar PDF

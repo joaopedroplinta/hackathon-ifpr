@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +40,8 @@ export default function CriarEvento() {
         voting_closes_at: '',
         min_team_size: '1',
         max_team_size: '5',
+        collect_shirt_size: false,
+        collect_dietary_notes: false,
         regulamento: null,
     });
 
@@ -76,7 +79,8 @@ export default function CriarEvento() {
                     avaliação) só ficam disponíveis depois que o primeiro evento existir. Você pode ajustar tudo de novo em Editar evento.
                 </p>
 
-                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-xl border p-6">
+                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8" noValidate>
+                    <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome do evento</Label>
                         <Input
@@ -128,6 +132,29 @@ export default function CriarEvento() {
                             />
                             <InputError id="registration_closes_at-erro" message={errors.registration_closes_at} />
                         </div>
+                    </fieldset>
+
+                    <fieldset className="border-border grid gap-3 rounded-xl border p-4">
+                        <legend className="px-1 text-sm font-semibold">Dados solicitados na inscrição</legend>
+                        <p className="text-muted-foreground text-sm">Ative somente o que este evento realmente vai oferecer.</p>
+                        <label className="flex min-h-11 items-center gap-3 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={data.collect_shirt_size}
+                                onChange={(e) => setData('collect_shirt_size', e.target.checked)}
+                                className="accent-primary size-4"
+                            />
+                            Solicitar tamanho de camiseta
+                        </label>
+                        <label className="flex min-h-11 items-center gap-3 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={data.collect_dietary_notes}
+                                onChange={(e) => setData('collect_dietary_notes', e.target.checked)}
+                                className="accent-primary size-4"
+                            />
+                            Solicitar restrições alimentares
+                        </label>
                     </fieldset>
 
                     <fieldset className="grid gap-4 sm:grid-cols-2">
