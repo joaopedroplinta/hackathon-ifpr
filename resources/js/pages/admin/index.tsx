@@ -1,9 +1,10 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { CalendarDays, CheckCircle2, ChevronRight, ScanLine, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
+import { type SharedData } from '@/types';
 import { PainelOrganizador } from '@/types/admin-dashboard';
 
 /**
@@ -33,6 +34,8 @@ const numeros = [
 ];
 
 export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) {
+    const { auth } = usePage<SharedData>().props;
+    const primeiroNome = auth.user.name.split(' ')[0];
     const reduzMovimento = useReducedMotion();
 
     const fadeIn: Variants = {
@@ -50,8 +53,8 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                 <header className="border-border/70 flex flex-col justify-between gap-5 border-b pb-7 sm:flex-row sm:items-end">
                     <div>
                         <p className="text-muted-foreground mb-2 text-sm">Central de organização</p>
-                        <h1 className="text-4xl font-medium tracking-[-0.04em] text-balance">Visão geral do evento</h1>
-                        <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>
+                        <h1 className="text-4xl font-medium tracking-[-0.04em] text-balance">Olá, {primeiroNome}.</h1>
+                        <p className="text-muted-foreground mt-2 text-sm">Visão geral de {evento.nome}.</p>
                     </div>
                     <Button asChild className="h-11">
                         <Link href={route('painel.checkin.index')}>
