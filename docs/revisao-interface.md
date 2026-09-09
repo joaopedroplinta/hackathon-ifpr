@@ -146,6 +146,46 @@ regressão funcional ponta a ponta; a matriz pública segue automatizada.
 
 ## Alterações posteriores aos lotes
 
+### Repaginação integral orientada pelo 21st.dev (2026-09-08)
+
+A interface completa recebeu uma segunda passada visual na branch
+`design/experimento-21st`. A alteração cobre as superfícies públicas, o shell
+autenticado, autenticação, configurações, participante, jurado, organização,
+administração e erros. Foram preservados os fluxos Inertia, props, regras de
+domínio e primitives do shadcn existentes; o 21st.dev foi usado como fonte de
+referência e os padrões foram adaptados à identidade do IFPR.
+
+Referências consultadas via MCP do amazing 21st.dev:
+
+- navegação e shell: `Dashboard Sidebar` #14941, `Sidebar` #2737 e
+  `SidebarShowcase` #8252;
+- jornada e progresso: `Onboarding Stages` #2528, `Onboarding Step Tracker`
+  #24864, `ProjectProgressCard` #8698 e `Task Steps` #23569;
+- autenticação e conta: `Sign In Split Screen` #19050, `Vertical Settings
+  Tabs` #24937, `Account Settings Fieldset` #25058 e `Auth Change Password`
+  #25261;
+- operação: `Dashboard Overview` #8371, `Flexi Filter Table` #7466, `Form
+  Layout` #4347, `Alert Dialog` #702 e `Stepper` #769;
+- avaliação: `Rating Scale Group` #8241.
+
+As referências não foram instaladas diretamente. Foram aproveitados hierarquia,
+microcontraste, navegação por papel, progresso orientado à próxima ação,
+agrupamento de formulários e clareza de estados. Cores, conteúdo, responsividade,
+tema escuro, componentes e interações foram mantidos no design system local.
+
+Validação visual: o script temporário de Playwright percorreu 49 renderizações
+reais em `127.0.0.1:8000`, incluindo visitante, participante/admin e jurado,
+em desktop claro e mobile escuro. Não houve overflow horizontal, erro de página,
+resposta 5xx ou redirecionamento inesperado. As capturas e o relatório ficaram
+em `/tmp/hackathon-system-evidence/` nesta sessão e não são versionados.
+
+A matriz pública também foi repetida depois da integração: 80 combinações de
+viewport/tema e 10 verificações de interação passaram. TypeScript, ESLint,
+Prettier, build do Vite, Pint e `git diff --check` ficaram limpos. A suíte Pest
+com PostgreSQL passou com **463 testes e 2204 asserções**. A execução inicial no
+sandbox não alcançou `127.0.0.1:5432`; repetida com acesso ao banco de teste,
+passou integralmente.
+
 ### Certificado PDF
 
 Atualização em 2026-09-08: nova composição institucional A4 horizontal com
