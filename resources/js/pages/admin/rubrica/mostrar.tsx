@@ -93,7 +93,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                     <ol className="mb-6 flex flex-col gap-3">
                         {criterios.map((criterio) =>
                             editandoId === criterio.id ? (
-                                <li key={criterio.id} className="border-border bg-card rounded-xl border p-4">
+                                <li key={criterio.id} className="border-border/70 bg-card/80 rounded-2xl border p-5 shadow-sm">
                                     <form onSubmit={salvarEdicao} className="grid gap-3" noValidate>
                                         <ResumoErro erros={editarForm.errors} />
                                         <div className="grid gap-2">
@@ -149,7 +149,7 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                                     </form>
                                 </li>
                             ) : (
-                                <li key={criterio.id} className="border-border bg-card rounded-xl border p-4">
+                                <li key={criterio.id} className="border-border/70 bg-card/80 rounded-2xl border p-5 shadow-sm">
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                         <div>
                                             <p className="font-semibold">{criterio.nome}</p>
@@ -194,8 +194,8 @@ export default function MostrarRubrica({ rubrica, criterios }: Props) {
                     </ol>
                 )}
 
-                <section className="border-border bg-card rounded-xl border p-4 sm:p-6">
-                    <h2 className="font-semibold">Novo critério</h2>
+                <section className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Novo critério</h2>
                     <form onSubmit={criarCriterio} className="mt-4 grid gap-3" noValidate>
                         <ResumoErro erros={novoForm.errors} />
                         <div className="grid gap-2">

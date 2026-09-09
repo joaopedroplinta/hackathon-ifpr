@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import CampoSenha from '@/components/hackathon/campo-senha';
@@ -39,14 +39,23 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Entrar na sua conta" description="Informe seu e-mail e senha para entrar">
+        <AuthLayout title="Boas-vindas de volta" description="Acesse sua equipe, acompanhe o evento e continue de onde parou.">
             <Head title="Entrar" />
 
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-7">
+                {status && (
+                    <div
+                        role="status"
+                        className="border-primary/20 bg-primary/5 text-foreground flex items-start gap-3 rounded-2xl border p-4 text-sm"
+                    >
+                        <CheckCircle2 className="text-primary mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                        <span>{status}</span>
+                    </div>
+                )}
                 <GoogleLoginButton />
 
                 <div className="relative text-center text-sm">
-                    <span className="bg-background text-muted-foreground relative z-10 px-2">ou</span>
+                    <span className="bg-background text-muted-foreground relative z-10 px-3">ou entre com e-mail</span>
                     <span className="border-border absolute inset-x-0 top-1/2 border-t" aria-hidden="true" />
                 </div>
 
@@ -65,6 +74,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 placeholder="voce@exemplo.com"
+                                className="bg-muted/30 h-12"
                             />
                             <InputError message={errors.email} />
                         </div>
@@ -86,6 +96,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 placeholder="Sua senha"
+                                className="bg-muted/30 h-12"
                             />
                             <InputError message={errors.password} />
                         </div>
@@ -103,7 +114,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <Label htmlFor="remember">Manter conectado</Label>
                         </div>
 
-                        <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
+                        <Button type="submit" className="mt-2 h-12 w-full" tabIndex={4} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             {processing ? 'Entrando…' : 'Entrar'}
                         </Button>
@@ -117,12 +128,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
                 </form>
             </div>
-
-            {status && (
-                <div role="status" className="bg-primary/10 text-primary rounded-xl p-3 text-center text-sm font-medium">
-                    {status}
-                </div>
-            )}
         </AuthLayout>
     );
 }

@@ -60,16 +60,16 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
         <AppLayout breadcrumbs={[{ title: 'Incidentes', href: route('painel.incidentes.index') }]}>
             <Head title="Incidentes" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Incidentes</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Incidentes</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Declarar um incidente com extensão de prazo vale pra <strong>todas as equipes</strong>, nunca só pra quem avisou.
                     </p>
                 </header>
 
                 {prazo_original && (
-                    <div className="border-border bg-card mb-6 flex items-center gap-2 rounded-xl border p-4 text-sm">
+                    <div className="border-border/70 bg-card/80 mb-6 flex items-center gap-3 rounded-2xl border p-4 text-sm shadow-sm">
                         <Clock className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
                         <span>
                             Prazo de submissão original: <strong>{prazo_original}</strong>
@@ -84,7 +84,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                 )}
 
                 <Dialog open={confirmando} onOpenChange={setConfirmando}>
-                    <DialogContent>
+                    <DialogContent className="rounded-3xl sm:max-w-lg">
                         <DialogTitle>Aplicar extensão para todas as equipes?</DialogTitle>
                         <DialogDescription>
                             Esta decisão altera o prazo efetivo da edição inteira. Registre somente uma extensão já aprovada pela organização.
@@ -103,8 +103,8 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                     </DialogContent>
                 </Dialog>
 
-                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
-                    <h2 className="font-semibold">Declarar incidente</h2>
+                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Declarar incidente</h2>
                     <form onSubmit={declarar} className="mt-3 grid gap-4" noValidate>
                         <ResumoErro erros={form.errors} />
                         <div className="grid gap-2">
@@ -165,7 +165,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
 
                 <h2 className="mb-3 font-semibold">Histórico</h2>
                 {incidentes.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <AlertTriangle className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -173,9 +173,9 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                         <p className="text-muted-foreground text-sm">Que continue assim até o fim do evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
+                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {incidentes.map((i) => (
-                            <li key={i.id} className="p-4">
+                            <li key={i.id} className="hover:bg-muted/30 p-4 transition-colors sm:p-5">
                                 <div className="flex items-center justify-between gap-2">
                                     <p className="font-semibold">{i.tipo_label}</p>
                                     <span className="text-muted-foreground text-xs">{i.declarado_em}</span>

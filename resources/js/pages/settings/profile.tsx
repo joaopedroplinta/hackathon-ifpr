@@ -1,7 +1,7 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { BadgeCheck, CircleAlert, CircleCheck, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import DeleteUser from '@/components/delete-user';
@@ -66,30 +66,84 @@ export default function Profile({
         patch(route('profile.update'));
     };
 
+    const hasRequiredInstitutionalId =
+        data.tipo_vinculo === 'externo' ||
+        (data.tipo_vinculo === 'aluno_ifpr' && Boolean(data.matricula_suap)) ||
+        (data.tipo_vinculo === 'professor_ifpr' && Boolean(data.matricula_siape));
+    const profileReadyForCertificate = Boolean(data.name && data.email && data.cpf && data.tipo_vinculo && hasRequiredInstitutionalId);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Configurações de perfil" />
 
             <SettingsLayout>
                 <div className="space-y-8">
-                    <SecaoFormulario titulo="Foto de perfil" instrucao="Aparece para colegas de equipe, jurados e organização.">
+                    <div
+                        className={
+                            profileReadyForCertificate
+                                ? 'border-primary/20 bg-primary/5 flex items-start gap-4 rounded-2xl border p-5'
+                                : 'flex items-start gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5'
+                        }
+                        role="status"
+                    >
+                        <span
+                            className={
+                                profileReadyForCertificate
+                                    ? 'bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-xl'
+                                    : 'flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-300'
+                            }
+                        >
+                            {profileReadyForCertificate ? (
+                                <CircleCheck className="size-5" aria-hidden="true" />
+                            ) : (
+                                <CircleAlert className="size-5" aria-hidden="true" />
+                            )}
+                        </span>
+                        <div>
+                            <p className="font-semibold">
+                                {profileReadyForCertificate ? 'Perfil pronto para o certificado' : 'Complete os dados do certificado'}
+                            </p>
+                            <p className="text-muted-foreground mt-1 text-sm leading-6">
+                                {profileReadyForCertificate
+                                    ? 'Nome, CPF e vínculo estão preenchidos. Confira se continuam corretos antes da emissão.'
+                                    : 'Preencha CPF, vínculo e a matrícula correspondente para que o documento seja emitido com seus dados completos.'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <SecaoFormulario
+                        titulo="Foto de perfil"
+                        instrucao="Aparece para colegas de equipe, jurados e organização."
+                        className="bg-background"
+                    >
                         <AvatarUpload nome={auth.user.name} avatarUrl={auth.user.avatar ?? null} />
                     </SecaoFormulario>
 
                     <form onSubmit={submit} className="space-y-6" noValidate>
                         <ResumoErro erros={errors} />
-                        <SecaoFormulario titulo="Informações do perfil" instrucao="Atualize seu nome, e-mail e vínculo institucional.">
+                        <SecaoFormulario
+                            titulo="Informações do perfil"
+                            instrucao="Atualize seu nome, e-mail e vínculo institucional."
+                            className="bg-background"
+                        >
+                            <div className="bg-muted/50 flex items-start gap-3 rounded-xl p-4 text-sm leading-6">
+                                <BadgeCheck className="text-primary mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                                <p>
+                                    Use seu nome completo, como ele deve aparecer no certificado. Os dados institucionais não ficam visíveis no perfil
+                                    público.
+                                </p>
+                            </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Nome</Label>
 
                                 <Input
                                     id="name"
-                                    className="mt-1 block w-full"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     required
                                     autoComplete="name"
                                     placeholder="Nome completo"
+                                    className="bg-muted/30 mt-1 h-12 w-full"
                                 />
 
                                 <InputError className="mt-2" message={errors.name} />
@@ -101,12 +155,12 @@ export default function Profile({
                                 <Input
                                     id="email"
                                     type="email"
-                                    className="mt-1 block w-full"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
                                     autoComplete="username"
                                     placeholder="E-mail"
+                                    className="bg-muted/30 mt-1 h-12 w-full"
                                 />
 
                                 <InputError className="mt-2" message={errors.email} />
@@ -114,20 +168,20 @@ export default function Profile({
 
                             {mustVerifyEmail && auth.user.email_verified_at === null && (
                                 <div>
-                                    <p className="mt-2 text-sm text-neutral-800">
+                                    <p className="rounded-xl bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-100">
                                         Seu e-mail ainda não foi confirmado.
                                         <Link
                                             href={route('verification.send')}
                                             method="post"
                                             as="button"
-                                            className="rounded-md text-sm text-neutral-600 underline hover:text-neutral-900 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+                                            className="focus-visible:ring-ring ml-1 rounded-md font-medium underline underline-offset-4 focus-visible:ring-2 focus-visible:outline-none"
                                         >
                                             Clique aqui para reenviar o e-mail de confirmação.
                                         </Link>
                                     </p>
 
                                     {status === 'verification-link-sent' && (
-                                        <div className="mt-2 text-sm font-medium text-green-600">
+                                        <div role="status" className="text-primary mt-2 text-sm font-medium">
                                             Um novo link de confirmação foi enviado para o seu e-mail.
                                         </div>
                                     )}
@@ -147,7 +201,7 @@ export default function Profile({
                                         if (value !== 'professor_ifpr') setData('matricula_siape', '');
                                     }}
                                 >
-                                    <SelectTrigger id="tipo_vinculo">
+                                    <SelectTrigger id="tipo_vinculo" className="bg-muted/30 h-12">
                                         <SelectValue placeholder="Selecione seu vínculo com o IFPR" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -169,6 +223,7 @@ export default function Profile({
                                         value={data.matricula_suap}
                                         onChange={(e) => setData('matricula_suap', e.target.value)}
                                         placeholder="Ex.: 2024104070001"
+                                        className="bg-muted/30 h-12"
                                         aria-describedby={errors.matricula_suap ? 'matricula_suap-erro' : undefined}
                                     />
                                     <InputError id="matricula_suap-erro" message={errors.matricula_suap} />
@@ -183,6 +238,7 @@ export default function Profile({
                                         value={data.matricula_siape}
                                         onChange={(e) => setData('matricula_siape', e.target.value)}
                                         placeholder="Ex.: 1234567"
+                                        className="bg-muted/30 h-12"
                                         aria-describedby={errors.matricula_siape ? 'matricula_siape-erro' : undefined}
                                     />
                                     <InputError id="matricula_siape-erro" message={errors.matricula_siape} />
@@ -199,14 +255,15 @@ export default function Profile({
                                     placeholder="000.000.000-00"
                                     maxLength={14}
                                     aria-describedby="cpf-ajuda"
+                                    className="bg-muted/30 h-12"
                                 />
                                 <p id="cpf-ajuda" className="text-muted-foreground text-xs">
-                                    Opcional pra usar o sistema, mas necessário pra emitir certificado com validade legal.
+                                    Opcional para navegar no sistema, mas necessário para emitir o certificado com os dados completos.
                                 </p>
                                 <InputError message={errors.cpf} />
                             </div>
                             <div className="border-border flex flex-wrap items-center gap-4 border-t pt-5">
-                                <Button disabled={processing}>
+                                <Button className="min-h-11" disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
                                     {processing ? 'Salvando…' : 'Salvar alterações'}
                                 </Button>

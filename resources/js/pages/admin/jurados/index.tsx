@@ -93,10 +93,10 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
         <AppLayout breadcrumbs={[{ title: 'Jurados', href: route('painel.jurados.index') }]}>
             <Head title="Jurados" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
-                <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Jurados</h1>
+                        <h1 className="text-3xl font-medium tracking-[-0.03em]">Jurados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             Distribuição é sugestão — ajuste na mão nunca é sobrescrito por uma nova rodada.
                         </p>
@@ -112,7 +112,11 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </Button>
                 </header>
 
-                <form onSubmit={salvarConfig} className="border-border bg-card mb-6 flex items-end gap-3 rounded-2xl border p-4" noValidate>
+                <form
+                    onSubmit={salvarConfig}
+                    className="border-border/70 bg-card/80 mb-6 flex flex-wrap items-end gap-3 rounded-2xl border p-4 shadow-sm"
+                    noValidate
+                >
                     <div>
                         <Label htmlFor="judges_per_submission">Jurados por submissão</Label>
                         <Input
@@ -143,8 +147,8 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     )}
                 </section>
 
-                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
-                    <h2 className="font-semibold">Atribuir manualmente</h2>
+                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Atribuir manualmente</h2>
                     <form onSubmit={atribuirManual} className="mt-3 grid gap-3" noValidate>
                         <ResumoErro erros={atribuirForm.errors} />
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -193,7 +197,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                 ) : (
                     <ul className="mb-6 flex flex-col gap-3">
                         {submissoes.map((submissao) => (
-                            <li key={submissao.id} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
+                            <li key={submissao.id} className="border-border/70 bg-card/80 rounded-3xl border p-4 shadow-sm sm:p-6">
                                 <p className="font-semibold">{submissao.titulo}</p>
                                 <p className="text-muted-foreground text-xs">{submissao.equipe}</p>
 
@@ -279,7 +283,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     </ul>
                 )}
 
-                <section className="border-border bg-card rounded-2xl border p-4 sm:p-6">
+                <section className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-6">
                     <h2 className="flex items-center gap-2 font-semibold">
                         <Scale className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Conflitos de interesse

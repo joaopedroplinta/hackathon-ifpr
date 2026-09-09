@@ -84,6 +84,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
 
     const haCriterios = criterios.length > 0;
     const todasPreenchidas = haCriterios && form.data.scores.every((s) => s.score !== null);
+    const criteriosPreenchidos = form.data.scores.filter((s) => s.score !== null).length;
 
     // O Laravel devolve erro de item de array como "scores.0.score", mas o
     // tipo de InertiaFormProps só indexa por chave direta do form -- daí o
@@ -113,6 +114,27 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                     <p className="text-muted-foreground mt-2 text-sm">
                         A nota zero é válida. Deixe o campo vazio apenas enquanto ainda não tiver definido a avaliação.
                     </p>
+                    {haCriterios && (
+                        <div className="mt-5 flex items-center gap-4">
+                            <div
+                                className="bg-muted h-1.5 flex-1 overflow-hidden rounded-full"
+                                role="progressbar"
+                                aria-label="Critérios avaliados"
+                                aria-valuenow={criteriosPreenchidos}
+                                aria-valuemin={0}
+                                aria-valuemax={criterios.length}
+                            >
+                                <motion.div
+                                    className="bg-primary h-full rounded-full"
+                                    animate={{ width: `${(criteriosPreenchidos / criterios.length) * 100}%` }}
+                                    transition={reduzMovimento ? { duration: 0 } : { duration: 0.3 }}
+                                />
+                            </div>
+                            <span className="text-muted-foreground shrink-0 text-xs font-medium tabular-nums">
+                                {criteriosPreenchidos} de {criterios.length}
+                            </span>
+                        </div>
+                    )}
                 </header>
 
                 {somenteLeitura && (
@@ -170,7 +192,10 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                 const erroNota = errosPorIndice[`scores.${indice}.score`];
 
                                 return (
-                                    <div key={criterio.id} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
+                                    <div
+                                        key={criterio.id}
+                                        className={`border-border bg-card relative overflow-hidden rounded-2xl border p-4 sm:p-6 ${nota?.score !== null ? 'border-l-primary border-l-4' : ''}`}
+                                    >
                                         <div className="flex items-baseline justify-between gap-3">
                                             <Label htmlFor={`score-${criterio.id}`} className="font-semibold">
                                                 {criterio.nome}
@@ -181,19 +206,32 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                         </div>
                                         {criterio.descricao && <p className="text-muted-foreground mt-1 text-sm">{criterio.descricao}</p>}
 
-                                        <input
-                                            id={`score-${criterio.id}`}
-                                            type="number"
-                                            inputMode="decimal"
-                                            min={0}
-                                            max={criterio.nota_maxima}
-                                            step={0.5}
-                                            value={nota?.score ?? ''}
-                                            disabled={somenteLeitura}
-                                            onChange={(e) => atualizarNota(criterio.id, e.target.value === '' ? null : Number(e.target.value))}
-                                            aria-describedby={erroNota ? `score-${criterio.id}-erro` : undefined}
-                                            className="border-input bg-background focus-visible:ring-ring mt-3 h-12 w-24 rounded-xl border px-3 text-lg font-medium tabular-nums focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
-                                        />
+                                        <div className="mt-4 flex items-center gap-4">
+                                            <input
+                                                id={`score-${criterio.id}`}
+                                                type="number"
+                                                inputMode="decimal"
+                                                min={0}
+                                                max={criterio.nota_maxima}
+                                                step={0.5}
+                                                value={nota?.score ?? ''}
+                                                disabled={somenteLeitura}
+                                                onChange={(e) => atualizarNota(criterio.id, e.target.value === '' ? null : Number(e.target.value))}
+                                                aria-describedby={erroNota ? `score-${criterio.id}-erro` : undefined}
+                                                className="border-input bg-background focus-visible:ring-ring h-14 w-28 rounded-xl border px-4 text-xl font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
+                                            />
+                                            <div className="min-w-0 flex-1">
+                                                <div className="bg-muted h-1.5 overflow-hidden rounded-full" aria-hidden="true">
+                                                    <div
+                                                        className="bg-primary h-full rounded-full transition-[width]"
+                                                        style={{
+                                                            width: `${Math.min(100, Math.max(0, ((nota?.score ?? 0) / criterio.nota_maxima) * 100))}%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <p className="text-muted-foreground mt-2 text-xs">de {criterio.nota_maxima} pontos</p>
+                                            </div>
+                                        </div>
                                         <InputError id={`score-${criterio.id}-erro`} message={erroNota} />
 
                                         <textarea

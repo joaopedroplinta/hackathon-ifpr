@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { LoaderCircle } from 'lucide-react';
+import { KeyRound, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import ResumoErro from '@/components/hackathon/resumo-erro';
@@ -41,12 +41,17 @@ export default function EntrarNaEquipe() {
         >
             <Head title="Entrar em uma equipe" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-8">
-                    <h1 className="text-2xl font-bold tracking-tight">Entrar em uma equipe</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Peça o código de convite para quem já criou a equipe e digite abaixo. Maiúsculas ou minúsculas, tanto faz.
-                    </p>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-8">
+                <header className="mb-8 flex items-start gap-4">
+                    <span className="bg-primary/10 flex size-12 shrink-0 items-center justify-center rounded-2xl">
+                        <KeyRound className="text-primary size-6" aria-hidden="true" />
+                    </span>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Entre na equipe certa</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">
+                            Peça o código de convite para quem já criou a equipe e digite abaixo. Maiúsculas ou minúsculas, tanto faz.
+                        </p>
+                    </div>
                 </header>
 
                 <form onSubmit={submit} className="space-y-6" noValidate>
@@ -70,7 +75,7 @@ export default function EntrarNaEquipe() {
                         </div>
 
                         <div className="border-border border-t pt-5">
-                            <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                            <Button type="submit" disabled={processing} className="h-11 w-full sm:w-auto">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                 {processing ? 'Entrando…' : 'Entrar na equipe'}
                             </Button>

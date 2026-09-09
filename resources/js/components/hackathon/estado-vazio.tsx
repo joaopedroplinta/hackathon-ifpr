@@ -22,13 +22,18 @@ type EstadoVazioProps = {
  */
 export default function EstadoVazio({ icon: Icon, titulo, descricao, acao, className }: EstadoVazioProps) {
     return (
-        <div className={cn('border-border bg-card flex flex-col items-center gap-3 rounded-2xl border p-10 text-center', className)}>
+        <div
+            className={cn(
+                'border-border bg-muted/25 flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-12 text-center sm:px-10',
+                className,
+            )}
+        >
             {Icon && (
-                <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                    <Icon className="text-muted-foreground size-5" aria-hidden="true" />
+                <span className="bg-primary/10 ring-primary/10 flex size-12 items-center justify-center rounded-2xl ring-4">
+                    <Icon className="text-primary size-5" aria-hidden="true" />
                 </span>
             )}
-            <p className="font-semibold">{titulo}</p>
+            <p className="text-lg font-semibold tracking-tight">{titulo}</p>
             {descricao && <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">{descricao}</p>}
             {acao && (
                 <Button asChild className="mt-2 h-11">

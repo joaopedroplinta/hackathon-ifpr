@@ -1,6 +1,6 @@
 // Components
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { CheckCircle2, LoaderCircle, Mail } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import ResumoErro from '@/components/hackathon/resumo-erro';
@@ -23,12 +23,13 @@ export default function ForgotPassword({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Esqueceu a senha?" description="Informe seu e-mail para receber o link de redefinição">
+        <AuthLayout title="Recupere seu acesso" description="Informe o e-mail da sua conta. Enviaremos um link seguro para criar uma nova senha.">
             <Head title="Esqueceu a senha" />
 
             {status && (
-                <div role="status" className="bg-primary/10 text-primary rounded-xl p-3 text-center text-sm font-medium">
-                    {status}
+                <div role="status" className="border-primary/20 bg-primary/5 flex items-start gap-3 rounded-2xl border p-4 text-sm">
+                    <CheckCircle2 className="text-primary mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                    <span>{status}</span>
                 </div>
             )}
 
@@ -37,22 +38,29 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="email">E-mail</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            autoComplete="off"
-                            value={data.email}
-                            autoFocus
-                            onChange={(e) => setData('email', e.target.value)}
-                            placeholder="voce@exemplo.com"
-                        />
+                        <div className="relative">
+                            <Mail
+                                className="text-muted-foreground pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
+                                aria-hidden="true"
+                            />
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                value={data.email}
+                                autoFocus
+                                onChange={(e) => setData('email', e.target.value)}
+                                placeholder="voce@exemplo.com"
+                                className="bg-muted/30 h-12 pl-11"
+                            />
+                        </div>
 
                         <InputError message={errors.email} />
                     </div>
 
                     <div className="my-6 flex items-center justify-start">
-                        <Button className="w-full" disabled={processing}>
+                        <Button className="h-12 w-full" disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             Enviar link de redefinição
                         </Button>

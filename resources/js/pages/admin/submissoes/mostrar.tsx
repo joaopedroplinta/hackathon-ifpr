@@ -86,10 +86,10 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
         >
             <Head title={`Submissão — ${submissao.equipe.nome}`} />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-                <header className="mb-6">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
                     <p className="text-muted-foreground text-sm">{submissao.trilha?.nome ?? 'Sem trilha'}</p>
-                    <h1 className="text-2xl font-bold tracking-tight">{submissao.titulo ?? 'Projeto sem título'}</h1>
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">{submissao.titulo ?? 'Projeto sem título'}</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Equipe {submissao.equipe.nome}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -139,8 +139,8 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     </section>
                 )}
 
-                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
-                    <h2 className="font-semibold">Arquivos</h2>
+                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Arquivos</h2>
 
                     {arquivos.length === 0 ? (
                         <p className="text-muted-foreground mt-2 text-sm">Nenhum arquivo anexado a esta submissão.</p>
@@ -179,7 +179,7 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                     ) : (
                         <ol className="flex flex-col gap-4">
                             {versoes.map((versao) => (
-                                <li key={versao.versao} className="border-border bg-card rounded-2xl border p-4 sm:p-6">
+                                <li key={versao.versao} className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-6">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <div className="flex items-center gap-2 text-sm font-semibold">
                                             <FileText className="h-4 w-4 shrink-0" aria-hidden="true" />

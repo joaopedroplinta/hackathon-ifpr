@@ -14,9 +14,15 @@ export default function SecaoFormulario({ titulo, instrucao, children, className
     const tituloId = useId();
 
     return (
-        <section aria-labelledby={tituloId} className={cn('border-border bg-card rounded-2xl border p-6 sm:p-8', className)}>
+        <section
+            aria-labelledby={tituloId}
+            className={cn(
+                'border-border/90 bg-card rounded-2xl border p-5 shadow-[0_1px_0_color-mix(in_oklab,var(--border)_55%,transparent)] sm:p-8',
+                className,
+            )}
+        >
             <div className="mb-6 flex flex-col gap-1">
-                <h2 id={tituloId} className="text-lg font-semibold tracking-tight">
+                <h2 id={tituloId} className="text-xl font-semibold tracking-[-0.025em]">
                     {titulo}
                 </h2>
                 {instrucao && <p className="text-muted-foreground text-sm leading-relaxed">{instrucao}</p>}

@@ -51,10 +51,10 @@ export default function ListaAgenda({ itens }: Props) {
         <AppLayout breadcrumbs={[{ title: 'Agenda', href: route('painel.agenda.index') }]}>
             <Head title="Agenda" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
-                <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Agenda</h1>
+                        <h1 className="text-3xl font-medium tracking-[-0.03em]">Agenda</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece pro público.
                         </p>
@@ -66,7 +66,7 @@ export default function ListaAgenda({ itens }: Props) {
                 </header>
 
                 {itens.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <CalendarDays className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -74,9 +74,9 @@ export default function ListaAgenda({ itens }: Props) {
                         <p className="text-muted-foreground text-sm">Crie o primeiro item para começar a montar a programação.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {itens.map((item) => (
-                            <li key={item.id} className="p-4">
+                            <li key={item.id} className="hover:bg-muted/30 p-4 transition-colors sm:p-5">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
@@ -149,7 +149,7 @@ export default function ListaAgenda({ itens }: Props) {
                 )}
 
                 <Dialog open={itemParaRemover !== null} onOpenChange={(aberto) => !aberto && setItemParaRemover(null)}>
-                    <DialogContent>
+                    <DialogContent className="rounded-3xl sm:max-w-lg">
                         <DialogTitle>Excluir item da agenda?</DialogTitle>
                         <DialogDescription>
                             {itemParaRemover ? `“${itemParaRemover.titulo}” será removido da programação e deixará de aparecer no site público.` : ''}

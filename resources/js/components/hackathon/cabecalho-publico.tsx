@@ -48,8 +48,8 @@ export default function CabecalhoPublico() {
                     onClick={() => setMenuAberto(false)}
                     aria-current={active ? 'page' : undefined}
                     className={cn(
-                        'flex min-h-11 items-center rounded-lg px-3 text-sm font-medium transition-colors',
-                        active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                        'focus-visible:outline-ring flex min-h-11 items-center rounded-full px-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2',
+                        active ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                         mobile && 'text-base',
                     )}
                 >
@@ -63,18 +63,18 @@ export default function CabecalhoPublico() {
             <a href="#conteudo-publico" className="skip-link">
                 Pular para o conteúdo
             </a>
-            <header className="border-border/70 bg-background/95 sticky top-0 z-40 border-b backdrop-blur-md">
-                <div className="mx-auto flex min-h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            <header className="bg-background/95 sticky top-0 z-40 backdrop-blur-md">
+                <div className="border-border/70 mx-auto flex min-h-20 w-full max-w-7xl items-center justify-between gap-4 border-b px-4 sm:px-6 lg:px-8">
                     <Link href={route('home')} className="flex shrink-0 items-center gap-3">
                         <span className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-xl">
                             <AppLogoIcon className="size-6 fill-current" />
                         </span>
                         <span className="flex flex-col">
                             <span className="text-sm font-bold tracking-tight">Hackathon IFPR</span>
-                            <span className="text-muted-foreground text-[11px] tracking-wide">CAMPUS PINHAIS</span>
+                            <span className="text-muted-foreground text-[11px]">Campus Pinhais</span>
                         </span>
                     </Link>
-                    <nav aria-label="Navegação principal" className="hidden items-center gap-1 lg:flex">
+                    <nav aria-label="Navegação principal" className="bg-muted/60 hidden items-center gap-1 rounded-full p-1 lg:flex">
                         {navigation()}
                     </nav>
                     <div className="hidden items-center gap-2 lg:flex">

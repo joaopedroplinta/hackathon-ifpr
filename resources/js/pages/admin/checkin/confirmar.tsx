@@ -62,8 +62,9 @@ export default function ConfirmarCheckin({
         <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('painel.checkin.index') }]}>
             <Head title={`Check-in — ${participante.nome}`} />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-sm p-4 sm:p-6">
-                <div className="border-border bg-card flex flex-col items-center gap-3 rounded-2xl border p-6 text-center sm:p-8">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-md p-4 sm:p-8">
+                <div className="border-border/70 bg-card/80 relative flex flex-col items-center gap-3 overflow-hidden rounded-3xl border p-6 text-center shadow-sm sm:p-10">
+                    <div className="bg-primary absolute inset-x-0 top-0 h-1" aria-hidden="true" />
                     {participante.avatar_url ? (
                         <img src={participante.avatar_url} alt="" className="h-20 w-20 rounded-full object-cover" />
                     ) : (

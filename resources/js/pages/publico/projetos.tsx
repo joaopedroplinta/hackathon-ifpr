@@ -123,10 +123,13 @@ export default function Projetos({ evento, submissoes, votacao_aberta: votingOpe
             ) : (
                 <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                     {filtered.map((project) => (
-                        <li key={project.id} className="border-border bg-card flex min-w-0 flex-col rounded-2xl border p-6">
-                            <div className="mb-5 flex items-center justify-between gap-3">
-                                <span className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl">
-                                    <Rocket className="size-5" aria-hidden="true" />
+                        <li
+                            key={project.id}
+                            className="border-border bg-card flex min-w-0 flex-col overflow-hidden rounded-2xl border p-6 shadow-[0_8px_30px_-20px_#173d2f40]"
+                        >
+                            <div className="bg-secondary/50 border-border/60 -mx-6 -mt-6 mb-6 flex min-h-28 items-center justify-between gap-3 border-b px-6 py-5">
+                                <span className="bg-card text-primary border-border flex size-14 items-center justify-center rounded-2xl border">
+                                    <Rocket className="size-6" aria-hidden="true" />
                                 </span>
                                 {votedFor === project.id && <Status tom="sucesso">Seu voto</Status>}
                             </div>

@@ -97,13 +97,16 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
         <AppLayout breadcrumbs={[{ title: 'Evento', href: route('painel.evento.edit') }]}>
             <Head title="Editar evento" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="mb-1 text-2xl font-bold tracking-tight">Editar evento</h1>
-                <p className="text-muted-foreground mb-6 text-sm">
-                    Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
-                </p>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <p className="text-muted-foreground mb-2 text-sm">Configuração da edição</p>
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Editar evento</h1>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        Tema aqui é o desafio que as equipes resolvem, não visual. Aparece na landing pública.
+                    </p>
+                </header>
 
-                <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8" noValidate>
+                <form onSubmit={enviar} className="border-border/70 bg-card/80 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-8" noValidate>
                     <ResumoErro erros={errors} />
                     <div className="grid gap-2">
                         <Label htmlFor="name">Nome do evento</Label>
@@ -150,8 +153,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         <p className="text-muted-foreground text-xs">Rascunho não aparece em nenhuma página pública.</p>
                     </div>
 
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-semibold">Inscrições</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
+                        <legend className="bg-card px-2 text-sm font-medium">Inscrições</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="registration_opens_at">Abre em</Label>
                             <Input
@@ -176,8 +179,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         </div>
                     </fieldset>
 
-                    <fieldset className="border-border grid gap-3 rounded-xl border p-4">
-                        <legend className="px-1 text-sm font-semibold">Dados solicitados na inscrição</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-3 rounded-2xl border p-4">
+                        <legend className="bg-card px-2 text-sm font-medium">Dados solicitados na inscrição</legend>
                         <p className="text-muted-foreground text-sm">Ative somente dados necessários para itens oferecidos nesta edição.</p>
                         <label className="flex min-h-11 items-center gap-3 text-sm">
                             <input
@@ -199,8 +202,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         </label>
                     </fieldset>
 
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-semibold">Evento</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
+                        <legend className="bg-card px-2 text-sm font-medium">Evento</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="starts_at">Início</Label>
                             <Input
@@ -237,8 +240,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         <InputError id="submission_deadline-erro" message={errors.submission_deadline} />
                     </div>
 
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-semibold">Votação popular</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
+                        <legend className="bg-card px-2 text-sm font-medium">Votação popular</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="voting_opens_at">Abre em</Label>
                             <Input
@@ -263,8 +266,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         </div>
                     </fieldset>
 
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-semibold">Tamanho da equipe</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
+                        <legend className="bg-card px-2 text-sm font-medium">Tamanho da equipe</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="min_team_size">Mínimo</Label>
                             <Input
@@ -291,8 +294,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         </div>
                     </fieldset>
 
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-1 text-sm font-semibold">Assinatura do certificado</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
+                        <legend className="bg-card px-2 text-sm font-medium">Assinatura do certificado</legend>
                         <div className="grid gap-2">
                             <Label htmlFor="certificate_signer_name">Nome de quem assina</Label>
                             <Input
@@ -322,8 +325,8 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                         </p>
                     </fieldset>
 
-                    <fieldset className="grid gap-4">
-                        <legend className="mb-1 text-sm font-semibold">Visual do certificado</legend>
+                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4">
+                        <legend className="bg-card px-2 text-sm font-medium">Visual do certificado</legend>
                         <div className="grid max-w-[200px] gap-2">
                             <Label htmlFor="certificate_accent_color">Cor de destaque</Label>
                             <div className="flex items-center gap-2">

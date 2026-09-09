@@ -150,8 +150,8 @@ export function AppSidebar() {
     const { auth, app_version } = usePage<SharedData>().props;
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+        <Sidebar collapsible="icon" variant="inset" className="border-sidebar-border/70 border-r">
+            <SidebarHeader className="px-3 pt-4 pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
@@ -163,17 +163,17 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent className="gap-0 py-2">
                 <NavMain items={mainNavItems} label="Sua participação" />
                 {auth?.is_judge && <NavMain items={judgeNavItems} label="Avaliação" />}
                 {auth?.is_staff && <NavMain items={staffNavItems} label="Organização" />}
                 {auth?.is_admin && <NavMain items={adminNavItems} label="Administração" />}
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="border-sidebar-border/70 border-t px-3 pt-3 pb-3">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
-                <span className="px-2 pb-1 text-xs text-neutral-400 group-data-[collapsible=icon]:hidden dark:text-neutral-600">{app_version}</span>
+                <span className="text-sidebar-foreground/40 px-2 pb-1 font-mono text-[10px] group-data-[collapsible=icon]:hidden">{app_version}</span>
             </SidebarFooter>
         </Sidebar>
     );

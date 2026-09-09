@@ -46,11 +46,11 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
         <AppLayout breadcrumbs={[{ title: 'Painel', href: route('painel.dashboard') }]}>
             <Head title="Painel do organizador" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-4 sm:p-8">
-                <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-4 sm:p-8">
+                <header className="border-border/70 flex flex-col justify-between gap-5 border-b pb-7 sm:flex-row sm:items-end">
                     <div>
-                        <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">Central de organização</p>
-                        <h1 className="text-3xl font-bold tracking-tight">Visão geral do evento</h1>
+                        <p className="text-muted-foreground mb-2 text-sm">Central de organização</p>
+                        <h1 className="text-4xl font-medium tracking-[-0.04em] text-balance">Visão geral do evento</h1>
                         <p className="text-muted-foreground mt-2 text-sm">{evento.nome}</p>
                     </div>
                     <Button asChild className="h-11">
@@ -67,18 +67,21 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                     </h2>
 
                     {abertas.length === 0 ? (
-                        <div className="border-border bg-card flex items-center gap-3 rounded-xl border p-4">
+                        <div className="border-border/70 bg-card/80 flex items-center gap-3 rounded-2xl border p-4 shadow-sm">
                             <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                             <p className="text-sm">Tudo em dia — nenhuma submissão ou avaliação pendente.</p>
                         </div>
                     ) : (
-                        <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-xl border">
+                        <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                             {abertas.map((p) => {
                                 const n = dados[p.chave];
 
                                 return (
                                     <li key={p.chave}>
-                                        <Link href={route(p.href)} className="hover:bg-muted/50 flex items-center gap-4 p-4 transition-colors">
+                                        <Link
+                                            href={route(p.href)}
+                                            className="hover:bg-muted/40 flex min-h-20 items-center gap-4 p-4 transition-colors sm:px-5"
+                                        >
                                             <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-sm font-medium text-amber-700 dark:text-amber-400">
                                                 {n}
                                             </span>
@@ -100,7 +103,7 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                         Hoje
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {numeros.map((item) => {
                             const Icone = item.icon;
                             const conteudo = (
@@ -112,11 +115,15 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                             );
 
                             return item.href ? (
-                                <Link key={item.chave} href={route(item.href)} className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                                <Link
+                                    key={item.chave}
+                                    href={route(item.href)}
+                                    className="border-border/70 bg-card/80 hover:bg-card rounded-3xl border p-5 shadow-sm transition-colors sm:p-6"
+                                >
                                     {conteudo}
                                 </Link>
                             ) : (
-                                <div key={item.chave} className="border-border bg-card rounded-xl border p-4 sm:p-6">
+                                <div key={item.chave} className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-6">
                                     {conteudo}
                                 </div>
                             );
@@ -125,7 +132,7 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                 </section>
                 <Link
                     href={route('painel.agenda.index')}
-                    className="border-border bg-card hover:bg-muted/50 flex items-center gap-4 rounded-xl border p-5 transition-colors"
+                    className="border-border/70 bg-card/80 hover:bg-muted/40 flex items-center gap-4 rounded-3xl border p-5 shadow-sm transition-colors sm:p-6"
                 >
                     <CalendarDays className="text-primary size-5 shrink-0" aria-hidden="true" />
                     <div className="flex-1">

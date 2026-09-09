@@ -30,7 +30,13 @@ export default function Status({ tom, children, icon, className }: StatusProps) 
     const Icon = icon ?? config.icon;
 
     return (
-        <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium', config.classe, className)}>
+        <span
+            className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border border-current/10 px-2.5 py-1 text-xs font-medium',
+                config.classe,
+                className,
+            )}
+        >
             <Icon className="size-3.5 shrink-0" aria-hidden="true" />
             {children}
         </span>

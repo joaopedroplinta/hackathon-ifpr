@@ -18,7 +18,7 @@ export function NavFooter({
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
-                                className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
+                                className="text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10 rounded-xl"
                             >
                                 {/* Link interno usa <Link> pra não recarregar a página inteira; só o
                                     que sai do domínio (repositório) segue como <a target="_blank">

@@ -56,10 +56,10 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
         <AppLayout breadcrumbs={[{ title: 'Resultados', href: route('painel.resultados.index') }]}>
             <Head title="Resultados" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
-                <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Resultados</h1>
+                        <h1 className="text-3xl font-medium tracking-[-0.03em]">Resultados</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {publicado_em ? `Publicado em ${publicado_em}.` : 'Ainda não publicado.'}
                             {computado_em && ` Último cálculo: ${computado_em}.`}
@@ -87,7 +87,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                 </header>
 
                 <Dialog open={confirmandoComPendencia} onOpenChange={setConfirmandoComPendencia}>
-                    <DialogContent>
+                    <DialogContent className="rounded-3xl sm:max-w-lg">
                         <DialogTitle>Publicar resultados com pendências?</DialogTitle>
                         <DialogDescription>
                             Existem submissões sem nota, avaliações incompletas ou empates pendentes. A publicação ficará visível ao público e deve
@@ -108,7 +108,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                 </Dialog>
 
                 {temPendencia && (
-                    <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
+                    <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
                         <h2 className="flex items-center gap-2 font-semibold">
                             <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             Pendências
@@ -155,7 +155,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
 
                 <h2 className="mb-3 font-semibold">Ranking</h2>
                 {resultados.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Trophy className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -163,20 +163,20 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                         <p className="text-muted-foreground text-sm">Clique em &quot;Recalcular&quot; para gerar o ranking.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
+                    <div className="border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm">
                         <table className="w-full min-w-[36rem] text-sm">
                             <thead>
-                                <tr className="text-muted-foreground border-border border-b text-left">
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Geral</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Trilha</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Submissão</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Equipe</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Nota</th>
+                                <tr className="text-muted-foreground border-border bg-muted/40 border-b text-left">
+                                    <th className="px-4 py-3 text-xs font-medium">Geral</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Trilha</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Submissão</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Equipe</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Nota</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {resultados.map((r) => (
-                                    <tr key={r.submission_id} className="border-border border-b last:border-0">
+                                    <tr key={r.submission_id} className="hover:bg-muted/30 border-border border-b transition-colors last:border-0">
                                         <td className="px-4 py-3">{r.rank_overall ?? '—'}</td>
                                         <td className="px-4 py-3">
                                             {r.rank_track ?? '—'}

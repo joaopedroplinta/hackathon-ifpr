@@ -4,7 +4,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, ShieldCheck } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 import CampoSenha from '@/components/hackathon/campo-senha';
@@ -57,9 +57,24 @@ export default function Password() {
 
             <SettingsLayout>
                 <div className="space-y-6">
+                    <div className="border-primary/20 bg-primary/5 flex items-start gap-4 rounded-2xl border p-5">
+                        <span className="bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-xl">
+                            <ShieldCheck className="size-5" aria-hidden="true" />
+                        </span>
+                        <div>
+                            <p className="font-semibold">Proteja seu acesso</p>
+                            <p className="text-muted-foreground mt-1 text-sm leading-6">
+                                Uma senha exclusiva reduz o risco de outra pessoa acessar sua equipe, submissão ou certificado.
+                            </p>
+                        </div>
+                    </div>
                     <form onSubmit={updatePassword} className="space-y-6" noValidate>
                         <ResumoErro erros={errors} />
-                        <SecaoFormulario titulo="Atualizar senha" instrucao="Use uma senha longa e aleatória para manter sua conta segura.">
+                        <SecaoFormulario
+                            titulo="Atualizar senha"
+                            instrucao="Use uma senha longa, exclusiva e difícil de adivinhar."
+                            className="bg-background"
+                        >
                             <div className="grid gap-2">
                                 <Label htmlFor="current_password">Senha atual</Label>
 
@@ -68,7 +83,7 @@ export default function Password() {
                                     ref={currentPasswordInput}
                                     value={data.current_password}
                                     onChange={(e) => setData('current_password', e.target.value)}
-                                    className="mt-1 block w-full"
+                                    className="bg-muted/30 mt-1 h-12 w-full"
                                     autoComplete="current-password"
                                     placeholder="Senha atual"
                                 />
@@ -84,7 +99,7 @@ export default function Password() {
                                     ref={passwordInput}
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
-                                    className="mt-1 block w-full"
+                                    className="bg-muted/30 mt-1 h-12 w-full"
                                     autoComplete="new-password"
                                     placeholder="Nova senha"
                                     aria-describedby="password-requisitos"
@@ -101,7 +116,7 @@ export default function Password() {
                                     id="password_confirmation"
                                     value={data.password_confirmation}
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
-                                    className="mt-1 block w-full"
+                                    className="bg-muted/30 mt-1 h-12 w-full"
                                     autoComplete="new-password"
                                     placeholder="Confirmar senha"
                                 />
@@ -109,7 +124,7 @@ export default function Password() {
                                 <InputError message={errors.password_confirmation} />
                             </div>
                             <div className="border-border flex flex-wrap items-center gap-4 border-t pt-5">
-                                <Button disabled={processing}>
+                                <Button className="min-h-11" disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
                                     {processing ? 'Salvando…' : 'Salvar senha'}
                                 </Button>

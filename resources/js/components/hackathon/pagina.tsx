@@ -39,7 +39,7 @@ export function ContainerPagina({ largura = 'operacao', className, children }: C
             initial="oculto"
             animate="visivel"
             variants={fadeIn}
-            className={cn('mx-auto flex w-full flex-col gap-8 p-4 sm:p-8', larguras[largura], className)}
+            className={cn('mx-auto flex w-full flex-col gap-8 px-4 py-6 sm:px-8 sm:py-9 lg:gap-10 lg:px-10', larguras[largura], className)}
         >
             {children}
         </motion.div>
@@ -57,13 +57,13 @@ type CabecalhoPaginaProps = {
 /** Cabeçalho de página: eyebrow opcional, título, contexto e uma ação principal. */
 export function CabecalhoPagina({ eyebrow, titulo, descricao, acao, className }: CabecalhoPaginaProps) {
     return (
-        <header className={cn('flex flex-col justify-between gap-4 sm:flex-row sm:items-center', className)}>
+        <header className={cn('border-border/80 flex flex-col justify-between gap-5 border-b pb-6 sm:flex-row sm:items-end', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">{eyebrow}</p>}
-                <h1 className="text-3xl font-bold tracking-tight text-balance">{titulo}</h1>
-                {descricao && <div className="text-muted-foreground mt-2 text-sm leading-relaxed">{descricao}</div>}
+                {eyebrow && <p className="text-primary mb-2 text-xs font-semibold tracking-[0.14em] uppercase">{eyebrow}</p>}
+                <h1 className="text-3xl leading-tight font-semibold tracking-[-0.035em] text-balance sm:text-4xl">{titulo}</h1>
+                {descricao && <div className="text-muted-foreground mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">{descricao}</div>}
             </div>
-            {acao && <div className="flex flex-wrap gap-2">{acao}</div>}
+            {acao && <div className="flex shrink-0 flex-wrap gap-2">{acao}</div>}
         </header>
     );
 }
