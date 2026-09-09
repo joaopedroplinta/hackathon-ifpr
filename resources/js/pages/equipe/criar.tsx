@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, UsersRound } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import ResumoErro from '@/components/hackathon/resumo-erro';
@@ -53,18 +53,26 @@ export default function CriarEquipe({ trilhas, limites }: Props) {
         >
             <Head title="Criar equipe" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-8">
-                    <h1 className="text-2xl font-bold tracking-tight">Criar equipe</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Você vira o líder. Depois é só passar o código de convite para o resto do time — de {limites.minimo} a {limites.maximo}{' '}
-                        pessoas.
-                    </p>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-8">
+                <header className="mb-8 flex items-start gap-4">
+                    <span className="bg-primary/10 flex size-12 shrink-0 items-center justify-center rounded-2xl">
+                        <UsersRound className="text-primary size-6" aria-hidden="true" />
+                    </span>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Dê forma à sua equipe</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">
+                            Você vira o líder. Depois é só passar o código de convite para o resto do time — de {limites.minimo} a {limites.maximo}{' '}
+                            pessoas.
+                        </p>
+                    </div>
                 </header>
 
                 <form onSubmit={submit} className="space-y-6" noValidate>
                     <ResumoErro erros={errors} />
-                    <SecaoFormulario titulo="Defina sua equipe" instrucao="Você será a pessoa líder e poderá convidar os demais integrantes depois.">
+                    <SecaoFormulario
+                        titulo="Identidade da equipe"
+                        instrucao="Escolha um nome fácil de reconhecer e conte, em poucas palavras, o que vocês querem construir."
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="name">Nome da equipe</Label>
                             <Input
@@ -115,7 +123,7 @@ export default function CriarEquipe({ trilhas, limites }: Props) {
                         </div>
 
                         <div className="border-border border-t pt-5">
-                            <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                            <Button type="submit" disabled={processing} className="h-11 w-full sm:w-auto">
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                 {processing ? 'Criando…' : 'Criar equipe'}
                             </Button>

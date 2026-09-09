@@ -17,12 +17,17 @@ interface Props {
 function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTrilha; indice: number; total: number; reduzMovimento: boolean | null }) {
     const concluido = passo.status === 'concluido';
     const bloqueado = passo.status === 'bloqueado';
+    const disponivel = passo.status === 'disponivel';
     const ultimo = indice === total - 1;
 
     const marcador = (
         <span
-            className={`flex size-9 shrink-0 items-center justify-center rounded-full ${
-                concluido ? 'bg-primary text-primary-foreground' : bloqueado ? 'bg-muted text-muted-foreground' : 'bg-muted text-foreground'
+            className={`relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full border ${
+                concluido
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : bloqueado
+                      ? 'border-border bg-muted text-muted-foreground'
+                      : 'border-primary/25 bg-primary/10 text-primary'
             }`}
         >
             {concluido ? (
@@ -36,13 +41,17 @@ function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTril
     );
 
     const conteudo = (
-        <div className="flex gap-4">
-            <div className="flex flex-col items-center">
+        <div className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-4">
+            <div className="relative flex justify-center">
                 {marcador}
-                {!ultimo && <span className="bg-border mt-1 w-px flex-1" aria-hidden="true" />}
+                {!ultimo && <span className="bg-border absolute top-9 bottom-[-0.75rem] left-1/2 w-px -translate-x-1/2" aria-hidden="true" />}
             </div>
 
-            <div className={`flex-1 items-start justify-between gap-3 sm:flex ${ultimo ? 'pb-1' : 'pb-8'}`}>
+            <div
+                className={`min-w-0 items-start justify-between gap-3 rounded-xl px-4 py-3 transition-colors sm:flex ${
+                    disponivel ? 'bg-primary/5 ring-primary/10 ring-1' : 'bg-transparent'
+                } ${ultimo ? '' : 'mb-3'}`}
+            >
                 <div>
                     <p className={`font-semibold ${bloqueado ? 'text-muted-foreground' : ''}`}>{passo.titulo}</p>
                     <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{passo.descricao}</p>
@@ -59,7 +68,7 @@ function ItemTrilha({ passo, indice, total, reduzMovimento }: { passo: PassoTril
 
     return (
         <motion.li whileHover={reduzMovimento ? undefined : { x: 2 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
-            <Link href={passo.href} className="focus-visible:ring-ring -m-2 block rounded-lg p-2 focus-visible:ring-2 focus-visible:outline-none">
+            <Link href={passo.href} className="focus-visible:ring-ring block rounded-xl focus-visible:ring-2 focus-visible:outline-none">
                 {conteudo}
             </Link>
         </motion.li>
@@ -71,6 +80,36 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
     const reduzMovimento = useReducedMotion();
     const completed = trilha?.filter((step) => step.status === 'concluido').length ?? 0;
     const nextStep = trilha?.find((step) => step.status === 'disponivel' && step.href && step.chave !== 'credencial');
+    const contextLabel = auth.is_staff
+        ? auth.is_judge
+            ? 'Participação, avaliação e organização'
+            : 'Participação e organização'
+        : auth.is_judge
+          ? 'Participação e avaliação'
+          : 'Sua participação no hackathon';
+    const featuredPanel = auth.is_staff
+        ? {
+              eyebrow: auth.is_admin ? 'Administração do evento' : 'Organização do evento',
+              title: 'Central de organização',
+              description: 'Acompanhe pendências, operação e decisões desta edição.',
+              href: route('painel.dashboard'),
+              action: 'Abrir painel',
+          }
+        : auth.is_judge
+          ? {
+                eyebrow: 'Espaço do jurado',
+                title: 'Suas avaliações',
+                description: 'Veja os projetos atribuídos e continue suas avaliações.',
+                href: route('jurado.index'),
+                action: 'Ver avaliações',
+            }
+          : {
+                eyebrow: nextStep ? 'Seu próximo passo' : 'Acompanhe o evento',
+                title: nextStep?.titulo ?? 'Tudo no seu tempo.',
+                description: nextStep?.descricao ?? 'Confira sua jornada ao lado e acompanhe os horários das atividades na agenda.',
+                href: nextStep?.href ?? route('agenda.index'),
+                action: nextStep ? 'Continuar' : 'Ver programação',
+            };
     const shortcuts = [
         { title: 'Meu crachá', description: 'QR Code para o check-in.', href: 'credencial.show', icon: QrCode },
         { title: 'Programação', description: 'Horários e atividades do evento.', href: 'agenda.index', icon: Calendar },
@@ -91,7 +130,7 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-4 sm:p-8">
                 <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
-                        <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">Seu espaço no hackathon</p>
+                        <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">{contextLabel}</p>
                         <h1 className="text-3xl font-bold tracking-tight">Olá, {primeiroNome}.</h1>
                         <p className="text-muted-foreground mt-2 text-sm">{evento?.nome ?? 'Tudo para acompanhar sua participação.'}</p>
                     </div>
@@ -138,16 +177,38 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
                     </section>
                 )}
 
-                {trilha ? (
+                {trilha && trilha.length > 0 ? (
                     <div className="grid items-start gap-6 lg:grid-cols-[1.35fr_1fr]">
-                        <section className="border-border bg-card rounded-2xl border p-6 sm:p-8" aria-labelledby="participation-title">
-                            <div className="border-border mb-7 flex items-center justify-between gap-3 border-b pb-5">
-                                <h2 id="participation-title" className="text-lg font-semibold tracking-tight">
-                                    Sua jornada
-                                </h2>
-                                <span className="text-muted-foreground text-xs">{completed} etapas concluídas</span>
+                        <section className="border-border bg-card overflow-hidden rounded-2xl border" aria-labelledby="participation-title">
+                            <div className="border-border border-b p-6 sm:px-8 sm:py-6">
+                                <div className="flex items-end justify-between gap-3">
+                                    <div>
+                                        <h2 id="participation-title" className="text-lg font-semibold tracking-tight">
+                                            Sua jornada
+                                        </h2>
+                                        <p className="text-muted-foreground mt-1 text-sm">Do primeiro cadastro à entrega do projeto.</p>
+                                    </div>
+                                    <span className="text-muted-foreground shrink-0 text-sm font-medium tabular-nums">
+                                        {completed}/{trilha.length}
+                                    </span>
+                                </div>
+                                <div
+                                    className="bg-muted mt-4 h-1.5 overflow-hidden rounded-full"
+                                    role="progressbar"
+                                    aria-label="Etapas concluídas da participação"
+                                    aria-valuenow={completed}
+                                    aria-valuemin={0}
+                                    aria-valuemax={trilha.length}
+                                >
+                                    <motion.div
+                                        className="bg-primary h-full rounded-full"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${(completed / trilha.length) * 100}%` }}
+                                        transition={reduzMovimento ? { duration: 0 } : { duration: 0.6, ease: 'easeOut' }}
+                                    />
+                                </div>
                             </div>
-                            <ol className="flex flex-col">
+                            <ol className="flex flex-col p-6 sm:p-8">
                                 {trilha.map((passo, indice) => (
                                     <ItemTrilha
                                         key={passo.chave}
@@ -161,16 +222,12 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
                         </section>
                         <aside className="flex flex-col gap-5">
                             <section className="event-art relative overflow-hidden rounded-2xl p-6 sm:p-8">
-                                <p className="text-xs font-semibold tracking-widest text-[#d6ecac] uppercase">
-                                    {nextStep ? 'Seu próximo passo' : 'Acompanhe o evento'}
-                                </p>
-                                <h2 className="mt-4 text-2xl font-semibold tracking-tight">{nextStep?.titulo ?? 'Tudo no seu tempo.'}</h2>
-                                <p className="mt-3 text-sm leading-relaxed text-white/80">
-                                    {nextStep?.descricao ?? 'Confira sua jornada ao lado e acompanhe os horários das atividades na agenda.'}
-                                </p>
+                                <p className="text-xs font-semibold tracking-widest text-[#d6ecac] uppercase">{featuredPanel.eyebrow}</p>
+                                <h2 className="mt-4 text-2xl font-semibold tracking-tight">{featuredPanel.title}</h2>
+                                <p className="mt-3 text-sm leading-relaxed text-white/80">{featuredPanel.description}</p>
                                 <Button asChild className="mt-6 h-11 bg-[#d6ecac] text-[#183b2b] hover:bg-[#e4f3c9]">
-                                    <Link href={nextStep?.href ?? route('agenda.index')}>
-                                        {nextStep ? 'Continuar' : 'Ver programação'}
+                                    <Link href={featuredPanel.href}>
+                                        {featuredPanel.action}
                                         <ArrowRight className="size-4" aria-hidden="true" />
                                     </Link>
                                 </Button>

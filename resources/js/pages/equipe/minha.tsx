@@ -55,12 +55,14 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     };
 
     return (
-        <div className="border-border bg-card rounded-2xl border p-6 sm:p-8">
-            <h2 className="font-semibold">Código de convite</h2>
-            <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
+        <div className="border-border bg-card overflow-hidden rounded-2xl border">
+            <div className="bg-primary/10 border-border border-b p-5 sm:px-8">
+                <h2 className="font-semibold">Código de convite</h2>
+                <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
+            </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-                <code className="bg-muted rounded-md px-4 py-2 font-mono text-2xl tracking-[0.3em]">{codigo}</code>
+            <div className="flex flex-wrap items-center gap-3 p-5 sm:px-8 sm:py-6">
+                <code className="bg-muted rounded-xl px-4 py-3 font-mono text-2xl tracking-[0.3em]">{codigo}</code>
                 <Button variant="outline" onClick={copiar} aria-live="polite">
                     {copiado ? (
                         <>
@@ -74,7 +76,7 @@ function CodigoConvite({ codigo }: { codigo: string }) {
                 </Button>
             </div>
             {erro && (
-                <p role="alert" className="text-destructive mt-3 text-sm">
+                <p role="alert" className="text-destructive px-5 pb-5 text-sm sm:px-8">
                     Não foi possível copiar. Selecione e copie o código manualmente.
                 </p>
             )}
@@ -187,13 +189,17 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
         <AppLayout breadcrumbs={[{ title: 'Equipe', href: route('teams.show') }]}>
             <Head title={equipe.nome} />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4 sm:p-6">
-                <header>
-                    <h1 className="text-2xl font-bold tracking-tight">{equipe.nome}</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        {equipe.trilha ? `Trilha: ${equipe.trilha.name}` : 'Sem trilha definida'} · {equipe.status_label}
-                    </p>
-                    {equipe.descricao && <p className="mt-3 text-sm">{equipe.descricao}</p>}
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-8">
+                <header className="border-border bg-card relative overflow-hidden rounded-2xl border p-6 sm:p-8">
+                    <span className="bg-primary/10 absolute -top-16 -right-16 size-48 rounded-full" aria-hidden="true" />
+                    <div className="relative">
+                        <p className="text-primary mb-2 text-sm font-medium">Sua equipe</p>
+                        <h1 className="text-3xl font-bold tracking-tight">{equipe.nome}</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">
+                            {equipe.trilha ? `Trilha: ${equipe.trilha.name}` : 'Sem trilha definida'} · {equipe.status_label}
+                        </p>
+                        {equipe.descricao && <p className="mt-4 max-w-2xl text-sm leading-relaxed">{equipe.descricao}</p>}
+                    </div>
                 </header>
 
                 <CodigoConvite codigo={equipe.codigo_convite} />
@@ -204,6 +210,20 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
                         <span className="text-muted-foreground text-sm">
                             {limites.atual} de {limites.maximo}
                         </span>
+                    </div>
+
+                    <div
+                        className="bg-muted mt-4 h-1.5 overflow-hidden rounded-full"
+                        role="progressbar"
+                        aria-label="Ocupação da equipe"
+                        aria-valuenow={limites.atual}
+                        aria-valuemin={0}
+                        aria-valuemax={limites.maximo}
+                    >
+                        <div
+                            className="bg-primary h-full rounded-full"
+                            style={{ width: `${Math.min(100, (limites.atual / limites.maximo) * 100)}%` }}
+                        />
                     </div>
 
                     {faltam > 0 && (

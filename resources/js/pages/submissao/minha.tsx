@@ -45,6 +45,8 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
     const salvarRascunho = () => post(route('submissions.save'), { preserveScroll: true });
 
     const reduzMovimento = useReducedMotion();
+    const camposEssenciais = [data.title, data.summary, data.repo_url];
+    const essenciaisPreenchidos = camposEssenciais.filter((valor) => valor.trim().length > 0).length;
 
     const fadeIn: Variants = {
         oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
@@ -60,18 +62,48 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
         >
             <Head title="Projeto" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Projeto da {equipe.nome}</h1>
-                    {pode_editar && (
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            Vocês podem salvar um rascunho quantas vezes quiserem. Cada envio fica guardado como uma versão — nada é sobrescrito.
-                        </p>
-                    )}
-                    <div className="mt-3">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-8">
+                <header className="border-border bg-card mb-6 overflow-hidden rounded-2xl border">
+                    <div className="p-6 sm:p-8">
+                        <p className="text-primary mb-2 text-sm font-medium">Entrega da equipe</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Projeto da {equipe.nome}</h1>
+                        {pode_editar && (
+                            <p className="text-muted-foreground mt-1 text-sm">
+                                Vocês podem salvar um rascunho quantas vezes quiserem. Cada envio fica guardado como uma versão — nada é sobrescrito.
+                            </p>
+                        )}
+                    </div>
+                    <div className="bg-muted/40 border-border border-t px-6 py-4 sm:px-8">
                         <ContadorPrazo prazo={prazo} envioAindaAceito={pode_editar} />
                     </div>
                 </header>
+
+                {pode_editar && (
+                    <section className="border-border bg-card mb-6 rounded-2xl border p-5" aria-labelledby="progresso-projeto">
+                        <div className="flex items-center justify-between gap-3">
+                            <div>
+                                <h2 id="progresso-projeto" className="font-semibold">
+                                    Pronto para enviar?
+                                </h2>
+                                <p className="text-muted-foreground mt-1 text-xs">Título, resumo e repositório são essenciais.</p>
+                            </div>
+                            <span className="text-sm font-semibold tabular-nums">{essenciaisPreenchidos}/3</span>
+                        </div>
+                        <div
+                            className="bg-muted mt-4 h-1.5 overflow-hidden rounded-full"
+                            role="progressbar"
+                            aria-label="Campos essenciais preenchidos"
+                            aria-valuenow={essenciaisPreenchidos}
+                            aria-valuemin={0}
+                            aria-valuemax={3}
+                        >
+                            <div
+                                className="bg-primary h-full rounded-full transition-[width]"
+                                style={{ width: `${(essenciaisPreenchidos / 3) * 100}%` }}
+                            />
+                        </div>
+                    </section>
+                )}
 
                 <EstadoDoEnvio submissao={submissao} />
 
@@ -85,7 +117,7 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                 {pode_editar ? (
                     <form onSubmit={enviar} className="space-y-6" noValidate>
                         <ResumoErro erros={errors} />
-                        <div className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8">
+                        <div className="border-border bg-card grid gap-7 rounded-2xl border p-6 sm:p-8">
                             <div className="grid gap-2">
                                 <Label htmlFor="title">Título do projeto</Label>
                                 <Input
