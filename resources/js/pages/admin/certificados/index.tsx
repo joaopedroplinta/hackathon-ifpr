@@ -41,9 +41,9 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
         <AppLayout breadcrumbs={[{ title: 'Certificados', href: route('painel.certificados.index') }]}>
             <Head title="Certificados" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Certificados</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Certificados</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Participação, jurado, organizador e colocação saem em lote com{' '}
                         <code className="text-xs">php artisan hackathon:issue-certificates</code>. Aqui é só a emissão avulsa — mentoria ou correção
@@ -51,8 +51,8 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     </p>
                 </header>
 
-                <section className="border-border bg-card mb-6 rounded-2xl border p-4 sm:p-6">
-                    <h2 className="font-semibold">Emitir certificado avulso</h2>
+                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Emitir certificado avulso</h2>
                     <form onSubmit={emitir} className="mt-3 grid gap-3" noValidate>
                         <ResumoErro erros={form.errors} />
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -113,7 +113,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
 
                 <h2 className="mb-3 font-semibold">Emitidos</h2>
                 {certificados.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Award className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -121,19 +121,19 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                         <p className="text-muted-foreground text-sm">Rode o comando de emissão em lote ou emita um avulso acima.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
+                    <div className="border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm">
                         <table className="w-full min-w-[32rem] text-sm">
                             <thead>
-                                <tr className="text-muted-foreground border-border border-b text-left">
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Pessoa</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Tipo</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Emitido em</th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">PDF</th>
+                                <tr className="text-muted-foreground border-border bg-muted/40 border-b text-left">
+                                    <th className="px-4 py-3 text-xs font-medium">Pessoa</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Tipo</th>
+                                    <th className="px-4 py-3 text-xs font-medium">Emitido em</th>
+                                    <th className="px-4 py-3 text-xs font-medium">PDF</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {certificados.map((c) => (
-                                    <tr key={c.id} className="border-border border-b last:border-0">
+                                    <tr key={c.id} className="hover:bg-muted/30 border-border border-b transition-colors last:border-0">
                                         <td className="px-4 py-3">{c.nome}</td>
                                         <td className="px-4 py-3">{c.tipo_label}</td>
                                         <td className="px-4 py-3">{c.emitido_em}</td>

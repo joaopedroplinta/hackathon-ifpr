@@ -72,16 +72,16 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
         <AppLayout breadcrumbs={[{ title: 'Check-in', href: route('painel.checkin.index') }]}>
             <Head title="Check-in" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Check-in</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Check-in</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Peça pra pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
                     </p>
                 </header>
 
                 {checkpoints.length === 0 ? (
-                    <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
+                    <section className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-8">
                         <h2 className="font-semibold">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
                             Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
@@ -150,7 +150,10 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                             <span className="bg-border h-px flex-1" />
                         </div>
 
-                        <form onSubmit={buscar} className="border-border bg-card mb-6 flex gap-3 rounded-2xl border p-4">
+                        <form
+                            onSubmit={buscar}
+                            className="border-border/70 bg-card/80 mb-6 flex flex-col gap-3 rounded-3xl border p-4 shadow-sm sm:flex-row"
+                        >
                             <div className="flex-1">
                                 <Label htmlFor="busca" className="sr-only">
                                     Buscar por nome
@@ -174,7 +177,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 {resultados.length === 0 ? (
                                     <p className="text-muted-foreground text-sm">Ninguém inscrito neste evento bate com "{busca}".</p>
                                 ) : (
-                                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
+                                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                                         {resultados.map((pessoa) => (
                                             <li key={pessoa.id} className="flex items-center justify-between gap-3 p-3">
                                                 <div className="flex items-center gap-3">

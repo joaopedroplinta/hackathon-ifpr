@@ -68,20 +68,23 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
         >
             <Head title="Lançar submissão manualmente" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <h1 className="mb-1 text-2xl font-bold tracking-tight">Lançar submissão manualmente</h1>
-                <p className="text-muted-foreground mb-6 text-sm">
-                    Só pra quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano B,
-                    degraus 3 e 4). Fica marcada pra conferência no painel.
-                </p>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <p className="text-muted-foreground mb-2 text-sm">Plano de contingência</p>
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Lançar submissão manualmente</h1>
+                    <p className="text-muted-foreground mt-2 max-w-2xl text-sm leading-relaxed">
+                        Só pra quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano
+                        B, degraus 3 e 4). Fica marcada pra conferência no painel.
+                    </p>
+                </header>
 
                 {equipes.length === 0 ? (
-                    <div className="border-border bg-card rounded-xl border p-6 text-center">
+                    <div className="border-border/70 bg-card/80 rounded-3xl border p-8 text-center shadow-sm">
                         <p className="font-semibold">Nenhuma equipe pendente.</p>
                         <p className="text-muted-foreground mt-1 text-sm">Toda equipe deste evento já tem uma submissão registrada.</p>
                     </div>
                 ) : (
-                    <form onSubmit={enviar} className="border-border bg-card grid gap-6 rounded-2xl border p-6 sm:p-8" noValidate>
+                    <form onSubmit={enviar} className="border-border/70 bg-card/80 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-8" noValidate>
                         <ResumoErro erros={errors} />
                         <div className="grid gap-2">
                             <Label htmlFor="team_id">Equipe</Label>

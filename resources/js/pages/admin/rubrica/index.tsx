@@ -50,13 +50,13 @@ export default function ListaRubricas({ rubricas }: Props) {
         <AppLayout breadcrumbs={[{ title: 'Rubrica', href: route('painel.rubrica.index') }]}>
             <Head title="Rubrica" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Rubrica</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Rubrica</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Só a rubrica ativa conta pro cálculo e aparece pro jurado e pro público.</p>
                 </header>
 
-                <form onSubmit={criar} className="border-border bg-card mb-6 grid gap-3 rounded-2xl border p-4" noValidate>
+                <form onSubmit={criar} className="border-border/70 bg-card/80 mb-8 grid gap-3 rounded-3xl border p-5 shadow-sm" noValidate>
                     <ResumoErro erros={errors} />
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div className="flex-1">
@@ -77,7 +77,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                 </form>
 
                 {rubricas.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <ClipboardList className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -85,7 +85,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                         <p className="text-muted-foreground text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
+                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {rubricas.map((rubrica) => (
                             <li key={rubrica.id} className="p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -135,7 +135,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                 )}
 
                 <Dialog open={rubricaParaRemover !== null} onOpenChange={(aberto) => !aberto && setRubricaParaRemover(null)}>
-                    <DialogContent>
+                    <DialogContent className="rounded-3xl sm:max-w-lg">
                         <DialogTitle>Excluir rubrica?</DialogTitle>
                         <DialogDescription>
                             {rubricaParaRemover

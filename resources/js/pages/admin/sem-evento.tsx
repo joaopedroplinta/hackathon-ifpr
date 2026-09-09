@@ -24,13 +24,14 @@ export default function SemEvento() {
         <AppLayout breadcrumbs={[{ title: 'Evento', href: route('painel.evento.create') }]}>
             <Head title="Nenhum evento cadastrado" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="p-4 sm:p-6">
-                <section className="border-border bg-card mx-auto flex max-w-xl flex-col items-center gap-3 rounded-xl border p-10 text-center">
-                    <span className="bg-muted flex size-11 items-center justify-center rounded-full">
-                        <CalendarPlus className="text-muted-foreground size-5" aria-hidden="true" />
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="p-4 sm:p-8">
+                <section className="border-border/70 bg-card/80 relative mx-auto flex max-w-2xl flex-col items-center gap-4 overflow-hidden rounded-3xl border p-8 text-center shadow-sm sm:p-14">
+                    <div className="bg-primary absolute inset-x-0 top-0 h-1" aria-hidden="true" />
+                    <span className="bg-primary/10 flex size-14 items-center justify-center rounded-2xl">
+                        <CalendarPlus className="text-primary size-6" aria-hidden="true" />
                     </span>
-                    <p className="font-semibold">Nenhum evento cadastrado ainda</p>
-                    <p className="text-muted-foreground text-sm">
+                    <h1 className="text-2xl font-medium tracking-[-0.03em]">Nenhum evento cadastrado ainda</h1>
+                    <p className="text-muted-foreground max-w-lg text-sm leading-relaxed">
                         Esta e as demais telas do painel (agenda, jurados, avaliação, certificados) só ficam disponíveis depois que a primeira edição
                         do hackathon existir.
                     </p>

@@ -90,10 +90,10 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
         <AppLayout breadcrumbs={[{ title: 'Submissões', href: route('painel.submissions.index') }]}>
             <Head title="Submissões" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6">
-                <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Submissões</h1>
+                        <h1 className="text-3xl font-medium tracking-[-0.03em]">Submissões</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
                             {resumo.total === 1 ? '1 projeto registrado' : `${resumo.total} projetos registrados`} nesta edição.
                         </p>
@@ -156,7 +156,10 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                     </section>
                 )}
 
-                <form onSubmit={buscar} className="border-border bg-card mb-4 flex flex-col gap-3 rounded-2xl border p-4 md:flex-row md:items-end">
+                <form
+                    onSubmit={buscar}
+                    className="border-border/70 bg-card/80 mb-4 flex flex-col gap-3 rounded-3xl border p-4 shadow-sm md:flex-row md:items-end"
+                >
                     <div className="flex-1">
                         <Label htmlFor="busca">Buscar por equipe ou título</Label>
                         <Input
@@ -205,7 +208,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                 </form>
 
                 {submissoes.data.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <Inbox className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -217,34 +220,36 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                         </p>
                     </div>
                 ) : (
-                    <div className={`border-border bg-card overflow-x-auto rounded-2xl border transition-opacity ${carregando ? 'opacity-60' : ''}`}>
+                    <div
+                        className={`border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm transition-opacity ${carregando ? 'opacity-60' : ''}`}
+                    >
                         <table className="w-full min-w-[48rem] text-sm">
                             <caption className="sr-only">Submissões do evento</caption>
-                            <thead className="bg-muted/50 text-left">
+                            <thead className="bg-muted/40 text-left">
                                 <tr>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Equipe
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Projeto
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Trilha
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Situação
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Enviado em
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Versão
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {submissoes.data.map((linha) => (
-                                    <tr key={linha.id} className="hover:bg-muted/30 border-border border-t">
+                                    <tr key={linha.id} className="hover:bg-muted/40 border-border border-t transition-colors">
                                         <td className="p-3 font-semibold">
                                             <Link href={route('painel.submissions.show', linha.id)} className="hover:underline">
                                                 {linha.equipe.nome}

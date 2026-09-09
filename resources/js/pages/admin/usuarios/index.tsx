@@ -54,7 +54,7 @@ function EditarPapeis({ usuario, opcoesPapeis }: { usuario: LinhaUsuario; opcoes
                     Editar papéis
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="rounded-3xl sm:max-w-lg">
                 <DialogTitle>Papéis de {usuario.nome}</DialogTitle>
                 <DialogDescription>Papéis acumulam — marque quantos fizerem sentido para esta pessoa.</DialogDescription>
 
@@ -115,13 +115,16 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
         <AppLayout breadcrumbs={[{ title: 'Usuários', href: route('admin.usuarios.index') }]}>
             <Head title="Usuários" />
 
-            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-6">
-                <header className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Usuários</h1>
+            <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+                <header className="border-border/70 mb-8 border-b pb-6">
+                    <h1 className="text-3xl font-medium tracking-[-0.03em]">Usuários</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Conceder ou remover papel (jurado, organizador, admin). Papéis acumulam.</p>
                 </header>
 
-                <form onSubmit={buscar} className="border-border bg-card mb-4 flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-end">
+                <form
+                    onSubmit={buscar}
+                    className="border-border/70 bg-card/80 mb-4 flex flex-col gap-3 rounded-3xl border p-4 shadow-sm sm:flex-row sm:items-end"
+                >
                     <div className="flex-1">
                         <Label htmlFor="busca">Buscar por nome ou e-mail</Label>
                         <Input
@@ -151,7 +154,7 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
                 </form>
 
                 {usuarios.data.length === 0 ? (
-                    <div className="border-border bg-card flex flex-col items-center gap-3 rounded-xl border p-10 text-center">
+                    <div className="border-border/70 bg-card/80 flex flex-col items-center gap-3 rounded-3xl border p-10 text-center shadow-sm">
                         <span className="bg-muted flex size-11 items-center justify-center rounded-full">
                             <UsersIcon className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
@@ -159,25 +162,25 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
                         <p className="text-muted-foreground text-sm">Tente outro nome ou e-mail, ou limpe a busca.</p>
                     </div>
                 ) : (
-                    <div className="border-border bg-card overflow-x-auto rounded-2xl border">
+                    <div className="border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm">
                         <table className="w-full min-w-[40rem] text-sm">
                             <caption className="sr-only">Usuários e seus papéis</caption>
-                            <thead className="bg-muted/50 text-left">
+                            <thead className="bg-muted/40 text-left">
                                 <tr>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Nome
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         Papéis
                                     </th>
-                                    <th scope="col" className="p-3 text-xs font-semibold tracking-wide uppercase">
+                                    <th scope="col" className="p-3 text-xs font-medium">
                                         <span className="sr-only">Ações</span>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {usuarios.data.map((usuario) => (
-                                    <tr key={usuario.id} className="border-border border-t">
+                                    <tr key={usuario.id} className="hover:bg-muted/30 border-border border-t transition-colors">
                                         <td className="p-3">
                                             <p className="font-semibold">
                                                 {usuario.nome}
