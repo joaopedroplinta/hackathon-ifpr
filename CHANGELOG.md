@@ -10,6 +10,50 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.2.0] - 2026-09-09
+
+Fecha uma segunda rodada de ajustes sobre a repaginação da 1.1.0: uma nova
+regra de papéis separa de vez participante de jurado/organizador/admin, a
+identidade institucional do IFPR chega ao certificado em PDF e aos e-mails
+transacionais, e mais uma passada visual completa pela interface — guiada
+por referências do 21st.dev — cobre público, autenticação, admin,
+participante, jurado e configurações.
+
+### Adicionado
+
+- Regra de negócio: participante fica incompatível com papel privilegiado
+  (jurado, organizador, admin) — promover um participante existente remove
+  `participante` automaticamente e registra a remoção em auditoria; tentar
+  adicionar `participante` a quem já é privilegiado é recusado. Papéis
+  privilegiados continuam podendo acumular entre si, e nenhum registro
+  histórico é apagado (#143)
+- Comando de manutenção `hackathon:fix-participant-role-conflicts`, dry-run
+  por padrão, para corrigir dado de produção que viole essa regra (#143)
+- Saudação pessoal ("Olá, {nome}.") no início de organizador e jurado, no
+  mesmo tom do dashboard do participante (#144)
+
+### Alterado
+
+- `/dashboard` deixa de redirecionar staff e jurado para fora da rota —
+  agora renderiza o card certo pra cada papel ali mesmo, e "Início" na
+  sidebar passa a destacar de verdade em vez de trocar de URL a cada
+  clique (#144)
+- Sidebar esconde "Minha equipe" e "Meu projeto" para quem não é
+  participante; crachá e certificados continuam visíveis para todos os
+  papéis (#143)
+- Certificado em PDF ganha novo modelo institucional em paisagem A4 (faixa
+  lateral verde, papel marfim, moldura com cantos dourados, tipografia
+  serifada), corrigindo de quebra a segunda página quase em branco que
+  aparecia em certificados com texto mais longo (#139)
+- Templates de e-mail transacional (Laravel Markdown Mail) ganham
+  identidade institucional do IFPR: logo no cabeçalho em vez do prompt de
+  terminal, layout de 600px, botão de ação alinhado à esquerda e cores com
+  mais contraste (#145)
+- Segunda passada visual em toda a interface — pública, autenticada,
+  admin, jurado e configurações — guiada por referências do 21st.dev;
+  fluxos Inertia, props e regras de domínio preservados, mudança só de
+  estilo (#142)
+
 ## [1.1.0] - 2026-09-08
 
 Fecha duas das quatro decisões organizacionais que ficaram em aberto na
@@ -191,7 +235,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.6.0...v0.7.0
