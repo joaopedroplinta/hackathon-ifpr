@@ -8,6 +8,7 @@
 <meta name="supported-color-schemes" content="light">
 <style>
 @media only screen and (max-width: 600px) {
+.header,
 .inner-body {
 width: 100% !important;
 }
@@ -18,8 +19,15 @@ width: 100% !important;
 }
 
 @media only screen and (max-width: 500px) {
+.header-content,
+.content-cell {
+padding-left: 24px !important;
+padding-right: 24px !important;
+}
+
 .button {
-width: 100% !important;
+display: block !important;
+text-align: center !important;
 }
 }
 </style>
@@ -36,7 +44,7 @@ width: 100% !important;
 <!-- Email Body -->
 <tr>
 <td class="body" width="100%" cellpadding="0" cellspacing="0" style="border: hidden !important;">
-<table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+<table class="inner-body" align="center" width="600" cellpadding="0" cellspacing="0" role="presentation">
 <!-- Body content -->
 <tr>
 <td class="content-cell">
