@@ -16,13 +16,16 @@ type Props = {
 
 function Ranking({ linhas }: { linhas: LinhaPodio[] }) {
     return (
-        <ol className="border-border bg-card divide-y overflow-hidden rounded-2xl border">
+        <ol className="grid gap-4">
             {[...linhas]
                 .sort((a, b) => a.posicao - b.posicao)
                 .map((row, index) => (
-                    <li key={index} className="flex items-start gap-4 p-5 sm:p-6">
+                    <li
+                        key={index}
+                        className={`border-border flex items-start gap-4 rounded-2xl border p-5 sm:p-6 ${row.posicao === 1 ? 'bg-secondary/70' : 'bg-card'}`}
+                    >
                         <span
-                            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-lg font-semibold ${row.posicao === 1 ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}
+                            className={`flex size-14 shrink-0 items-center justify-center rounded-full border text-xl font-semibold ${row.posicao === 1 ? 'border-primary/25 bg-primary/10 text-primary' : 'border-border bg-muted text-muted-foreground'}`}
                         >
                             {row.posicao}º
                         </span>

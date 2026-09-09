@@ -46,14 +46,14 @@ export default function Inicio({ evento, estatisticas }: Props) {
         : null;
 
     return (
-        <div className="bg-background text-foreground min-h-svh">
+        <div className="public-experience bg-background text-foreground min-h-svh">
             <Head title="Início" />
             <CabecalhoPublico />
             <main id="conteudo-publico" tabIndex={-1} className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pb-20 outline-none sm:px-6 lg:px-8">
                 {evento ? (
                     <>
                         <section
-                            className="grid items-center gap-10 py-10 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-20"
+                            className="grid items-center gap-10 py-10 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:py-20"
                             aria-labelledby="event-title"
                         >
                             <div>
@@ -63,11 +63,11 @@ export default function Inicio({ evento, estatisticas }: Props) {
                                 </div>
                                 <h1
                                     id="event-title"
-                                    className="max-w-2xl text-[clamp(2.75rem,5.5vw,5rem)] leading-[1.04] font-extrabold tracking-[-0.055em] text-balance"
+                                    className="max-w-2xl text-[clamp(2.6rem,5.8vw,5.4rem)] leading-[1.02] font-semibold tracking-[-0.065em] text-balance"
                                 >
                                     {evento.nome}
                                 </h1>
-                                <p className="text-primary mt-5 text-xl font-medium tracking-tight sm:text-2xl">
+                                <p className="text-foreground mt-6 text-xl font-medium tracking-tight sm:text-2xl">
                                     Boas ideias começam com um encontro.
                                 </p>
                                 <p className="text-muted-foreground mt-5 max-w-lg text-base leading-relaxed">
@@ -135,7 +135,7 @@ export default function Inicio({ evento, estatisticas }: Props) {
                         {estatisticas && (
                             <section
                                 aria-label="O evento em números"
-                                className="border-border grid grid-cols-2 gap-6 border-y py-7 sm:grid-cols-3 sm:gap-10"
+                                className="bg-secondary/60 grid grid-cols-2 gap-6 rounded-2xl px-6 py-7 sm:grid-cols-3 sm:gap-10 sm:px-8"
                             >
                                 {[
                                     { value: estatisticas.inscritos, label: 'pessoas inscritas' },
@@ -153,7 +153,7 @@ export default function Inicio({ evento, estatisticas }: Props) {
                         <section aria-labelledby="como-participar" className="py-16 sm:py-20">
                             <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                                 <div>
-                                    <p className="text-primary mb-3 text-xs font-semibold tracking-widest uppercase">Da primeira ideia à entrega</p>
+                                    <p className="text-muted-foreground mb-3 text-sm">Da primeira ideia à entrega</p>
                                     <h2 id="como-participar" className="text-3xl font-bold tracking-tight sm:text-4xl">
                                         Seu próximo desafio começa aqui.
                                     </h2>
@@ -168,7 +168,7 @@ export default function Inicio({ evento, estatisticas }: Props) {
                             </div>
                             <div className="grid gap-4 md:grid-cols-3">
                                 {steps.map((step, index) => (
-                                    <article key={step.title} className="border-border bg-card rounded-2xl border p-6 sm:p-8">
+                                    <article key={step.title} className="public-step border-border border-t-2 p-5 sm:p-7">
                                         <div className="mb-8 flex items-center justify-between">
                                             <span className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
                                                 <step.icon className="size-5" aria-hidden="true" />
@@ -182,7 +182,7 @@ export default function Inicio({ evento, estatisticas }: Props) {
                             </div>
                         </section>
 
-                        <section className="bg-secondary flex flex-col items-center justify-between gap-8 rounded-2xl p-7 sm:p-10 lg:flex-row">
+                        <section className="border-border bg-card flex flex-col items-center justify-between gap-8 rounded-[2rem] border p-7 sm:p-12 lg:flex-row">
                             <div className="max-w-md text-center lg:text-left">
                                 <h2 className="text-2xl font-bold tracking-tight">Faça parte desse encontro.</h2>
                                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">

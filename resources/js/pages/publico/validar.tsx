@@ -16,7 +16,7 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
                 />
             ) : (
                 <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                    <section className="border-border bg-card overflow-hidden rounded-2xl border">
+                    <section className="border-border bg-card border-t-primary overflow-hidden rounded-2xl border border-t-4 shadow-[0_12px_40px_-25px_#173d2f40]">
                         <div className="border-border border-b p-6 sm:p-8">
                             <Status tom="sucesso">Certificado válido</Status>
                             <p className="text-muted-foreground mt-6 text-sm">Emitido para</p>

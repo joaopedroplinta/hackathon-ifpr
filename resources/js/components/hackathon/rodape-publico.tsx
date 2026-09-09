@@ -39,8 +39,9 @@ export default function RodapePublico() {
     const { app_version } = usePage<SharedData>().props;
 
     return (
-        <footer className="border-border bg-card border-t">
+        <footer className="border-border bg-secondary/35 border-t">
             <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+                <p className="max-w-3xl text-3xl font-medium tracking-tight text-balance sm:text-5xl">O encontro é só o começo.</p>
                 <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
                     <div className="flex flex-col gap-3">
                         <Link href={route('home')} className="font-display flex items-center gap-2 font-semibold tracking-tight">

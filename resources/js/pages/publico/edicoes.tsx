@@ -21,10 +21,10 @@ export default function Edicoes({ edicoes }: { edicoes: Edicao[] }) {
                         <li key={edition.slug} className="min-w-0">
                             <Link
                                 href={route('resultados.show.edicao', edition.slug)}
-                                className="group border-border bg-card hover:border-primary/50 flex h-full flex-col rounded-2xl border p-6 transition-colors sm:p-8"
+                                className="group border-border bg-card hover:border-primary/50 focus-visible:outline-ring flex h-full flex-col rounded-2xl border p-6 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 sm:p-8"
                             >
                                 <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-                                    <span className="text-primary text-4xl font-semibold tracking-tight">
+                                    <span className="text-primary text-6xl font-medium tracking-tighter">
                                         {String(edition.edicao).padStart(2, '0')}
                                     </span>
                                     <Status tom="sucesso">Resultados publicados</Status>

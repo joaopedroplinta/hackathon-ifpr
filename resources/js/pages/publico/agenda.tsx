@@ -124,13 +124,13 @@ export default function Agenda({ evento, itens }: Props) {
                                 <h2 id={'day-' + key} className="mb-4 text-lg font-semibold capitalize">
                                     {dayLabel(items[0].inicia_em)}
                                 </h2>
-                                <ol className="space-y-4">
+                                <ol className="border-border ml-2 space-y-5 border-l pl-5 sm:pl-8">
                                     {items.map((item) => {
                                         const live = now >= new Date(item.inicia_em).getTime() && now < new Date(item.termina_em).getTime();
                                         return (
                                             <li
                                                 key={item.id}
-                                                className={`border-border bg-card grid min-w-0 gap-4 rounded-2xl border p-5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:p-6 ${live ? 'border-primary/50' : ''}`}
+                                                className={`border-border bg-card before:border-primary before:bg-background relative grid min-w-0 gap-4 rounded-2xl border p-5 before:absolute before:top-7 before:-left-[1.6rem] before:size-3 before:rounded-full before:border-2 sm:grid-cols-[7rem_minmax(0,1fr)] sm:p-6 sm:before:-left-[2.35rem] ${live ? 'border-primary/50 bg-primary/5' : ''}`}
                                             >
                                                 <div className="text-sm tabular-nums">
                                                     <time dateTime={item.inicia_em} className="text-lg font-semibold">
