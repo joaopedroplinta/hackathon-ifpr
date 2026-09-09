@@ -1,5 +1,4 @@
 import AppLogoIcon from '@/components/app-logo-icon';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@inertiajs/react';
 
 export default function AuthCardLayout({
@@ -13,22 +12,24 @@ export default function AuthCardLayout({
     description?: string;
 }) {
     return (
-        <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-            <div className="flex w-full max-w-md flex-col gap-6">
-                <Link href={route('home')} className="flex items-center gap-2 self-center font-medium">
-                    <div className="flex h-9 w-9 items-center justify-center">
-                        <AppLogoIcon className="size-9 fill-current text-black dark:text-white" />
-                    </div>
+        <div className="bg-muted/40 flex min-h-svh flex-col items-center justify-center p-5 sm:p-8">
+            <div className="flex w-full max-w-md flex-col gap-7">
+                <Link
+                    href={route('home')}
+                    className="focus-visible:ring-ring flex items-center gap-3 self-center rounded-xl font-medium focus-visible:ring-2 focus-visible:outline-none"
+                >
+                    <span className="bg-primary text-primary-foreground flex size-11 items-center justify-center rounded-2xl">
+                        <AppLogoIcon className="size-6 fill-current" />
+                    </span>
+                    <span>Hackathon IFPR</span>
                 </Link>
 
-                <div className="flex flex-col gap-6">
-                    <Card className="rounded-xl">
-                        <CardHeader className="px-10 pt-8 pb-0 text-center">
-                            <CardTitle className="text-xl">{title}</CardTitle>
-                            <CardDescription>{description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="px-10 py-8">{children}</CardContent>
-                    </Card>
+                <div className="border-border bg-background overflow-hidden rounded-[1.75rem] border shadow-[0_24px_80px_-48px_rgba(0,0,0,0.5)]">
+                    <header className="border-border border-b px-6 py-7 text-center sm:px-9">
+                        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+                        {description && <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{description}</p>}
+                    </header>
+                    <div className="px-6 py-7 sm:px-9 sm:py-8">{children}</div>
                 </div>
             </div>
         </div>

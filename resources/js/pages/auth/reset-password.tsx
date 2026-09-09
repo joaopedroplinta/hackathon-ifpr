@@ -39,7 +39,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
     };
 
     return (
-        <AuthLayout title="Redefinir senha" description="Digite sua nova senha abaixo">
+        <AuthLayout title="Crie uma nova senha" description="Escolha uma senha forte e diferente das que você já usa em outros serviços.">
             <Head title="Redefinir senha" />
 
             <form onSubmit={submit} noValidate>
@@ -53,9 +53,9 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             name="email"
                             autoComplete="email"
                             value={data.email}
-                            className="mt-1 block w-full"
                             readOnly
                             onChange={(e) => setData('email', e.target.value)}
+                            className="bg-muted/50 mt-1 h-12 w-full"
                         />
                         <InputError message={errors.email} className="mt-2" />
                     </div>
@@ -67,11 +67,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             name="password"
                             autoComplete="new-password"
                             value={data.password}
-                            className="mt-1 block w-full"
                             autoFocus
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Nova senha"
                             aria-describedby="password-requisitos"
+                            className="bg-muted/30 mt-1 h-12 w-full"
                         />
                         <PasswordRequirements senha={data.password} />
                         <InputError message={errors.password} />
@@ -84,14 +84,14 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             name="password_confirmation"
                             autoComplete="new-password"
                             value={data.password_confirmation}
-                            className="mt-1 block w-full"
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             placeholder="Repita a nova senha"
+                            className="bg-muted/30 mt-1 h-12 w-full"
                         />
                         <InputError message={errors.password_confirmation} className="mt-2" />
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" disabled={processing}>
+                    <Button type="submit" className="mt-2 h-12 w-full" disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Redefinir senha
                     </Button>

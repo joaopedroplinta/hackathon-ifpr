@@ -36,14 +36,14 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Criar conta" description="Preencha seus dados para criar a conta">
+        <AuthLayout title="Comece sua jornada" description="Crie sua conta para se inscrever, encontrar uma equipe e construir seu projeto.">
             <Head title="Cadastro" />
 
-            <div className="mb-6 flex flex-col gap-6">
+            <div className="mb-7 flex flex-col gap-6">
                 <GoogleLoginButton label="Cadastrar com Google" />
 
                 <div className="relative text-center text-sm">
-                    <span className="bg-background text-muted-foreground relative z-10 px-2">ou</span>
+                    <span className="bg-background text-muted-foreground relative z-10 px-3">ou cadastre-se com e-mail</span>
                     <span className="border-border absolute inset-x-0 top-1/2 border-t" aria-hidden="true" />
                 </div>
             </div>
@@ -64,6 +64,7 @@ export default function Register() {
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
                             placeholder="Nome completo"
+                            className="bg-muted/30 h-12"
                         />
                         <InputError message={errors.name} className="mt-2" />
                     </div>
@@ -80,6 +81,7 @@ export default function Register() {
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
                             placeholder="voce@exemplo.com"
+                            className="bg-muted/30 h-12"
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -95,6 +97,7 @@ export default function Register() {
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Sua senha"
+                            className="bg-muted/30 h-12"
                             aria-describedby="password-requisitos"
                         />
                         <PasswordRequirements senha={data.password} />
@@ -112,11 +115,12 @@ export default function Register() {
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
                             placeholder="Repita a senha"
+                            className="bg-muted/30 h-12"
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button type="submit" className="mt-2 h-12 w-full" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Criar conta
                     </Button>
@@ -129,7 +133,7 @@ export default function Register() {
                     </TextLink>
                 </div>
 
-                <p className="text-muted-foreground text-center text-xs">
+                <p className="border-border text-muted-foreground border-t pt-5 text-center text-xs leading-5">
                     Ao criar conta, você concorda com a{' '}
                     <Link href={route('privacidade.show')} className="underline underline-offset-2">
                         Política de Privacidade
