@@ -27,15 +27,17 @@ export function NavMain({ items = [], label = 'Navegação' }: { items: NavItem[
 
     return (
         <SidebarGroup className="px-3 py-2">
-            <SidebarGroupLabel className="text-muted-foreground mb-1 text-[11px] font-semibold tracking-widest uppercase">{label}</SidebarGroupLabel>
-            <SidebarMenu>
+            <SidebarGroupLabel className="text-sidebar-foreground/55 mb-1 px-3 text-[10px] font-semibold tracking-[0.16em] uppercase">
+                {label}
+            </SidebarGroupLabel>
+            <SidebarMenu className="gap-1">
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
                             isActive={item === itemAtivo}
                             tooltip={item.title}
-                            className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary h-11 rounded-lg px-3 data-[active=true]:font-semibold"
+                            className="group/nav-item text-sidebar-foreground/75 after:bg-primary hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary relative h-11 rounded-xl px-3 transition-colors after:absolute after:top-1/2 after:left-0 after:h-5 after:w-0.5 after:-translate-y-1/2 after:scale-y-0 after:rounded-full after:transition-transform data-[active=true]:font-semibold data-[active=true]:after:scale-y-100"
                         >
                             <Link href={item.url} prefetch aria-current={item === itemAtivo ? 'page' : undefined}>
                                 {item.icon && <item.icon />}

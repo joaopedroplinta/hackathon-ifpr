@@ -45,12 +45,23 @@ export default function Erro({ status }: { status: StatusErro }) {
         <AuthLayout title={`${status} — ${titulo}`} description={descricao}>
             <Head title={titulo} />
 
-            <div className="border-border bg-card flex flex-col items-center gap-4 rounded-2xl border p-6 text-center">
-                <span className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-full">
-                    <Icone className="size-6" aria-hidden="true" />
+            <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6 sm:p-8">
+                <span
+                    className="text-primary/[0.06] pointer-events-none absolute -top-12 -right-2 font-mono text-[10rem] leading-none font-semibold"
+                    aria-hidden="true"
+                >
+                    {status}
                 </span>
-                <p className="text-muted-foreground text-sm">Código de referência: {status}</p>
-                <Button asChild className="w-full">
+                <div className="relative flex flex-col items-start gap-5">
+                    <span className="bg-primary/10 text-primary ring-primary/10 flex size-12 items-center justify-center rounded-2xl ring-4">
+                        <Icone className="size-6" aria-hidden="true" />
+                    </span>
+                    <div>
+                        <p className="text-muted-foreground text-sm">Código de referência</p>
+                        <p className="mt-1 font-mono text-2xl font-semibold tabular-nums">{status}</p>
+                    </div>
+                </div>
+                <Button asChild className="relative mt-8 h-11 w-full">
                     <Link href={route('home')}>
                         <ArrowLeft className="size-4" aria-hidden="true" />
                         Voltar para a página inicial

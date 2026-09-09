@@ -10,6 +10,33 @@
     transition: opacity 150ms ease-in-out;
 }
 
+/* Public 21st experiment: local tokens keep authenticated screens unchanged. */
+.public-experience {
+    --background: #ffffff;
+    --foreground: #16382c;
+    --card: #ffffff;
+    --card-foreground: #16382c;
+    --secondary: #edf4ef;
+    --muted: #f1f5f2;
+    --muted-foreground: #53675d;
+    --border: #dce7df;
+}
+
+.dark .public-experience {
+    --background: #14231d;
+    --foreground: #edf5ee;
+    --card: #1c2f25;
+    --card-foreground: #edf5ee;
+    --secondary: #254131;
+    --muted: #23372c;
+    --muted-foreground: #b3c7b8;
+    --border: #385143;
+}
+
+.public-step {
+    border-color: #357724;
+}
+
 @keyframes cursor-blink {
     0%,
     49% {

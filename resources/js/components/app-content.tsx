@@ -13,7 +13,7 @@ export function AppContent({ variant = 'header', className, children, ...props }
         // overflow-x-auto faria a PÁGINA inteira rolar na horizontal no celular,
         // em vez da tabela -- .claude/rules/frontend.md.
         return (
-            <SidebarInset className={cn('min-w-0', className)} {...props}>
+            <SidebarInset className={cn('border-sidebar-border/70 min-w-0 overflow-clip border', className)} {...props}>
                 {children}
             </SidebarInset>
         );
