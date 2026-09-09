@@ -116,4 +116,49 @@ class UserManagementTest extends TestCase
             ->patch(route('admin.usuarios.update', $alvo), ['roles' => ['superusuario']])
             ->assertSessionHasErrors('roles.0');
     }
+
+    public function test_granting_a_privileged_role_to_an_existing_participant_strips_participante(): void
+    {
+        $alvo = User::factory()->create();
+        $alvo->assignRole(Role::Participante->value);
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.usuarios.update', $alvo), ['roles' => [Role::Participante->value, Role::Organizador->value]])
+            ->assertRedirect(route('admin.usuarios.index'));
+
+        $alvo->refresh();
+        $this->assertTrue($alvo->hasRole(Role::Organizador->value));
+        $this->assertFalse($alvo->hasRole(Role::Participante->value));
+
+        $log = Activity::latest()->first();
+        $this->assertTrue($log->properties['participante_removido_automaticamente'] ?? false);
+        $this->assertNotContains(Role::Participante->value, $log->properties['depois']);
+    }
+
+    public function test_adding_participante_to_an_existing_privileged_user_is_rejected(): void
+    {
+        $alvo = User::factory()->create();
+        $alvo->assignRole(Role::Jurado->value);
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.usuarios.update', $alvo), ['roles' => [Role::Jurado->value, Role::Participante->value]])
+            ->assertSessionHasErrors('roles');
+
+        $alvo->refresh();
+        $this->assertTrue($alvo->hasRole(Role::Jurado->value));
+        $this->assertFalse($alvo->hasRole(Role::Participante->value));
+    }
+
+    public function test_privileged_roles_can_still_stack_with_each_other(): void
+    {
+        $alvo = User::factory()->create();
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.usuarios.update', $alvo), ['roles' => [Role::Organizador->value, Role::Admin->value]])
+            ->assertRedirect(route('admin.usuarios.index'));
+
+        $alvo->refresh();
+        $this->assertTrue($alvo->hasRole(Role::Organizador->value));
+        $this->assertTrue($alvo->hasRole(Role::Admin->value));
+    }
 }

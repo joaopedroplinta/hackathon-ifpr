@@ -18,6 +18,10 @@ class TeamPolicy
      */
     public function create(User $user, Event $event): Response
     {
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem criar equipe como participante.');
+        }
+
         if (! $event->isRegistered($user)) {
             return Response::deny('Inscreva-se no evento antes de criar uma equipe.');
         }
@@ -42,6 +46,10 @@ class TeamPolicy
     public function join(User $user, Team $team): Response
     {
         $event = $team->event;
+
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem entrar em equipe como participante.');
+        }
 
         if (! $event->isRegistered($user)) {
             return Response::deny('Inscreva-se no evento antes de entrar em uma equipe.');
@@ -136,6 +144,12 @@ class TeamPolicy
      */
     public function invite(User $user, Team $team, ?string $email = null): Response
     {
+        // Convidar cresce a equipe daqui pra frente, por isso segue a mesma
+        // regra de create/join mesmo quando quem convida já lidera de antes.
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem convidar integrantes para equipe.');
+        }
+
         if (! $team->isLeader($user)) {
             return Response::deny('Apenas o líder pode convidar novos integrantes.');
         }

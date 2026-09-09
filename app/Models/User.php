@@ -122,6 +122,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * participante é incompatível com jurado/organizador/admin — ver
+     * App\Enums\Role::privileged() e App\Actions\Users\UpdateUserRoles.
+     * Usado como guarda nas Policies de inscrição/equipe/submissão/voto.
+     */
+    public function canParticipateAsParticipant(): bool
+    {
+        return ! $this->hasAnyRole(Role::privileged());
+    }
+
+    /**
      * Sobrescrita só pra trocar a notificação padrão do Laravel por uma
      * versão `ShouldQueue` -- ver App\Notifications\VerifyEmailQueued.
      */

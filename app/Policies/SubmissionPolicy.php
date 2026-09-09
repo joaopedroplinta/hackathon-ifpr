@@ -48,6 +48,10 @@ class SubmissionPolicy
      */
     public function create(User $user, Team $team): Response
     {
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem enviar projeto como participante.');
+        }
+
         if (! $team->hasMember($user)) {
             return Response::deny('Você não faz parte desta equipe.');
         }

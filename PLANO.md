@@ -65,8 +65,13 @@ instalados e é mais rápido que containerizar tudo.
 | **organizador** | CRUD de evento/agenda/equipes, check-in, atribuir jurados, publicar resultados |
 | **admin** | Tudo + gerenciar usuários e papéis |
 
-Papéis acumulam: um monitor pode ser participante e organizador. Por isso
-`spatie/laravel-permission` (tabela pivot) e não uma coluna `role` no usuário.
+Jurado, organizador e admin podem acumular entre si (ex.: organizador também
+admin), mas nenhum deles acumula com participante — quem vira jurado,
+organizador ou admin deixa de ser participante (ver
+`App\Actions\Users\UpdateUserRoles`). Registros históricos (inscrição,
+equipe, submissão, avaliação, certificado) nunca são apagados quando o papel
+de alguém muda. Por isso `spatie/laravel-permission` (tabela pivot) e não
+uma coluna `role` no usuário.
 
 Toda regra de acesso vive em **Policies**, nunca espalhada em `if` no controller.
 

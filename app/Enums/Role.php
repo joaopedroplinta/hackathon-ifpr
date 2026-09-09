@@ -6,7 +6,8 @@ namespace App\Enums;
  * Papéis do sistema. Os registros vivem na tabela do spatie/laravel-permission;
  * este enum evita string solta espalhada em Policy e seeder.
  *
- * Papéis acumulam: um monitor pode ser participante e organizador.
+ * Jurado, organizador e admin acumulam entre si, mas nenhum deles acumula
+ * com participante — ver User::canParticipateAsParticipant().
  */
 enum Role: string
 {
@@ -31,6 +32,17 @@ enum Role: string
     public function isStaff(): bool
     {
         return in_array($this, [self::Organizador, self::Admin], true);
+    }
+
+    /**
+     * Incompatíveis com participante — ver User::canParticipateAsParticipant()
+     * e App\Actions\Users\UpdateUserRoles.
+     *
+     * @return array<int, string>
+     */
+    public static function privileged(): array
+    {
+        return [self::Jurado->value, self::Organizador->value, self::Admin->value];
     }
 
     /**

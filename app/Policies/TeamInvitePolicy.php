@@ -23,6 +23,10 @@ class TeamInvitePolicy
      */
     public function accept(User $user, TeamInvite $invite): Response
     {
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem entrar em equipe como participante.');
+        }
+
         if ($invite->isAccepted()) {
             return Response::deny('Este convite já foi aceito.');
         }
