@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\Role;
 use App\Enums\TeamMemberRole;
 use App\Enums\TeamMemberStatus;
 use App\Models\Event;
@@ -262,6 +263,41 @@ class TeamInviteTest extends TestCase
 
         $this->assertNull($invite->fresh()->accepted_at);
         $this->assertSame(1, TeamMember::where('user_id', $convidado->id)->count());
+    }
+
+    public function test_a_leader_promoted_to_a_privileged_role_cannot_invite_new_members(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [, $leader] = $this->equipeComLider($event);
+        $leader->assignRole(Role::Admin->value);
+
+        $this->actingAs($leader)
+            ->post(route('team-invites.store'), ['email' => 'novo@example.com'])
+            ->assertForbidden();
+
+        $this->assertSame(0, TeamInvite::count());
+    }
+
+    public function test_a_privileged_user_cannot_accept_a_team_invite(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [$team, $leader] = $this->equipeComLider($event);
+
+        $convidado = User::factory()->create(['email' => 'jurado@example.com', 'email_verified_at' => now()]);
+        $convidado->assignRole(Role::Jurado->value);
+
+        $invite = TeamInvite::factory()->for($event)->for($team)->create([
+            'email' => 'jurado@example.com',
+            'invited_by' => $leader->id,
+        ]);
+
+        $this->actingAs($convidado)
+            ->get(route('team-invites.accept', $invite->token))
+            ->assertRedirect(route('teams.show'))
+            ->assertSessionHas('erro');
+
+        $this->assertNull($invite->fresh()->accepted_at);
+        $this->assertSame(0, TeamMember::where('user_id', $convidado->id)->count());
     }
 
     public function test_pending_invites_cannot_overflow_the_team(): void

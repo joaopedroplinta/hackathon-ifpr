@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\Role;
 use App\Enums\TeamMemberRole;
 use App\Enums\TeamMemberStatus;
 use App\Models\Event;
@@ -201,6 +202,19 @@ class CreateTeamTest extends TestCase
         $this->actingAs($this->inscrito($event))
             ->get(route('teams.show'))
             ->assertOk();
+    }
+
+    public function test_a_judge_cannot_create_a_team_even_when_registered(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        $user = $this->inscrito($event);
+        $user->assignRole(Role::Jurado->value);
+
+        $this->actingAs($user)
+            ->post(route('teams.store'), ['name' => 'Jurado Equipe'])
+            ->assertForbidden();
+
+        $this->assertSame(0, Team::count());
     }
 
     public function test_a_member_of_another_team_cannot_see_it(): void
