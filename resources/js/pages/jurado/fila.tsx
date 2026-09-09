@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { CheckCircle2, Circle, ClipboardCheck } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Circle, ClipboardCheck } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import { Progresso, SubmissaoFila } from '@/types/avaliacao';
@@ -63,30 +63,37 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                         <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border bg-card flex flex-col divide-y overflow-hidden rounded-2xl border">
+                    <ul className="grid gap-4 md:grid-cols-2">
                         {submissoes.map((s) => (
-                            <motion.li key={s.submission_id}>
+                            <motion.li key={s.submission_id} className="h-full">
                                 <Link
                                     href={route('jurado.avaliar.show', s.submission_id)}
-                                    className="hover:bg-muted/50 focus-visible:ring-ring flex min-h-20 flex-wrap items-center justify-between gap-3 p-5 transition-colors focus-visible:ring-2 focus-visible:outline-none sm:p-6"
+                                    className={`border-border bg-card focus-visible:ring-ring group relative flex h-full min-h-44 flex-col overflow-hidden rounded-2xl border p-5 transition-[border-color,transform] focus-visible:ring-2 focus-visible:outline-none sm:p-6 ${s.enviada ? '' : 'hover:border-primary/50'}`}
                                 >
-                                    <div className="min-w-0">
-                                        <p className="font-semibold break-words">{s.titulo}</p>
+                                    <div
+                                        className={`absolute inset-x-0 top-0 h-1 ${s.enviada ? 'bg-emerald-500' : 'bg-primary'}`}
+                                        aria-hidden="true"
+                                    />
+                                    <div className="min-w-0 flex-1 pt-2">
+                                        <p className="text-lg font-semibold break-words">{s.titulo}</p>
                                         <p className="text-muted-foreground mt-1 text-sm break-words">{s.equipe}</p>
                                     </div>
-                                    <span className="flex shrink-0 items-center gap-1.5 text-xs">
-                                        {s.enviada ? (
-                                            <>
-                                                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                                                Avaliada
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Circle className="text-muted-foreground h-4 w-4" aria-hidden="true" />
-                                                Pendente
-                                            </>
-                                        )}
-                                    </span>
+                                    <div className="mt-5 flex w-full items-center justify-between border-t pt-4">
+                                        <span className="flex shrink-0 items-center gap-1.5 text-xs">
+                                            {s.enviada ? (
+                                                <>
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                                                    Avaliada
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Circle className="text-muted-foreground h-4 w-4" aria-hidden="true" />
+                                                    Pendente
+                                                </>
+                                            )}
+                                        </span>
+                                        <ArrowUpRight className="text-muted-foreground group-hover:text-primary size-4" aria-hidden="true" />
+                                    </div>
                                 </Link>
                             </motion.li>
                         ))}
