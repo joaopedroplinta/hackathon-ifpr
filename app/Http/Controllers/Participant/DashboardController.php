@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,17 +15,29 @@ use Inertia\Response;
  * Início de quem está logado. Para participante é a trilha de progresso
  * (inscrição → equipe → crachá → submissão → resultado) -- cada passo diz
  * se já está feito, se dá pra fazer agora, ou por que ainda não dá.
- * Organizador e jurado também passam por aqui (mesma rota /dashboard para
- * todo mundo, ver app-sidebar.tsx), mas têm o próprio painel dedicado
- * (/admin, /jurado) linkado na navegação -- esta tela não duplica aquilo.
+ * Organizador, admin e jurado nunca chegam a renderizar esta tela: são
+ * redirecionados pro próprio painel (/painel, /jurado) antes de qualquer
+ * outra coisa, porque não podem atuar como participante (PLANO.md §3).
  */
 class DashboardController extends Controller
 {
     use ResolvesParticipation;
 
-    public function index(): Response
+    public function index(): Response|RedirectResponse
     {
         $user = request()->user();
+
+        // Prioridade: staff (organizador/admin) antes de jurado -- um
+        // usuário Organizador+Jurado cai no painel de organização, não na
+        // fila de avaliação. Documentado em PLANO.md §3.
+        if ($user->isStaff()) {
+            return to_route('painel.dashboard');
+        }
+
+        if ($user->isJudge()) {
+            return to_route('jurado.index');
+        }
+
         $event = Event::current();
         $perfilCertificado = $this->perfilCertificado($user);
 

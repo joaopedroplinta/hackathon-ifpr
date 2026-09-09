@@ -8,6 +8,8 @@ export interface Auth {
     is_judge: boolean;
     /** Papel de admin. Só decide o link "Usuários" — quem decide o acesso é a UserPolicy. */
     is_admin: boolean;
+    /** Papel de participante. Com a incompatibilidade de papéis, é sempre o oposto de is_staff/is_judge. */
+    is_participante: boolean;
 }
 
 export interface BreadcrumbItem {

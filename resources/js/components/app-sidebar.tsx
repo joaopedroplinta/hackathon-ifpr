@@ -31,16 +31,6 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Minha equipe',
-        url: '/equipe',
-        icon: Users,
-    },
-    {
-        title: 'Meu projeto',
-        url: '/submissao',
-        icon: FileText,
-    },
-    {
         title: 'Crachá',
         url: '/credencial',
         icon: QrCode,
@@ -49,6 +39,26 @@ const mainNavItems: NavItem[] = [
         title: 'Certificados',
         url: '/certificados',
         icon: Award,
+    },
+];
+
+/**
+ * Exclusivo de quem tem o papel participante -- jurado, organizador e admin
+ * não podem atuar como participante (PLANO.md §3), então não veem estes
+ * atalhos. Crachá e Certificados ficam em mainNavItems porque são
+ * compartilhados: todo mundo faz check-in físico e todo papel recebe o
+ * próprio certificado.
+ */
+const participantOnlyNavItems: NavItem[] = [
+    {
+        title: 'Minha equipe',
+        url: '/equipe',
+        icon: Users,
+    },
+    {
+        title: 'Meu projeto',
+        url: '/submissao',
+        icon: FileText,
     },
 ];
 
@@ -148,6 +158,8 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { auth, app_version } = usePage<SharedData>().props;
+    // Ordem visual original: Início, Equipe, Projeto, Crachá, Certificados.
+    const participacaoNavItems = auth?.is_participante ? [mainNavItems[0], ...participantOnlyNavItems, ...mainNavItems.slice(1)] : mainNavItems;
 
     return (
         <Sidebar collapsible="icon" variant="inset" className="border-sidebar-border/70 border-r">
@@ -164,7 +176,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent className="gap-0 py-2">
-                <NavMain items={mainNavItems} label="Sua participação" />
+                <NavMain items={participacaoNavItems} label="Sua participação" />
                 {auth?.is_judge && <NavMain items={judgeNavItems} label="Avaliação" />}
                 {auth?.is_staff && <NavMain items={staffNavItems} label="Organização" />}
                 {auth?.is_admin && <NavMain items={adminNavItems} label="Administração" />}

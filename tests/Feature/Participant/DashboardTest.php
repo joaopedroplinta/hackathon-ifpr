@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\Role;
 use App\Enums\TipoVinculo;
 use App\Models\Event;
 use App\Models\EventRegistration;
@@ -125,6 +126,47 @@ class DashboardTest extends TestCase
                 ->where('trilha.3.status', 'concluido')
                 ->where('trilha.4.status', 'bloqueado')
             );
+    }
+
+    public function test_organizador_e_redirecionado_para_o_painel(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole(Role::Organizador->value);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('painel.dashboard'));
+    }
+
+    public function test_admin_e_redirecionado_para_o_painel(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole(Role::Admin->value);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('painel.dashboard'));
+    }
+
+    public function test_jurado_e_redirecionado_para_a_fila_de_avaliacao(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole(Role::Jurado->value);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('jurado.index'));
+    }
+
+    public function test_organizador_e_jurado_prioriza_o_painel_de_organizacao(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole(Role::Organizador->value);
+        $user->assignRole(Role::Jurado->value);
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('painel.dashboard'));
     }
 
     public function test_resultado_publicado_libera_o_ultimo_passo()

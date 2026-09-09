@@ -66,6 +66,7 @@ class HandleInertiaRequests extends Middleware
                 'is_staff' => (bool) $request->user()?->isStaff(),
                 'is_judge' => (bool) $request->user()?->isJudge(),
                 'is_admin' => (bool) $request->user()?->hasRole(Role::Admin->value),
+                'is_participante' => (bool) $request->user()?->hasRole(Role::Participante->value),
             ],
             // Evento em foco: usado pela navegação e pelo dashboard em toda
             // tela autenticada, então vive aqui e não em cada controller.
