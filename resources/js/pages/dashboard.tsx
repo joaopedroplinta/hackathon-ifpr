@@ -117,6 +117,36 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
     ];
 
     const primeiroNome = auth.user.name.split(' ')[0];
+    const semJornada = auth.is_staff || auth.is_judge;
+
+    const featuredPanelCard = (
+        <section className="event-art relative overflow-hidden rounded-2xl p-6 sm:p-8">
+            <p className="text-xs font-semibold tracking-widest text-[#d6ecac] uppercase">{featuredPanel.eyebrow}</p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight">{featuredPanel.title}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-white/80">{featuredPanel.description}</p>
+            <Button asChild className="mt-6 h-11 bg-[#d6ecac] text-[#183b2b] hover:bg-[#e4f3c9]">
+                <Link href={featuredPanel.href}>
+                    {featuredPanel.action}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+            </Button>
+        </section>
+    );
+
+    const shortcutsCard = (
+        <section aria-label="Acesso rápido" className="border-border bg-card divide-y rounded-2xl border px-5">
+            {shortcuts.map((item) => (
+                <Link key={item.href} href={route(item.href)} className="group flex items-center gap-4 py-5">
+                    <item.icon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                    <div className="flex-1">
+                        <p className="text-sm font-semibold">{item.title}</p>
+                        <p className="text-muted-foreground mt-1 text-xs">{item.description}</p>
+                    </div>
+                    <ChevronRight className="text-muted-foreground group-hover:text-primary size-4" aria-hidden="true" />
+                </Link>
+            ))}
+        </section>
+    );
 
     const fadeIn: Variants = {
         oculto: reduzMovimento ? {} : { opacity: 0, y: 10 },
@@ -221,30 +251,14 @@ export default function Dashboard({ trilha, perfil_certificado: perfilCertificad
                             </ol>
                         </section>
                         <aside className="flex flex-col gap-5">
-                            <section className="event-art relative overflow-hidden rounded-2xl p-6 sm:p-8">
-                                <p className="text-xs font-semibold tracking-widest text-[#d6ecac] uppercase">{featuredPanel.eyebrow}</p>
-                                <h2 className="mt-4 text-2xl font-semibold tracking-tight">{featuredPanel.title}</h2>
-                                <p className="mt-3 text-sm leading-relaxed text-white/80">{featuredPanel.description}</p>
-                                <Button asChild className="mt-6 h-11 bg-[#d6ecac] text-[#183b2b] hover:bg-[#e4f3c9]">
-                                    <Link href={featuredPanel.href}>
-                                        {featuredPanel.action}
-                                        <ArrowRight className="size-4" aria-hidden="true" />
-                                    </Link>
-                                </Button>
-                            </section>
-                            <section aria-label="Acesso rápido" className="border-border bg-card divide-y rounded-2xl border px-5">
-                                {shortcuts.map((item) => (
-                                    <Link key={item.href} href={route(item.href)} className="group flex items-center gap-4 py-5">
-                                        <item.icon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                                        <div className="flex-1">
-                                            <p className="text-sm font-semibold">{item.title}</p>
-                                            <p className="text-muted-foreground mt-1 text-xs">{item.description}</p>
-                                        </div>
-                                        <ChevronRight className="text-muted-foreground group-hover:text-primary size-4" aria-hidden="true" />
-                                    </Link>
-                                ))}
-                            </section>
+                            {featuredPanelCard}
+                            {shortcutsCard}
                         </aside>
+                    </div>
+                ) : semJornada ? (
+                    <div className="grid max-w-3xl items-start gap-5 sm:grid-cols-2">
+                        {featuredPanelCard}
+                        {shortcutsCard}
                     </div>
                 ) : (
                     <section className="border-border bg-card flex max-w-xl flex-col items-center gap-3 rounded-xl border p-10 text-center">
