@@ -40,6 +40,10 @@ class EventPolicy
      */
     public function register(User $user, Event $event): Response
     {
+        if (! $user->canParticipateAsParticipant()) {
+            return Response::deny('Jurado, organizador e admin não podem se inscrever como participante.');
+        }
+
         if (! $user->hasVerifiedEmail()) {
             return Response::deny('Confirme seu e-mail antes de se inscrever no evento.');
         }

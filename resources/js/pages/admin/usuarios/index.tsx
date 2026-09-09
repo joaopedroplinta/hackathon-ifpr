@@ -56,7 +56,10 @@ function EditarPapeis({ usuario, opcoesPapeis }: { usuario: LinhaUsuario; opcoes
             </DialogTrigger>
             <DialogContent className="rounded-3xl sm:max-w-lg">
                 <DialogTitle>Papéis de {usuario.nome}</DialogTitle>
-                <DialogDescription>Papéis acumulam — marque quantos fizerem sentido para esta pessoa.</DialogDescription>
+                <DialogDescription>
+                    Jurado, organizador e admin podem acumular entre si, mas não com participante — marcar um papel privilegiado remove participante
+                    automaticamente.
+                </DialogDescription>
 
                 <form onSubmit={salvar} className="flex flex-col gap-4" noValidate>
                     <ResumoErro erros={errors} />
@@ -118,7 +121,10 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
                 <header className="border-border/70 mb-8 border-b pb-6">
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Usuários</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">Conceder ou remover papel (jurado, organizador, admin). Papéis acumulam.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                        Conceder ou remover papel (jurado, organizador, admin). Esses papéis acumulam entre si, mas são incompatíveis com
+                        participante.
+                    </p>
                 </header>
 
                 <form

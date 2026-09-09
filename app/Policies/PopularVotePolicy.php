@@ -14,6 +14,6 @@ class PopularVotePolicy
 {
     public function create(User $user, Event $event): bool
     {
-        return $event->isRegistered($user) && $event->votingIsOpen();
+        return $user->canParticipateAsParticipant() && $event->isRegistered($user) && $event->votingIsOpen();
     }
 }

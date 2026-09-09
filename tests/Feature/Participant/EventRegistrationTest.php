@@ -10,6 +10,7 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class EventRegistrationTest extends TestCase
@@ -191,5 +192,28 @@ class EventRegistrationTest extends TestCase
 
         $this->assertNull(EventRegistration::firstOrFail()->shirt_size);
         $this->assertNull(EventRegistration::firstOrFail()->dietary_notes);
+    }
+
+    /** @return iterable<string, array{0: Role}> */
+    public static function privilegedRoles(): iterable
+    {
+        yield 'jurado' => [Role::Jurado];
+        yield 'organizador' => [Role::Organizador];
+        yield 'admin' => [Role::Admin];
+    }
+
+    #[DataProvider('privilegedRoles')]
+    public function test_a_privileged_role_cannot_register_as_a_participant(Role $role): void
+    {
+        Event::factory()->aberto()->create();
+        $user = $this->participante();
+        $user->assignRole($role->value);
+
+        $this->actingAs($user)
+            ->post(route('registration.store'), ['course' => 'ADS'])
+            ->assertForbidden();
+
+        $this->assertSame(0, EventRegistration::count());
+        $this->assertFalse($user->fresh()->hasRole(Role::Participante->value));
     }
 }

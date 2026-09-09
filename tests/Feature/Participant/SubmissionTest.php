@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\Role;
 use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
@@ -277,6 +278,19 @@ class SubmissionTest extends TestCase
         $this->actingAs($semEquipe)
             ->post(route('submissions.submit'), $this->projetoValido())
             ->assertForbidden();
+    }
+
+    public function test_a_member_promoted_to_a_privileged_role_cannot_create_a_submission(): void
+    {
+        $event = Event::factory()->aberto()->create(['submission_deadline' => now()->addHours(3)]);
+        [, $leader] = $this->equipeComLider($event);
+        $leader->assignRole(Role::Jurado->value);
+
+        $this->actingAs($leader)
+            ->post(route('submissions.submit'), $this->projetoValido())
+            ->assertForbidden();
+
+        $this->assertSame(0, Submission::count());
     }
 
     public function test_a_guest_cannot_reach_the_submission_page(): void

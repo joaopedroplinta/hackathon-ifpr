@@ -3,6 +3,7 @@
 namespace Tests\Feature\Participant;
 
 use App\Actions\Teams\JoinTeamByCode;
+use App\Enums\Role;
 use App\Enums\TeamMemberRole;
 use App\Enums\TeamMemberStatus;
 use App\Models\Event;
@@ -176,6 +177,23 @@ class JoinTeamTest extends TestCase
         TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
 
         $user = $this->inscrito($event);
+
+        $this->actingAs($user)
+            ->post(route('teams.join.store'), ['invite_code' => 'AS3DYP'])
+            ->assertForbidden();
+
+        $this->assertFalse($team->fresh()->hasMember($user));
+    }
+
+    public function test_an_organizer_cannot_join_a_team_even_when_registered(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        $lider = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create(['leader_id' => $lider->id, 'invite_code' => 'AS3DYP']);
+        TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
+
+        $user = $this->inscrito($event);
+        $user->assignRole(Role::Organizador->value);
 
         $this->actingAs($user)
             ->post(route('teams.join.store'), ['invite_code' => 'AS3DYP'])

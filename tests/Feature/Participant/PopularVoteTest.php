@@ -122,6 +122,23 @@ class PopularVoteTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_a_privileged_role_cannot_vote_even_when_registered(): void
+    {
+        $event = Event::factory()->create([
+            'voting_opens_at' => now()->subDay(),
+            'voting_closes_at' => now()->addDay(),
+        ]);
+        $user = $this->inscrito($event);
+        $user->assignRole(Role::Organizador->value);
+        $submissao = $this->submissaoEnviada($event);
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $submissao->id])
+            ->assertForbidden();
+
+        $this->assertSame(0, PopularVote::count());
+    }
+
     public function test_a_guest_is_redirected_to_login(): void
     {
         $event = Event::factory()->create([
