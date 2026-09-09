@@ -128,45 +128,37 @@ class DashboardTest extends TestCase
             );
     }
 
-    public function test_organizador_e_redirecionado_para_o_painel(): void
+    public function test_organizador_fica_em_dashboard_sem_trilha_de_participante(): void
     {
         $user = User::factory()->create();
         $user->assignRole(Role::Organizador->value);
 
         $this->actingAs($user)
             ->get('/dashboard')
-            ->assertRedirect(route('painel.dashboard'));
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('dashboard')->where('trilha', null));
     }
 
-    public function test_admin_e_redirecionado_para_o_painel(): void
+    public function test_admin_fica_em_dashboard_sem_trilha_de_participante(): void
     {
         $user = User::factory()->create();
         $user->assignRole(Role::Admin->value);
 
         $this->actingAs($user)
             ->get('/dashboard')
-            ->assertRedirect(route('painel.dashboard'));
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('dashboard')->where('trilha', null));
     }
 
-    public function test_jurado_e_redirecionado_para_a_fila_de_avaliacao(): void
+    public function test_jurado_fica_em_dashboard_sem_trilha_de_participante(): void
     {
         $user = User::factory()->create();
         $user->assignRole(Role::Jurado->value);
 
         $this->actingAs($user)
             ->get('/dashboard')
-            ->assertRedirect(route('jurado.index'));
-    }
-
-    public function test_organizador_e_jurado_prioriza_o_painel_de_organizacao(): void
-    {
-        $user = User::factory()->create();
-        $user->assignRole(Role::Organizador->value);
-        $user->assignRole(Role::Jurado->value);
-
-        $this->actingAs($user)
-            ->get('/dashboard')
-            ->assertRedirect(route('painel.dashboard'));
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('dashboard')->where('trilha', null));
     }
 
     public function test_resultado_publicado_libera_o_ultimo_passo()

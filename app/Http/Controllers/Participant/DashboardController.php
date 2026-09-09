@@ -7,41 +7,29 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Início de quem está logado. Para participante é a trilha de progresso
- * (inscrição → equipe → crachá → submissão → resultado) -- cada passo diz
- * se já está feito, se dá pra fazer agora, ou por que ainda não dá.
- * Organizador, admin e jurado nunca chegam a renderizar esta tela: são
- * redirecionados pro próprio painel (/painel, /jurado) antes de qualquer
- * outra coisa, porque não podem atuar como participante (PLANO.md §3).
+ * Início de quem está logado, sempre em /dashboard -- pra "Início" na
+ * sidebar continuar sendo a URL e o item ativo de verdade, não um
+ * redirecionamento pro painel/fila. Para participante é a trilha de
+ * progresso (inscrição → equipe → crachá → submissão → resultado); para
+ * jurado, organizador e admin -- que não podem atuar como participante
+ * (PLANO.md §3) -- a trilha some (`trilha: null`) e o dashboard.tsx mostra
+ * só o card de acesso ao painel/fila deles, sem jornada enganosa.
  */
 class DashboardController extends Controller
 {
     use ResolvesParticipation;
 
-    public function index(): Response|RedirectResponse
+    public function index(): Response
     {
         $user = request()->user();
-
-        // Prioridade: staff (organizador/admin) antes de jurado -- um
-        // usuário Organizador+Jurado cai no painel de organização, não na
-        // fila de avaliação. Documentado em PLANO.md §3.
-        if ($user->isStaff()) {
-            return to_route('painel.dashboard');
-        }
-
-        if ($user->isJudge()) {
-            return to_route('jurado.index');
-        }
-
-        $event = Event::current();
         $perfilCertificado = $this->perfilCertificado($user);
+        $event = Event::current();
 
-        if (! $event) {
+        if (! $event || $user->isStaff() || $user->isJudge()) {
             return Inertia::render('dashboard', [
                 'trilha' => null,
                 'perfil_certificado' => $perfilCertificado,

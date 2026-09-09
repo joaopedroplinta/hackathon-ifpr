@@ -1,8 +1,9 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { ArrowUpRight, CheckCircle2, Circle, ClipboardCheck } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
+import { type SharedData } from '@/types';
 import { Progresso, SubmissaoFila } from '@/types/avaliacao';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function FilaJurado({ submissoes, progresso }: Props) {
+    const { auth } = usePage<SharedData>().props;
+    const primeiroNome = auth.user.name.split(' ')[0];
     const percentual = progresso.total === 0 ? 0 : Math.round((progresso.avaliadas / progresso.total) * 100);
     const reduzMovimento = useReducedMotion();
 
@@ -26,9 +29,9 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-5xl p-4 sm:p-8">
                 <header className="mb-8">
                     <p className="text-primary mb-2 text-xs font-semibold tracking-widest uppercase">Espaço do jurado</p>
-                    <h1 className="text-3xl font-bold tracking-tight">Suas submissões</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Olá, {primeiroNome}.</h1>
                     <p className="text-muted-foreground mt-2 text-sm">
-                        Selecione um projeto para avaliar. Você pode salvar o rascunho e continuar depois.
+                        Suas submissões para avaliar. Você pode salvar o rascunho e continuar depois.
                     </p>
                     {progresso.total > 0 && (
                         <>
