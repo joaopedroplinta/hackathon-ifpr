@@ -5,7 +5,7 @@ import { ScanLine, ShieldCheck } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { Credencial } from '@/types/credencial';
 
-export default function MostrarCredencial({ nome, qr_svg, token }: Credencial) {
+export default function MostrarCredencial({ nome, qr_svg, token, papel }: Credencial) {
     const reduzMovimento = useReducedMotion();
 
     const fadeIn: Variants = {
@@ -50,7 +50,7 @@ export default function MostrarCredencial({ nome, qr_svg, token }: Credencial) {
 
                     <div className="text-center">
                         <p className="text-lg font-semibold">{nome}</p>
-                        <p className="text-muted-foreground mt-1 text-xs">Participante</p>
+                        <p className="text-muted-foreground mt-1 text-xs">{papel}</p>
                     </div>
 
                     <p className="text-muted-foreground border-border w-full border-t pt-4 text-center text-xs break-all">

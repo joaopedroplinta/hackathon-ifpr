@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Participant;
 
+use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Support\CheckinQrCode;
 use Inertia\Inertia;
@@ -20,10 +21,16 @@ class CredentialController extends Controller
     {
         $user = request()->user();
 
+        $papel = $user->roles
+            ->pluck('name')
+            ->map(fn (string $role) => Role::from($role)->label())
+            ->implode(', ');
+
         return Inertia::render('credencial/mostrar', [
             'nome' => $user->name,
             'qr_svg' => $qr->svgFor($user),
             'token' => $user->qr_token,
+            'papel' => $papel,
         ]);
     }
 }
