@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Participant;
 
+use App\Enums\Role;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia;
@@ -11,6 +13,13 @@ use Tests\TestCase;
 class CredentialTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(RoleSeeder::class);
+    }
 
     public function test_a_qr_token_is_generated_when_the_user_is_created(): void
     {
@@ -45,6 +54,36 @@ class CredentialTest extends TestCase
                     ->where('token', $user->qr_token)
                     ->has('qr_svg')
             );
+    }
+
+    public function test_the_credential_shows_the_participante_role_label(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user->assignRole(Role::Participante->value);
+
+        $this->actingAs($user)
+            ->get(route('credencial.show'))
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('papel', 'Participante'));
+    }
+
+    public function test_the_credential_shows_the_organizador_role_label_instead_of_participante(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user->assignRole(Role::Organizador->value);
+
+        $this->actingAs($user)
+            ->get(route('credencial.show'))
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('papel', 'Organizador'));
+    }
+
+    public function test_the_credential_shows_every_accumulated_role_label(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user->assignRole([Role::Organizador->value, Role::Admin->value]);
+
+        $this->actingAs($user)
+            ->get(route('credencial.show'))
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('papel', 'Organizador, Administrador'));
     }
 
     /** A rota nunca recebe id: o token na resposta é sempre o de quem está logado. */

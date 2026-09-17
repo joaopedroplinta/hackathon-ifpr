@@ -21,6 +21,14 @@ export default defineConfig({
     server: {
         // permite abrir o dev server pelo IP da rede local (celular no
         // mesmo wi-fi), não só localhost.
+        //
+        // ATENÇÃO: nem '0.0.0.0' nem `true` fazem o laravel-vite-plugin
+        // gravar o IP real da rede em public/hot -- ele grava o host cru
+        // ('0.0.0.0' ou '[::]'), que o navegador do celular não consegue
+        // abrir. Testado em 2026-09-09 com vite 6.1.1 + plugin 1.2.0. Pra
+        // testar do celular, rode com o IP da máquina explícito em vez de
+        // `npm run dev`:
+        //   npx vite --host <IP-da-máquina-na-rede>
         host: '0.0.0.0',
         // script type="module" exige CORS mesmo em rede local -- sem isso os
         // módulos carregam via curl (200) mas o browser bloqueia a execução
