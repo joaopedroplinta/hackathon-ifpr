@@ -10,6 +10,16 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.2.1] - 2026-09-17
+
+Correção pontual sobre o crachá digital do participante.
+
+### Corrigido
+
+- Crachá digital mostrava "Participante" fixo para todo usuário, mesmo
+  organizador, jurado ou admin — o rótulo agora vem de `Role::label()`
+  calculado a partir dos papéis reais do usuário (#146)
+
 ## [1.2.0] - 2026-09-09
 
 Fecha uma segunda rodada de ajustes sobre a repaginação da 1.1.0: uma nova
@@ -235,7 +245,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v0.7.0...v1.0.0
