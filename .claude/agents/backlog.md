@@ -49,21 +49,10 @@ de hoje se forem diferentes. Sem mudança de código — é só o `.md`.
 
 ## 4. Abra PR pra essa mudança
 
-Esse tipo de atualização vai por PR, não commit direto em `main` — é o
-precedente (PR #135, PR #140). Nome de branch `docs/fecha-backlog-<slug>`,
-commit em inglês (`docs: ...`), corpo do PR em português explicando o que
-está sendo fechado.
-
-```bash
-git checkout -b docs/fecha-backlog-<slug>
-git add docs/backlog.md
-git commit -m "docs: ..."
-git push -u origin docs/fecha-backlog-<slug>
-gh pr create --title "docs: ..." --body "..." --assignee @me
-gh project item-add 9 --owner joaopedroplinta --url <url-do-pr>
-gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id> \
-  --field-id PVTSSF_lAHOB5AmNs4BgSxIzhafgwQ --single-select-option-id 47fc9ee4
-```
+Esse tipo de atualização vai por PR, não commit direto em `main`. Branch
+`docs/fecha-backlog-<slug>`, commit `docs: ...` em inglês. Para issue, PR e
+board, siga a seção "Abrir um PR" de `.claude/agents/pr-housekeeping.md` --
+ela é a fonte única desse fluxo.
 
 Não mergeie sozinho — devolva a URL do PR e espere o usuário pedir o merge,
 igual ao resto do fluxo deste projeto.

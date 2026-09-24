@@ -13,13 +13,13 @@ inventar formato).
 
 ```bash
 git tag --sort=-v:refname | head -5          # última tag
-git log <ultima_tag>..HEAD --oneline --merges   # PRs mergeados desde então
-git log <ultima_tag>..HEAD --oneline --no-merges
+git log <ultima_tag>..HEAD --oneline         # PRs mergeados desde então
 ```
 
-Cruze os dois: cada merge commit referencia um PR (`Merge pull request #N`).
-Some os commits não-merge que ficaram fora de um merge (commit direto em
-`main`, como release anterior ou hotfix). Não invente número de PR — se não
+O merge é squash: cada PR vira um commit com `(#N)` no fim do título.
+Commit sem `(#N)` foi direto em `main` (release anterior, hotfix). PR que
+só mexe em `.claude/` é configuração interna e fica fora do CHANGELOG.
+Não invente número de PR — se não
 tem certeza de qual PR corresponde a um commit, leia a mensagem completa ou
 `gh pr list --state merged` antes de citar.
 
