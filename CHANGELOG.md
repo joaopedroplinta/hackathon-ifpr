@@ -10,6 +10,21 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.2.2] - 2026-09-24
+
+Correções de uma auditoria de segurança sobre publicação de resultado e
+voto popular.
+
+### Corrigido
+
+- `PublishResults` não gravava no activity log — a publicação de resultado,
+  ação mais sensível do sistema, ficava sem rastro de autoria exigido pela
+  regra de auditoria (#147)
+- Voto popular não checava o status da submissão, só o evento — participante
+  autenticado podia votar em submissão rascunho ou desclassificada
+  adivinhando um id sequencial; agora reusa o mesmo filtro
+  `countsForEvaluation()` da vitrine pública (#147)
+
 ## [1.2.1] - 2026-09-17
 
 Correção pontual sobre o crachá digital do participante.
@@ -245,7 +260,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.0.0...v1.1.0

@@ -3,7 +3,7 @@
     "name": "laravel/react-starter-kit",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "keywords": [
         "laravel",
         "framework"
