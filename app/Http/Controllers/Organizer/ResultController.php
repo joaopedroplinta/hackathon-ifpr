@@ -79,7 +79,7 @@ class ResultController extends Controller
             return back()->with('erro', 'Há pendências antes de publicar -- confira a lista e confirme se quer publicar mesmo assim.');
         }
 
-        app(PublishResults::class)->handle($event);
+        app(PublishResults::class)->handle($event, $request->user(), $temPendencia);
 
         return to_route('painel.resultados.index')->with('sucesso', 'Resultado publicado.');
     }
