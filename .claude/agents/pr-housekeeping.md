@@ -18,12 +18,24 @@ esquecer um passo no meio.
 
 ## Abrir um PR
 
+**Toda PR nasce de uma issue.** Se quem pediu não deu um número de issue
+existente, crie uma antes de abrir a PR — nunca pule esse passo, mesmo que o
+trabalho pareça pequeno (bugfix de um agente de auditoria conta).
+
 1. Confirme que a branch já está commitada e pushada (`git status`, `git push
    -u origin <branch>` se ainda não subiu).
-2. Título no padrão deste repo: prefixo em inglês (`feat:`, `fix:`, `docs:`,
+2. **Crie a issue primeiro**, se não veio uma pronta:
+   ```bash
+   gh issue create --title "..." --body "..." --assignee @me
+   ```
+   Título/corpo no mesmo padrão do passo 3 (prefixo em inglês, descrição em
+   português). Capture o número (`<issue-n>`).
+3. Título no padrão deste repo: prefixo em inglês (`feat:`, `fix:`, `docs:`,
    `design:`, `chore:`) + descrição em português. Corpo do PR também em
-   português, com `## Resumo` e `## Test plan` quando fizer sentido.
-3. Crie e capture a URL:
+   português, com `## Resumo` e `## Test plan` quando fizer sentido, e
+   **termine o corpo com `Closes #<issue-n>`** (em inglês — `Fecha #N` não
+   aciona o fechamento automático do GitHub).
+4. Crie e capture a URL:
    ```bash
    gh pr create --title "..." --body "..." --assignee @me
    ```
@@ -34,14 +46,22 @@ esquecer um passo no meio.
    gh api repos/joaopedroplinta/hackathon-ifpr/issues/<n>/assignees -X POST \
      -f "assignees[]=joaopedroplinta"
    ```
-4. Coloque no board e marque em andamento:
+5. Coloque **os dois** (issue e PR) no board e marque em andamento:
    ```bash
+   gh project item-add 9 --owner joaopedroplinta --url <url-da-issue> --format json
    gh project item-add 9 --owner joaopedroplinta --url <url-do-pr> --format json
-   # pegue o "id" da resposta
+   # pegue o "id" de cada resposta
    gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id> \
      --field-id PVTSSF_lAHOB5AmNs4BgSxIzhafgwQ --single-select-option-id 47fc9ee4
    ```
-5. Devolva a URL do PR pro usuário.
+6. Devolva as duas URLs (issue e PR) pro usuário.
+
+**`gh pr edit` quebra neste repo** (erro no campo `projectCards`, obsoleto —
+este repo usa Projects v2). Pra editar o corpo de uma PR já aberta (ex.:
+adicionar `Closes #N` depois), use a API direto:
+```bash
+gh api repos/joaopedroplinta/hackathon-ifpr/pulls/<n> -X PATCH -f body="..."
+```
 
 ## Mergear um PR
 
@@ -56,13 +76,18 @@ Nunca use `--delete-branch`: este projeto mantém a branch remota depois do
 merge (só limpa branch/worktree local). Se algum dia apagar sem querer,
 restaure com `git push origin <sha-do-commit>:refs/heads/<branch>`.
 
-Confirme e feche o ciclo:
+Confirme e feche o ciclo — **a PR e a issue que ela fecha (`Closes #N` no
+corpo)**, os dois itens do board, não só a PR:
 ```bash
-gh pr view <n> --json state,mergedAt
-gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id> \
+gh pr view <n> --json state,mergedAt,closingIssuesReferences
+gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id-da-pr> \
+  --field-id PVTSSF_lAHOB5AmNs4BgSxIzhafgwQ --single-select-option-id 98236657
+gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id-da-issue> \
   --field-id PVTSSF_lAHOB5AmNs4BgSxIzhafgwQ --single-select-option-id 98236657
 git checkout main && git pull
 ```
+O merge com `Closes #N` já fecha a issue sozinho no GitHub; o passo acima é
+só pra mover o card dela no board, que a automação do GitHub não faz.
 
 ## Issues (quando o pedido for sobre issue, não PR)
 
