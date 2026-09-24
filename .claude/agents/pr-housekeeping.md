@@ -56,6 +56,13 @@ trabalho pareça pequeno (bugfix de um agente de auditoria conta).
    ```
 6. Devolva as duas URLs (issue e PR) pro usuário.
 
+**`gh pr edit` quebra neste repo** (erro no campo `projectCards`, obsoleto —
+este repo usa Projects v2). Pra editar o corpo de uma PR já aberta (ex.:
+adicionar `Closes #N` depois), use a API direto:
+```bash
+gh api repos/joaopedroplinta/hackathon-ifpr/pulls/<n> -X PATCH -f body="..."
+```
+
 ## Mergear um PR
 
 **Só faça isso quando o usuário pedir explicitamente para esta PR** — nunca
