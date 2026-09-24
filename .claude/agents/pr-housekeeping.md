@@ -80,7 +80,7 @@ restaure com `git push origin <sha-do-commit>:refs/heads/<branch>`.
 Confirme e feche o ciclo — **a PR e a issue que ela fecha (`Closes #N` no
 corpo)**, os dois itens do board, não só a PR:
 ```bash
-gh pr view <n> --json state,mergedAt,closingIssuesReferences
+gh pr view <n> --json state,mergedAt,body   # o número da issue está no "Closes #N" do body
 gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id-da-pr> \
   --field-id PVTSSF_lAHOB5AmNs4BgSxIzhafgwQ --single-select-option-id 98236657
 gh project item-edit --project-id PVT_kwHOB5AmNs4BgSxI --id <item-id-da-issue> \
