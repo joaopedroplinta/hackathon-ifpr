@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\ResultsPublished;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
 class PublishResultsTest extends TestCase
@@ -22,8 +23,9 @@ class PublishResultsTest extends TestCase
         $event = Event::factory()->create();
         $inscrito = User::factory()->create();
         EventRegistration::factory()->for($event)->for($inscrito)->create();
+        $organizador = User::factory()->create();
 
-        app(PublishResults::class)->handle($event);
+        app(PublishResults::class)->handle($event, $organizador);
 
         Notification::assertSentTo($inscrito, ResultsPublished::class);
         $this->assertNotNull($event->fresh()->results_published_at);
@@ -36,10 +38,30 @@ class PublishResultsTest extends TestCase
         $event = Event::factory()->create();
         $inscrito = User::factory()->create();
         EventRegistration::factory()->for($event)->for($inscrito)->create();
+        $organizador = User::factory()->create();
 
-        app(PublishResults::class)->handle($event);
-        app(PublishResults::class)->handle($event->fresh());
+        app(PublishResults::class)->handle($event, $organizador);
+        app(PublishResults::class)->handle($event->fresh(), $organizador);
 
         Notification::assertSentTimes(ResultsPublished::class, 1);
+    }
+
+    /** .claude/rules/security.md, "Auditoria" -- publicação de resultado precisa de autor, horário e motivo. */
+    public function test_logs_the_author_and_whether_pendencies_were_overridden(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->create();
+        $organizador = User::factory()->create();
+
+        app(PublishResults::class)->handle($event, $organizador, comPendencia: true);
+
+        $registro = Activity::latest()->first();
+
+        $this->assertNotNull($registro);
+        $this->assertSame('Resultado publicado', $registro->description);
+        $this->assertSame($event->id, $registro->subject_id);
+        $this->assertSame($organizador->id, $registro->causer_id);
+        $this->assertTrue($registro->properties->get('com_pendencia'));
     }
 }

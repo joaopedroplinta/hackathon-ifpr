@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Participant;
 
+use App\Enums\SubmissionStatus;
 use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,12 @@ class StorePopularVoteRequest extends FormRequest
             'submission_id' => [
                 'required',
                 'integer',
-                Rule::exists('submissions', 'id')->where('event_id', $event?->id),
+                // Mesmo filtro da vitrine pública (SubmissionShowcaseController)
+                // -- sem isso dá pra votar em rascunho ou submissão
+                // desclassificada só adivinhando o id, que é sequencial.
+                Rule::exists('submissions', 'id')
+                    ->where('event_id', $event?->id)
+                    ->whereIn('status', [SubmissionStatus::Submitted, SubmissionStatus::Late]),
             ],
         ];
     }

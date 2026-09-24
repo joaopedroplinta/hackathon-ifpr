@@ -139,6 +139,40 @@ class PopularVoteTest extends TestCase
         $this->assertSame(0, PopularVote::count());
     }
 
+    public function test_voting_on_a_draft_submission_is_rejected(): void
+    {
+        $event = Event::factory()->create([
+            'voting_opens_at' => now()->subDay(),
+            'voting_closes_at' => now()->addDay(),
+        ]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create();
+        $rascunho = Submission::factory()->for($event)->for($team)->create();
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $rascunho->id])
+            ->assertSessionHasErrors('submission_id');
+
+        $this->assertSame(0, PopularVote::count());
+    }
+
+    public function test_voting_on_a_disqualified_submission_is_rejected(): void
+    {
+        $event = Event::factory()->create([
+            'voting_opens_at' => now()->subDay(),
+            'voting_closes_at' => now()->addDay(),
+        ]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create();
+        $desclassificada = Submission::factory()->for($event)->for($team)->desclassificada()->create();
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $desclassificada->id])
+            ->assertSessionHasErrors('submission_id');
+
+        $this->assertSame(0, PopularVote::count());
+    }
+
     public function test_a_guest_is_redirected_to_login(): void
     {
         $event = Event::factory()->create([
