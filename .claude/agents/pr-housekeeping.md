@@ -30,9 +30,10 @@ trabalho pareça pequeno (bugfix de um agente de auditoria conta).
    ```
    Título/corpo no mesmo padrão do passo 3 (prefixo em inglês, descrição em
    português). Capture o número (`<issue-n>`).
-3. Título no padrão deste repo: prefixo em inglês (`feat:`, `fix:`, `docs:`,
-   `design:`, `chore:`) + descrição em português. Corpo do PR também em
-   português, com `## Resumo` e `## Test plan` quando fizer sentido, e
+3. Título em inglês com prefixo (`feat:`, `fix:`, `docs:`, `design:`,
+   `chore:`) -- o merge é squash, então o título vira a mensagem de commit,
+   e commit é em inglês (CLAUDE.md). Corpo do PR com `## Summary` e
+   `## Test plan` quando fizer sentido, e
    **termine o corpo com `Closes #<issue-n>`** (em inglês — `Fecha #N` não
    aciona o fechamento automático do GitHub).
 4. Crie e capture a URL:

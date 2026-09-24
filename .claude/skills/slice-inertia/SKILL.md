@@ -195,25 +195,32 @@ criadas por duplo clique.
 Caminho feliz **e** pelo menos um erro:
 
 ```php
-it('cria equipe e define o criador como líder', function () {
-    $user = User::factory()->inscrito($event = Event::factory()->aberto()->create())->create();
+// Ilustrativo -- siga o estilo dos testes vizinhos (classe + test_ em inglês)
+// e as factories/states que realmente existem em database/factories/.
+class CreateTeamTest extends TestCase
+{
+    use RefreshDatabase;
 
-    $this->actingAs($user)
-        ->post(route('teams.store'), ['name' => 'Os Devs', 'track_id' => $track->id])
-        ->assertRedirect();
+    public function test_creates_team_with_creator_as_leader(): void
+    {
+        // ... arrange com factories existentes
+        $this->actingAs($user)
+            ->post(route('teams.store'), ['name' => 'Os Devs', 'track_id' => $track->id])
+            ->assertRedirect();
 
-    expect($user->fresh()->team->leader_id)->toBe($user->id);
-});
+        $this->assertSame($user->id, $user->fresh()->team->leader_id);
+    }
 
-it('bloqueia criação depois que as inscrições fecham', function () {
-    $event = Event::factory()->inscricoesFechadas()->create();
+    public function test_blocks_creation_after_registration_closes(): void
+    {
+        // ...
+        $this->actingAs($user)
+            ->post(route('teams.store'), ['name' => 'Atrasados'])
+            ->assertForbidden();
 
-    $this->actingAs($user)
-        ->post(route('teams.store'), ['name' => 'Atrasados'])
-        ->assertForbidden();
-
-    expect(Team::count())->toBe(0);
-});
+        $this->assertSame(0, Team::count());
+    }
+}
 ```
 
 Testes que **sempre** valem a pena neste projeto: prazo vencido, usuário sem

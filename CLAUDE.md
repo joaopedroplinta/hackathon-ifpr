@@ -4,21 +4,15 @@ Sistema de apoio ao 1º Hackathon do curso de tecnologia — IFPR Campus Pinhais
 
 ## Estado atual
 
-**Semanas 0 a 8 concluídas.** Aplicação Laravel 12 + Inertia 2 + React 19 no ar,
-Postgres via Docker, Pest verde, CI passando. Auth (Google + e-mail/senha),
-equipes, submissões, agenda, check-in por QR, avaliação por jurados,
-resultados, voto popular, certificados em PDF, notificações por fila e o
-ensaio geral automatizado (30 equipes, carga, plano B) já funcionam de ponta
-a ponta. Identidade visual reconstruída do zero (PR #100) e identidade
-institucional — CPF, vínculo IFPR com matrícula SUAP/SIAPE, foto de perfil
-(PR #103) — também mescladas. Hospedagem (#71, hospedar fora do Brasil
-autorizado pela orientadora) e provedor de e-mail em produção (#78, Resend
-via variável de ambiente, e-mail real confirmado chegando) fechadas em
-2026-08-22. O que resta no projeto inteiro são duas decisões
-organizacionais, nenhuma exige código: nomeação formal do DPO (#83), ensaio
-ao vivo com a equipe de organização (#86). Backlog completo em
-`docs/backlog.md`. Diagramas (ER, classes, casos de uso, sequência) em
-`docs/diagramas.md`.
+Todas as semanas do PLANO.md concluídas; em produção no Railway (hospedagem
+fora do Brasil autorizada pela orientadora), e-mail via Resend. Funcionam de
+ponta a ponta: auth (Google + e-mail/senha), equipes, submissões, agenda,
+check-in por QR, avaliação, resultados, voto popular, certificados em PDF,
+notificações por fila, perfil institucional (CPF, vínculo IFPR) e o ensaio
+geral automatizado. Pendências são só organizacionais (DPO, ensaio ao vivo).
+Versão atual em `composer.json`/`CHANGELOG.md`; o que falta em
+`docs/backlog.md`; diagramas em `docs/diagramas.md`. Confira `git log` antes
+de afirmar progresso -- esta seção não é atualizada a cada PR.
 
 ## Leia o PLANO.md primeiro
 

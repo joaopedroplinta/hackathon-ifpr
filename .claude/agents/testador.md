@@ -33,8 +33,9 @@ se precisar, e verifique que compila.
 
 ## Como escrever
 
-- Um comportamento por teste. Nome descreve o comportamento em português:
-  `it('bloqueia submissão depois do prazo')`
+- Um comportamento por teste, no estilo dos testes vizinhos: classe
+  `extends TestCase` com métodos `test_snake_case` em inglês descrevendo o
+  comportamento (`test_voting_on_a_draft_submission_is_rejected`)
 - Congele o tempo com `travelTo()` em tudo que envolve prazo. Teste de deadline
   que depende da hora real da máquina falha de madrugada
 - Asserção sobre o **estado final**, não só sobre o status HTTP. 403 com o
