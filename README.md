@@ -16,6 +16,9 @@ Desenvolvida para o **1º Hackathon do IFPR Campus Pinhais**.
 **Protótipo navegável:** [abrir no Figma](https://www.figma.com/proto/XhyZk5o85QuyXnCaXC7YlX/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=12-1169&p=f&t=FRqISBL6ZEm9iy3W-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=12%3A1169&show-proto-sidebar=1)
 — fluxos de visitante, participante, jurado e organização.
 
+**Arquivo de design:** [abrir no Figma](https://www.figma.com/design/XhyZk5o85QuyXnCaXC7YlX/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=0-1&t=g2tGPbzbCDYf76gm-1)
+— telas editáveis, componentes e cores do sistema.
+
 ## O que a plataforma resolve
 
 | Momento | Recursos |
