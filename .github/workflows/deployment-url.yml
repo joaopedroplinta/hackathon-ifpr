@@ -1,0 +1,24 @@
+name: Deployment URL
+
+# O app do Railway cria o deployment com environment_url apontando pro
+# dashboard. Este workflow reposta o status com o domínio público, pra o
+# card "production" da aba Deployments levar ao site.
+on:
+  deployment_status
+
+permissions:
+  deployments: write
+
+jobs:
+  environment-url:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.creator.login == 'railway-app[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Point environment_url at the public site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X POST \
+            "repos/${{ github.repository }}/deployments/${{ github.event.deployment.id }}/statuses" \
+            -f state=success \
+            -f environment_url=https://hackathon-ifpr-production.up.railway.app
