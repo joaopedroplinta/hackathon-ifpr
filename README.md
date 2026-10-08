@@ -14,7 +14,7 @@ operável nos momentos mais críticos do evento.
 Desenvolvida para o **1º Hackathon do IFPR Campus Pinhais**.
 
 **Protótipo navegável:** [abrir no Figma](https://www.figma.com/proto/HmNfkGSzJc69l9gDzchqD1/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=12-1169&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=12%3A1169&show-proto-sidebar=1)
-— 41 telas dos fluxos de visitante, participante, jurado, organização e administração.
+— 43 telas dos fluxos de visitante, participante, jurado, organização e administração.
 
 **Arquivo de design:** [abrir no Figma](https://www.figma.com/design/HmNfkGSzJc69l9gDzchqD1/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=0-1)
 — telas editáveis, componentes e cores do sistema.
