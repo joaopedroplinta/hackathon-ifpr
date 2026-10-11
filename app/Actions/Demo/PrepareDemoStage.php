@@ -48,7 +48,7 @@ use Spatie\Activitylog\Models\Activity;
  * Cada estágio parte do zero, então dá pra repetir a apresentação.
  *
  * Só em ambiente local, de homologação ou de teste. Mexe numa edição própria
- * (slug fixo, número alto pra ser sempre a "atual"), nunca na edição real, e
+ * (slug fixo, edição 2, que na homologação fica como a "atual"), nunca na edição real, e
  * não apaga usuário: as chaves pra `users` são restrict de propósito, então
  * as contas de demonstração são fixas e reaproveitadas.
  */
@@ -147,7 +147,7 @@ class PrepareDemoStage
         $evento = Event::firstOrNew(['slug' => self::SLUG]);
         $evento->forceFill([
             'name' => '1º Hackathon IFPR Pinhais (demonstração)',
-            'edition' => 99,
+            'edition' => 2,
             'status' => $inicio ? EventStatus::Published : EventStatus::Running,
             'description' => 'Edição de demonstração: dados fictícios, para mostrar o fluxo completo do sistema.',
             'registration_opens_at' => $inicio ? now()->subDays(2) : now()->subWeeks(3),
