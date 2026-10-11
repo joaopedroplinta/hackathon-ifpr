@@ -38,6 +38,10 @@ createInertiaApp({
 initializeTheme();
 
 // Transição suave entre páginas: o conteúdo esmaece durante a navegação
-// em vez de trocar de forma abrupta.
-router.on('start', () => document.getElementById('app')?.classList.add('opacity-60'));
+// em vez de trocar de forma abrupta. Prefetch (hover nos links do menu) não
+// é navegação: sem este filtro a tela piscava a cada passada de mouse.
+router.on('start', (event) => {
+    if (event.detail.visit.prefetch) return;
+    document.getElementById('app')?.classList.add('opacity-60');
+});
 router.on('finish', () => document.getElementById('app')?.classList.remove('opacity-60'));
