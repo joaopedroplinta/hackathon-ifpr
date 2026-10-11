@@ -253,4 +253,20 @@ class TeamDisqualificationTest extends TestCase
                 ->where('submissao.equipe.decisao.motivo', self::MOTIVO)
                 ->where('submissao.equipe.decisao.acao', 'Equipe desclassificada'));
     }
+
+    /** Achado na homologação: com uma equipe só, desclassificar esvazia o resultado e reabilitar não o refazia. */
+    public function test_reinstating_the_only_competing_team_brings_the_result_back(): void
+    {
+        $event = Event::factory()->create();
+        [$team, $submission] = $this->equipeComEnvio($event);
+        app(ComputeResults::class)->handle($event);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)->post(route('painel.teams.disqualify', $team), ['motivo' => self::MOTIVO]);
+        $this->assertSame(0, Result::forEvent($event)->count());
+
+        $this->actingAs($organizador)->post(route('painel.teams.reinstate', $team), ['motivo' => 'Decisão revista pela comissão.']);
+
+        $this->assertNotNull(Result::forEvent($event)->where('submission_id', $submission->id)->first());
+    }
 }
