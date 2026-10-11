@@ -125,6 +125,17 @@ Três armadilhas, todas já cobradas caro aqui:
   exercitar regra de servidor, os dados precisam passar pelo HTML5 e falhar
   só no PHP.
 
+## Fluxo de entrega
+
+dev → **homologação** → produção. Detalhes e variáveis em `deploy/railway.md` §8.
+
+- **Antes de produção, passe pela homologação:** merge da branch na `homologacao` (`--no-ff`), validar em
+  `hackathon-ifpr-homologacao.up.railway.app`, só então merge do PR na `main`
+- **Nunca resetar a `homologacao`** — merge da `main` nela (o workflow `sync-homologacao.yml` já faz isso a cada push na `main`)
+- Migration roda primeiro na homologação; **dado de produção nunca vai pra lá** (CPF, LGPD)
+- Homologação usa `DemoSeeder` (contas com senha `password`, URL pública) e `INSTALL_DEV=1` no build
+- No Railway, `${APP_URL}` não é expandido: `GOOGLE_REDIRECT_URI` leva a URL completa por ambiente
+
 ## Definição de pronto
 
 Feature não está pronta sem: Policy, Form Request, teste Pest do caminho feliz
