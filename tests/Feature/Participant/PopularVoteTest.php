@@ -9,6 +9,7 @@ use App\Models\EventRegistration;
 use App\Models\PopularVote;
 use App\Models\Submission;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -184,6 +185,42 @@ class PopularVoteTest extends TestCase
 
         $this->post(route('votos.store'), ['submission_id' => $submissao->id])
             ->assertRedirect(route('login'));
+    }
+
+    public function test_a_member_cannot_vote_for_their_own_team(): void
+    {
+        $event = Event::factory()->create([
+            'voting_opens_at' => now()->subDay(),
+            'voting_closes_at' => now()->addDay(),
+        ]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create(['leader_id' => $user->id]);
+        TeamMember::factory()->for($event)->for($team)->for($user)->lider()->create();
+        $propria = Submission::factory()->for($event)->for($team)->enviada()->create();
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $propria->id])
+            ->assertSessionHasErrors('submission_id');
+
+        $this->assertSame(0, PopularVote::count());
+    }
+
+    public function test_a_member_can_still_vote_for_another_team(): void
+    {
+        $event = Event::factory()->create([
+            'voting_opens_at' => now()->subDay(),
+            'voting_closes_at' => now()->addDay(),
+        ]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create(['leader_id' => $user->id]);
+        TeamMember::factory()->for($event)->for($team)->for($user)->lider()->create();
+        $outra = $this->submissaoEnviada($event);
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $outra->id])
+            ->assertSessionHas('sucesso');
+
+        $this->assertSame(1, PopularVote::count());
     }
 
     public function test_a_late_submission_without_a_decision_cannot_receive_votes(): void

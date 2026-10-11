@@ -97,24 +97,27 @@ class ComputeResults
             return ['nota_final' => null, 'breakdown' => ['jurados' => [], 'criterios' => []]];
         }
 
+        // Contas em centésimos inteiros: nota e peso são decimal(5,2), e float
+        // acumula erro (8,285 vira 8,28499...) que muda desempate e ranking
+        // (.claude/rules/database.md). Só vira decimal de novo na saída.
         $notasPorJurado = [];
         $porCriterio = [];
 
         foreach ($avaliacoesEnviadas as $avaliacao) {
-            $pesoTotal = 0.0;
-            $somaPonderada = 0.0;
+            $pesoTotal = 0;
+            $somaPonderada = 0;
 
             foreach ($avaliacao->scores as $nota) {
-                $peso = (float) $nota->criterion->weight;
-                $score = (float) $nota->score;
+                $peso = $this->centesimos($nota->criterion->weight);
+                $score = $this->centesimos($nota->score);
 
                 $somaPonderada += $score * $peso;
                 $pesoTotal += $peso;
 
                 $porCriterio[$nota->criterion_id] ??= [
                     'nome' => $nota->criterion->name,
-                    'peso' => $peso,
-                    'soma' => 0.0,
+                    'peso' => (float) $nota->criterion->weight,
+                    'soma' => 0,
                     'contagem' => 0,
                 ];
                 $porCriterio[$nota->criterion_id]['soma'] += $score;
@@ -123,11 +126,19 @@ class ComputeResults
 
             $notasPorJurado[] = [
                 'jurado_id' => $avaliacao->assignment->judge_id,
-                'nota_avaliacao' => $pesoTotal > 0 ? round($somaPonderada / $pesoTotal, 2) : 0.0,
+                'centesimos' => $pesoTotal > 0 ? $this->dividirArredondando($somaPonderada, $pesoTotal) : 0,
             ];
         }
 
-        $notaFinal = round(collect($notasPorJurado)->avg('nota_avaliacao'), 2);
+        $notaFinal = $this->decimal($this->dividirArredondando(
+            array_sum(array_column($notasPorJurado, 'centesimos')),
+            count($notasPorJurado)
+        ));
+
+        $notasPorJurado = array_map(fn (array $j) => [
+            'jurado_id' => $j['jurado_id'],
+            'nota_avaliacao' => $this->decimal($j['centesimos']),
+        ], $notasPorJurado);
 
         $breakdown = [
             'jurados' => $notasPorJurado,
@@ -136,7 +147,7 @@ class ComputeResults
                     'criterio_id' => $criterioId,
                     'nome' => $c['nome'],
                     'peso' => $c['peso'],
-                    'media' => round($c['soma'] / $c['contagem'], 2),
+                    'media' => $this->decimal($this->dividirArredondando($c['soma'], $c['contagem'])),
                 ])
                 ->values()
                 ->all(),
@@ -239,5 +250,22 @@ class ComputeResults
         $entrada = collect($linha['breakdown']['criterios'])->firstWhere('criterio_id', $criterioId);
 
         return $entrada['media'] ?? 0.0;
+    }
+
+    /** "8.30" (decimal(5,2) vindo do banco) -> 830, sem passar por float. */
+    private function centesimos(mixed $valor): int
+    {
+        return (int) str_replace('.', '', number_format((float) $valor, 2, '.', ''));
+    }
+
+    /** Divisão inteira com arredondamento "meio para cima", só para não negativos. */
+    private function dividirArredondando(int $numerador, int $denominador): int
+    {
+        return intdiv(2 * $numerador + $denominador, 2 * $denominador);
+    }
+
+    private function decimal(int $centesimos): float
+    {
+        return $centesimos / 100;
     }
 }

@@ -65,6 +65,13 @@ class ImportSubmissionsFromCsv
             // formulário chegava até 3h errado no banco (.claude/rules/database.md).
             $enviadoEm = $enviadoEmBruto !== '' ? Carbon::parse($enviadoEmBruto)->utc() : now();
 
+            // Horário no futuro faria qualquer envio contar como "no prazo".
+            if ($enviadoEm->isFuture()) {
+                $resultado['conflitos'][] = $team->name;
+
+                continue;
+            }
+
             $submission = $this->record->handle(
                 $team,
                 [

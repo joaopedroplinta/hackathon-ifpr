@@ -481,4 +481,39 @@ class JudgeAssignmentTest extends TestCase
         $this->assertSame($submissao->id, $log->subject_id);
         $this->assertSame($jurado->id, $log->properties['judge_id']);
     }
+
+    public function test_an_assignment_from_another_edition_cannot_be_removed_or_reassigned(): void
+    {
+        Event::factory()->create(['edition' => 2]);
+        $antigo = Event::factory()->create(['edition' => 1]);
+        $submissaoAntiga = $this->submissaoEnviada($antigo);
+
+        $assignment = new JudgeAssignment;
+        $assignment->event_id = $antigo->id;
+        $assignment->judge_id = $this->jurado()->id;
+        $assignment->submission_id = $submissaoAntiga->id;
+        $assignment->assigned_at = now();
+        $assignment->save();
+
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)->delete(route('painel.jurados.destroy', $assignment))->assertNotFound();
+        $this->actingAs($organizador)->post(route('painel.jurados.reassign', $assignment))->assertNotFound();
+
+        $this->assertModelExists($assignment);
+    }
+
+    public function test_a_conflict_from_another_edition_cannot_be_removed(): void
+    {
+        Event::factory()->create(['edition' => 2]);
+        $antigo = Event::factory()->create(['edition' => 1]);
+        $teamAntiga = Team::factory()->for($antigo)->create();
+        $conflito = ConflictOfInterest::factory()->create(['judge_id' => $this->jurado()->id, 'team_id' => $teamAntiga->id]);
+
+        $this->actingAs($this->organizador())
+            ->delete(route('painel.jurados.conflicts.destroy', $conflito))
+            ->assertNotFound();
+
+        $this->assertModelExists($conflito);
+    }
 }

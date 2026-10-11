@@ -114,7 +114,7 @@ class CheckinController extends Controller
     {
         $this->authorize('create', Attendance::class);
 
-        $checkpoint = Checkpoint::findOrFail($request->validated('checkpoint_id'));
+        $checkpoint = Checkpoint::forEvent($this->currentEventOrFail())->findOrFail($request->validated('checkpoint_id'));
         $method = $request->validated('via') === 'busca' ? AttendanceMethod::Manual : AttendanceMethod::Qr;
 
         [, $criada] = app(RegisterAttendance::class)->handle($checkpoint, $user, $request->user(), $method);

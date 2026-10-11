@@ -233,4 +233,17 @@ class CheckinTest extends TestCase
         $this->get(route('checkin.show', $participante->qr_token))->assertRedirect(route('login'));
         $this->get(route('painel.checkin.index'))->assertRedirect(route('login'));
     }
+
+    public function test_a_checkpoint_from_another_edition_cannot_be_used(): void
+    {
+        Event::factory()->create(['edition' => 2]);
+        $antigo = Event::factory()->create(['edition' => 1]);
+        $checkpointAntigo = Checkpoint::factory()->for($antigo)->create();
+        $participante = $this->participante();
+
+        $this->actingAs($this->organizador())
+            ->post(route('checkin.store', $participante->qr_token), ['checkpoint_id' => $checkpointAntigo->id]);
+
+        $this->assertSame(0, Attendance::count());
+    }
 }
