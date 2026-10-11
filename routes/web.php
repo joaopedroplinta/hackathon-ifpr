@@ -229,9 +229,11 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
         ->name('painel.submissions.late-decision');
 
     // Equipes do painel + desclassificar e reabilitar -- autorização no controller (TeamPolicy).
+    // `{team:id}` de propósito: Team resolve rota por slug, que só é único por
+    // evento, e a tela chama estas rotas pelo id.
     Route::get('equipes', [OrganizerTeamController::class, 'index'])->name('painel.teams.index');
-    Route::post('equipes/{team}/desclassificar', [TeamStatusController::class, 'disqualify'])->name('painel.teams.disqualify');
-    Route::post('equipes/{team}/reabilitar', [TeamStatusController::class, 'reinstate'])->name('painel.teams.reinstate');
+    Route::post('equipes/{team:id}/desclassificar', [TeamStatusController::class, 'disqualify'])->name('painel.teams.disqualify');
+    Route::post('equipes/{team:id}/reabilitar', [TeamStatusController::class, 'reinstate'])->name('painel.teams.reinstate');
 
     // CRUD da agenda. Autorização em cada método do controller, não aqui --
     // ver ScheduleItemController.
