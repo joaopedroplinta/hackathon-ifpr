@@ -11,13 +11,9 @@ use App\Models\JudgeAssignment;
 use App\Models\Result;
 use App\Models\Submission;
 use App\Models\Team;
-use App\Models\TeamMember;
 use App\Models\User;
-use App\Notifications\TeamDisqualified;
-use App\Notifications\TeamReinstated;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
@@ -256,6 +252,22 @@ class TeamDisqualificationTest extends TestCase
                 ->where('submissao.equipe.pode_reabilitar', true)
                 ->where('submissao.equipe.decisao.motivo', self::MOTIVO)
                 ->where('submissao.equipe.decisao.acao', 'Equipe desclassificada'));
+    }
+
+    /** Achado na homologação: com uma equipe só, desclassificar esvazia o resultado e reabilitar não o refazia. */
+    public function test_reinstating_the_only_competing_team_brings_the_result_back(): void
+    {
+        $event = Event::factory()->create();
+        [$team, $submission] = $this->equipeComEnvio($event);
+        app(ComputeResults::class)->handle($event);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)->post(route('painel.teams.disqualify', $team), ['motivo' => self::MOTIVO]);
+        $this->assertSame(0, Result::forEvent($event)->count());
+
+        $this->actingAs($organizador)->post(route('painel.teams.reinstate', $team), ['motivo' => 'Decisão revista pela comissão.']);
+
+        $this->assertNotNull(Result::forEvent($event)->where('submission_id', $submission->id)->first());
     }
 
     public function test_disqualifying_notifies_only_the_active_members_with_the_reason(): void
