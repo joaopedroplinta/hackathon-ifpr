@@ -5,7 +5,6 @@ namespace App\Actions\Teams;
 use App\Actions\Results\RecomputeResults;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
-use App\Models\Result;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -45,8 +44,9 @@ class DisqualifyTeam
                 ->log('Equipe desclassificada');
         });
 
-        if (Result::forEvent($team->event)->exists()) {
-            app(RecomputeResults::class)->handle($team->event, $autor);
-        }
+        // Sempre recalcula, mesmo sem linha de resultado hoje: se esta era a
+        // única equipe concorrendo, desclassificá-la esvazia a tabela, e a
+        // reabilitação não teria como saber que havia resultado a refazer.
+        app(RecomputeResults::class)->handle($team->event, $autor);
     }
 }
