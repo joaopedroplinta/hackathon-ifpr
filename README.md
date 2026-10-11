@@ -19,6 +19,12 @@ Desenvolvida para o **1º Hackathon do IFPR Campus Pinhais**.
 **Arquivo de design:** [abrir no Figma](https://www.figma.com/design/HmNfkGSzJc69l9gDzchqD1/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=0-1)
 — telas editáveis, componentes e cores do sistema.
 
+**Ambientes:**
+[produção](https://hackathon-ifpr-production.up.railway.app) e
+[homologação](https://hackathon-ifpr-homologacao.up.railway.app) (dados
+fictícios, para validar mudanças antes de ir para produção — fluxo em
+[deploy/railway.md](deploy/railway.md#8-ambientes-homologação--produção)).
+
 ## O que a plataforma resolve
 
 | Momento | Recursos |

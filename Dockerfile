@@ -51,16 +51,20 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# INSTALL_DEV=1 só no ambiente de homologação: o DemoSeeder usa factories
+# (Faker é dependência de dev). Em produção fica 0 e a imagem sai sem dev.
+ARG INSTALL_DEV=0
 COPY composer.json composer.lock ./
 # Retry por causa de 429 esporádico do GitHub em download anônimo de dist
 # (codeload.github.com) -- não é falha do lockfile, só limite de taxa por IP.
-RUN composer install --no-dev --no-interaction --no-scripts --no-autoloader --optimize-autoloader \
-    || (sleep 20 && composer install --no-dev --no-interaction --no-scripts --no-autoloader --optimize-autoloader)
+RUN FLAGS="$([ "$INSTALL_DEV" = 1 ] || echo --no-dev)"; \
+    composer install $FLAGS --no-interaction --no-scripts --no-autoloader --optimize-autoloader \
+    || (sleep 20 && composer install $FLAGS --no-interaction --no-scripts --no-autoloader --optimize-autoloader)
 
 COPY . .
 COPY --from=assets /app/public/build ./public/build
 
-RUN composer dump-autoload --optimize --no-dev
+RUN composer dump-autoload --optimize $([ "$INSTALL_DEV" = 1 ] || echo --no-dev)
 
 # storage:link e migrate rodam no start, não no build -- nesse ponto o
 # container ainda não tem as env vars de runtime (APP_KEY, DB_*) que o

@@ -205,6 +205,68 @@ o Railway cria o diretório, mas o dono/permissão do mount pode não bater
 com o que o `Dockerfile` preparou (`chmod -R a+w storage`) se a imagem
 mudar de usuário no futuro.
 
+## 8. Ambientes: homologação → produção
+
+O projeto Railway tem dois ambientes, cada um com banco e Redis próprios:
+
+| | `production` | `homologacao` |
+|---|---|---|
+| Branch | `main` | `homologacao` |
+| URL | `hackathon-ifpr-production.up.railway.app` | `hackathon-ifpr-homologacao.up.railway.app` |
+| Serviços | web, worker, scheduler, Postgres, Redis | web, Postgres, Redis |
+| Dados | reais | fictícios (`DemoSeeder`) |
+
+IDs (referência, não são segredo): projeto `9ad7c37c-1b99-4d0f-b36f-e6e26da09abb`,
+`production` `8bf26b00-39f8-4ab8-98d8-e9d55045564b`, `homologacao`
+`e0c07adf-98d7-4d0f-979f-0b9f7e85643c`.
+
+### Fluxo
+
+1. Desenvolva em branch curta, abra PR pra `main` (CI roda no PR).
+2. **Valide antes de produção:** faça merge da branch na `homologacao`
+   (`git checkout homologacao && git merge --no-ff <branch> && git push`).
+   O Railway redeploya sozinho. Migrations rodam primeiro aqui.
+3. Validou? Faça o merge do PR na `main` — o Railway redeploya a produção.
+4. O workflow `sync-homologacao.yml` traz a `main` de volta pra
+   `homologacao` por merge a cada push, então as duas nunca se afastam.
+   Se der conflito, o job fica vermelho: resolva com
+   `git merge origin/main` na `homologacao`.
+
+Nunca resete a `homologacao` — ela tem commits em validação que a `main`
+ainda não tem. O CI também roda em push na `homologacao`, e o Railway só
+deploya depois do CI passar (`checkSuites`).
+
+### Diferenças de variáveis na homologação
+
+| Variável | Valor na homologação | Por quê |
+|---|---|---|
+| `APP_ENV` | `staging` | |
+| `APP_KEY` | chave própria | nunca reutilize a de produção |
+| `APP_URL` | URL da homologação | |
+| `GOOGLE_REDIRECT_URI` | URL completa da homologação + `/auth/google/callback` | `${APP_URL}` **não** é expandido no Railway (ver `docs/google-oauth.md`) |
+| `MAIL_MAILER` | `log` | não envia e-mail de teste a gente de verdade |
+| `QUEUE_CONNECTION` | `sync` | não há worker |
+| `INSTALL_DEV` | `1` | build com dependências de dev, pro `DemoSeeder` (Faker). Em produção fica sem definir |
+
+O cliente OAuth do Google é o mesmo nos dois ambientes (projeto GCP
+`hackathon-ifpr`), com as duas URLs de callback cadastradas.
+
+### Popular a homologação
+
+```bash
+railway ssh -e homologacao -s hackathon-ifpr -- php artisan db:seed --class=DemoSeeder --force
+```
+
+O seed cria contas com senha `password` (inclusive organização e admin) numa
+URL pública: use só com dados fictícios e nunca copie dados de produção
+pra cá (CPF, LGPD).
+
+### Pegadinhas do Railway
+
+- `railway environment edit` pode não aplicar variável; use o painel ou a
+  ferramenta `set-variables` do MCP, informando o ambiente.
+- Mudar variável de um serviço redeploya aquele serviço.
+
 ## Limitações conhecidas
 
 - **Dado fora do Brasil.** Aceito formalmente pela orientadora em
