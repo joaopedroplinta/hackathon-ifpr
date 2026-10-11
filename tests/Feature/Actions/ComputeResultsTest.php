@@ -294,4 +294,39 @@ class ComputeResultsTest extends TestCase
         $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
         $this->assertSame(2, $result->popular_votes_count);
     }
+
+    /** Meio centavo exato (8,28 e 8,29) sobe, sem depender de como o float representa 8,285. */
+    public function test_an_exact_half_cent_rounds_up(): void
+    {
+        $event = Event::factory()->create();
+        $criterios = $this->rubricaComPesos($event, [1]);
+
+        $submissao = $this->submissaoEnviada($event);
+        $this->avaliacaoSubmetida($event, $submissao, $this->jurado(), $criterios, [8.28]);
+        $this->avaliacaoSubmetida($event, $submissao, $this->jurado(), $criterios, [8.29]);
+
+        app(ComputeResults::class)->handle($event);
+
+        $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
+        $this->assertSame('8.29', (string) $result->final_score);
+    }
+
+    /**
+     * Caso real em que float errava um centavo: (2,78 + 4,59) / 2 = 3,685
+     * exato, que sobe para 3,69; a conta em float dava 3,68 e mudava o
+     * desempate e o ranking.
+     */
+    public function test_float_error_no_longer_costs_a_cent(): void
+    {
+        $event = Event::factory()->create();
+        $criterios = $this->rubricaComPesos($event, [1.22, 1.22]);
+
+        $submissao = $this->submissaoEnviada($event);
+        $this->avaliacaoSubmetida($event, $submissao, $this->jurado(), $criterios, [2.78, 4.59]);
+
+        app(ComputeResults::class)->handle($event);
+
+        $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
+        $this->assertSame('3.69', (string) $result->final_score);
+    }
 }

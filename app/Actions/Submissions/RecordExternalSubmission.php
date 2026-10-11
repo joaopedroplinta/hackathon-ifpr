@@ -69,6 +69,18 @@ class RecordExternalSubmission
         ];
         $version->save();
 
+        // Entrada fora do formulário muda quem concorre e decide o prazo por
+        // um horário informado à mão: fica registrado (.claude/rules/security.md).
+        activity()
+            ->causedBy($recordedBy)
+            ->performedOn($submission)
+            ->withProperties([
+                'origem' => $source->value,
+                'horario_informado' => $originalSubmittedAt->copy()->utc()->toIso8601String(),
+                'situacao' => $submission->status->value,
+            ])
+            ->log('Submissão lançada fora do formulário');
+
         return $submission;
     }
 }

@@ -11,6 +11,7 @@ use App\Models\Team;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
 class ManualSubmissionTest extends TestCase
@@ -126,5 +127,35 @@ class ManualSubmissionTest extends TestCase
         Event::factory()->create();
 
         $this->get(route('painel.submissions.record.create'))->assertRedirect(route('login'));
+    }
+
+    public function test_the_delivery_time_cannot_be_in_the_future(): void
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->for($event)->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team, [
+                'original_submitted_at' => now()->addDay()->toIso8601String(),
+            ]))
+            ->assertSessionHasErrors('original_submitted_at');
+
+        $this->assertSame(0, Submission::forEvent($event)->count());
+    }
+
+    public function test_recording_a_submission_by_hand_is_logged(): void
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->for($event)->create();
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team))
+            ->assertSessionHas('sucesso');
+
+        $log = Activity::where('description', 'Submissão lançada fora do formulário')->first();
+        $this->assertNotNull($log);
+        $this->assertSame($organizador->id, $log->causer_id);
+        $this->assertSame(SubmissionSource::Email->value, $log->properties['origem']);
     }
 }

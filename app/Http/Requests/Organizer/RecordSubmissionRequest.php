@@ -40,7 +40,7 @@ class RecordSubmissionRequest extends FormRequest
             'summary' => ['nullable', 'string', 'max:300'],
             'repo_url' => ['required', 'string', 'url:http,https', 'max:255'],
             'video_url' => ['nullable', 'string', 'url:http,https', 'max:255'],
-            'original_submitted_at' => ['required', 'date'],
+            'original_submitted_at' => ['required', 'date', 'before_or_equal:now'],
             'source' => ['required', Rule::in([SubmissionSource::Email->value, SubmissionSource::Manual->value])],
         ];
     }
@@ -55,6 +55,7 @@ class RecordSubmissionRequest extends FormRequest
             'repo_url.required' => 'O link do repositório é obrigatório.',
             'repo_url.url' => 'Informe um endereço completo, começando com https://',
             'original_submitted_at.required' => 'Informe o horário em que a equipe entregou de fato.',
+            'original_submitted_at.before_or_equal' => 'O horário da entrega não pode estar no futuro.',
             'source.required' => 'Escolha por onde a equipe entregou (e-mail ou papel).',
         ];
     }

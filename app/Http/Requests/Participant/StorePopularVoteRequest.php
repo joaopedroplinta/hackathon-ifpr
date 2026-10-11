@@ -4,8 +4,10 @@ namespace App\Http\Requests\Participant;
 
 use App\Enums\SubmissionStatus;
 use App\Models\Event;
+use App\Models\Submission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StorePopularVoteRequest extends FormRequest
 {
@@ -34,6 +36,26 @@ class StorePopularVoteRequest extends FormRequest
                     ->whereIn('status', [SubmissionStatus::Submitted, SubmissionStatus::Late]),
             ],
         ];
+    }
+
+    /**
+     * Ninguém vota na própria equipe: cada integrante somaria um voto pro
+     * prêmio popular sem contrapartida. Só dá pra checar depois que o id já
+     * passou pela regra `exists`.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if ($validator->errors()->has('submission_id')) {
+                return;
+            }
+
+            $submission = Submission::with('team')->find($this->input('submission_id'));
+
+            if ($submission?->team->hasMember($this->user())) {
+                $validator->errors()->add('submission_id', 'Você não pode votar no projeto da sua própria equipe.');
+            }
+        });
     }
 
     /**
