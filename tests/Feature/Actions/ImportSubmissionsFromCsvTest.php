@@ -127,4 +127,22 @@ class ImportSubmissionsFromCsvTest extends TestCase
         $submission = Submission::forEvent($event)->firstOrFail();
         $this->assertSame(SubmissionStatus::Late, $submission->status);
     }
+
+    public function test_a_future_timestamp_is_reported_instead_of_counting_as_on_time(): void
+    {
+        $event = Event::factory()->create();
+        $lider = User::factory()->create(['email' => 'futuro@example.com']);
+        $team = Team::factory()->for($event)->create(['leader_id' => $lider->id]);
+
+        $csv = $this->csv(
+            "email_lider,titulo,resumo,repo_url,video_url,enviado_em\n".
+            'futuro@example.com,App,Resumo,https://github.com/x/y,,'.now()->addDays(2)->toIso8601String()."\n"
+        );
+
+        $resultado = app(ImportSubmissionsFromCsv::class)->handle($event, $csv, SubmissionSource::Form);
+
+        $this->assertSame(0, $resultado['importadas']);
+        $this->assertSame([$team->name], $resultado['conflitos']);
+        $this->assertNull(Submission::forEvent($event)->where('team_id', $team->id)->first());
+    }
 }

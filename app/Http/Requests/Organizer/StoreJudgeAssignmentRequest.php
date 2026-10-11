@@ -52,7 +52,8 @@ class StoreJudgeAssignmentRequest extends FormRequest
                 $validator->errors()->add('judge_id', 'Este usuário não tem o papel de jurado.');
             }
 
-            $submission = Submission::find($this->input('submission_id'));
+            $event = Event::current();
+            $submission = $event ? Submission::forEvent($event)->find($this->input('submission_id')) : null;
 
             if ($judge && $submission) {
                 $temConflito = ConflictOfInterest::query()
