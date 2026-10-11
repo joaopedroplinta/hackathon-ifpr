@@ -216,7 +216,7 @@ O projeto Railway tem dois ambientes, cada um com banco e Redis próprios:
 |---|---|---|
 | Branch | `main` | `homologacao` |
 | URL | `hackathon-ifpr-production.up.railway.app` | `hackathon-ifpr-homologacao.up.railway.app` |
-| Serviços | web, worker, scheduler, Postgres, Redis | web, Postgres, Redis |
+| Serviços | web, worker, scheduler, Postgres, Redis | web, Postgres, Redis, mailpit |
 | Dados | reais | fictícios (`DemoSeeder`) |
 
 IDs (referência, não são segredo): projeto `9ad7c37c-1b99-4d0f-b36f-e6e26da09abb`,
@@ -247,8 +247,9 @@ deploya depois do CI passar (`checkSuites`).
 | `APP_KEY` | chave própria | nunca reutilize a de produção |
 | `APP_URL` | URL da homologação | |
 | `GOOGLE_REDIRECT_URI` | URL completa da homologação + `/auth/google/callback` | `${APP_URL}` **não** é expandido no Railway (ver `docs/google-oauth.md`) |
-| `MAIL_MAILER` | `log` | não envia e-mail de teste a gente de verdade |
+| `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT` | `smtp`, `mailpit.railway.internal`, `1025` | e-mail não sai de verdade: cai na caixa de testes (serviço `mailpit`, UI protegida por `MP_UI_AUTH`) |
 | `QUEUE_CONNECTION` | `sync` | não há worker |
+| `DEMO_PASSWORD` | senha das 3 contas de demonstração | só do comando `hackathon:demo` (ver `docs/demonstracao.md`) |
 | `INSTALL_DEV` | `1` | build com dependências de dev, pro `DemoSeeder` (Faker). Em produção fica sem definir |
 
 O cliente OAuth do Google é o mesmo nos dois ambientes (projeto GCP
