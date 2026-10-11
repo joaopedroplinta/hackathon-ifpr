@@ -10,6 +10,61 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.2.3] - 2026-10-10
+
+Correções de uma auditoria de segurança sobre login com Google, seeders,
+trilha de auditoria e exportação CSV, mais atualização de dependências e o
+ambiente de homologação.
+
+### Corrigido
+
+- Login com Google quebrado em produção: no Railway não existe `.env`, então
+  `GOOGLE_REDIRECT_URI="${APP_URL}/..."` chegava como texto literal e o Google
+  recusava. A variável passou a levar a URL completa por ambiente, e o cliente
+  OAuth ficou num projeto próprio do Google Cloud; `.env.example` e
+  `docs/google-oauth.md` documentam isso (#162)
+- A tela piscava ao passar o mouse nos links do menu, porque o prefetch do
+  Inertia disparava o efeito de esmaecer da navegação; agora prefetch é
+  ignorado (#164)
+- `DatabaseSeeder` e `DemoSeeder` criavam admin e organizador com senha
+  `password` e não checavam o ambiente; agora recusam rodar em produção, e o
+  runbook manda rodar só o `RoleSeeder` lá (#170)
+- Mudança de prazo de submissão, janela de voto ou status do evento não
+  deixava rastro; agora vai para o activity log com autor e valores
+  antes/depois (#170)
+- Recalcular o resultado depois de publicado alterava o pódio público sem
+  registro, e republicar sobrescrevia a data da primeira publicação; agora o
+  recálculo é logado com o ranking antes/depois e a data original é mantida
+  (#170)
+- Remover ou reatribuir jurado apagava a nota já enviada sem rastro; agora a
+  Policy nega quando a avaliação foi enviada (o caminho é reabrir com motivo),
+  a remoção permitida é logada e a tela esconde os botões nesse caso (#170)
+- CSV exportado aceitava injeção de fórmula do Excel em nome de equipe, título
+  e links; campos de texto livre que começam com `=`, `+`, `-` ou `@` ganham um
+  apóstrofo (#170)
+- Entrada em equipe por código de convite passou a ter limite de 10 tentativas
+  por minuto (#170)
+
+### Alterado
+
+- Dependências atualizadas: Laravel 12.65→12.69.3, league/commonmark,
+  league/flysystem, phpseclib e transitivas; `composer audit` e `npm audit`
+  sem avisos (#168)
+
+### Infra e processo
+
+- Ambiente de homologação no Railway (branch `homologacao`, banco e Redis
+  próprios, `DemoSeeder`), com CI em push na `homologacao`, workflow
+  `sync-homologacao.yml` que traz a `main` por merge a cada push e
+  `environment_url` do deployment por ambiente; fluxo dev → homologação →
+  produção documentado em `deploy/railway.md` §8 e `CLAUDE.md`; `ARG
+  INSTALL_DEV` no Dockerfile (#166)
+
+### Documentação
+
+- README com links do protótipo navegável do Figma (43 telas), do arquivo de
+  design e dos ambientes de produção e homologação (#156, #158, #160, #166)
+
 ## [1.2.2] - 2026-09-24
 
 Correções de uma auditoria de segurança sobre publicação de resultado e
@@ -260,7 +315,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.1.0...v1.2.0
