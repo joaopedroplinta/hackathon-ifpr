@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Events\UpdateEvent;
 use App\Actions\Events\UploadCertificateLogo;
 use App\Actions\Events\UploadRegulation;
 use App\Enums\EventStatus;
@@ -110,8 +111,7 @@ class EventController extends Controller
         $this->authorize('update', Event::class);
 
         $event = $this->currentEventOrFail();
-        $event->fill($request->validated());
-        $event->save();
+        app(UpdateEvent::class)->handle($event, $request->validated(), $request->user());
 
         return to_route('painel.evento.edit')->with('sucesso', 'Evento atualizado.');
     }

@@ -64,4 +64,15 @@ class PublishResultsTest extends TestCase
         $this->assertSame($organizador->id, $registro->causer_id);
         $this->assertTrue($registro->properties->get('com_pendencia'));
     }
+
+    public function test_republishing_keeps_the_first_publication_date(): void
+    {
+        $primeira = now()->subDays(2)->startOfSecond();
+        $event = Event::factory()->create(['results_published_at' => $primeira]);
+
+        app(PublishResults::class)->handle($event, User::factory()->create());
+
+        $this->assertTrue($event->fresh()->results_published_at->equalTo($primeira));
+        $this->assertTrue(Activity::latest()->first()->properties['republicado']);
+    }
 }

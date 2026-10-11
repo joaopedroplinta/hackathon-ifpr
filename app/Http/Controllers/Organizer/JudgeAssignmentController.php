@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Organizer;
 
 use App\Actions\Evaluation\ReopenEvaluation;
 use App\Actions\Judging\DistributeJudges;
+use App\Actions\Judging\RemoveJudgeAssignment;
 use App\Enums\EvaluationStatus;
 use App\Enums\Role;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
@@ -131,11 +132,11 @@ class JudgeAssignmentController extends Controller
         return to_route('painel.jurados.index')->with('sucesso', 'Jurado atribuído.');
     }
 
-    public function destroy(JudgeAssignment $assignment): RedirectResponse
+    public function destroy(Request $request, JudgeAssignment $assignment): RedirectResponse
     {
         $this->authorize('delete', $assignment);
 
-        $assignment->delete();
+        app(RemoveJudgeAssignment::class)->handle($assignment, $request->user());
 
         return to_route('painel.jurados.index')->with('sucesso', 'Atribuição removida.');
     }
@@ -144,7 +145,7 @@ class JudgeAssignmentController extends Controller
      * Jurado ausente, em 1 clique: remove a atribuição dele e já preenche a
      * vaga que abriu, sem reprocessar o evento inteiro.
      */
-    public function reassign(JudgeAssignment $assignment): RedirectResponse
+    public function reassign(Request $request, JudgeAssignment $assignment): RedirectResponse
     {
         $this->authorize('delete', $assignment);
 
@@ -152,8 +153,8 @@ class JudgeAssignmentController extends Controller
         $submission = $assignment->submission;
         $juradoRemovido = $assignment->judge_id;
 
-        DB::transaction(function () use ($assignment, $event, $submission, $juradoRemovido) {
-            $assignment->delete();
+        DB::transaction(function () use ($request, $assignment, $event, $submission, $juradoRemovido) {
+            app(RemoveJudgeAssignment::class)->handle($assignment, $request->user());
             app(DistributeJudges::class)->handle($event, collect([$submission]), $juradoRemovido);
         });
 

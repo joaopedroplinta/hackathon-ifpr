@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Organizer;
 
-use App\Actions\Results\ComputeResults;
 use App\Actions\Results\FindResultPendencies;
 use App\Actions\Results\PublishResults;
+use App\Actions\Results\RecomputeResults;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organizer\PublishResultsRequest;
 use App\Models\Result;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -47,13 +48,13 @@ class ResultController extends Controller
         ]);
     }
 
-    public function recompute(): RedirectResponse
+    public function recompute(Request $request): RedirectResponse
     {
         $this->authorize('recompute', Result::class);
 
         $event = $this->currentEventOrFail();
 
-        app(ComputeResults::class)->handle($event);
+        app(RecomputeResults::class)->handle($event, $request->user());
 
         return to_route('painel.resultados.index')->with('sucesso', 'Resultados recalculados.');
     }

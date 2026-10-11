@@ -163,4 +163,22 @@ class SubmissionExportTest extends TestCase
             ->get(route('painel.submissions.export', ['status' => 'inventado']))
             ->assertSessionHasErrors('status');
     }
+
+    public function test_csv_neutralizes_spreadsheet_formulas_in_participant_text(): void
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->for($event)->create(['name' => '=HYPERLINK("http://x","clique")']);
+        Submission::factory()->for($event)->for($team)->enviada()->create(['title' => '+cmd|calc']);
+
+        $response = $this->actingAs($this->organizador())
+            ->get(route('painel.submissions.export'))
+            ->assertOk();
+
+        [, $zip] = $this->abrirZip($response);
+        $csv = $zip->getFromName('submissoes.csv');
+
+        $this->assertStringContainsString("'=HYPERLINK", $csv);
+        $this->assertStringContainsString("'+cmd", $csv);
+        $this->assertStringNotContainsString('"=HYPERLINK', $csv);
+    }
 }

@@ -10,6 +10,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
 class EventTest extends TestCase
@@ -438,5 +439,41 @@ class EventTest extends TestCase
                 'logo' => UploadedFile::fake()->create('logo.png', 100, 'image/png'),
             ])
             ->assertForbidden();
+    }
+
+    public function test_changing_the_submission_deadline_is_logged_with_author_and_values(): void
+    {
+        Event::factory()->create(['status' => EventStatus::Published, 'submission_deadline' => now()->addDay()]);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->patch(route('painel.evento.update'), $this->dadosValidos([
+                'submission_deadline' => now()->addDays(3)->format('Y-m-d\TH:i'),
+            ]))
+            ->assertRedirect(route('painel.evento.edit'));
+
+        $log = Activity::where('description', 'Prazo, votação ou status do evento alterados')->first();
+        $this->assertNotNull($log);
+        $this->assertSame($organizador->id, $log->causer_id);
+
+        $mudanca = $log->properties['alteracoes']['submission_deadline'];
+        $this->assertNotNull($mudanca['de']);
+        $this->assertNotSame($mudanca['de'], $mudanca['para']);
+    }
+
+    public function test_editing_unaudited_fields_does_not_write_a_deadline_log(): void
+    {
+        Event::factory()->create([
+            'status' => EventStatus::Published,
+            'submission_deadline' => null,
+            'voting_opens_at' => null,
+            'voting_closes_at' => null,
+        ]);
+
+        $this->actingAs($this->organizador())
+            ->patch(route('painel.evento.update'), $this->dadosValidos(['description' => 'Só a descrição mudou']))
+            ->assertRedirect(route('painel.evento.edit'));
+
+        $this->assertSame(0, Activity::where('description', 'Prazo, votação ou status do evento alterados')->count());
     }
 }

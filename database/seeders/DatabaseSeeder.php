@@ -20,6 +20,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Contas com senha 'password' e dados fictícios: nunca em produção.
+        // Em produção só o RoleSeeder (papéis) -- ver deploy/railway.md §6.
+        if (app()->isProduction()) {
+            throw new \RuntimeException('Este seeder cria contas de teste com senha fraca e não roda em produção. Use só RoleSeeder.');
+        }
+
         $this->call(RoleSeeder::class);
 
         $organizador = User::firstOrCreate(

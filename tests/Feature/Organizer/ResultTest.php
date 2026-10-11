@@ -18,6 +18,7 @@ use App\Models\Team;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
 class ResultTest extends TestCase
@@ -192,5 +193,35 @@ class ResultTest extends TestCase
         Event::factory()->create();
 
         $this->get(route('painel.resultados.index'))->assertRedirect(route('login'));
+    }
+
+    public function test_recomputing_after_publication_is_logged_with_the_ranking_before_and_after(): void
+    {
+        $event = Event::factory()->create(['results_published_at' => now()->subDay()]);
+        $this->submissaoEnviada($event);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->post(route('painel.resultados.recompute'))
+            ->assertRedirect(route('painel.resultados.index'));
+
+        $log = Activity::where('description', 'Resultado recalculado após a publicação')->first();
+        $this->assertNotNull($log);
+        $this->assertSame($organizador->id, $log->causer_id);
+        $this->assertSame($event->id, $log->subject_id);
+        $this->assertArrayHasKey('ranking_antes', $log->properties->toArray());
+        $this->assertArrayHasKey('ranking_depois', $log->properties->toArray());
+    }
+
+    public function test_recomputing_before_publication_is_not_logged(): void
+    {
+        $event = Event::factory()->create(['results_published_at' => null]);
+        $this->submissaoEnviada($event);
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.resultados.recompute'))
+            ->assertRedirect(route('painel.resultados.index'));
+
+        $this->assertSame(0, Activity::where('description', 'Resultado recalculado após a publicação')->count());
     }
 }
