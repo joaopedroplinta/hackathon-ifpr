@@ -10,6 +10,65 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.0] - 2026-10-11
+
+Decisão do organizador sobre envios fora do prazo, desclassificação de equipes
+com tela própria e e-mails, e correções de uma segunda rodada da revisão de
+segurança. Atenção: envio fora do prazo deixou de concorrer sozinho.
+
+### Adicionado
+
+- Decisão sobre envio fora do prazo: o organizador aceita ou recusa, sempre
+  com motivo (10 a 500 caracteres) e autor no activity log, e a decisão pode
+  ser revista. Novos status `late_accepted` e `late_rejected`; a tela da
+  submissão ganha o cartão de decisão, o participante vê se o envio foi aceito
+  ou recusado, e a tela de resultados lista os envios atrasados sem decisão
+  como pendência antes de publicar (#174)
+- Desclassificar e reabilitar equipe, com motivo e autor no activity log. A
+  equipe e a submissão saem da avaliação, do ranking, da vitrine, da votação
+  e da fila do jurado, e a equipe não envia mais; reabilitar devolve o estado
+  anterior. Se o resultado já foi calculado, é recalculado na hora (#176)
+- Tela Equipes no painel, com busca por nome e filtro de situação: permite
+  desclassificar ou reabilitar inclusive equipe que ainda não enviou nada
+  (#178)
+- E-mail aos integrantes ativos da equipe ao ser desclassificada e ao ser
+  reabilitada, com o motivo registrado pela organização (#178)
+
+### Alterado
+
+- **Mudança de regra:** envio fora do prazo não entra mais sozinho em
+  avaliação, ranking, vitrine e votação; fica fora até o organizador aceitar.
+  Depois de aceitar, recalcule os resultados e confira a distribuição de
+  jurados (#174)
+- A fila do jurado esconde, e a avaliação passa a negar acesso a, projetos que
+  não concorrem mais (equipe desclassificada, atraso recusado) (#176)
+- Certificado de participação segue por presença no evento: membro de equipe
+  desclassificada continua elegível; colocação sai do ranking (regra
+  registrada no PLANO.md) (#178)
+
+### Corrigido
+
+- A nota era calculada em `float` e errava um centavo em casos como 2,78 e
+  4,59 com o mesmo peso (3,685 virava 3,68); agora as contas são em centésimos
+  inteiros com arredondamento exato, o que também estabiliza desempate e
+  ranking (#172)
+- A página pública de resultados continuava mostrando a linha antiga de quem
+  saiu do ranking (desclassificada, atraso recusado depois de aceito), porque
+  o cálculo nunca apagava linhas antigas (#176)
+- Voto popular na própria equipe passou a ser barrado, com mensagem em
+  português (#172)
+- Lançamento manual e importação de CSV aceitavam horário de entrega no
+  futuro, fazendo qualquer envio contar como no prazo; agora são recusados, e
+  o lançamento fora do formulário passa a ficar no activity log (#172)
+- Escopo de evento: remover ou reatribuir jurado e remover conflito de
+  interesse de edição anterior retornam 404, o check-in filtra o checkpoint
+  por evento e a atribuição manual filtra a submissão (#172)
+
+### Documentação
+
+- `security.md` registra a exceção consciente do avatar no disco público;
+  PLANO.md ganha a regra do envio atrasado e da desclassificação (#176, #178)
+
 ## [1.2.3] - 2026-10-10
 
 Correções de uma auditoria de segurança sobre login com Google, seeders,
@@ -315,7 +374,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...v1.3.0
 [1.2.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.0...v1.2.1
