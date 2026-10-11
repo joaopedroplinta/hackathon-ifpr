@@ -199,6 +199,7 @@ serviço e as instruções de instalação estão em [deploy/README.md](deploy/R
 | [docs/diagramas.md](docs/diagramas.md) | diagramas do sistema |
 | [docs/backlog.md](docs/backlog.md) | itens em acompanhamento |
 | [docs/google-oauth.md](docs/google-oauth.md) | configuração do login com Google |
+| [docs/demonstracao.md](docs/demonstracao.md) | roteiro para mostrar o fluxo completo na homologação |
 | [docs/ropa.md](docs/ropa.md) | registro de operações de tratamento de dados |
 | [CHANGELOG.md](CHANGELOG.md) | histórico de mudanças |
 

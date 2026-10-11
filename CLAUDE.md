@@ -135,6 +135,7 @@ dev → **homologação** → produção. Detalhes e variáveis em `deploy/railw
 - Migration roda primeiro na homologação; **dado de produção nunca vai pra lá** (CPF, LGPD)
 - Homologação usa `DemoSeeder` (contas com senha `password`, URL pública) e `INSTALL_DEV=1` no build
 - No Railway, `${APP_URL}` não é expandido: `GOOGLE_REDIRECT_URI` leva a URL completa por ambiente
+- Demonstração ao cliente: `php artisan hackathon:demo {inicio|submissoes|avaliacao|resultado}` (só homologação; roteiro em `docs/demonstracao.md`). E-mail da homologação cai no Mailpit, não sai de verdade
 
 ## Definição de pronto
 
