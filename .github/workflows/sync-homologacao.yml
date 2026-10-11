@@ -1,0 +1,34 @@
+name: Sync homologacao
+
+# Mantém a homologacao sempre com tudo que já está na main: a cada push na
+# main, traz a main por merge (nunca reset -- a homologacao tem commits que
+# a main não tem enquanto uma mudança está em validação). O Railway
+# redeploya a homologacao sozinho quando a branch muda. Conflito = job
+# vermelho; resolva à mão (git merge origin/main na homologacao).
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: sync-homologacao
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: homologacao
+          fetch-depth: 0
+
+      - name: Merge main into homologacao
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git merge --no-edit origin/main
+          git push origin homologacao
