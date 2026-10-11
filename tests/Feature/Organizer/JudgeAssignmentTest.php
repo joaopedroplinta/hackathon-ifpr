@@ -428,4 +428,57 @@ class JudgeAssignmentTest extends TestCase
             ])
             ->assertForbidden();
     }
+
+    public function test_an_assignment_with_a_submitted_evaluation_cannot_be_removed(): void
+    {
+        $event = Event::factory()->create();
+        [, $assignment, $evaluation] = $this->avaliacaoEnviada($event, $this->jurado());
+
+        $this->actingAs($this->organizador())
+            ->delete(route('painel.jurados.destroy', $assignment))
+            ->assertForbidden();
+
+        $this->assertModelExists($assignment);
+        $this->assertModelExists($evaluation);
+    }
+
+    public function test_reassigning_is_blocked_when_the_evaluation_was_submitted(): void
+    {
+        $event = Event::factory()->create();
+        [, $assignment, $evaluation] = $this->avaliacaoEnviada($event, $this->jurado());
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.jurados.reassign', $assignment))
+            ->assertForbidden();
+
+        $this->assertModelExists($evaluation);
+    }
+
+    public function test_removing_an_assignment_without_a_submitted_evaluation_is_logged(): void
+    {
+        $event = Event::factory()->create();
+        $submissao = $this->submissaoEnviada($event);
+        $jurado = $this->jurado();
+
+        $assignment = new JudgeAssignment;
+        $assignment->event_id = $event->id;
+        $assignment->judge_id = $jurado->id;
+        $assignment->submission_id = $submissao->id;
+        $assignment->assigned_at = now();
+        $assignment->save();
+
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->delete(route('painel.jurados.destroy', $assignment))
+            ->assertRedirect(route('painel.jurados.index'));
+
+        $this->assertModelMissing($assignment);
+
+        $log = Activity::where('description', 'Atribuição de jurado removida')->first();
+        $this->assertNotNull($log);
+        $this->assertSame($organizador->id, $log->causer_id);
+        $this->assertSame($submissao->id, $log->subject_id);
+        $this->assertSame($jurado->id, $log->properties['judge_id']);
+    }
 }

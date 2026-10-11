@@ -266,4 +266,18 @@ class JoinTeamTest extends TestCase
             );
         }
     }
+
+    public function test_joining_by_code_is_throttled_after_ten_attempts(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        $user = $this->inscrito($event);
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->actingAs($user)->post(route('teams.join.store'), ['invite_code' => 'ZZZZZZ']);
+        }
+
+        $this->actingAs($user)
+            ->post(route('teams.join.store'), ['invite_code' => 'ZZZZZZ'])
+            ->assertStatus(429);
+    }
 }

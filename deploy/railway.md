@@ -166,17 +166,20 @@ automaticamente, igual a Render.
 ## 6. Primeiro boot do banco e seed
 
 Migration roda sozinha no boot do `web` (`migrate --force`, idempotente).
-Seed continua manual, mas agora dá pra rodar direto pela CLI do Railway em
-vez de precisar de um cliente Postgres externo:
+Só os papéis precisam de seed em produção (idempotente), direto pela CLI do
+Railway:
 
 ```bash
 railway login
 railway link                                          # escolhe este projeto
-railway run --service web php artisan db:seed --class=DemoSeeder --force
+railway run --service hackathon-ifpr php artisan db:seed --class=RoleSeeder --force
 ```
 
-`DemoSeeder` cria um evento passado (encerrado, resultado publicado, 15
-equipes) e o evento atual (inscrições abertas, 8 equipes já formadas).
+`DatabaseSeeder` e `DemoSeeder` **recusam rodar em produção**: criam contas
+de organização e admin com senha `password` e dados fictícios. O
+`DemoSeeder` (evento passado encerrado com 15 equipes e evento atual com 8)
+é só para a homologação (§8). O primeiro admin de produção entra pelo
+login com Google e recebe o papel pelo painel de usuários.
 
 **Antes de abrir inscrição real, apagar qualquer dado de ensaio que já
 tenha rodado neste ambiente enquanto ele era só demo** — equipe fictícia

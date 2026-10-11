@@ -103,7 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('equipe', [TeamController::class, 'store'])->name('teams.store');
 
     Route::get('equipe/entrar', [TeamMembershipController::class, 'create'])->name('teams.join.create');
-    Route::post('equipe/entrar', [TeamMembershipController::class, 'store'])->name('teams.join.store');
+    Route::post('equipe/entrar', [TeamMembershipController::class, 'store'])->middleware('throttle:10,1')->name('teams.join.store');
 
     Route::delete('equipe/membros/{membership}', [TeamMembershipController::class, 'destroy'])
         ->name('teams.leave');

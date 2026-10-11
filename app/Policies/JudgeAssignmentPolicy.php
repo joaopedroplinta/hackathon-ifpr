@@ -24,9 +24,10 @@ class JudgeAssignmentPolicy
         return $user->isStaff();
     }
 
+    /** Avaliação enviada não se apaga junto: a nota é registro histórico -- reabrir com motivo é o caminho. */
     public function delete(User $user, JudgeAssignment $assignment): bool
     {
-        return $user->isStaff();
+        return $user->isStaff() && $assignment->evaluation?->status !== EvaluationStatus::Submitted;
     }
 
     /** Só uma avaliação enviada pode ser reaberta -- reabrir um rascunho não faz sentido. */
