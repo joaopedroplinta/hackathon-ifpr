@@ -66,14 +66,14 @@ class ExportSubmissions
 
         foreach ($submissions as $submission) {
             fputcsv($buffer, [
-                $submission->team->name,
-                $submission->team->track?->name ?? '',
-                $submission->title,
+                $this->seguro($submission->team->name),
+                $this->seguro($submission->team->track?->name ?? ''),
+                $this->seguro($submission->title),
                 $submission->status->label(),
                 $submission->source->label(),
-                $submission->repo_url,
-                $submission->video_url,
-                $submission->deploy_url,
+                $this->seguro($submission->repo_url),
+                $this->seguro($submission->video_url),
+                $this->seguro($submission->deploy_url),
                 // America/Sao_Paulo: é a planilha que o organizador confere
                 // na hora, não um registro técnico -- .claude/rules/database.md.
                 $submission->submitted_at?->timezone('America/Sao_Paulo')->format('d/m/Y H:i'),
@@ -88,5 +88,17 @@ class ExportSubmissions
         // BOM: Excel no Windows -- o mais comum na organização -- lê UTF-8
         // sem acento quebrado só com isto na frente.
         return "\xEF\xBB\xBF".$conteudo;
+    }
+
+    /**
+     * Texto do participante abre no Excel: começando com = + - @ (ou tab/CR)
+     * vira fórmula. O apóstrofo força texto. Só vale pra texto livre -- datas
+     * e rótulos nossos não passam por aqui.
+     */
+    private function seguro(?string $valor): string
+    {
+        $valor ??= '';
+
+        return preg_match('/^[=+\-@\t\r]/', $valor) === 1 ? "'".$valor : $valor;
     }
 }

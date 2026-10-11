@@ -21,13 +21,14 @@ class PublishResults
     {
         $jaEstavaPublicado = $event->results_published_at !== null;
 
-        $event->results_published_at = now();
+        // Reclicar "publicar" não empurra a data: ela registra a 1ª publicação.
+        $event->results_published_at ??= now();
         $event->save();
 
         activity()
             ->causedBy($autor)
             ->performedOn($event)
-            ->withProperties(['com_pendencia' => $comPendencia])
+            ->withProperties(['com_pendencia' => $comPendencia, 'republicado' => $jaEstavaPublicado])
             ->log('Resultado publicado');
 
         if ($jaEstavaPublicado) {
