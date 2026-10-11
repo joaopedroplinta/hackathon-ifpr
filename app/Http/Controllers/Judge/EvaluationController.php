@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Judge;
 use App\Actions\Evaluation\SaveEvaluationDraft;
 use App\Actions\Evaluation\SubmitEvaluation;
 use App\Enums\EvaluationStatus;
+use App\Enums\SubmissionStatus;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Judge\SaveEvaluationDraftRequest;
@@ -27,8 +28,11 @@ class EvaluationController extends Controller
     {
         $event = $this->currentEventOrFail();
 
+        // Quem deixou de concorrer (equipe desclassificada, atraso recusado)
+        // some da fila: avaliar projeto fora do ranking só gasta o tempo do jurado.
         $assignments = JudgeAssignment::forEvent($event)
             ->forJudge(request()->user())
+            ->whereHas('submission', fn ($q) => $q->whereIn('status', array_filter(SubmissionStatus::cases(), fn (SubmissionStatus $status) => $status->countsForEvaluation())))
             ->with(['submission.team', 'evaluation'])
             ->get();
 

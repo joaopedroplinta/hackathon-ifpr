@@ -1,10 +1,16 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { Download, ExternalLink, FileText, History, Paperclip, TriangleAlert } from 'lucide-react';
+import { Download, ExternalLink, FileText, History, LoaderCircle, Paperclip, TriangleAlert } from 'lucide-react';
 
+import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { ArquivoDetalhe, DetalheSubmissao, VersaoSubmissao } from '@/types/admin';
 import { StatusSubmissao } from '@/types/submissao';
+
+type FormDecisao = { decisao: 'aceitar' | 'recusar'; motivo: string };
+type FormMotivo = { motivo: string };
 
 interface Props {
     submissao: DetalheSubmissao;
@@ -16,6 +22,8 @@ const corDoStatus: Record<StatusSubmissao, string> = {
     draft: 'bg-muted text-muted-foreground',
     submitted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
     late: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+    late_accepted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+    late_rejected: 'bg-red-500/15 text-red-700 dark:text-red-400',
     disqualified: 'bg-red-500/15 text-red-700 dark:text-red-400',
 };
 
@@ -64,6 +72,20 @@ function formatarValorPayload(chave: string, valor: unknown): string {
 }
 
 export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props) {
+    const decisao = useForm<FormDecisao>({ decisao: 'aceitar', motivo: '' });
+
+    const statusEquipe = useForm<FormMotivo>({ motivo: '' });
+
+    const mudarStatusEquipe = (e: React.FormEvent, rota: 'painel.teams.disqualify' | 'painel.teams.reinstate') => {
+        e.preventDefault();
+        statusEquipe.post(route(rota, submissao.equipe.id), { preserveScroll: true, onSuccess: () => statusEquipe.reset('motivo') });
+    };
+
+    const decidirAtraso = (e: React.FormEvent) => {
+        e.preventDefault();
+        decisao.post(route('painel.submissions.late-decision', submissao.id), { preserveScroll: true, onSuccess: () => decisao.reset('motivo') });
+    };
+
     const links = [
         { rotulo: 'Repositório', href: submissao.repo_url },
         { rotulo: 'Vídeo', href: submissao.video_url },
@@ -107,6 +129,150 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                         </p>
                     )}
                 </header>
+
+                {submissao.pode_decidir_atraso && (
+                    <section
+                        aria-labelledby="decisao-atraso"
+                        className="mb-8 rounded-3xl border border-amber-600/30 bg-amber-600/10 p-5 shadow-sm sm:p-6"
+                    >
+                        <h2 id="decisao-atraso" className="flex items-center gap-2 text-lg font-medium">
+                            <TriangleAlert className="h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" aria-hidden="true" />
+                            Envio fora do prazo
+                        </h2>
+                        <p className="text-muted-foreground mt-1 text-sm">
+                            Aceitar faz o projeto concorrer (avaliação, ranking, vitrine e voto). Recusar o deixa de fora. A decisão e o motivo ficam
+                            registrados e podem ser revistos.
+                        </p>
+
+                        {submissao.decisao_atraso && (
+                            <p className="mt-3 text-sm">
+                                Última decisão: <strong>{submissao.status_label}</strong> por {submissao.decisao_atraso.quem} em{' '}
+                                {formatarData(submissao.decisao_atraso.quando)}
+                                {submissao.decisao_atraso.motivo ? ` — “${submissao.decisao_atraso.motivo}”` : ''}.
+                            </p>
+                        )}
+
+                        <form onSubmit={decidirAtraso} className="mt-4 flex flex-col gap-4">
+                            <fieldset className="flex flex-wrap gap-4">
+                                <legend className="sr-only">Decisão</legend>
+                                <label className="flex items-center gap-2 text-sm">
+                                    <input
+                                        type="radio"
+                                        name="decisao"
+                                        value="aceitar"
+                                        checked={decisao.data.decisao === 'aceitar'}
+                                        onChange={() => decisao.setData('decisao', 'aceitar')}
+                                    />
+                                    Aceitar o envio
+                                </label>
+                                <label className="flex items-center gap-2 text-sm">
+                                    <input
+                                        type="radio"
+                                        name="decisao"
+                                        value="recusar"
+                                        checked={decisao.data.decisao === 'recusar'}
+                                        onChange={() => decisao.setData('decisao', 'recusar')}
+                                    />
+                                    Recusar o envio
+                                </label>
+                            </fieldset>
+                            <InputError message={decisao.errors.decisao} />
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="motivo-atraso">Motivo</Label>
+                                <textarea
+                                    id="motivo-atraso"
+                                    rows={3}
+                                    value={decisao.data.motivo}
+                                    onChange={(e) => decisao.setData('motivo', e.target.value)}
+                                    aria-describedby="motivo-atraso-erro"
+                                    placeholder="Ex.: queda de rede do campus comprovada pelo chamado da TI."
+                                    className="border-input bg-background ring-offset-background focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                />
+                                <div id="motivo-atraso-erro">
+                                    <InputError message={decisao.errors.motivo} />
+                                </div>
+                            </div>
+
+                            <div>
+                                <Button type="submit" disabled={decisao.processing}>
+                                    {decisao.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                    Registrar decisão
+                                </Button>
+                            </div>
+                        </form>
+                    </section>
+                )}
+
+                {(submissao.equipe.pode_desclassificar || submissao.equipe.pode_reabilitar || submissao.equipe.decisao) && (
+                    <section aria-labelledby="situacao-equipe" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                        <h2 id="situacao-equipe" className="text-lg font-medium">
+                            Situação da equipe: {submissao.equipe.status_label}
+                        </h2>
+
+                        {submissao.equipe.decisao && (
+                            <p className="text-muted-foreground mt-2 text-sm">
+                                Última decisão: <strong>{submissao.equipe.decisao.acao}</strong> por {submissao.equipe.decisao.quem} em{' '}
+                                {formatarData(submissao.equipe.decisao.quando)}
+                                {submissao.equipe.decisao.motivo ? ` — “${submissao.equipe.decisao.motivo}”` : ''}.
+                            </p>
+                        )}
+
+                        {submissao.equipe.pode_desclassificar && (
+                            <form onSubmit={(e) => mudarStatusEquipe(e, 'painel.teams.disqualify')} className="mt-4 flex flex-col gap-3">
+                                <p className="text-muted-foreground text-sm">
+                                    Desclassificar tira a equipe da avaliação, do ranking, da vitrine e da votação, e impede novos envios. Pode ser
+                                    desfeito depois, com motivo.
+                                </p>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="motivo-desclassificar">Motivo da desclassificação</Label>
+                                    <textarea
+                                        id="motivo-desclassificar"
+                                        rows={3}
+                                        value={statusEquipe.data.motivo}
+                                        onChange={(e) => statusEquipe.setData('motivo', e.target.value)}
+                                        placeholder="Ex.: projeto copiado de repositório público sem declarar a origem."
+                                        className="border-input bg-background ring-offset-background focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    />
+                                    <InputError message={statusEquipe.errors.motivo} />
+                                </div>
+                                <div>
+                                    <Button type="submit" variant="destructive" disabled={statusEquipe.processing}>
+                                        {statusEquipe.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                        Desclassificar equipe
+                                    </Button>
+                                </div>
+                            </form>
+                        )}
+
+                        {submissao.equipe.pode_reabilitar && (
+                            <form onSubmit={(e) => mudarStatusEquipe(e, 'painel.teams.reinstate')} className="mt-4 flex flex-col gap-3">
+                                <p className="text-muted-foreground text-sm">
+                                    Reabilitar devolve a equipe e a submissão à situação anterior à desclassificação. Depois confira a distribuição de
+                                    jurados e os resultados.
+                                </p>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="motivo-reabilitar">Motivo da reabilitação</Label>
+                                    <textarea
+                                        id="motivo-reabilitar"
+                                        rows={3}
+                                        value={statusEquipe.data.motivo}
+                                        onChange={(e) => statusEquipe.setData('motivo', e.target.value)}
+                                        placeholder="Ex.: a equipe comprovou a origem do código e a comissão revisou a decisão."
+                                        className="border-input bg-background ring-offset-background focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    />
+                                    <InputError message={statusEquipe.errors.motivo} />
+                                </div>
+                                <div>
+                                    <Button type="submit" disabled={statusEquipe.processing}>
+                                        {statusEquipe.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                        Reabilitar equipe
+                                    </Button>
+                                </div>
+                            </form>
+                        )}
+                    </section>
+                )}
 
                 {submissao.resumo && (
                     <section className="mb-6">

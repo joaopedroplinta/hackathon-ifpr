@@ -100,7 +100,9 @@ class SubmissionTest extends TestCase
 
         $this->assertSame(SubmissionStatus::Late, $submission->status);
         $this->assertSame(1, $submission->current_version);
-        $this->assertTrue($submission->status->countsForEvaluation());
+        // Chegou, a equipe não reedita (isSubmitted), mas só concorre depois que a organização aceitar.
+        $this->assertTrue($submission->isSubmitted());
+        $this->assertFalse($submission->status->countsForEvaluation());
     }
 
     public function test_the_deadline_comes_from_the_server_not_from_the_request(): void
@@ -392,5 +394,18 @@ class SubmissionTest extends TestCase
         $this->actingAs($liderB)
             ->get(route('submissions.show'))
             ->assertInertia(fn ($page) => $page->has('versoes', 0));
+    }
+
+    public function test_the_team_sees_the_organization_decision_on_a_late_submission(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [$team, $leader] = $this->equipeComLider($event);
+        Submission::factory()->for($event)->for($team)->atrasada()->create(['status' => SubmissionStatus::LateRejected]);
+
+        $this->actingAs($leader)
+            ->get(route('submissions.show'))
+            ->assertInertia(fn ($page) => $page
+                ->where('submissao.fora_do_prazo', true)
+                ->where('submissao.decisao_atraso', 'recusado'));
     }
 }

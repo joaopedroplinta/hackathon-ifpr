@@ -159,7 +159,7 @@ team_invites                  # convidar quem ainda não tem conta
 submissions
   id, team_id, title, summary, description
   repo_url, video_url, deploy_url
-  status (draft|submitted|late|disqualified)
+  status (draft|submitted|late|late_accepted|late_rejected|disqualified)
   submitted_at, current_version
   source (web|form|email|manual)     # por onde entrou — ver Anexo A
   recorded_by (nullable)             # organizador que lançou, se manual
@@ -177,7 +177,22 @@ submission_files
 - Deadline validado **no servidor** com `now()`, comparando contra
   `event.submission_deadline`. O contador no front é enfeite
 - Envio após o prazo entra como `late` e fica visível pro organizador decidir,
-  em vez de ser rejeitado em silêncio
+  em vez de ser rejeitado em silêncio. `late` **não concorre sozinho**: fica
+  fora de avaliação, ranking, vitrine e voto até o organizador aceitar
+  (`late_accepted`, passa a concorrer) ou recusar (`late_rejected`), sempre
+  com motivo e autor no activity log. A decisão pode ser revista. Resultado
+  com envio atrasado sem decisão aparece nas pendências antes de publicar
+- Desclassificação: o organizador desclassifica a equipe com motivo (mín. 10
+  caracteres), e a submissão vai junto. Sai de avaliação, ranking, vitrine,
+  voto e fila do jurado, e a equipe não envia mais. Se o resultado já foi
+  calculado, é recalculado na hora. Pode ser desfeita (reabilitar), também
+  com motivo, devolvendo o estado anterior. Autor, motivo e estado anterior
+  ficam no activity log. Dá pra fazer pela tela de Equipes do painel (inclui
+  equipe que ainda não enviou nada) ou pelo detalhe da submissão. Os
+  integrantes ativos recebem e-mail com o motivo registrado, então o motivo
+  é escrito pensando que a equipe vai ler. O certificado de participação
+  segue por presença no evento: quem esteve lá recebe mesmo com a equipe
+  desclassificada; colocação sai do ranking, de onde a equipe já foi tirada
 - Upload: limite explícito (ex. 25 MB), tipos permitidos em allowlist,
   nome de arquivo gerado pelo sistema
 

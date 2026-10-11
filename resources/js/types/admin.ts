@@ -50,7 +50,20 @@ export type DetalheSubmissao = {
     precisa_conferencia: boolean;
     enviado_em: string | null;
     versao_atual: number;
-    equipe: { nome: string; slug: string };
+    /** A Policy decide: só organizador, e só pra envio fora do prazo. */
+    pode_decidir_atraso: boolean;
+    decisao_atraso: { quem: string; quando: string; motivo: string | null } | null;
+    equipe: {
+        id: number;
+        nome: string;
+        slug: string;
+        status: 'draft' | 'confirmed' | 'disqualified';
+        status_label: string;
+        /** A Policy decide: só organizador, e só conforme a situação da equipe. */
+        pode_desclassificar: boolean;
+        pode_reabilitar: boolean;
+        decisao: { acao: string; quem: string; quando: string; motivo: string | null } | null;
+    };
     trilha: { nome: string; cor: string | null } | null;
 };
 
@@ -68,4 +81,29 @@ export type ArquivoDetalhe = {
     nome: string;
     tamanho: string;
     versao: number;
+};
+
+export type StatusEquipe = 'draft' | 'confirmed' | 'disqualified';
+
+export type LinhaEquipe = {
+    id: number;
+    nome: string;
+    trilha: { nome: string; cor: string | null } | null;
+    lider: string | null;
+    integrantes: number;
+    status: StatusEquipe;
+    status_label: string;
+    submissao: { id: number; titulo: string | null; status_label: string } | null;
+    /** A Policy decide: só organizador, e só conforme a situação da equipe. */
+    pode_desclassificar: boolean;
+    pode_reabilitar: boolean;
+};
+
+export type FiltrosEquipe = {
+    status: StatusEquipe | null;
+    busca: string | null;
+};
+
+export type OpcoesEquipe = {
+    status: { valor: StatusEquipe; rotulo: string }[];
 };

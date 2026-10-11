@@ -36,6 +36,12 @@ class SubmissionPolicy
         return $user->isStaff();
     }
 
+    /** Só o organizador, e só pra envio que chegou depois do prazo. */
+    public function decideLate(User $user, Submission $submission): bool
+    {
+        return $user->isStaff() && $submission->status->isLate();
+    }
+
     public function view(User $user, Submission $submission): bool
     {
         return $user->isStaff() || $submission->team->hasMember($user);

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Organizer;
 
+use App\Actions\Submissions\DecideLateSubmission;
 use App\Actions\Submissions\ExportSubmissions;
 use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Organizer\DecideLateSubmissionRequest;
 use App\Http\Requests\Organizer\ListSubmissionsRequest;
 use App\Models\Event;
 use App\Models\Submission;
@@ -15,9 +17,12 @@ use App\Models\SubmissionFile;
 use App\Models\SubmissionVersion;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Activitylog\Models\Activity;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -153,11 +158,11 @@ class SubmissionController extends Controller
      * estado atual) e os arquivos que valem hoje. `view` é a mesma Policy que
      * a equipe usa para ver a própria submissão -- staff sempre passa.
      */
-    public function show(Submission $submission): Response
+    public function show(Request $request, Submission $submission): Response
     {
         $this->authorize('view', $submission);
 
-        $submission->load(['team:id,name,slug,track_id', 'team.track:id,name,color']);
+        $submission->load(['team:id,name,slug,track_id,status', 'team.track:id,name,color']);
 
         return Inertia::render('admin/submissoes/mostrar', [
             'submissao' => [
@@ -174,9 +179,17 @@ class SubmissionController extends Controller
                 'precisa_conferencia' => $submission->source->needsReview(),
                 'enviado_em' => $submission->submitted_at?->toIso8601String(),
                 'versao_atual' => $submission->current_version,
+                'pode_decidir_atraso' => $request->user()->can('decideLate', $submission),
+                'decisao_atraso' => $this->ultimaDecisaoDeAtraso($submission),
                 'equipe' => [
+                    'id' => $submission->team->id,
                     'nome' => $submission->team->name,
                     'slug' => $submission->team->slug,
+                    'status' => $submission->team->status->value,
+                    'status_label' => $submission->team->status->label(),
+                    'pode_desclassificar' => $request->user()->can('disqualify', $submission->team),
+                    'pode_reabilitar' => $request->user()->can('reinstate', $submission->team),
+                    'decisao' => $this->ultimaDecisaoDeEquipe($submission->team),
                 ],
                 'trilha' => $submission->team->track ? [
                     'nome' => $submission->team->track->name,
@@ -250,7 +263,7 @@ class SubmissionController extends Controller
             ->where('status', '!=', TeamStatus::Disqualified)
             ->whereDoesntHave(
                 'submission',
-                fn (Builder $query) => $query->whereIn('status', [SubmissionStatus::Submitted, SubmissionStatus::Late])
+                fn (Builder $query) => $query->whereIn('status', array_filter(SubmissionStatus::cases(), fn (SubmissionStatus $status) => $status->isSent()))
             )
             ->orderBy('name')
             ->pluck('name')
@@ -267,6 +280,74 @@ class SubmissionController extends Controller
                 SubmissionStatus::cases()
             ),
             'equipes_sem_envio' => $semEnvio,
+        ];
+    }
+
+    /**
+     * Aceitar faz o envio atrasado concorrer (avaliação, ranking, vitrine,
+     * voto); recusar o deixa de fora. Sempre com motivo, no activity log.
+     */
+    public function decideLate(DecideLateSubmissionRequest $request, Submission $submission): RedirectResponse
+    {
+        $this->authorize('decideLate', $submission);
+        abort_unless($submission->event_id === $this->currentEventOrFail()->id, 404);
+
+        $aceitar = $request->validated('decisao') === 'aceitar';
+
+        app(DecideLateSubmission::class)->handle($submission, $aceitar, $request->validated('motivo'), $request->user());
+
+        return to_route('painel.submissions.show', $submission)->with(
+            'sucesso',
+            $aceitar
+                ? 'Envio aceito: a submissão passa a concorrer. Recalcule os resultados e confira a distribuição de jurados.'
+                : 'Envio recusado: a submissão fica fora da avaliação e do ranking.'
+        );
+    }
+
+    /**
+     * @return array{quem: string, quando: string, motivo: string|null}|null
+     */
+    private function ultimaDecisaoDeAtraso(Submission $submission): ?array
+    {
+        $decisao = Activity::query()
+            ->forSubject($submission)
+            ->whereIn('description', ['Envio fora do prazo aceito', 'Envio fora do prazo recusado'])
+            ->with('causer')
+            ->latest('id')
+            ->first();
+
+        if (! $decisao) {
+            return null;
+        }
+
+        return [
+            'quem' => $decisao->causer?->name ?? 'Conta removida',
+            'quando' => $decisao->created_at->toIso8601String(),
+            'motivo' => $decisao->properties['motivo'] ?? null,
+        ];
+    }
+
+    /**
+     * @return array{acao: string, quem: string, quando: string, motivo: string|null}|null
+     */
+    private function ultimaDecisaoDeEquipe(Team $team): ?array
+    {
+        $decisao = Activity::query()
+            ->forSubject($team)
+            ->whereIn('description', ['Equipe desclassificada', 'Equipe reabilitada'])
+            ->with('causer')
+            ->latest('id')
+            ->first();
+
+        if (! $decisao) {
+            return null;
+        }
+
+        return [
+            'acao' => $decisao->description,
+            'quem' => $decisao->causer?->name ?? 'Conta removida',
+            'quando' => $decisao->created_at->toIso8601String(),
+            'motivo' => $decisao->properties['motivo'] ?? null,
         ];
     }
 }

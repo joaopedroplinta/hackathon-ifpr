@@ -89,6 +89,11 @@ const staffNavItems: NavItem[] = [
         icon: FileText,
     },
     {
+        title: 'Equipes',
+        url: '/painel/equipes',
+        icon: Users,
+    },
+    {
         title: 'Agenda',
         url: '/painel/agenda',
         icon: CalendarDays,

@@ -12,6 +12,8 @@ use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Organizer\TeamController as OrganizerTeamController;
+use App\Http\Controllers\Organizer\TeamStatusController;
 use App\Http\Controllers\Organizer\UserController as OrganizerUserController;
 use App\Http\Controllers\Participant\CertificateController;
 use App\Http\Controllers\Participant\CredentialController;
@@ -221,6 +223,15 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
         ->can('view', 'submission')
         ->name('painel.submissions.show');
+
+    // Decisão sobre envio fora do prazo -- autorização no controller (decideLate).
+    Route::post('submissoes/{submission}/atraso', [OrganizerSubmissionController::class, 'decideLate'])
+        ->name('painel.submissions.late-decision');
+
+    // Equipes do painel + desclassificar e reabilitar -- autorização no controller (TeamPolicy).
+    Route::get('equipes', [OrganizerTeamController::class, 'index'])->name('painel.teams.index');
+    Route::post('equipes/{team}/desclassificar', [TeamStatusController::class, 'disqualify'])->name('painel.teams.disqualify');
+    Route::post('equipes/{team}/reabilitar', [TeamStatusController::class, 'reinstate'])->name('painel.teams.reinstate');
 
     // CRUD da agenda. Autorização em cada método do controller, não aqui --
     // ver ScheduleItemController.
