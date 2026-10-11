@@ -222,6 +222,10 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
         ->can('view', 'submission')
         ->name('painel.submissions.show');
 
+    // Decisão sobre envio fora do prazo -- autorização no controller (decideLate).
+    Route::post('submissoes/{submission}/atraso', [OrganizerSubmissionController::class, 'decideLate'])
+        ->name('painel.submissions.late-decision');
+
     // CRUD da agenda. Autorização em cada método do controller, não aqui --
     // ver ScheduleItemController.
     Route::get('agenda', [ScheduleItemController::class, 'index'])->name('painel.agenda.index');

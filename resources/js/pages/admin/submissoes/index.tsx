@@ -26,6 +26,8 @@ const corDoStatus: Record<StatusSubmissao, string> = {
     draft: 'bg-muted text-muted-foreground',
     submitted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
     late: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+    late_accepted: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+    late_rejected: 'bg-red-500/15 text-red-700 dark:text-red-400',
     disqualified: 'bg-red-500/15 text-red-700 dark:text-red-400',
 };
 

@@ -60,7 +60,12 @@ class SubmissionController extends Controller
                 'enviado_em' => $submission->submitted_at?->toIso8601String(),
                 'versao_atual' => $submission->current_version,
                 'foi_enviada' => $submission->isSubmitted(),
-                'fora_do_prazo' => $submission->status === SubmissionStatus::Late,
+                'fora_do_prazo' => $submission->status->isLate(),
+                'decisao_atraso' => match ($submission->status) {
+                    SubmissionStatus::LateAccepted => 'aceito',
+                    SubmissionStatus::LateRejected => 'recusado',
+                    default => null,
+                },
             ] : null,
             'arquivos' => $this->filesPayload($submission),
             'versoes' => $this->versionsPayload($submission),

@@ -33,7 +33,7 @@ class StorePopularVoteRequest extends FormRequest
                 // desclassificada só adivinhando o id, que é sequencial.
                 Rule::exists('submissions', 'id')
                     ->where('event_id', $event?->id)
-                    ->whereIn('status', [SubmissionStatus::Submitted, SubmissionStatus::Late]),
+                    ->whereIn('status', array_filter(SubmissionStatus::cases(), fn (SubmissionStatus $status) => $status->countsForEvaluation())),
             ],
         ];
     }
