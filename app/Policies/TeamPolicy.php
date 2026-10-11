@@ -188,6 +188,12 @@ class TeamPolicy
             ->exists();
     }
 
+    /** Lista de equipes do painel. */
+    public function viewAny(User $user): bool
+    {
+        return $user->isStaff();
+    }
+
     /** Só o organizador, e só pra equipe que ainda não foi desclassificada. */
     public function disqualify(User $user, Team $team): bool
     {

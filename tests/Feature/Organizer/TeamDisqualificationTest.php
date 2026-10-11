@@ -11,9 +11,13 @@ use App\Models\JudgeAssignment;
 use App\Models\Result;
 use App\Models\Submission;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
+use App\Notifications\TeamDisqualified;
+use App\Notifications\TeamReinstated;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Activity;
 use Tests\TestCase;
 
@@ -268,5 +272,48 @@ class TeamDisqualificationTest extends TestCase
         $this->actingAs($organizador)->post(route('painel.teams.reinstate', $team), ['motivo' => 'Decisão revista pela comissão.']);
 
         $this->assertNotNull(Result::forEvent($event)->where('submission_id', $submission->id)->first());
+    }
+
+    public function test_disqualifying_notifies_only_the_active_members_with_the_reason(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->create();
+        [$team] = $this->equipeComEnvio($event);
+        $lider = User::factory()->create();
+        $membro = User::factory()->create();
+        $quemSaiu = User::factory()->create();
+        TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
+        TeamMember::factory()->for($event)->for($team)->for($membro)->create();
+        TeamMember::factory()->for($event)->for($team)->for($quemSaiu)->saiu()->create();
+
+        $this->actingAs($this->organizador())->post(route('painel.teams.disqualify', $team), ['motivo' => self::MOTIVO]);
+
+        foreach ([$lider, $membro] as $integrante) {
+            Notification::assertSentTo($integrante, TeamDisqualified::class, function ($notificacao) use ($integrante) {
+                $texto = implode(' ', $notificacao->toMail($integrante)->introLines);
+
+                return str_contains($texto, self::MOTIVO) && str_contains($texto, $notificacao->team->name);
+            });
+        }
+        Notification::assertNotSentTo($quemSaiu, TeamDisqualified::class);
+    }
+
+    public function test_reinstating_notifies_the_active_members_with_the_reason(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->create();
+        [$team] = $this->equipeComEnvio($event);
+        $lider = User::factory()->create();
+        TeamMember::factory()->for($event)->for($team)->for($lider)->lider()->create();
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)->post(route('painel.teams.disqualify', $team), ['motivo' => self::MOTIVO]);
+        $this->actingAs($organizador)->post(route('painel.teams.reinstate', $team), ['motivo' => 'Origem comprovada pela equipe.']);
+
+        Notification::assertSentTo($lider, TeamReinstated::class, function ($notificacao) use ($lider) {
+            return str_contains(implode(' ', $notificacao->toMail($lider)->introLines), 'Origem comprovada pela equipe.');
+        });
     }
 }
