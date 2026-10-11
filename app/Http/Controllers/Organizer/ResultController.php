@@ -72,7 +72,8 @@ class ResultController extends Controller
         $event = $this->currentEventOrFail();
 
         $pendencias = app(FindResultPendencies::class)->handle($event);
-        $temPendencia = ! empty($pendencias['submissoes_sem_nota'])
+        $temPendencia = ! empty($pendencias['atrasados_sem_decisao'])
+            || ! empty($pendencias['submissoes_sem_nota'])
             || ! empty($pendencias['jurados_incompletos'])
             || ! empty($pendencias['empates']);
 

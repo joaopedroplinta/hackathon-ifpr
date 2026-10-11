@@ -3,6 +3,7 @@
 namespace Tests\Feature\Participant;
 
 use App\Enums\Role;
+use App\Enums\SubmissionStatus;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\PopularVote;
@@ -183,5 +184,33 @@ class PopularVoteTest extends TestCase
 
         $this->post(route('votos.store'), ['submission_id' => $submissao->id])
             ->assertRedirect(route('login'));
+    }
+
+    public function test_a_late_submission_without_a_decision_cannot_receive_votes(): void
+    {
+        $event = Event::factory()->create(['voting_opens_at' => now()->subDay(), 'voting_closes_at' => now()->addDay()]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create();
+        $atrasada = Submission::factory()->for($event)->for($team)->atrasada()->create();
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $atrasada->id])
+            ->assertSessionHasErrors('submission_id');
+
+        $this->assertSame(0, PopularVote::count());
+    }
+
+    public function test_an_accepted_late_submission_can_receive_votes(): void
+    {
+        $event = Event::factory()->create(['voting_opens_at' => now()->subDay(), 'voting_closes_at' => now()->addDay()]);
+        $user = $this->inscrito($event);
+        $team = Team::factory()->for($event)->create();
+        $aceita = Submission::factory()->for($event)->for($team)->atrasada()->create(['status' => SubmissionStatus::LateAccepted]);
+
+        $this->actingAs($user)
+            ->post(route('votos.store'), ['submission_id' => $aceita->id])
+            ->assertSessionHas('sucesso');
+
+        $this->assertSame(1, PopularVote::count());
     }
 }

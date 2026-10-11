@@ -1,7 +1,7 @@
 // `type`, não `interface`: o useForm do Inertia v2 exige `T extends
 // FormDataType` e só o `type` ganha index signature implícita -- CLAUDE.md.
 
-export type StatusSubmissao = 'draft' | 'submitted' | 'late' | 'disqualified';
+export type StatusSubmissao = 'draft' | 'submitted' | 'late' | 'late_accepted' | 'late_rejected' | 'disqualified';
 
 export type Submissao = {
     title: string | null;
@@ -16,6 +16,8 @@ export type Submissao = {
     versao_atual: number;
     foi_enviada: boolean;
     fora_do_prazo: boolean;
+    /** Decisão da organização sobre um envio fora do prazo, quando já houve. */
+    decisao_atraso: 'aceito' | 'recusado' | null;
 };
 
 export type ArquivoSubmissao = {

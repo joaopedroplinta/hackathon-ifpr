@@ -81,10 +81,10 @@ class Submission extends Model
         return $this->belongsTo(User::class, 'recorded_by');
     }
 
-    /** Já saiu do rascunho — no prazo ou fora dele. */
+    /** Já saiu do rascunho — no prazo ou fora dele, concorrendo ou não. */
     public function isSubmitted(): bool
     {
-        return $this->status->countsForEvaluation();
+        return $this->status->isSent();
     }
 
     public function isDraft(): bool

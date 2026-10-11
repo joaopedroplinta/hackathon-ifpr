@@ -50,6 +50,9 @@ export type DetalheSubmissao = {
     precisa_conferencia: boolean;
     enviado_em: string | null;
     versao_atual: number;
+    /** A Policy decide: só organizador, e só pra envio fora do prazo. */
+    pode_decidir_atraso: boolean;
+    decisao_atraso: { quem: string; quando: string; motivo: string | null } | null;
     equipe: { nome: string; slug: string };
     trilha: { nome: string; cor: string | null } | null;
 };

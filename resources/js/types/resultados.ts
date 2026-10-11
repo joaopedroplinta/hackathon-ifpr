@@ -22,6 +22,8 @@ export type Empate = {
 };
 
 export type Pendencias = {
+    /** Envios fora do prazo que ninguém aceitou nem recusou: ficam fora do ranking. */
+    atrasados_sem_decisao: string[];
     submissoes_sem_nota: string[];
     jurados_incompletos: JuradoIncompleto[];
     empates: Empate[];

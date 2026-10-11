@@ -3,6 +3,7 @@
 namespace App\Actions\Results;
 
 use App\Enums\EvaluationStatus;
+use App\Enums\SubmissionStatus;
 use App\Models\Event;
 use App\Models\JudgeAssignment;
 use App\Models\Result;
@@ -17,7 +18,7 @@ use App\Models\Submission;
 class FindResultPendencies
 {
     /**
-     * @return array{submissoes_sem_nota: array<int, string>, jurados_incompletos: array<int, array{titulo: string, enviadas: int, total: int}>, empates: array<int, array{posicao: int, submissoes: array<int, string>}>}
+     * @return array{atrasados_sem_decisao: array<int, string>, submissoes_sem_nota: array<int, string>, jurados_incompletos: array<int, array{titulo: string, enviadas: int, total: int}>, empates: array<int, array{posicao: int, submissoes: array<int, string>}>}
      */
     public function handle(Event $event): array
     {
@@ -25,6 +26,14 @@ class FindResultPendencies
             ->with(['assignments.evaluation', 'team'])
             ->get()
             ->filter(fn (Submission $s) => $s->status->countsForEvaluation());
+
+        // Envio fora do prazo que ninguém aceitou nem recusou ainda: some do
+        // ranking sem aviso se o organizador esquecer de decidir.
+        $atrasadosSemDecisao = Submission::forEvent($event)
+            ->where('status', SubmissionStatus::Late)
+            ->get()
+            ->map(fn (Submission $s) => $s->title ?? "submissão #{$s->id}")
+            ->all();
 
         $resultsPorSubmissao = Result::forEvent($event)->get()->keyBy('submission_id');
 
@@ -63,6 +72,7 @@ class FindResultPendencies
             ->all();
 
         return [
+            'atrasados_sem_decisao' => $atrasadosSemDecisao,
             'submissoes_sem_nota' => $semNota,
             'jurados_incompletos' => $incompletos,
             'empates' => $empates,

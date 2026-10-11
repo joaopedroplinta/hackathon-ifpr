@@ -276,8 +276,11 @@ function EstadoDoEnvio({ submissao }: { submissao: Submissao | null }) {
             >
                 <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                 <p>
-                    <strong>{submissao.status_label}</strong> em {enviadoEm} (versão {submissao.versao_atual}). O projeto foi registrado e a
-                    organização vai avaliar o caso.
+                    <strong>{submissao.status_label}</strong> em {enviadoEm} (versão {submissao.versao_atual}).{' '}
+                    {submissao.decisao_atraso === 'aceito' && 'A organização aceitou o envio: o projeto concorre normalmente.'}
+                    {submissao.decisao_atraso === 'recusado' &&
+                        'A organização recusou o envio: o projeto não entra na avaliação. Procure a equipe organizadora se achar que é um engano.'}
+                    {submissao.decisao_atraso === null && 'O projeto foi registrado e a organização vai avaliar o caso.'}
                 </p>
             </div>
         );

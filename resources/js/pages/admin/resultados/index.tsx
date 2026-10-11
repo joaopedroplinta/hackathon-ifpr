@@ -20,7 +20,11 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
     const [publicando, setPublicando] = useState(false);
     const [confirmandoComPendencia, setConfirmandoComPendencia] = useState(false);
 
-    const temPendencia = pendencias.submissoes_sem_nota.length > 0 || pendencias.jurados_incompletos.length > 0 || pendencias.empates.length > 0;
+    const temPendencia =
+        pendencias.atrasados_sem_decisao.length > 0 ||
+        pendencias.submissoes_sem_nota.length > 0 ||
+        pendencias.jurados_incompletos.length > 0 ||
+        pendencias.empates.length > 0;
 
     const recalcular = () => {
         setRecalculando(true);
@@ -113,6 +117,20 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                             <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
                             Pendências
                         </h2>
+
+                        {pendencias.atrasados_sem_decisao.length > 0 && (
+                            <div className="mt-3">
+                                <p className="text-sm font-medium">Envios fora do prazo sem decisão</p>
+                                <p className="text-muted-foreground mt-1 text-sm">
+                                    Ficam fora do ranking até a organização aceitar ou recusar na tela da submissão.
+                                </p>
+                                <ul className="text-muted-foreground mt-1 list-inside list-disc text-sm">
+                                    {pendencias.atrasados_sem_decisao.map((titulo) => (
+                                        <li key={titulo}>{titulo}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
                         {pendencias.submissoes_sem_nota.length > 0 && (
                             <div className="mt-3">
