@@ -81,6 +81,27 @@ php artisan config:clear
 
 Pronto. Abra `/login` e clique em **Entrar com Google**.
 
+## Produção e homologação (Railway)
+
+No Railway não existe arquivo `.env`: as variáveis chegam como variáveis de
+ambiente reais, e o `${APP_URL}` **não é expandido** — o Laravel lê o texto
+literal e o Google recusa o login. Em cada ambiente, defina a URL completa:
+
+```env
+GOOGLE_REDIRECT_URI=https://<dominio-do-ambiente>/auth/google/callback
+```
+
+Cadastre a mesma URL em **URIs de redirecionamento autorizados** no Google
+Cloud Console, uma por ambiente (produção e homologação), no mesmo cliente.
+
+Para conferir sem fazer login, abra `/auth/google/redirect` e olhe o parâmetro
+`redirect_uri` da URL para onde você é enviado. Ele precisa ser a URL completa,
+sem `${...}`:
+
+```bash
+curl -s -o /dev/null -D - https://<dominio>/auth/google/redirect | grep -i '^location'
+```
+
 ## Restringir ao domínio institucional
 
 ```env
@@ -98,6 +119,7 @@ que continua funcionando — mas alguém precisa avisá-los disso.
 | Mensagem | Causa |
 |---|---|
 | `redirect_uri_mismatch` | A URI não bate exatamente. Compare caractere por caractere, incluindo porta e barra final |
+| O Google recusa e a URL mostra `${APP_URL}` no `redirect_uri` | Em produção a variável foi copiada do `.env.example` com a interpolação. Use a URL completa (seção Produção e homologação) |
 | Acesso bloqueado, app não verificado | O app está em Testing e o e-mail não está na lista de usuários de teste |
 | `invalid_client` | `GOOGLE_CLIENT_ID` ou `SECRET` errado, ou faltou `config:clear` |
 | Volta pro login com "sessão expirou" | `InvalidStateException` — cookie de sessão perdido. Confira `APP_URL` e se você não trocou de host no meio do fluxo (`localhost` vs `127.0.0.1` são hosts diferentes) |
