@@ -182,6 +182,12 @@ submission_files
   (`late_accepted`, passa a concorrer) ou recusar (`late_rejected`), sempre
   com motivo e autor no activity log. A decisão pode ser revista. Resultado
   com envio atrasado sem decisão aparece nas pendências antes de publicar
+- Desclassificação: o organizador desclassifica a equipe com motivo (mín. 10
+  caracteres), e a submissão vai junto. Sai de avaliação, ranking, vitrine,
+  voto e fila do jurado, e a equipe não envia mais. Se o resultado já foi
+  calculado, é recalculado na hora. Pode ser desfeita (reabilitar), também
+  com motivo, devolvendo o estado anterior. Autor, motivo e estado anterior
+  ficam no activity log
 - Upload: limite explícito (ex. 25 MB), tipos permitidos em allowlist,
   nome de arquivo gerado pelo sistema
 

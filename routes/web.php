@@ -12,6 +12,7 @@ use App\Http\Controllers\Organizer\ResultController;
 use App\Http\Controllers\Organizer\RubricController as OrganizerRubricController;
 use App\Http\Controllers\Organizer\ScheduleItemController;
 use App\Http\Controllers\Organizer\SubmissionController as OrganizerSubmissionController;
+use App\Http\Controllers\Organizer\TeamStatusController;
 use App\Http\Controllers\Organizer\UserController as OrganizerUserController;
 use App\Http\Controllers\Participant\CertificateController;
 use App\Http\Controllers\Participant\CredentialController;
@@ -225,6 +226,12 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
     // Decisão sobre envio fora do prazo -- autorização no controller (decideLate).
     Route::post('submissoes/{submission}/atraso', [OrganizerSubmissionController::class, 'decideLate'])
         ->name('painel.submissions.late-decision');
+
+    // Desclassificar e reabilitar equipe -- autorização no controller (TeamPolicy).
+    // `{team:id}` de propósito: Team resolve rota por slug, que só é único por
+    // evento, e a tela chama estas rotas pelo id.
+    Route::post('equipes/{team:id}/desclassificar', [TeamStatusController::class, 'disqualify'])->name('painel.teams.disqualify');
+    Route::post('equipes/{team:id}/reabilitar', [TeamStatusController::class, 'reinstate'])->name('painel.teams.reinstate');
 
     // CRUD da agenda. Autorização em cada método do controller, não aqui --
     // ver ScheduleItemController.

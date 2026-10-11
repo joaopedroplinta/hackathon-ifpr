@@ -80,6 +80,13 @@ class ComputeResults
             $result->computed_at = $agora;
             $result->save();
         }
+
+        // Quem deixou de concorrer (desclassificada, atraso recusado) não pode
+        // continuar com a linha antiga: a página pública lê Result direto.
+        Result::query()
+            ->where('event_id', $event->id)
+            ->whereNotIn('submission_id', $ordenadas->map(fn (array $linha) => $linha['submissao']->id)->all())
+            ->delete();
     }
 
     /**

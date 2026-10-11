@@ -162,7 +162,7 @@ class SubmissionController extends Controller
     {
         $this->authorize('view', $submission);
 
-        $submission->load(['team:id,name,slug,track_id', 'team.track:id,name,color']);
+        $submission->load(['team:id,name,slug,track_id,status', 'team.track:id,name,color']);
 
         return Inertia::render('admin/submissoes/mostrar', [
             'submissao' => [
@@ -182,8 +182,14 @@ class SubmissionController extends Controller
                 'pode_decidir_atraso' => $request->user()->can('decideLate', $submission),
                 'decisao_atraso' => $this->ultimaDecisaoDeAtraso($submission),
                 'equipe' => [
+                    'id' => $submission->team->id,
                     'nome' => $submission->team->name,
                     'slug' => $submission->team->slug,
+                    'status' => $submission->team->status->value,
+                    'status_label' => $submission->team->status->label(),
+                    'pode_desclassificar' => $request->user()->can('disqualify', $submission->team),
+                    'pode_reabilitar' => $request->user()->can('reinstate', $submission->team),
+                    'decisao' => $this->ultimaDecisaoDeEquipe($submission->team),
                 ],
                 'trilha' => $submission->team->track ? [
                     'nome' => $submission->team->track->name,
@@ -315,6 +321,30 @@ class SubmissionController extends Controller
         }
 
         return [
+            'quem' => $decisao->causer?->name ?? 'Conta removida',
+            'quando' => $decisao->created_at->toIso8601String(),
+            'motivo' => $decisao->properties['motivo'] ?? null,
+        ];
+    }
+
+    /**
+     * @return array{acao: string, quem: string, quando: string, motivo: string|null}|null
+     */
+    private function ultimaDecisaoDeEquipe(Team $team): ?array
+    {
+        $decisao = Activity::query()
+            ->forSubject($team)
+            ->whereIn('description', ['Equipe desclassificada', 'Equipe reabilitada'])
+            ->with('causer')
+            ->latest('id')
+            ->first();
+
+        if (! $decisao) {
+            return null;
+        }
+
+        return [
+            'acao' => $decisao->description,
             'quem' => $decisao->causer?->name ?? 'Conta removida',
             'quando' => $decisao->created_at->toIso8601String(),
             'motivo' => $decisao->properties['motivo'] ?? null,
