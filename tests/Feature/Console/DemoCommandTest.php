@@ -15,6 +15,7 @@ use App\Models\Result;
 use App\Models\Submission;
 use App\Models\Team;
 use App\Models\User;
+use App\Notifications\TeamDisqualified;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -229,5 +230,31 @@ class DemoCommandTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         app(PrepareDemoStage::class)->handle('inicio', self::SENHA);
+    }
+
+    /** Montar o cenário não pode encher a caixa de e-mails a cada reinício. */
+    public function test_preparing_a_stage_sends_no_e_mails(): void
+    {
+        $this->preparar('resultado');
+        $this->preparar('resultado');
+
+        Notification::assertNothingSent();
+    }
+
+    /** Já a desclassificação feita ao vivo pelo organizador continua avisando a equipe. */
+    public function test_a_live_disqualification_after_the_stage_still_notifies_the_team(): void
+    {
+        $this->preparar('resultado');
+        $ativa = Team::forEvent($this->demo())->where('status', TeamStatus::Confirmed)->firstOrFail();
+        $organizacao = User::where('email', 'organizacao.demo@demo.ifpr.test')->firstOrFail();
+
+        $this->actingAs($organizacao)
+            ->post(route('painel.teams.disqualify', $ativa), ['motivo' => 'Teste da demonstração ao vivo.'])
+            ->assertSessionHas('sucesso');
+
+        Notification::assertSentTo(
+            User::whereIn('id', $ativa->activeMemberships()->pluck('user_id'))->get(),
+            TeamDisqualified::class
+        );
     }
 }

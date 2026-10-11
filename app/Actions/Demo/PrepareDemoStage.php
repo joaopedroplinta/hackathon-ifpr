@@ -467,6 +467,7 @@ class PrepareDemoStage
             $equipes[5]->fresh(),
             'Projeto copiado de repositório público sem declarar a origem, conforme o regulamento.',
             $contas['organizacao'],
+            notificar: false,
         );
 
         app(ComputeResults::class)->handle($evento);
