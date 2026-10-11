@@ -28,6 +28,11 @@ O sistema decide quem ganha um prêmio. Furo aqui não é bug, é contestação.
 - Storage em `storage/app/private/` — que é o disco `local` do Laravel 12,
   não um disco chamado `private`. Servido por rota autorizada, nunca em
   `public/`.
+- **Exceção consciente: avatar (foto de perfil)** fica no disco `public`.
+  Aparece pra colega de equipe, jurado e organizador, então não ganha
+  nada atrás de rota autorizada. Mesmas defesas: nome UUID gerado pelo
+  sistema, allowlist de imagem (sem SVG) e limite de 3 MB na Form Request.
+  Qualquer outro upload continua privado.
 
 ## Dados
 

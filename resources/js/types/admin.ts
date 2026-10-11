@@ -53,7 +53,17 @@ export type DetalheSubmissao = {
     /** A Policy decide: só organizador, e só pra envio fora do prazo. */
     pode_decidir_atraso: boolean;
     decisao_atraso: { quem: string; quando: string; motivo: string | null } | null;
-    equipe: { nome: string; slug: string };
+    equipe: {
+        id: number;
+        nome: string;
+        slug: string;
+        status: 'draft' | 'confirmed' | 'disqualified';
+        status_label: string;
+        /** A Policy decide: só organizador, e só conforme a situação da equipe. */
+        pode_desclassificar: boolean;
+        pode_reabilitar: boolean;
+        decisao: { acao: string; quem: string; quando: string; motivo: string | null } | null;
+    };
     trilha: { nome: string; cor: string | null } | null;
 };
 

@@ -17,13 +17,13 @@ class EvaluationPolicy
 {
     public function view(User $user, JudgeAssignment $assignment): bool
     {
-        return $assignment->judge_id === $user->id;
+        return $assignment->judge_id === $user->id && $assignment->submission->status->countsForEvaluation();
     }
 
     /** Avaliação enviada só volta a ser editável por ação do organizador -- não pelo autosave. */
     public function update(User $user, JudgeAssignment $assignment): bool
     {
-        if ($assignment->judge_id !== $user->id) {
+        if ($assignment->judge_id !== $user->id || ! $assignment->submission->status->countsForEvaluation()) {
             return false;
         }
 

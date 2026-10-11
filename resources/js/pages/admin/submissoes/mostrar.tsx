@@ -10,6 +10,7 @@ import { ArquivoDetalhe, DetalheSubmissao, VersaoSubmissao } from '@/types/admin
 import { StatusSubmissao } from '@/types/submissao';
 
 type FormDecisao = { decisao: 'aceitar' | 'recusar'; motivo: string };
+type FormMotivo = { motivo: string };
 
 interface Props {
     submissao: DetalheSubmissao;
@@ -72,6 +73,13 @@ function formatarValorPayload(chave: string, valor: unknown): string {
 
 export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props) {
     const decisao = useForm<FormDecisao>({ decisao: 'aceitar', motivo: '' });
+
+    const statusEquipe = useForm<FormMotivo>({ motivo: '' });
+
+    const mudarStatusEquipe = (e: React.FormEvent, rota: 'painel.teams.disqualify' | 'painel.teams.reinstate') => {
+        e.preventDefault();
+        statusEquipe.post(route(rota, submissao.equipe.id), { preserveScroll: true, onSuccess: () => statusEquipe.reset('motivo') });
+    };
 
     const decidirAtraso = (e: React.FormEvent) => {
         e.preventDefault();
@@ -193,6 +201,76 @@ export default function MostrarSubmissao({ submissao, versoes, arquivos }: Props
                                 </Button>
                             </div>
                         </form>
+                    </section>
+                )}
+
+                {(submissao.equipe.pode_desclassificar || submissao.equipe.pode_reabilitar || submissao.equipe.decisao) && (
+                    <section aria-labelledby="situacao-equipe" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                        <h2 id="situacao-equipe" className="text-lg font-medium">
+                            Situação da equipe: {submissao.equipe.status_label}
+                        </h2>
+
+                        {submissao.equipe.decisao && (
+                            <p className="text-muted-foreground mt-2 text-sm">
+                                Última decisão: <strong>{submissao.equipe.decisao.acao}</strong> por {submissao.equipe.decisao.quem} em{' '}
+                                {formatarData(submissao.equipe.decisao.quando)}
+                                {submissao.equipe.decisao.motivo ? ` — “${submissao.equipe.decisao.motivo}”` : ''}.
+                            </p>
+                        )}
+
+                        {submissao.equipe.pode_desclassificar && (
+                            <form onSubmit={(e) => mudarStatusEquipe(e, 'painel.teams.disqualify')} className="mt-4 flex flex-col gap-3">
+                                <p className="text-muted-foreground text-sm">
+                                    Desclassificar tira a equipe da avaliação, do ranking, da vitrine e da votação, e impede novos envios. Pode ser
+                                    desfeito depois, com motivo.
+                                </p>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="motivo-desclassificar">Motivo da desclassificação</Label>
+                                    <textarea
+                                        id="motivo-desclassificar"
+                                        rows={3}
+                                        value={statusEquipe.data.motivo}
+                                        onChange={(e) => statusEquipe.setData('motivo', e.target.value)}
+                                        placeholder="Ex.: projeto copiado de repositório público sem declarar a origem."
+                                        className="border-input bg-background ring-offset-background focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    />
+                                    <InputError message={statusEquipe.errors.motivo} />
+                                </div>
+                                <div>
+                                    <Button type="submit" variant="destructive" disabled={statusEquipe.processing}>
+                                        {statusEquipe.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                        Desclassificar equipe
+                                    </Button>
+                                </div>
+                            </form>
+                        )}
+
+                        {submissao.equipe.pode_reabilitar && (
+                            <form onSubmit={(e) => mudarStatusEquipe(e, 'painel.teams.reinstate')} className="mt-4 flex flex-col gap-3">
+                                <p className="text-muted-foreground text-sm">
+                                    Reabilitar devolve a equipe e a submissão à situação anterior à desclassificação. Depois confira a distribuição de
+                                    jurados e os resultados.
+                                </p>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="motivo-reabilitar">Motivo da reabilitação</Label>
+                                    <textarea
+                                        id="motivo-reabilitar"
+                                        rows={3}
+                                        value={statusEquipe.data.motivo}
+                                        onChange={(e) => statusEquipe.setData('motivo', e.target.value)}
+                                        placeholder="Ex.: a equipe comprovou a origem do código e a comissão revisou a decisão."
+                                        className="border-input bg-background ring-offset-background focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    />
+                                    <InputError message={statusEquipe.errors.motivo} />
+                                </div>
+                                <div>
+                                    <Button type="submit" disabled={statusEquipe.processing}>
+                                        {statusEquipe.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                                        Reabilitar equipe
+                                    </Button>
+                                </div>
+                            </form>
+                        )}
                     </section>
                 )}
 

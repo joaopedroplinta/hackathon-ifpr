@@ -187,4 +187,16 @@ class TeamPolicy
             ->whereHas('user', fn ($q) => $q->where('email', $email))
             ->exists();
     }
+
+    /** Só o organizador, e só pra equipe que ainda não foi desclassificada. */
+    public function disqualify(User $user, Team $team): bool
+    {
+        return $user->isStaff() && $team->status !== TeamStatus::Disqualified;
+    }
+
+    /** Só o organizador, e só pra equipe desclassificada. */
+    public function reinstate(User $user, Team $team): bool
+    {
+        return $user->isStaff() && $team->status === TeamStatus::Disqualified;
+    }
 }
