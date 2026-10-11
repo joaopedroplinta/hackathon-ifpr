@@ -7,7 +7,9 @@ use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
 use App\Models\Team;
 use App\Models\User;
+use App\Notifications\TeamReinstated;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -52,6 +54,9 @@ class ReinstateTeam
                 ->withProperties(['motivo' => $motivo, 'equipe_para' => $statusEquipe->value, 'submissao_para' => $submission?->status->value])
                 ->log('Equipe reabilitada');
         });
+
+        $integrantes = User::query()->whereIn('id', $team->activeMemberships()->pluck('user_id'))->get();
+        Notification::send($integrantes, new TeamReinstated($team, $motivo));
 
         // Sempre recalcula, mesmo sem linha de resultado hoje: se esta era a
         // única equipe concorrendo, desclassificá-la esvazia a tabela, e a

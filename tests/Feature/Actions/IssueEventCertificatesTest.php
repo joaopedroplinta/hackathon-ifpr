@@ -7,6 +7,7 @@ use App\Enums\CertificateType;
 use App\Enums\EvaluationStatus;
 use App\Enums\JudgeAssignmentStatus;
 use App\Enums\Role;
+use App\Enums\TeamStatus;
 use App\Jobs\GenerateCertificatePdf;
 use App\Models\Attendance;
 use App\Models\Certificate;
@@ -178,5 +179,28 @@ class IssueEventCertificatesTest extends TestCase
 
         $this->assertSame(0, $emitidos['colocacao']);
         $this->assertDatabaseMissing('certificates', ['type' => CertificateType::Colocacao->value]);
+    }
+
+    /**
+     * Regra decidida: participação é por presença no evento, então quem esteve
+     * lá recebe o certificado mesmo com a equipe desclassificada. Colocação sai
+     * do ranking, de onde a equipe já foi tirada.
+     */
+    public function test_a_disqualified_teams_member_keeps_the_participation_certificate_but_gets_no_placement(): void
+    {
+        Queue::fake();
+
+        $event = Event::factory()->create(['results_published_at' => now()->subDay()]);
+        $membro = $this->inscritoComPresenca($event);
+        $team = Team::factory()->for($event)->create(['status' => TeamStatus::Disqualified]);
+        TeamMember::factory()->for($event)->for($team)->for($membro)->create();
+        Submission::factory()->for($event)->for($team)->desclassificada()->create();
+
+        $emitidos = app(IssueEventCertificates::class)->handle($event);
+
+        $this->assertSame(1, $emitidos['participacao']);
+        $this->assertSame(0, $emitidos['colocacao']);
+        $this->assertDatabaseHas('certificates', ['user_id' => $membro->id, 'type' => CertificateType::Participacao->value]);
+        $this->assertDatabaseMissing('certificates', ['user_id' => $membro->id, 'type' => CertificateType::Colocacao->value]);
     }
 }
