@@ -82,3 +82,28 @@ export type ArquivoDetalhe = {
     tamanho: string;
     versao: number;
 };
+
+export type StatusEquipe = 'draft' | 'confirmed' | 'disqualified';
+
+export type LinhaEquipe = {
+    id: number;
+    nome: string;
+    trilha: { nome: string; cor: string | null } | null;
+    lider: string | null;
+    integrantes: number;
+    status: StatusEquipe;
+    status_label: string;
+    submissao: { id: number; titulo: string | null; status_label: string } | null;
+    /** A Policy decide: só organizador, e só conforme a situação da equipe. */
+    pode_desclassificar: boolean;
+    pode_reabilitar: boolean;
+};
+
+export type FiltrosEquipe = {
+    status: StatusEquipe | null;
+    busca: string | null;
+};
+
+export type OpcoesEquipe = {
+    status: { valor: StatusEquipe; rotulo: string }[];
+};

@@ -187,7 +187,12 @@ submission_files
   voto e fila do jurado, e a equipe não envia mais. Se o resultado já foi
   calculado, é recalculado na hora. Pode ser desfeita (reabilitar), também
   com motivo, devolvendo o estado anterior. Autor, motivo e estado anterior
-  ficam no activity log
+  ficam no activity log. Dá pra fazer pela tela de Equipes do painel (inclui
+  equipe que ainda não enviou nada) ou pelo detalhe da submissão. Os
+  integrantes ativos recebem e-mail com o motivo registrado, então o motivo
+  é escrito pensando que a equipe vai ler. O certificado de participação
+  segue por presença no evento: quem esteve lá recebe mesmo com a equipe
+  desclassificada; colocação sai do ranking, de onde a equipe já foi tirada
 - Upload: limite explícito (ex. 25 MB), tipos permitidos em allowlist,
   nome de arquivo gerado pelo sistema
 
