@@ -20,7 +20,11 @@ use Illuminate\Support\Facades\Notification;
  */
 class DisqualifyTeam
 {
-    public function handle(Team $team, string $motivo, User $autor): void
+    /**
+     * `$notificar = false` só para quem monta um cenário (a demonstração): a
+     * desclassificação já vem pronta e não deve disparar e-mail a cada reinício.
+     */
+    public function handle(Team $team, string $motivo, User $autor, bool $notificar = true): void
     {
         DB::transaction(function () use ($team, $motivo, $autor) {
             $submission = $team->submission;
@@ -46,8 +50,10 @@ class DisqualifyTeam
                 ->log('Equipe desclassificada');
         });
 
-        $integrantes = User::query()->whereIn('id', $team->activeMemberships()->pluck('user_id'))->get();
-        Notification::send($integrantes, new TeamDisqualified($team, $motivo));
+        if ($notificar) {
+            $integrantes = User::query()->whereIn('id', $team->activeMemberships()->pluck('user_id'))->get();
+            Notification::send($integrantes, new TeamDisqualified($team, $motivo));
+        }
 
         // Sempre recalcula, mesmo sem linha de resultado hoje: se esta era a
         // única equipe concorrendo, desclassificá-la esvazia a tabela, e a
