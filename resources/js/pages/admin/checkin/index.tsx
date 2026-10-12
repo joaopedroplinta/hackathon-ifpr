@@ -158,13 +158,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                                 <Label htmlFor="busca" className="sr-only">
                                     Buscar por nome
                                 </Label>
-                                <Input
-                                    id="busca"
-                                    value={termoBusca}
-                                    onChange={(e) => setTermoBusca(e.target.value)}
-                                    placeholder="Buscar por nome…"
-                                    autoFocus
-                                />
+                                <Input id="busca" value={termoBusca} onChange={(e) => setTermoBusca(e.target.value)} placeholder="Buscar por nome…" />
                             </div>
                             <Button type="submit" disabled={buscando}>
                                 <Search className="h-4 w-4" aria-hidden="true" />
