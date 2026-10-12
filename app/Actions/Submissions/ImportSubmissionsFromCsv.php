@@ -31,13 +31,20 @@ class ImportSubmissionsFromCsv
         $resultado = ['importadas' => 0, 'conflitos' => [], 'nao_encontrados' => []];
 
         $handle = fopen($caminhoCsv, 'r');
-        $cabecalho = fgetcsv($handle);
+        $cabecalho = $handle === false ? false : fgetcsv($handle);
 
         if ($handle === false || $cabecalho === false) {
             return $resultado;
         }
 
         $indice = array_flip(array_map('trim', $cabecalho));
+
+        // Sem a coluna não há como casar linha com equipe.
+        if (! isset($indice['email_lider'])) {
+            fclose($handle);
+
+            return $resultado;
+        }
 
         while (($linha = fgetcsv($handle)) !== false) {
             $email = trim($linha[$indice['email_lider']] ?? '');
@@ -72,14 +79,24 @@ class ImportSubmissionsFromCsv
                 continue;
             }
 
+            $dados = [
+                'title' => $this->valor($linha, $indice, 'titulo'),
+                'summary' => $this->valor($linha, $indice, 'resumo'),
+                'repo_url' => $this->valor($linha, $indice, 'repo_url'),
+                'video_url' => $this->valor($linha, $indice, 'video_url'),
+            ];
+
+            // O formulário web só aceita http(s); o CSV não pode ser a porta
+            // dos fundos pra `javascript:` virar link clicável do jurado.
+            if (! $this->urlsValidas($dados)) {
+                $resultado['conflitos'][] = $team->name;
+
+                continue;
+            }
+
             $submission = $this->record->handle(
                 $team,
-                [
-                    'title' => $this->valor($linha, $indice, 'titulo'),
-                    'summary' => $this->valor($linha, $indice, 'resumo'),
-                    'repo_url' => $this->valor($linha, $indice, 'repo_url'),
-                    'video_url' => $this->valor($linha, $indice, 'video_url'),
-                ],
+                $dados,
                 $source,
                 null,
                 $enviadoEm,
@@ -97,6 +114,20 @@ class ImportSubmissionsFromCsv
         fclose($handle);
 
         return $resultado;
+    }
+
+    /** @param  array<string, string|null>  $dados */
+    private function urlsValidas(array $dados): bool
+    {
+        foreach (['repo_url', 'video_url'] as $campo) {
+            $url = $dados[$campo];
+
+            if ($url !== null && (strlen($url) > 255 || ! preg_match('#^https?://#i', $url) || ! filter_var($url, FILTER_VALIDATE_URL))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

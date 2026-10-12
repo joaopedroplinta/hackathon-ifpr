@@ -48,6 +48,33 @@ class ImportSubmissionsFromCsvTest extends TestCase
         $this->assertSame(SubmissionStatus::Submitted, $submission->status);
     }
 
+    public function test_rejects_non_http_urls_instead_of_storing_them(): void
+    {
+        $event = Event::factory()->create();
+        $lider = User::factory()->create(['email' => 'lider@example.com']);
+        Team::factory()->for($event)->create(['leader_id' => $lider->id]);
+
+        $csv = $this->csv(
+            "email_lider,titulo,resumo,repo_url,video_url,enviado_em\n".
+            "lider@example.com,Título,Resumo,javascript:alert(1),,\n"
+        );
+
+        $resultado = app(ImportSubmissionsFromCsv::class)->handle($event, $csv, SubmissionSource::Form);
+
+        $this->assertSame(0, $resultado['importadas']);
+        $this->assertCount(1, $resultado['conflitos']);
+        $this->assertSame(0, Submission::forEvent($event)->count());
+    }
+
+    public function test_a_csv_without_the_leader_column_imports_nothing_and_does_not_crash(): void
+    {
+        $event = Event::factory()->create();
+
+        $resultado = app(ImportSubmissionsFromCsv::class)->handle($event, $this->csv("titulo,repo_url\nA,https://x.y\n"), SubmissionSource::Form);
+
+        $this->assertSame(0, $resultado['importadas']);
+    }
+
     public function test_reports_an_email_that_matches_no_team_leader(): void
     {
         $event = Event::factory()->create();
