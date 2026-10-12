@@ -27,6 +27,6 @@ class AppServiceProvider extends ServiceProvider
         // no formulário (auth/register.tsx, settings/password.tsx,
         // auth/reset-password.tsx) precisa continuar batendo com isto se a
         // regra mudar.
-        Password::defaults(fn () => Password::min(8)->mixedCase()->symbols());
+        Password::defaults(fn () => Password::min(8)->mixedCase()->symbols()->rules(['not_regex:/\0/']));
     }
 }
