@@ -287,9 +287,15 @@ class PrepareDemoStage
         return $rubrica->load('criteria');
     }
 
+    /** Hora cheia no horário de Brasília do dia do evento, de volta em UTC para gravar. */
+    private function horaLocal(Carbon $dia, int $hora): Carbon
+    {
+        return $dia->copy()->timezone('America/Sao_Paulo')->setTime($hora, 0)->utc();
+    }
+
     private function agenda(Event $evento): void
     {
-        $abertura = $evento->starts_at->copy()->setTime(9, 0);
+        $abertura = $this->horaLocal($evento->starts_at, 9);
 
         foreach ([
             ['Abertura e boas-vindas', 'palestra', 0, 1, 'Auditório', 'Apresentação do desafio e das regras do evento.'],
@@ -474,8 +480,8 @@ class PrepareDemoStage
 
         $entrada = Checkpoint::factory()->for($evento)->create([
             'name' => 'Entrada',
-            'starts_at' => $evento->starts_at->copy()->setTime(8, 0),
-            'ends_at' => $evento->starts_at->copy()->setTime(10, 0),
+            'starts_at' => $this->horaLocal($evento->starts_at, 8),
+            'ends_at' => $this->horaLocal($evento->starts_at, 10),
         ]);
 
         $presentes = TeamMember::where('event_id', $evento->id)->where('status', TeamMemberStatus::Active)->pluck('user_id');

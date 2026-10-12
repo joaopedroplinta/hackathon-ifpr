@@ -7,11 +7,13 @@ use App\Enums\Role;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
 use App\Models\Attendance;
+use App\Models\Checkpoint;
 use App\Models\Evaluation;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\JudgeAssignment;
 use App\Models\Result;
+use App\Models\ScheduleItem;
 use App\Models\Submission;
 use App\Models\Team;
 use App\Models\User;
@@ -256,5 +258,16 @@ class DemoCommandTest extends TestCase
             User::whereIn('id', $ativa->activeMemberships()->pluck('user_id'))->get(),
             TeamDisqualified::class
         );
+    }
+
+    public function test_the_demo_schedule_and_entry_checkpoint_use_brasilia_wall_clock(): void
+    {
+        $this->preparar('resultado');
+
+        $entrada = Checkpoint::where('name', 'Entrada')->firstOrFail();
+        $abertura = ScheduleItem::where('title', 'Abertura e boas-vindas')->firstOrFail();
+
+        $this->assertSame('08:00', $entrada->starts_at->copy()->timezone('America/Sao_Paulo')->format('H:i'));
+        $this->assertSame('09:00', $abertura->starts_at->copy()->timezone('America/Sao_Paulo')->format('H:i'));
     }
 }
