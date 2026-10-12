@@ -10,6 +10,39 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.1] - 2026-10-12
+
+Correções de robustez e segurança de uma nova rodada de revisão (testes sem
+login na produção e com contas na homologação) e uma ferramenta interna de
+demonstração para a homologação.
+
+### Adicionado
+
+- Comando `hackathon:demo` para a homologação: prepara a edição de
+  demonstração em qualquer etapa do fluxo (início, submissões, avaliação,
+  resultado). Recusa rodar em produção (#180)
+- Cabeçalhos de segurança em toda resposta: `frame-ancestors 'none'`,
+  `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy` e `Permissions-Policy`
+  com a câmera liberada só para o próprio site (leitor de QR). A CSP completa
+  fica para depois, após teste em modo de relatório (#182)
+- Limite de tentativas no cadastro (30 por minuto por IP), na recuperação e na
+  redefinição de senha (10 por minuto) (#184)
+
+### Alterado
+
+- Redefinir senha com e-mail inexistente mostra a mesma mensagem do link
+  inválido, para não revelar quais e-mails têm conta (#184)
+
+### Corrigido
+
+- E-mail ou token enviado como lista no cadastro e na redefinição de senha, e
+  senha com byte nulo, davam erro 500; agora dão erro de validação (#184)
+- E-mail ou CPF como lista no perfil e notas em formato inválido na avaliação
+  do jurado davam erro 500; agora dão erro de validação (#186)
+- Importação de CSV: endereços que não são http(s) viram conflito para
+  conferência, e o comando não quebra mais com a coluna `email_lider` ausente
+  ou com arquivo ilegível (#188)
+
 ## [1.3.0] - 2026-10-11
 
 Decisão do organizador sobre envios fora do prazo, desclassificação de equipes
@@ -374,7 +407,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...v1.3.0
 [1.2.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.1...v1.2.2
