@@ -16,6 +16,12 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
+    | Content-Security-Policy: 'off', 'report-only' (só avisa no console do
+    | navegador) ou 'enforce' (bloqueia). Ver App\Http\Middleware\SecurityHeaders.
+    */
+    'csp_mode' => env('CSP_MODE', 'report-only'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
