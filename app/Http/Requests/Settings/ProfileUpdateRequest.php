@@ -18,7 +18,7 @@ class ProfileUpdateRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if ($this->filled('cpf')) {
+        if (is_string($this->input('cpf')) && $this->filled('cpf')) {
             $this->merge(['cpf' => preg_replace('/\D/', '', (string) $this->input('cpf'))]);
         }
     }
@@ -34,6 +34,7 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
 
             'email' => [
+                'bail',
                 'required',
                 'string',
                 'lowercase',
@@ -46,6 +47,7 @@ class ProfileUpdateRequest extends FormRequest
             // só porque ainda não preencheu CPF. Vira obrigatório de fato só
             // na hora que precisa de verdade -- emitir certificado.
             'cpf' => [
+                'bail',
                 'nullable',
                 'string',
                 new CpfValido,

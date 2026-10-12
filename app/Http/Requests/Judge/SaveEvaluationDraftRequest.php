@@ -36,6 +36,10 @@ class SaveEvaluationDraftRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
+            if (! is_array($this->input('scores'))) {
+                return; // a regra 'array' já reprovou; o laço abaixo assume lista
+            }
+
             /** @var Submission $submission */
             $submission = $this->route('submission');
 

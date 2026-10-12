@@ -87,6 +87,21 @@ class EvaluationTest extends TestCase
         $this->assertSame(JudgeAssignmentStatus::InProgress, $assignment->fresh()->status);
     }
 
+    public function test_text_instead_of_a_scores_list_is_a_validation_error_not_a_500(): void
+    {
+        $event = Event::factory()->create();
+        $this->rubricaAtiva($event);
+        $jurado = $this->jurado();
+        [$submission] = $this->submissaoAtribuida($event, $jurado);
+
+        foreach (['jurado.avaliar.autosave', 'jurado.avaliar.enviar'] as $rota) {
+            $this->actingAs($jurado)
+                ->postJson(route($rota, $submission), ['scores' => 'audit-invalid'])
+                ->assertStatus(422)
+                ->assertJsonValidationErrors('scores');
+        }
+    }
+
     public function test_submitting_requires_a_score_for_every_criterion_of_the_active_rubric(): void
     {
         $event = Event::factory()->create();
