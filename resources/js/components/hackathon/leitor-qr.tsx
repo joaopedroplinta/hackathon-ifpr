@@ -7,11 +7,17 @@ type Props = {
 
 type Estado = 'abrindo' | 'lendo' | 'sem-contexto-seguro' | 'permissao-negada' | 'sem-camera';
 
+/** Nome técnico do erro, mostrado pequeno pra o organizador poder reportar. */
+function nomeDoErro(erro: unknown): string {
+    return erro instanceof Error ? erro.name : String(erro);
+}
+
 export default function LeitorQr({ onDecode }: Props) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const onDecodeRef = useRef(onDecode);
     onDecodeRef.current = onDecode;
     const [estado, setEstado] = useState<Estado>('abrindo');
+    const [detalhe, setDetalhe] = useState('');
 
     useEffect(() => {
         // getUserMedia só existe em HTTPS ou localhost -- em rede local via
@@ -34,6 +40,8 @@ export default function LeitorQr({ onDecode }: Props) {
             .start()
             .then(() => setEstado('lendo'))
             .catch((erro: unknown) => {
+                console.error('leitor-qr', erro);
+                setDetalhe(nomeDoErro(erro));
                 setEstado(erro instanceof Error && erro.name === 'NotAllowedError' ? 'permissao-negada' : 'sem-camera');
             });
 
@@ -63,6 +71,7 @@ export default function LeitorQr({ onDecode }: Props) {
         return (
             <p className="text-muted-foreground bg-card rounded-2xl p-4 text-sm">
                 Não foi possível abrir a câmera neste aparelho. Use a busca por nome aqui embaixo.
+                {detalhe && <span className="mt-1 block text-xs opacity-70">Detalhe técnico: {detalhe}</span>}
             </p>
         );
     }
