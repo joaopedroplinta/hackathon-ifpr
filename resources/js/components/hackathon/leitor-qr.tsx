@@ -36,16 +36,30 @@ export default function LeitorQr({ onDecode }: Props) {
             { preferredCamera: 'environment', highlightScanRegion: true, highlightCodeOutline: true },
         );
 
-        scanner
-            .start()
-            .then(() => setEstado('lendo'))
+        let cancelado = false;
+
+        // iOS só lista as câmeras depois que a permissão é dada; sem este
+        // pedido prévio o QrScanner enxerga zero câmeras ("Camera not found").
+        const pedirPermissao = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            stream.getTracks().forEach((track) => track.stop());
+        };
+
+        pedirPermissao()
+            .then(() => (cancelado ? undefined : scanner.start()))
+            .then(() => (cancelado ? undefined : setEstado('lendo')))
             .catch((erro: unknown) => {
+                if (cancelado) {
+                    return;
+                }
+
                 console.error('leitor-qr', erro);
                 setDetalhe(nomeDoErro(erro));
                 setEstado(erro instanceof Error && erro.name === 'NotAllowedError' ? 'permissao-negada' : 'sem-camera');
             });
 
         return () => {
+            cancelado = true;
             scanner.stop();
             scanner.destroy();
         };
@@ -63,6 +77,7 @@ export default function LeitorQr({ onDecode }: Props) {
         return (
             <p className="text-muted-foreground bg-card rounded-2xl p-4 text-sm">
                 Permissão de câmera negada. Libere o acesso nas configurações do navegador ou use a busca por nome.
+                {detalhe && <span className="mt-1 block text-xs opacity-70">Detalhe técnico: {detalhe}</span>}
             </p>
         );
     }
