@@ -102,6 +102,28 @@ class EvaluationTest extends TestCase
         }
     }
 
+    public function test_malformed_score_rows_are_a_validation_error_not_a_500(): void
+    {
+        $event = Event::factory()->create();
+        $this->rubricaAtiva($event);
+        $jurado = $this->jurado();
+        [$submission] = $this->submissaoAtribuida($event, $jurado);
+
+        $payloads = [
+            [['criterion_id' => [['invalid']], 'score' => '1.00']],
+            [['criterion_id' => ['x'], 'score' => '1.00']],
+            ['not-a-row'],
+        ];
+
+        foreach (['jurado.avaliar.autosave', 'jurado.avaliar.enviar'] as $rota) {
+            foreach ($payloads as $scores) {
+                $this->actingAs($jurado)
+                    ->postJson(route($rota, $submission), ['scores' => $scores])
+                    ->assertStatus(422);
+            }
+        }
+    }
+
     public function test_submitting_requires_a_score_for_every_criterion_of_the_active_rubric(): void
     {
         $event = Event::factory()->create();
