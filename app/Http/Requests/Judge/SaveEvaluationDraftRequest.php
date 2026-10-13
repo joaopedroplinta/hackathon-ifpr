@@ -36,8 +36,12 @@ class SaveEvaluationDraftRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (! is_array($this->input('scores'))) {
-                return; // a regra 'array' já reprovou; o laço abaixo assume lista
+            $linhas = $this->input('scores');
+
+            // As regras básicas já reprovaram formato inválido; o código abaixo
+            // assume lista de linhas com criterion_id simples (keyBy/has quebram em array).
+            if (! is_array($linhas) || collect($linhas)->contains(fn ($l) => ! is_array($l) || ! is_scalar($l['criterion_id'] ?? null))) {
+                return;
             }
 
             /** @var Submission $submission */
