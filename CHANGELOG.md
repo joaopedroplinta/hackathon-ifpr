@@ -10,6 +10,26 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.2] - 2026-10-12
+
+Política de segurança de conteúdo (CSP) e duas correções encontradas nos testes
+em celular e na homologação.
+
+### Adicionado
+
+- Content-Security-Policy completa, com nonce para os scripts da página e só os
+  domínios que o sistema já usa (fontes e foto do Google). O modo vem de
+  `CSP_MODE` (`off`, `report-only` ou `enforce`); em produção está em
+  `enforce` (#190)
+
+### Corrigido
+
+- Leitor de QR do check-in não abria a câmera no iPhone: agora abre pelo botão
+  "Abrir câmera", o campo de busca não rouba mais o foco e, se falhar, a tela
+  mostra o nome técnico do erro (#192)
+- `hackathon:demo` gravava a agenda e a entrada três horas adiantadas (08:00
+  UTC em vez de 08:00 de Brasília). Só afeta a homologação (#194)
+
 ## [1.3.1] - 2026-10-12
 
 Correções de robustez e segurança de uma nova rodada de revisão (testes sem
@@ -407,7 +427,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...v1.3.0
 [1.2.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.2...v1.2.3
