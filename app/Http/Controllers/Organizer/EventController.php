@@ -82,6 +82,12 @@ class EventController extends Controller
     {
         $this->authorize('create', Event::class);
 
+        // Mesma regra de create(): a tela redireciona, mas um POST direto (ou
+        // duplo clique) passava e criava outra edição por cima da corrente.
+        if (Event::current()) {
+            return to_route('painel.evento.edit')->with('erro', 'Já existe um evento em cartaz. Edite-o em vez de criar outro.');
+        }
+
         $edition = (Event::max('edition') ?? 0) + 1;
         $dados = $request->safe()->except('regulamento');
 

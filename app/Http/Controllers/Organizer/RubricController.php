@@ -61,6 +61,7 @@ class RubricController extends Controller
     public function show(Rubric $rubric): Response
     {
         $this->authorize('viewAny', Rubric::class);
+        $this->ensureCurrentEvent($rubric->event_id);
 
         $rubric->load('criteria');
 
@@ -89,6 +90,7 @@ class RubricController extends Controller
     public function activate(Rubric $rubric): RedirectResponse
     {
         $this->authorize('update', $rubric);
+        $this->ensureCurrentEvent($rubric->event_id);
 
         DB::transaction(function () use ($rubric) {
             Rubric::forEvent($rubric->event)->where('id', '!=', $rubric->id)->update(['is_active' => false]);
@@ -102,6 +104,7 @@ class RubricController extends Controller
     public function destroy(Rubric $rubric): RedirectResponse
     {
         $this->authorize('delete', $rubric);
+        $this->ensureCurrentEvent($rubric->event_id);
 
         $rubric->delete();
 
@@ -111,6 +114,7 @@ class RubricController extends Controller
     public function storeCriterion(StoreCriterionRequest $request, Rubric $rubric): RedirectResponse
     {
         $this->authorize('update', $rubric);
+        $this->ensureCurrentEvent($rubric->event_id);
 
         $proximaPosicao = $rubric->criteria()->max('position') + 1;
 
@@ -125,6 +129,7 @@ class RubricController extends Controller
     public function updateCriterion(StoreCriterionRequest $request, Criterion $criterion): RedirectResponse
     {
         $this->authorize('update', $criterion->rubric);
+        $this->ensureCurrentEvent($criterion->rubric->event_id);
 
         $criterion->update($request->validated());
 
@@ -134,6 +139,7 @@ class RubricController extends Controller
     public function destroyCriterion(Criterion $criterion): RedirectResponse
     {
         $this->authorize('update', $criterion->rubric);
+        $this->ensureCurrentEvent($criterion->rubric->event_id);
 
         $rubric = $criterion->rubric;
 
