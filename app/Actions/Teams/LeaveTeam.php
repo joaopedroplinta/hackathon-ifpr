@@ -33,6 +33,10 @@ class LeaveTeam
             // Último a sair apaga a luz. Sem isso ficaria uma equipe sem
             // ninguém ocupando o nome e o código de convite.
             if ($this->isEmpty($team)) {
+                // A submissão acompanha a equipe: sozinha ela ficava com
+                // `team` nulo e derrubava vitrine, painel, exportação, fila
+                // do jurado e o cálculo do resultado.
+                $team->submission?->delete();
                 $team->delete();
 
                 return true;

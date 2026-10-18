@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TeamMemberStatus;
 use Database\Factories\ConflictOfInterestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,21 @@ class ConflictOfInterest extends Model
     protected $fillable = [
         'reason',
     ];
+
+    /**
+     * O jurado não pode avaliar a equipe quando há conflito registrado ou
+     * quando ele próprio é membro ativo dela -- o segundo caso não depende de
+     * alguém lembrar de registrar (jurado promovido que seguia na equipe).
+     */
+    public static function blocks(int $judgeId, int $teamId): bool
+    {
+        return static::query()->where('judge_id', $judgeId)->where('team_id', $teamId)->exists()
+            || TeamMember::query()
+                ->where('user_id', $judgeId)
+                ->where('team_id', $teamId)
+                ->where('status', TeamMemberStatus::Active)
+                ->exists();
+    }
 
     public function judge(): BelongsTo
     {

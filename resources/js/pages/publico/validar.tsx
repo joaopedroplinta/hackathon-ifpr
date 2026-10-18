@@ -10,8 +10,12 @@ export default function ValidarCertificado(props: ValidacaoCertificado) {
             {!props.encontrado ? (
                 <EstadoVazio
                     icon={CircleAlert}
-                    titulo="Certificado não encontrado"
-                    descricao="Confira se o link ou o código foi copiado corretamente. Não foi possível confirmar um certificado com este endereço."
+                    titulo={props.revogado ? 'Certificado revogado' : 'Certificado não encontrado'}
+                    descricao={
+                        props.revogado
+                            ? 'Este certificado foi emitido, mas a organização o revogou e ele não vale mais.'
+                            : 'Confira se o link ou o código foi copiado corretamente. Não foi possível confirmar um certificado com este endereço.'
+                    }
                     acao={{ href: route('home'), texto: 'Voltar ao evento' }}
                 />
             ) : (
