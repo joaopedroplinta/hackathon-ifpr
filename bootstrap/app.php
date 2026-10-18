@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\AuthenticateSession;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,7 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Global, not in the web group: redirects and 404s need the headers too.
         $middleware->append(SecurityHeaders::class);
 
+        // Sem isto uma sessão roubada sobrevive à troca/reset de senha: o
+        // middleware compara o hash da senha guardado na sessão com o atual.
         $middleware->web(append: [
+            AuthenticateSession::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);

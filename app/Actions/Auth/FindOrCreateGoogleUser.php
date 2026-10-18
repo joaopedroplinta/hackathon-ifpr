@@ -4,6 +4,8 @@ namespace App\Actions\Auth;
 
 use App\Enums\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -81,6 +83,13 @@ class FindOrCreateGoogleUser
 
     private function linkToExistingAccount(User $user, SocialiteUser $googleUser): User
     {
+        // Conta ainda não verificada: quem a criou pode não ser o dono do
+        // e-mail. O Google acaba de provar a posse, então a senha e as
+        // sessões criadas sem essa prova deixam de valer.
+        if ($user->email_verified_at === null) {
+            $this->discardUnverifiedCredentials($user);
+        }
+
         $user->forceFill([
             'google_id' => $googleUser->getId(),
             'avatar_url' => $googleUser->getAvatar(),
@@ -89,6 +98,18 @@ class FindOrCreateGoogleUser
         ])->save();
 
         return $user;
+    }
+
+    private function discardUnverifiedCredentials(User $user): void
+    {
+        $user->forceFill([
+            'password' => null,
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        if (config('session.driver') === 'database') {
+            DB::table(config('session.table', 'sessions'))->where('user_id', $user->id)->delete();
+        }
     }
 
     private function createAccount(SocialiteUser $googleUser, string $email): User

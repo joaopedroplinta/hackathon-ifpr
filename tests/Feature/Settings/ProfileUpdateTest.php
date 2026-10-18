@@ -34,6 +34,7 @@ class ProfileUpdateTest extends TestCase
             ->patch('/settings/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'current_password' => 'password',
             ]);
 
         $response
@@ -45,6 +46,58 @@ class ProfileUpdateTest extends TestCase
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
+    }
+
+    public function test_changing_the_email_without_the_current_password_is_rejected()
+    {
+        $user = User::factory()->create();
+        $original = $user->email;
+
+        $this->actingAs($user)
+            ->patch('/settings/profile', ['name' => 'Test User', 'email' => 'attacker@example.com'])
+            ->assertSessionHasErrors('current_password');
+
+        $this->assertSame($original, $user->fresh()->email);
+    }
+
+    public function test_changing_the_email_with_a_wrong_current_password_is_rejected()
+    {
+        $user = User::factory()->create();
+        $original = $user->email;
+
+        $this->actingAs($user)
+            ->patch('/settings/profile', [
+                'name' => 'Test User',
+                'email' => 'attacker@example.com',
+                'current_password' => 'not-the-password',
+            ])
+            ->assertSessionHasErrors('current_password');
+
+        $this->assertSame($original, $user->fresh()->email);
+    }
+
+    public function test_google_only_account_can_change_the_email_without_a_password()
+    {
+        $user = User::factory()->create(['password' => null]);
+
+        $this->actingAs($user)
+            ->patch('/settings/profile', ['name' => 'Test User', 'email' => 'novo@example.com'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('novo@example.com', $user->fresh()->email);
+    }
+
+    public function test_account_deletion_succeeds_even_if_someone_registered_the_old_predictable_tombstone_email()
+    {
+        $user = User::factory()->create();
+        User::factory()->create(['email' => "removido-{$user->id}@removido.local"]);
+
+        $this->actingAs($user)
+            ->delete('/settings/profile', ['password' => 'password'])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertTrue(User::withTrashed()->find($user->id)->trashed());
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
@@ -341,7 +394,7 @@ class ProfileUpdateTest extends TestCase
 
         $user = User::withTrashed()->find($user->id);
         $this->assertSame('Usuário removido', $user->name);
-        $this->assertSame("removido-{$user->id}@removido.local", $user->email);
+        $this->assertMatchesRegularExpression('/^removido-[0-9a-f-]{36}@removido\.invalid$/', $user->email);
         $this->assertTrue($user->trashed());
 
         $registration->refresh();

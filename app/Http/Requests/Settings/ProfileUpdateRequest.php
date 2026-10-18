@@ -43,6 +43,16 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
 
+            // Trocar o e-mail muda quem recebe o reset de senha, então vale o
+            // mesmo que trocar a senha: exige a senha atual. Conta só-Google
+            // não tem senha para conferir e fica de fora.
+            'current_password' => [
+                Rule::requiredIf($this->changesEmailWithPassword()),
+                'nullable',
+                'string',
+                'current_password',
+            ],
+
             // Nullable de propósito: ninguém é travado de editar nome/e-mail
             // só porque ainda não preencheu CPF. Vira obrigatório de fato só
             // na hora que precisa de verdade -- emitir certificado.
@@ -69,12 +79,21 @@ class ProfileUpdateRequest extends FormRequest
         ];
     }
 
+    private function changesEmailWithPassword(): bool
+    {
+        $user = $this->user();
+
+        return filled($user->password) && $this->input('email') !== $user->email;
+    }
+
     /**
      * @return array<string, string>
      */
     public function messages(): array
     {
         return [
+            'current_password.required' => 'Informe sua senha atual para trocar o e-mail.',
+            'current_password.current_password' => 'A senha atual está incorreta.',
             'cpf.unique' => 'Este CPF já está cadastrado em outra conta.',
             'matricula_suap.required' => 'Informe sua matrícula do SUAP -- obrigatória para quem é aluno do IFPR.',
             'matricula_siape.required' => 'Informe sua matrícula SIAPE -- obrigatória para quem é professor do IFPR.',
