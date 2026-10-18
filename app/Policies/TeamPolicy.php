@@ -162,6 +162,13 @@ class TeamPolicy
             return Response::deny('A equipe já atingiu o número máximo de integrantes.');
         }
 
+        // Vários convites podem disputar a mesma vaga, mas sem teto o líder
+        // usa o envio de convite como disparador de e-mail para qualquer
+        // endereço. O limite é o tamanho máximo da equipe.
+        if ($team->pendingInvitesCount() >= $team->event->max_team_size) {
+            return Response::deny('Há convites pendentes demais. Espere alguém aceitar ou o convite expirar para convidar outras pessoas.');
+        }
+
         if ($email === null) {
             return Response::allow();
         }

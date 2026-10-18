@@ -94,6 +94,12 @@ class Team extends Model
         return $this->activeMemberships()->count();
     }
 
+    /** Convites que ainda podem ser aceitos: não aceitos e não expirados. */
+    public function pendingInvitesCount(): int
+    {
+        return $this->invites()->whereNull('accepted_at')->where('expires_at', '>', now())->count();
+    }
+
     public function isFull(): bool
     {
         return $this->activeMemberCount() >= $this->event->max_team_size;

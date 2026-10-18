@@ -39,6 +39,16 @@ class TeamInvitePolicy
             return Response::deny('Este convite foi enviado para outro e-mail.');
         }
 
+        // Mesmas exigências de TeamPolicy::create/join: o convite é outra
+        // porta para a equipe, não uma isenção de inscrição nem de prazo.
+        if (! $invite->event->isRegistered($user)) {
+            return Response::deny('Inscreva-se no evento antes de aceitar o convite.');
+        }
+
+        if (! $invite->event->registrationIsOpen()) {
+            return Response::deny('O prazo para formar equipes já encerrou.');
+        }
+
         if ($this->hasActiveTeamInEvent($user, $invite->event_id)) {
             return Response::deny('Você já faz parte de uma equipe neste evento.');
         }

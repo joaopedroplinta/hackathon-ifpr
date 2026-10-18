@@ -117,7 +117,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Convite por e-mail. 'aceitar' fica fora de /equipe porque o link vem
     // de fora (e-mail) e o token já identifica o convite -- ver
     // TeamInviteController.
-    Route::post('equipe/convites', [TeamInviteController::class, 'store'])->name('team-invites.store');
+    Route::post('equipe/convites', [TeamInviteController::class, 'store'])->middleware('throttle:10,1')->name('team-invites.store');
     Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->name('team-invites.accept');
 
     // Submissao do projeto. Salvar rascunho e enviar sao rotas separadas

@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Team;
+use App\Support\MarkdownText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -28,7 +29,7 @@ class TeamDisqualified extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject("Sua equipe {$this->team->name} foi desclassificada")
             ->greeting('Olá!')
-            ->line("A organização do {$this->team->event->name} desclassificou a equipe \"{$this->team->name}\".")
+            ->line("A organização do {$this->team->event->name} desclassificou a equipe \"".MarkdownText::escape($this->team->name).'".')
             ->line("Motivo registrado: {$this->motivo}")
             ->line('Com isso, a equipe sai da avaliação, do ranking e da votação e não pode mais enviar o projeto.')
             ->line('Se você discorda da decisão, procure a organização do evento.');
