@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Team;
+use App\Support\MarkdownText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -41,7 +42,7 @@ class SubmissionDeadlineReminder extends Notification implements ShouldQueue
                 ? "Falta 1 hora para o prazo da equipe {$this->team->name}"
                 : "Faltam 24 horas para o prazo da equipe {$this->team->name}")
             ->greeting('Olá!')
-            ->line("A equipe \"{$this->team->name}\" ainda não enviou o projeto no {$this->team->event->name}.")
+            ->line('A equipe "'.MarkdownText::escape($this->team->name)."\" ainda não enviou o projeto no {$this->team->event->name}.")
             ->line("O prazo de submissão termina em {$prazo}.")
             ->action('Enviar projeto', route('submissions.show'))
             ->line('Se o projeto já foi enviado, pode ignorar este e-mail.');
