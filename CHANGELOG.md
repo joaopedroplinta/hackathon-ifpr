@@ -10,6 +10,39 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.3] - 2026-10-18
+
+Correções de segurança da rodada de auditoria: contas, convites, edições
+passadas, jurados, certificados, ranking e IP do cliente.
+
+Atenção no deploy: a migration que adiciona `certificates.revoked_at` roda no
+deploy. A revogação de certificado de colocação na desclassificação é decisão
+de produto.
+
+### Corrigido
+
+- Troca de e-mail exige a senha atual (contas só-Google, sem senha, ficam
+  isentas); trocar ou redefinir a senha derruba as outras sessões; vincular o
+  Google a uma conta não verificada descarta senha e sessões; o e-mail da
+  anonimização passou a ser um UUID, dentro de transação (#198)
+- Convites de equipe: limite de 10 por minuto, teto de convites pendentes igual
+  ao tamanho máximo da equipe, nome da equipe escapado no Markdown dos e-mails;
+  aceitar convite exige inscrição e prazo aberto (#200)
+- Rubrica, critério, agenda e reabertura de avaliação de edições passadas dão
+  404; criar edição com outra em cartaz é recusado; resultado público de
+  edição em rascunho dá 404 (#202)
+- Jurado que é membro da equipe ou tem conflito registrado não é atribuído nem
+  avalia; certificados de colocação são revogados na desclassificação (nova
+  coluna `certificates.revoked_at`, migration inclusa) e a validação pública
+  mostra "Certificado revogado"; dissolver a equipe remove a submissão; lotes
+  de certificado e lembrete toleram usuário anonimizado (#204)
+- Nota final não é mais distorcida por rascunho de rubrica antiga; voto popular
+  de membro da equipe votada não conta; lançamento externo (formulário manual
+  e importação CSV) recusa equipe ou submissão desclassificada (#206)
+- O IP do cliente passa a vir do `X-Real-IP` da Railway; antes o throttle de
+  login enxergava só o IP do proxy (#208)
+- Requisições de avaliação com ids de critério malformados respondem 422 (#196)
+
 ## [1.3.2] - 2026-10-12
 
 Política de segurança de conteúdo (CSP) e duas correções encontradas nos testes
@@ -427,7 +460,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.2...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.3...HEAD
+[1.3.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.2.3...v1.3.0
