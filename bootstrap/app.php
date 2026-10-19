@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\UseEdgeClientIp;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -35,7 +36,17 @@ return Application::configure(basePath: dirname(__DIR__))
         // absoluta em http://, causando mixed content no navegador. O
         // container só é alcançável através do proxy da plataforma, então
         // confiar em qualquer IP aqui é seguro.
-        $middleware->trustProxies(at: '*');
+        //
+        // X-Forwarded-For fica de fora: com '*' o Symfony devolveria o IP do
+        // proxy como cliente (ver UseEdgeClientIp, que lê o X-Real-IP).
+        $middleware->prepend(UseEdgeClientIp::class);
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO
+                | Request::HEADER_X_FORWARDED_PREFIX,
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Sem isto o participante que erra a URL cai na página padrão do
