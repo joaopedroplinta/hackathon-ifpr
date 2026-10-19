@@ -21,6 +21,15 @@ class SubmitEvaluation
     {
         $evaluation = app(SaveEvaluationDraft::class)->handle($assignment, $scores, $overallComment);
 
+        // Rascunho de uma rubrica anterior (ou nota em branco) sobrevive ao
+        // upsert e entraria na média ponderada: o envio vale só para o que foi
+        // pontuado agora, contra a rubrica ativa.
+        $evaluation->scores()
+            ->where(fn ($q) => $q
+                ->whereNotIn('criterion_id', collect($scores)->pluck('criterion_id'))
+                ->orWhereNull('score'))
+            ->delete();
+
         $evaluation->status = EvaluationStatus::Submitted;
         $evaluation->submitted_at = now();
         $evaluation->save();

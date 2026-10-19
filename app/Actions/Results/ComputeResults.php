@@ -3,6 +3,7 @@
 namespace App\Actions\Results;
 
 use App\Enums\EvaluationStatus;
+use App\Enums\TeamMemberStatus;
 use App\Models\Evaluation;
 use App\Models\Event;
 use App\Models\PopularVote;
@@ -57,9 +58,17 @@ class ComputeResults
             $ranksPorTrilha += $this->atribuirRanks($grupo->values(), $rubricaAtiva);
         }
 
-        $votosPorSubmissao = PopularVote::forEvent($event)
-            ->selectRaw('submission_id, count(*) as total')
-            ->groupBy('submission_id')
+        // Voto de quem entrou na equipe depois de votar não conta
+        // (StorePopularVoteRequest só barra no momento do voto).
+        $votosPorSubmissao = PopularVote::query()
+            ->where('popular_votes.event_id', $event->id)
+            ->join('submissions', 'submissions.id', '=', 'popular_votes.submission_id')
+            ->whereNotExists(fn ($q) => $q->selectRaw('1')->from('team_members')
+                ->whereColumn('team_members.team_id', 'submissions.team_id')
+                ->whereColumn('team_members.user_id', 'popular_votes.user_id')
+                ->where('team_members.status', TeamMemberStatus::Active->value))
+            ->selectRaw('popular_votes.submission_id, count(*) as total')
+            ->groupBy('popular_votes.submission_id')
             ->pluck('total', 'submission_id');
 
         foreach ($ordenadas as $linha) {

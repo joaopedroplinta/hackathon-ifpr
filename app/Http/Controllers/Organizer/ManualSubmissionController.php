@@ -32,7 +32,7 @@ class ManualSubmissionController extends Controller
         $equipes = Team::forEvent($event)
             ->with('submission')
             ->get()
-            ->filter(fn (Team $team) => ! $team->submission?->isSubmitted())
+            ->filter(fn (Team $team) => ! $team->blocksExternalEntry())
             ->map(fn (Team $team) => ['id' => $team->id, 'nome' => $team->name])
             ->values()
             ->all();
