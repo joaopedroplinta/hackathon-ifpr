@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SubmissionStatus;
 use App\Enums\TeamMemberStatus;
 use App\Enums\TeamStatus;
 use Database\Factories\TeamFactory;
@@ -82,6 +83,18 @@ class Team extends Model
         }
 
         return $this->activeMemberships()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Lançamento fora do formulário não pode sobrescrever o que já conta nem
+     * ressuscitar equipe/submissão desclassificada: só ReinstateTeam reverte,
+     * com motivo no log.
+     */
+    public function blocksExternalEntry(): bool
+    {
+        return $this->submission?->isSubmitted()
+            || ! $this->status->isActive()
+            || $this->submission?->status === SubmissionStatus::Disqualified;
     }
 
     public function isLeader(?User $user): bool

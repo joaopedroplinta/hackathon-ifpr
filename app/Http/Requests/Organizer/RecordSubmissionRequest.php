@@ -31,8 +31,8 @@ class RecordSubmissionRequest extends FormRequest
                 function (string $attribute, mixed $value, \Closure $fail) use ($event) {
                     $team = $event ? Team::forEvent($event)->with('submission')->find($value) : null;
 
-                    if ($team?->submission?->isSubmitted()) {
-                        $fail('Esta equipe já tem uma submissão registrada -- não é possível lançar por cima.');
+                    if ($team?->blocksExternalEntry()) {
+                        $fail('Esta equipe já tem uma submissão registrada ou está desclassificada -- não é possível lançar por cima.');
                     }
                 },
             ],

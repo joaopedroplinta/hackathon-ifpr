@@ -272,4 +272,32 @@ class EvaluationTest extends TestCase
 
         $this->get(route('jurado.avaliar.show', $submission))->assertRedirect(route('login'));
     }
+
+    public function test_a_draft_row_from_a_previous_rubric_does_not_survive_submission(): void
+    {
+        $event = Event::factory()->create();
+        $velha = Rubric::factory()->for($event)->ativa()->create();
+        $criterioVelho = Criterion::factory()->for($velha)->create(['weight' => '5.00', 'max_score' => 10, 'position' => 0]);
+        $jurado = $this->jurado();
+        [$submission, $assignment] = $this->submissaoAtribuida($event, $jurado);
+
+        $this->actingAs($jurado)->post(route('jurado.avaliar.autosave', $submission), [
+            'scores' => [['criterion_id' => $criterioVelho->id, 'score' => 2, 'comment' => null]],
+            'overall_comment' => null,
+        ]);
+
+        $velha->forceFill(['is_active' => false])->save();
+        $nova = Rubric::factory()->for($event)->ativa()->create();
+        $criterioNovo = Criterion::factory()->for($nova)->create(['weight' => '1.00', 'max_score' => 10, 'position' => 0]);
+
+        $this->actingAs($jurado)->post(route('jurado.avaliar.enviar', $submission), [
+            'scores' => [['criterion_id' => $criterioNovo->id, 'score' => 10, 'comment' => null]],
+            'overall_comment' => null,
+        ])->assertRedirect(route('jurado.index'));
+
+        $this->assertSame(
+            [$criterioNovo->id],
+            $assignment->fresh()->evaluation->scores()->pluck('criterion_id')->all(),
+        );
+    }
 }
