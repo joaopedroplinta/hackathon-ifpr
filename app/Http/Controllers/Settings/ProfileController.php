@@ -33,6 +33,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'temSenha' => filled($user->password),
             'identidade' => [
                 'cpf' => $user->cpf,
                 'tipo_vinculo' => $user->tipo_vinculo?->value,
@@ -48,6 +49,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        unset($data['current_password']);
 
         // Matrícula do vínculo que a pessoa não tem mais não fica esquecida
         // no banco -- quem era aluno e virou "externo" não continua com um
