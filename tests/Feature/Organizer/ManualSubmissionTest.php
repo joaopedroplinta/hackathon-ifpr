@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Organizer;
 
+use App\Actions\Submissions\RecordExternalSubmission;
 use App\Enums\Role;
 use App\Enums\SubmissionSource;
 use App\Enums\SubmissionStatus;
@@ -157,5 +158,40 @@ class ManualSubmissionTest extends TestCase
         $this->assertNotNull($log);
         $this->assertSame($organizador->id, $log->causer_id);
         $this->assertSame(SubmissionSource::Email->value, $log->properties['origem']);
+    }
+
+    public function test_does_not_resurrect_a_disqualified_submission(): void
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->for($event)->desclassificada()->create();
+        Submission::factory()->for($event)->for($team)->desclassificada()->create(['title' => 'Original']);
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.submissions.record.store'), $this->dadosValidos($team))
+            ->assertSessionHasErrors('team_id');
+
+        $submission = Submission::forEvent($event)->where('team_id', $team->id)->firstOrFail();
+        $this->assertSame(SubmissionStatus::Disqualified, $submission->status);
+        $this->assertSame('Original', $submission->title);
+    }
+
+    public function test_the_action_refuses_a_disqualified_team(): void
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->for($event)->desclassificada()->create();
+
+        $this->assertNull(app(RecordExternalSubmission::class)->handle(
+            $team, ['repo_url' => 'https://github.com/x/y'], SubmissionSource::Manual, null, now(),
+        ));
+        $this->assertNull($team->fresh()->submission);
+    }
+
+    public function test_does_not_list_disqualified_teams(): void
+    {
+        $event = Event::factory()->create();
+        Team::factory()->for($event)->desclassificada()->create();
+
+        $this->actingAs($this->organizador())->get(route('painel.submissions.record.create'))
+            ->assertInertia(fn ($page) => $page->has('equipes', 0));
     }
 }

@@ -34,7 +34,7 @@ class RecordExternalSubmission
         ?User $recordedBy,
         Carbon $originalSubmittedAt,
     ): ?Submission {
-        if ($team->submission?->isSubmitted()) {
+        if ($team->blocksExternalEntry()) {
             return null;
         }
 

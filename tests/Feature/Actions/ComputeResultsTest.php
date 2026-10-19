@@ -17,6 +17,7 @@ use App\Models\Result;
 use App\Models\Rubric;
 use App\Models\Submission;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\Track;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -328,5 +329,26 @@ class ComputeResultsTest extends TestCase
 
         $result = Result::forEvent($event)->where('submission_id', $submissao->id)->firstOrFail();
         $this->assertSame('3.69', (string) $result->final_score);
+    }
+
+    public function test_a_popular_vote_from_a_team_member_is_not_counted(): void
+    {
+        $event = Event::factory()->create();
+        $submissao = $this->submissaoEnviada($event);
+        $membro = User::factory()->create();
+        $outro = User::factory()->create();
+        TeamMember::factory()->for($event)->for($submissao->team)->for($membro)->create();
+
+        foreach ([$membro, $outro] as $user) {
+            $voto = new PopularVote;
+            $voto->event_id = $event->id;
+            $voto->submission_id = $submissao->id;
+            $voto->user_id = $user->id;
+            $voto->save();
+        }
+
+        (new ComputeResults)->handle($event);
+
+        $this->assertSame(1, Result::where('submission_id', $submissao->id)->value('popular_votes_count'));
     }
 }
