@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -101,6 +102,46 @@ class GoogleLoginTest extends TestCase
         $this->assertSame('1234567890', $existing->google_id, 'Deve vincular, não criar conta duplicada.');
         $this->assertNotNull($existing->email_verified_at);
         $this->assertSame(1, User::count());
+    }
+
+    public function test_linking_an_unverified_account_discards_the_credentials_created_without_proof_of_the_email(): void
+    {
+        config(['session.driver' => 'database']);
+
+        $existing = User::factory()->create([
+            'email' => 'maria@ifpr.edu.br',
+            'email_verified_at' => null,
+        ]);
+        DB::table('sessions')->insert([
+            'id' => str_repeat('a', 40),
+            'user_id' => $existing->id,
+            'payload' => '',
+            'last_activity' => now()->timestamp,
+        ]);
+        $rememberToken = $existing->remember_token;
+
+        $this->mockGoogleReturning($this->fakeGoogleUser());
+        $this->get(route('google.callback'));
+
+        $existing->refresh();
+
+        $this->assertNull($existing->password, 'A senha de quem registrou o e-mail antes continuou valendo.');
+        $this->assertNotSame($rememberToken, $existing->remember_token);
+        $this->assertSame(0, DB::table('sessions')->where('id', str_repeat('a', 40))->count(), 'A sessão antiga sobreviveu ao vínculo.');
+    }
+
+    public function test_linking_an_already_verified_account_keeps_its_password(): void
+    {
+        $existing = User::factory()->create([
+            'email' => 'maria@ifpr.edu.br',
+            'email_verified_at' => now(),
+        ]);
+        $hash = $existing->password;
+
+        $this->mockGoogleReturning($this->fakeGoogleUser());
+        $this->get(route('google.callback'));
+
+        $this->assertSame($hash, $existing->fresh()->password);
     }
 
     public function test_unverified_google_email_is_rejected(): void

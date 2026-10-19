@@ -43,10 +43,12 @@ const opcoesVinculo: { value: TipoVinculo; label: string }[] = [
 export default function Profile({
     mustVerifyEmail,
     status,
+    temSenha,
     identidade,
 }: {
     mustVerifyEmail: boolean;
     status?: string;
+    temSenha: boolean;
     identidade: IdentidadeInstitucional;
 }) {
     const { auth } = usePage<SharedData>().props;
@@ -54,6 +56,7 @@ export default function Profile({
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
         email: auth.user.email,
+        current_password: '',
         cpf: identidade.cpf ?? '',
         tipo_vinculo: identidade.tipo_vinculo ?? '',
         matricula_suap: identidade.matricula_suap ?? '',
@@ -165,6 +168,28 @@ export default function Profile({
 
                                 <InputError className="mt-2" message={errors.email} />
                             </div>
+
+                            {temSenha && data.email !== auth.user.email && (
+                                <div className="grid gap-2">
+                                    <Label htmlFor="current_password">Senha atual</Label>
+
+                                    <Input
+                                        id="current_password"
+                                        type="password"
+                                        value={data.current_password}
+                                        onChange={(e) => setData('current_password', e.target.value)}
+                                        autoComplete="current-password"
+                                        aria-describedby="current_password-ajuda"
+                                        className="bg-muted/30 mt-1 h-12 w-full"
+                                    />
+
+                                    <p id="current_password-ajuda" className="text-muted-foreground text-sm">
+                                        Pedimos a senha para confirmar que é você trocando o e-mail da conta.
+                                    </p>
+
+                                    <InputError className="mt-2" message={errors.current_password} />
+                                </div>
+                            )}
 
                             {mustVerifyEmail && auth.user.email_verified_at === null && (
                                 <div>
