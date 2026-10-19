@@ -144,7 +144,9 @@ class EventTest extends TestCase
 
     public function test_a_second_event_gets_the_next_edition_number(): void
     {
-        Event::factory()->create(['edition' => 1]);
+        // Rascunho não conta como "em cartaz": é o caso em que criar a
+        // próxima edição é permitido.
+        Event::factory()->draft()->create(['edition' => 1]);
 
         $this->actingAs($this->organizador())->post(route('painel.evento.store'), [
             'name' => 'Hackathon IFPR 2027',
@@ -153,6 +155,19 @@ class EventTest extends TestCase
         ]);
 
         $this->assertSame(2, Event::current()->edition);
+    }
+
+    public function test_a_direct_post_cannot_create_a_second_event_while_one_is_in_cartaz(): void
+    {
+        Event::factory()->create(['edition' => 1]);
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.evento.store'), ['name' => 'Outra edição', 'min_team_size' => 1, 'max_team_size' => 4])
+            ->assertRedirect(route('painel.evento.edit'))
+            ->assertSessionHas('erro');
+
+        $this->assertSame(1, Event::count());
+        $this->assertSame(1, Event::current()->edition);
     }
 
     public function test_a_participant_cannot_create_the_event(): void

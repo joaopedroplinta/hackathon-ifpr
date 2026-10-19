@@ -24,6 +24,10 @@ class ResultController extends Controller
     {
         $event ??= Event::current();
 
+        // O binding por slug resolve qualquer edição, inclusive rascunho, que
+        // por definição não aparece em página pública nenhuma.
+        abort_if($event && ! $event->status->isPublic(), 404);
+
         if (! $event || ! $event->resultsArePublished()) {
             return Inertia::render('publico/resultados', [
                 'publicado' => false,

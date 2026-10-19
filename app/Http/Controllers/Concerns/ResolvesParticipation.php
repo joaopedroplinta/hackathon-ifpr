@@ -21,6 +21,12 @@ trait ResolvesParticipation
         return Event::current() ?? throw new NotFoundHttpException('Nenhum evento publicado no momento.');
     }
 
+    /** Registro de edição anterior não é mexido por aqui: 404, como se não existisse. */
+    protected function ensureCurrentEvent(int $eventId): void
+    {
+        abort_unless($eventId === $this->currentEventOrFail()->id, 404);
+    }
+
     /**
      * A equipe do usuário autenticado, ou 403. Para as rotas de escrita, onde
      * "não tenho equipe" não é uma tela, é uma tentativa que não devia

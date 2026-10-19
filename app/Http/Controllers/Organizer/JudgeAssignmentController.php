@@ -167,6 +167,7 @@ class JudgeAssignmentController extends Controller
     public function reopenEvaluation(ReopenEvaluationRequest $request, JudgeAssignment $assignment): RedirectResponse
     {
         $this->authorize('reopen', $assignment);
+        $this->ensureCurrentEvent($assignment->event_id);
 
         app(ReopenEvaluation::class)->handle($assignment, $request->validated('reason'), $request->user());
 
@@ -211,11 +212,5 @@ class JudgeAssignmentController extends Controller
         $event->save();
 
         return to_route('painel.jurados.index')->with('sucesso', 'Quantidade de jurados por submissão atualizada.');
-    }
-
-    /** Registro de edição anterior não é mexido por aqui: 404, como se não existisse. */
-    private function ensureCurrentEvent(int $eventId): void
-    {
-        abort_unless($eventId === $this->currentEventOrFail()->id, 404);
     }
 }
