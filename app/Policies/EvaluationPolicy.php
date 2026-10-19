@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\EvaluationStatus;
+use App\Models\ConflictOfInterest;
 use App\Models\JudgeAssignment;
 use App\Models\User;
 
@@ -17,13 +18,20 @@ class EvaluationPolicy
 {
     public function view(User $user, JudgeAssignment $assignment): bool
     {
-        return $assignment->judge_id === $user->id && $assignment->submission->status->countsForEvaluation();
+        return $assignment->judge_id === $user->id
+            && $assignment->submission->status->countsForEvaluation()
+            && ! ConflictOfInterest::blocks($user->id, $assignment->submission->team_id);
     }
 
     /** Avaliação enviada só volta a ser editável por ação do organizador -- não pelo autosave. */
     public function update(User $user, JudgeAssignment $assignment): bool
     {
         if ($assignment->judge_id !== $user->id || ! $assignment->submission->status->countsForEvaluation()) {
+            return false;
+        }
+
+        // Conflito registrado depois da atribuição também fecha a avaliação.
+        if (ConflictOfInterest::blocks($user->id, $assignment->submission->team_id)) {
             return false;
         }
 

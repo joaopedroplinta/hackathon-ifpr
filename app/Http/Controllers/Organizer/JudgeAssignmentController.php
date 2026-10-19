@@ -184,6 +184,19 @@ class JudgeAssignmentController extends Controller
         $conflict->reason = $request->validated('reason');
         $conflict->save();
 
+        // Conflito bloqueia, não só avisa: atribuição que ainda não virou nota
+        // sai junto. Avaliação já enviada fica (registro histórico) e só pode
+        // ser reaberta ou removida pela organização.
+        $removidas = JudgeAssignment::query()
+            ->where('judge_id', $conflict->judge_id)
+            ->whereHas('submission', fn ($q) => $q->where('team_id', $conflict->team_id))
+            ->whereDoesntHave('evaluation', fn ($q) => $q->where('status', EvaluationStatus::Submitted))
+            ->get();
+
+        foreach ($removidas as $assignment) {
+            app(RemoveJudgeAssignment::class)->handle($assignment, $request->user());
+        }
+
         return to_route('painel.jurados.index')->with('sucesso', 'Conflito de interesse registrado.');
     }
 

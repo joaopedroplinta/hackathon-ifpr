@@ -3,8 +3,10 @@
 namespace App\Actions\Teams;
 
 use App\Actions\Results\RecomputeResults;
+use App\Enums\CertificateType;
 use App\Enums\SubmissionStatus;
 use App\Enums\TeamStatus;
+use App\Models\Certificate;
 use App\Models\Team;
 use App\Models\User;
 use App\Notifications\TeamDisqualified;
@@ -37,6 +39,16 @@ class DisqualifyTeam
 
             $team->status = TeamStatus::Disqualified;
             $team->save();
+
+            // Colocação foi concedida por um resultado que deixou de valer.
+            // Sem isto o certificado seguia validando na página pública.
+            $revogados = Certificate::query()
+                ->where('event_id', $team->event_id)
+                ->where('type', CertificateType::Colocacao->value)
+                ->whereNull('revoked_at')
+                ->whereIn('user_id', $team->activeMemberships()->pluck('user_id'))
+                ->update(['revoked_at' => now()]);
+            $propriedades['certificados_revogados'] = $revogados;
 
             if ($submission) {
                 $submission->status = SubmissionStatus::Disqualified;

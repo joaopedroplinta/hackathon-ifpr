@@ -53,6 +53,8 @@ class IssueCertificate
         $certificate->payload = $payload;
         $certificate->path = null;
         $certificate->issued_at = now();
+        // Reemitir é uma decisão nova da organização: vale de novo.
+        $certificate->revoked_at = null;
         $certificate->save();
 
         GenerateCertificatePdf::dispatch($certificate->id);

@@ -56,13 +56,8 @@ class StoreJudgeAssignmentRequest extends FormRequest
             $submission = $event ? Submission::forEvent($event)->find($this->input('submission_id')) : null;
 
             if ($judge && $submission) {
-                $temConflito = ConflictOfInterest::query()
-                    ->where('judge_id', $judge->id)
-                    ->where('team_id', $submission->team_id)
-                    ->exists();
-
-                if ($temConflito) {
-                    $validator->errors()->add('judge_id', 'Este jurado tem conflito de interesse registrado com a equipe desta submissão.');
+                if (ConflictOfInterest::blocks($judge->id, $submission->team_id)) {
+                    $validator->errors()->add('judge_id', 'Este jurado tem conflito de interesse com a equipe desta submissão (registrado ou por fazer parte dela).');
                 }
 
                 $jaAtribuido = JudgeAssignment::query()
