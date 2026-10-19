@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\TeamInvite;
+use App\Support\MarkdownText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -42,7 +43,7 @@ class TeamInviteNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject("Convite para a equipe {$team->name}")
             ->greeting('Olá!')
-            ->line("Você foi convidado para participar da equipe \"{$team->name}\" no {$team->event->name}.")
+            ->line('Você foi convidado para participar da equipe "'.MarkdownText::escape($team->name)."\" no {$team->event->name}.")
             ->action('Aceitar convite', $url)
             ->line('O convite expira em '.$this->invite->expires_at->timezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i').'.')
             ->line('Se você não esperava este e-mail, pode ignorá-lo.');

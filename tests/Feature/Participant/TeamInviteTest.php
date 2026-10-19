@@ -15,6 +15,7 @@ use App\Notifications\TeamInviteNotification;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -323,5 +324,116 @@ class TeamInviteTest extends TestCase
             $team->fresh()->activeMemberCount(),
             'A equipe nao pode ultrapassar max_team_size por convites pendentes.'
         );
+    }
+
+    public function test_an_unregistered_user_cannot_accept_an_invite(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [$team, $leader] = $this->equipeComLider($event);
+
+        $convidado = User::factory()->create(['email' => 'sem-inscricao@example.com', 'email_verified_at' => now()]);
+        $invite = TeamInvite::factory()->for($event)->for($team)->create([
+            'email' => 'sem-inscricao@example.com',
+            'invited_by' => $leader->id,
+        ]);
+
+        $this->actingAs($convidado)
+            ->get(route('team-invites.accept', $invite->token))
+            ->assertRedirect(route('teams.show'))
+            ->assertSessionHas('erro');
+
+        $this->assertNull($invite->fresh()->accepted_at);
+        $this->assertSame(0, TeamMember::where('user_id', $convidado->id)->count());
+    }
+
+    public function test_an_invite_cannot_be_accepted_after_the_registration_deadline(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [$team, $leader] = $this->equipeComLider($event);
+
+        $convidado = $this->inscrito($event);
+        $invite = TeamInvite::factory()->for($event)->for($team)->create([
+            'email' => $convidado->email,
+            'invited_by' => $leader->id,
+            'expires_at' => now()->addDays(3),
+        ]);
+
+        // O prazo vence depois de o convite ter sido emitido.
+        $event->update(['registration_closes_at' => now()->subHour()]);
+
+        $this->actingAs($convidado)
+            ->get(route('team-invites.accept', $invite->token))
+            ->assertRedirect(route('teams.show'))
+            ->assertSessionHas('erro');
+
+        $this->assertNull($invite->fresh()->accepted_at);
+        $this->assertSame(0, TeamMember::where('user_id', $convidado->id)->count());
+    }
+
+    public function test_pending_invites_are_capped_so_the_endpoint_is_not_a_mail_relay(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->aberto()->create(['max_team_size' => 3]);
+        [$team, $leader] = $this->equipeComLider($event);
+
+        foreach (range(1, 3) as $i) {
+            TeamInvite::factory()->for($event)->for($team)->create(['email' => "pendente{$i}@example.com"]);
+        }
+
+        $this->actingAs($leader)
+            ->post(route('team-invites.store'), ['email' => 'mais-um@example.com'])
+            ->assertForbidden();
+
+        $this->assertSame(3, TeamInvite::count());
+        Notification::assertNothingSent();
+    }
+
+    public function test_expired_and_accepted_invites_do_not_count_toward_the_cap(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->aberto()->create(['max_team_size' => 2]);
+        [$team, $leader] = $this->equipeComLider($event);
+
+        TeamInvite::factory()->for($event)->for($team)->create(['email' => 'velho@example.com', 'expires_at' => now()->subDay()]);
+        TeamInvite::factory()->for($event)->for($team)->create(['email' => 'aceito@example.com', 'accepted_at' => now()]);
+
+        $this->actingAs($leader)
+            ->post(route('team-invites.store'), ['email' => 'novo@example.com'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(1, TeamInvite::whereNull('accepted_at')->where('expires_at', '>', now())->count());
+    }
+
+    public function test_sending_invites_is_throttled(): void
+    {
+        Notification::fake();
+
+        $event = Event::factory()->aberto()->create(['max_team_size' => 50]);
+        [$team, $leader] = $this->equipeComLider($event);
+
+        foreach (range(1, 10) as $i) {
+            $this->actingAs($leader)->post(route('team-invites.store'), ['email' => "convidado{$i}@example.com"]);
+        }
+
+        $this->actingAs($leader)
+            ->post(route('team-invites.store'), ['email' => 'um-a-mais@example.com'])
+            ->assertStatus(429);
+    }
+
+    public function test_a_team_name_with_markdown_does_not_become_a_link_in_the_invite_email(): void
+    {
+        $event = Event::factory()->aberto()->create();
+        [$team, $leader] = $this->equipeComLider($event);
+        $team->update(['name' => '[Confirme seu acesso](https://evil.example) <b>x</b>']);
+
+        $invite = TeamInvite::factory()->for($event)->for($team)->create(['email' => 'vitima@example.com', 'invited_by' => $leader->id]);
+
+        $html = (string) (new TeamInviteNotification($invite))->toMail(new AnonymousNotifiable)->render();
+
+        $this->assertStringNotContainsString('href="https://evil.example"', $html);
+        $this->assertStringContainsString('Confirme seu acesso', $html, 'O nome deve aparecer como texto.');
+        $this->assertStringNotContainsString('<b>x</b>', $html);
     }
 }

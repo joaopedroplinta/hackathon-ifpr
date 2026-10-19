@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Team;
+use App\Support\MarkdownText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -28,7 +29,7 @@ class TeamReinstated extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject("Sua equipe {$this->team->name} foi reabilitada")
             ->greeting('Boa notícia!')
-            ->line("A organização do {$this->team->event->name} desfez a desclassificação da equipe \"{$this->team->name}\".")
+            ->line("A organização do {$this->team->event->name} desfez a desclassificação da equipe \"".MarkdownText::escape($this->team->name).'".')
             ->line("Motivo registrado: {$this->motivo}")
             ->line('A equipe volta à avaliação, ao ranking e à votação.')
             ->action('Ver minha equipe', route('teams.show'));
