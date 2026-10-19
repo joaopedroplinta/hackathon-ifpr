@@ -63,6 +63,7 @@ class ScheduleItemController extends Controller
     public function edit(ScheduleItem $item): Response
     {
         $this->authorize('update', $item);
+        $this->ensureCurrentEvent($item->event_id);
 
         return Inertia::render('admin/agenda/formulario', [
             'item' => $this->itemPayload($item, paraFormulario: true),
@@ -73,6 +74,7 @@ class ScheduleItemController extends Controller
     public function update(StoreScheduleItemRequest $request, ScheduleItem $item): RedirectResponse
     {
         $this->authorize('update', $item);
+        $this->ensureCurrentEvent($item->event_id);
 
         $item->update($request->validated());
 
@@ -83,6 +85,7 @@ class ScheduleItemController extends Controller
     public function publish(ScheduleItem $item): RedirectResponse
     {
         $this->authorize('update', $item);
+        $this->ensureCurrentEvent($item->event_id);
 
         $item->is_published = ! $item->is_published;
         $item->save();
@@ -96,6 +99,7 @@ class ScheduleItemController extends Controller
     public function destroy(ScheduleItem $item): RedirectResponse
     {
         $this->authorize('delete', $item);
+        $this->ensureCurrentEvent($item->event_id);
 
         $item->delete();
 

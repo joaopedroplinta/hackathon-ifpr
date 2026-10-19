@@ -169,16 +169,18 @@ class ResultTest extends TestCase
             ->assertInertia(fn ($page) => $page->where('evento.nome', $atual->name));
     }
 
-    public function test_a_draft_edition_via_slug_shows_the_not_published_state(): void
+    public function test_a_draft_edition_via_slug_is_not_found(): void
     {
         $rascunho = Event::factory()->draft()->create(['results_published_at' => null]);
 
-        $response = $this->get(route('resultados.show.edicao', $rascunho));
+        $this->get(route('resultados.show.edicao', $rascunho))->assertNotFound();
+    }
 
-        $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->where('publicado', false)
-            ->where('podio_geral', [])
-        );
+    public function test_a_draft_edition_never_exposes_a_published_podium(): void
+    {
+        // Resultado publicado e depois a edição voltou para rascunho.
+        $rascunho = Event::factory()->draft()->create(['results_published_at' => now()]);
+
+        $this->get(route('resultados.show.edicao', $rascunho))->assertNotFound();
     }
 }
