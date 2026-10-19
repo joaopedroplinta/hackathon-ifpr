@@ -1,5 +1,5 @@
 export type ValidacaoCertificado =
-    | { encontrado: false }
+    | { encontrado: false; revogado?: boolean }
     | {
           encontrado: true;
           nome: string;

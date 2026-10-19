@@ -15,6 +15,7 @@ class CertificateController extends Controller
     {
         $certificados = Certificate::query()
             ->where('user_id', request()->user()->id)
+            ->whereNull('revoked_at')
             ->with('event:id,name')
             ->orderByDesc('issued_at')
             ->get()
@@ -40,6 +41,7 @@ class CertificateController extends Controller
     {
         $this->authorize('download', $certificate);
 
+        abort_if($certificate->isRevoked(), 404);
         abort_unless($certificate->isReady(), 404);
         abort_unless(Storage::disk('local')->exists($certificate->path), 404);
 

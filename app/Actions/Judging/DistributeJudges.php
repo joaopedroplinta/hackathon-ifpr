@@ -4,10 +4,12 @@ namespace App\Actions\Judging;
 
 use App\Enums\JudgeAssignmentStatus;
 use App\Enums\Role;
+use App\Enums\TeamMemberStatus;
 use App\Models\ConflictOfInterest;
 use App\Models\Event;
 use App\Models\JudgeAssignment;
 use App\Models\Submission;
+use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -56,9 +58,18 @@ class DistributeJudges
             return ['criadas' => 0, 'sem_jurado_elegivel' => []];
         }
 
+        // Conflito registrado + a própria equipe (membro ativo). Mesma regra
+        // de ConflictOfInterest::blocks(), aqui em lote.
         $conflitosPorJurado = ConflictOfInterest::query()
             ->whereIn('judge_id', $jurados->pluck('id'))
-            ->get()
+            ->get(['judge_id', 'team_id'])
+            ->concat(
+                TeamMember::query()
+                    ->whereIn('user_id', $jurados->pluck('id'))
+                    ->where('status', TeamMemberStatus::Active)
+                    ->get(['user_id', 'team_id'])
+                    ->map(fn (TeamMember $m) => (object) ['judge_id' => $m->user_id, 'team_id' => $m->team_id])
+            )
             ->groupBy('judge_id')
             ->map(fn (Collection $c) => $c->pluck('team_id')->all());
 

@@ -26,6 +26,11 @@ class CertificateValidationController extends Controller
             return Inertia::render('publico/validar', ['encontrado' => false]);
         }
 
+        // Revogado não mostra nome nem dados: só confirma que não vale mais.
+        if ($certificate->isRevoked()) {
+            return Inertia::render('publico/validar', ['encontrado' => false, 'revogado' => true]);
+        }
+
         return Inertia::render('publico/validar', [
             'encontrado' => true,
             'nome' => $certificate->user->name,

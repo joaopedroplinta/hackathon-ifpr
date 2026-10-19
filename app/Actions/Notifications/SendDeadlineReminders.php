@@ -71,7 +71,10 @@ class SendDeadlineReminders
             ->filter(fn (Team $team) => ! $team->submission || $team->submission->isDraft());
 
         foreach ($equipes as $team) {
-            $usuarios = $team->activeMemberships->pluck('user');
+            // Integrante com conta apagada vem como nulo; enviar com ele
+            // lançava TypeError antes de gravar o marcador de "já enviado" e
+            // o agendador repetia a falha a cada 5 minutos.
+            $usuarios = $team->activeMemberships->pluck('user')->filter();
             Notification::send($usuarios, new SubmissionDeadlineReminder($team, $horasRestantes));
         }
 

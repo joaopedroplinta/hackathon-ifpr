@@ -27,6 +27,7 @@ class Certificate extends Model
             'type' => CertificateType::class,
             'payload' => 'array',
             'issued_at' => 'datetime',
+            'revoked_at' => 'datetime',
         ];
     }
 
@@ -47,6 +48,11 @@ class Certificate extends Model
     public function scopeForEvent(Builder $query, Event $event): Builder
     {
         return $query->where('event_id', $event->id);
+    }
+
+    public function isRevoked(): bool
+    {
+        return $this->revoked_at !== null;
     }
 
     public function isReady(): bool

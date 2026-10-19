@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Actions\Notifications\SendDeadlineReminders;
 use App\Models\Event;
 use Illuminate\Console\Command;
+use Throwable;
 
 /**
  * Sem argumento de evento, ao contrário de compute-results/issue-certificates:
@@ -29,7 +30,15 @@ class SendDeadlineRemindersCommand extends Command
         $eventos = Event::query()->whereNotNull('submission_deadline')->get();
 
         foreach ($eventos as $event) {
-            $enviados = $sendReminders->handle($event);
+            // Um evento com problema não impede o lembrete dos seguintes.
+            try {
+                $enviados = $sendReminders->handle($event);
+            } catch (Throwable $e) {
+                report($e);
+                $this->error("\"{$event->name}\": falha ao enviar lembretes ({$e->getMessage()}).");
+
+                continue;
+            }
 
             if ($enviados['enviados_24h'] > 0 || $enviados['enviados_1h'] > 0) {
                 $this->info("\"{$event->name}\": {$enviados['enviados_24h']} lembrete(s) de 24h, {$enviados['enviados_1h']} de 1h.");

@@ -33,7 +33,9 @@ class IssueEventCertificates
     {
         $emitidos = ['participacao' => 0, 'jurado' => 0, 'organizador' => 0, 'colocacao' => 0];
 
-        foreach ($event->registrations()->with('user')->get() as $registration) {
+        // Conta apagada (anonimizada) mantém a inscrição, mas `user` vem nulo:
+        // sem este filtro o lote inteiro abortava no primeiro caso.
+        foreach ($event->registrations()->with('user')->get()->filter(fn ($registration) => $registration->user !== null) as $registration) {
             if ($registration->user->attendances()->whereHas('checkpoint', fn ($q) => $q->where('event_id', $event->id))->exists()) {
                 $teamMember = TeamMember::query()
                     ->where('event_id', $event->id)
@@ -104,7 +106,7 @@ class IssueEventCertificates
                 continue;
             }
 
-            foreach ($team->activeMemberships as $membership) {
+            foreach ($team->activeMemberships->filter(fn ($membership) => $membership->user !== null) as $membership) {
                 $usuarios[$membership->user_id] = $membership->user;
                 $colocacoesPorUsuario[$membership->user_id] = [
                     ...($colocacoesPorUsuario[$membership->user_id] ?? []),
