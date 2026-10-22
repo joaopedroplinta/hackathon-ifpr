@@ -35,3 +35,8 @@ it('enforces the full CSP when the mode says so', function () {
     expect($response->headers->get('Content-Security-Policy'))->toContain("default-src 'self'")->toContain("frame-ancestors 'none'");
     expect($response->headers->has('Content-Security-Policy-Report-Only'))->toBeFalse();
 });
+
+it('sends HSTS only over HTTPS', function () {
+    $this->get('http://localhost/login')->assertHeaderMissing('Strict-Transport-Security');
+    $this->get('https://localhost/login')->assertHeader('Strict-Transport-Security', 'max-age=31536000');
+});

@@ -28,6 +28,12 @@ class SecurityHeaders
         // The QR reader (check-in) needs the camera on our own origin.
         $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
 
+        // HTTPS only: browsers ignore HSTS over plain HTTP. No includeSubDomains
+        // or preload: the railway.app parent domain is not ours.
+        if ($request->isSecure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
+        }
+
         match (config('app.csp_mode')) {
             'enforce' => $response->headers->set('Content-Security-Policy', $this->policy($nonce)),
             'report-only' => $response->headers->set('Content-Security-Policy-Report-Only', $this->policy($nonce)),
