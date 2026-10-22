@@ -10,6 +10,17 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.4] - 2026-10-22
+
+Correção de segurança apontada pelo Burp na homologação: o cabeçalho HSTS
+não era enviado.
+
+### Corrigido
+
+- `Strict-Transport-Security` passa a ser enviado apenas em requisições HTTPS,
+  sem `includeSubDomains` nem `preload`, porque o domínio `railway.app` não é
+  nosso (#209)
+
 ## [1.3.3] - 2026-10-18
 
 Correções de segurança da rodada de auditoria: contas, convites, edições
@@ -460,7 +471,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.3...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.4...HEAD
+[1.3.4]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.0...v1.3.1
