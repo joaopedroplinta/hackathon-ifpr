@@ -35,7 +35,8 @@ php artisan migrate               # migrations
 npm run dev                       # Vite (front)
 php artisan serve                 # app em :8000
 php artisan queue:work            # filas: e-mails e PDFs
-./vendor/bin/pest                 # testes
+./vendor/bin/pest                 # testes (back)
+npm test                          # Vitest (front)
 ./vendor/bin/pint                 # formatação PHP
 npm run lint                      # ESLint + Prettier
 
@@ -43,8 +44,8 @@ php artisan hackathon:compute-results {event}     # recalcula ranking
 php artisan hackathon:import-submissions {csv}    # plano B: importa Forms
 ```
 
-O CI (`.github/workflows/ci.yml`) roda Pint, ESLint, `tsc --noEmit` e Pest
-contra Postgres 17 a cada push e PR. Antes de abrir PR, rode os quatro
+O CI (`.github/workflows/ci.yml`) roda Pint, ESLint, `tsc --noEmit`, Vitest e Pest
+contra Postgres 17 a cada push e PR. Antes de abrir PR, rode os cinco
 localmente — é mais rápido que esperar o CI reprovar.
 
 `migrate:fresh`, `migrate:rollback` e `db:wipe` estão negados em

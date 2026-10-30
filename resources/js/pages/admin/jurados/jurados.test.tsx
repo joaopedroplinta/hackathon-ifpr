@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import { visits } from '@/test/inertia';
+import { type LinhaConflito } from '@/types/jurados';
 
 import JuradosIndex from './index';
 
@@ -15,7 +16,7 @@ const submissao = (jurados: Parameters<typeof JuradosIndex>[0]['submissoes'][num
 const props = {
     submissoes: [submissao()],
     jurados: [{ id: 3, nome: 'Dra. Silva', total_atribuicoes: 1 }],
-    conflitos: [],
+    conflitos: [] as LinhaConflito[],
     jurados_por_submissao: 2,
     opcoes: { equipes: [{ id: 5, nome: 'Os Devs' }] },
 };

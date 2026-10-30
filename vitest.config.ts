@@ -21,7 +21,7 @@ export default defineConfig({
             reporter: ['text-summary', 'lcov'],
             include: ['resources/js/**/*.{ts,tsx}'],
             // components/ui é saída do shadcn (não editar nem testar à mão).
-            exclude: ['resources/js/components/ui/**', 'resources/js/**/*.test.{ts,tsx}', 'resources/js/types/**'],
+            exclude: ['resources/js/components/ui/**', 'resources/js/**/*.test.{ts,tsx}', 'resources/js/test/**', 'resources/js/types/**'],
         },
     },
 });
