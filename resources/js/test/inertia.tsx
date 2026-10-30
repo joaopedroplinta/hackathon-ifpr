@@ -34,7 +34,7 @@ export function setPage(props: Record<string, unknown> = {}, url = '/') {
     const base = sharedPadrao();
     const auth = (props.auth ?? {}) as Partial<SharedData['auth']>;
     // `auth.user` também é mesclado: o teste muda só o campo que importa (ex.: email_verified_at).
-    page.props = { ...base, ...props, auth: { ...base.auth, ...auth, user: { ...base.auth.user, ...auth.user } } };
+    page.props = { ...base, ...props, auth: { ...base.auth, ...auth, user: auth.user === null ? null : { ...base.auth.user, ...auth.user } } };
     page.url = url;
     visits.length = 0;
 }
