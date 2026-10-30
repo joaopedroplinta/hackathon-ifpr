@@ -136,7 +136,8 @@ Laravel routes → Controller → Policy / Form Request → Action → Eloquent
 ## Qualidade
 
 ```bash
-./vendor/bin/pest       # testes de unidade e integração
+./vendor/bin/pest       # testes de unidade e integração (back)
+npm test                # Vitest (front); npm run test:coverage gera a cobertura
 ./vendor/bin/pint       # formatação PHP
 npm run lint:check      # ESLint
 npm run format:check    # Prettier
