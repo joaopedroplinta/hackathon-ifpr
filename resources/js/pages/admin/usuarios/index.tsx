@@ -1,8 +1,9 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle, Users as UsersIcon } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import Paginacao from '@/components/hackathon/paginacao';
 import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -220,28 +221,9 @@ export default function ListaUsuarios({ usuarios, filtros, opcoes_papeis: opcoes
                     </div>
                 )}
 
-                {usuarios.last_page > 1 && (
-                    <nav aria-label="Paginação" className="mt-4 flex flex-wrap gap-1">
-                        {usuarios.links.map((link, i) =>
-                            link.url ? (
-                                <Link
-                                    key={i}
-                                    href={link.url}
-                                    preserveScroll
-                                    aria-current={link.active ? 'page' : undefined}
-                                    className={`rounded-full px-3 py-2 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ) : (
-                                <span
-                                    key={i}
-                                    className="text-muted-foreground bg-card rounded-full px-3 py-2 text-sm opacity-50"
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ),
-                        )}
-                    </nav>
-                )}
+                <div className="mt-4">
+                    <Paginacao links={usuarios.links} lastPage={usuarios.last_page} />
+                </div>
             </motion.div>
         </AppLayout>
     );
