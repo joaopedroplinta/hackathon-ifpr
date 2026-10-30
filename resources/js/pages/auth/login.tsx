@@ -69,7 +69,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 type="email"
                                 required
                                 autoFocus
-                                tabIndex={1}
                                 autoComplete="email"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
@@ -83,7 +82,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <div className="flex items-center">
                                 <Label htmlFor="password">Senha</Label>
                                 {canResetPassword && (
-                                    <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
+                                    <TextLink href={route('password.request')} className="ml-auto text-sm">
                                         Esqueceu a senha?
                                     </TextLink>
                                 )}
@@ -91,7 +90,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <CampoSenha
                                 id="password"
                                 required
-                                tabIndex={2}
                                 autoComplete="current-password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
@@ -107,24 +105,20 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <Checkbox
                                 id="remember"
                                 name="remember"
-                                tabIndex={3}
                                 checked={data.remember}
                                 onCheckedChange={(checked) => setData('remember', checked === true)}
                             />
                             <Label htmlFor="remember">Manter conectado</Label>
                         </div>
 
-                        <Button type="submit" className="mt-2 h-12 w-full" tabIndex={4} disabled={processing}>
+                        <Button type="submit" className="mt-2 h-12 w-full" disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             {processing ? 'Entrando…' : 'Entrar'}
                         </Button>
                     </div>
 
                     <div className="text-muted-foreground text-center text-sm">
-                        Ainda não tem conta?{' '}
-                        <TextLink href={route('register')} tabIndex={5}>
-                            Cadastre-se
-                        </TextLink>
+                        Ainda não tem conta? <TextLink href={route('register')}>Cadastre-se</TextLink>
                     </div>
                 </form>
             </div>
