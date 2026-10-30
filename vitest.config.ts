@@ -13,7 +13,7 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         // Sem globals, o Testing Library não limpa o DOM sozinho entre os testes.
-        setupFiles: ['./vitest.setup.ts'],
+        setupFiles: ['./vitest.setup.tsx'],
         include: ['resources/js/**/*.test.{ts,tsx}'],
         coverage: {
             provider: 'v8',
