@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
+    <title>Certificado {{ $certificate->code }}</title>
     @php
         // A aparência é um snapshot salvo no payload no momento da emissão.
         // Assim, alterar logo ou cor do evento não reescreve documentos já emitidos.

@@ -24,6 +24,15 @@ class CertificatePdfTest extends TestCase
         return view('certificates.pdf', ['certificate' => $certificate->load(['event', 'user'])])->render();
     }
 
+    public function test_pdf_has_a_title_with_the_validation_code(): void
+    {
+        $certificate = Certificate::factory()->for(Event::factory()->create())->for(User::factory()->create())->create([
+            'type' => CertificateType::Participacao,
+        ]);
+
+        $this->assertStringContainsString('<title>Certificado '.$certificate->code.'</title>', $this->render($certificate));
+    }
+
     public function test_pdf_shows_formatted_cpf_and_matricula_for_aluno_ifpr(): void
     {
         $user = User::factory()->create([
