@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { vi } from 'vitest';
 
 import { type SharedData } from '@/types';
@@ -46,8 +46,10 @@ const registrar = (method: string, url: string, data?: unknown) => visits.push({
 
 function useForm<T extends Record<string, unknown>>(inicial: T) {
     const [data, setDataState] = useState<T>(inicial);
+    // `transform` do Inertia reescreve os dados na hora do envio; o mock faz o mesmo.
+    const transformador = useRef<(d: T) => unknown>((d) => d);
     const metodo = (method: string) => (url: string, opcoes?: { onSuccess?: () => void }) => {
-        registrar(method, url, data);
+        registrar(method, url, transformador.current(data));
         opcoes?.onSuccess?.();
     };
 
@@ -68,7 +70,9 @@ function useForm<T extends Record<string, unknown>>(inicial: T) {
         reset: () => setDataState(inicial),
         clearErrors: vi.fn(),
         setError: vi.fn(),
-        transform: vi.fn(),
+        transform: (fn: (d: T) => unknown) => {
+            transformador.current = fn;
+        },
         post: metodo('post'),
         put: metodo('put'),
         patch: metodo('patch'),
