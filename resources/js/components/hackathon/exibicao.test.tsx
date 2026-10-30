@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 
 import { setPage } from '@/test/inertia';
 
-import { ContainerPagina, CabecalhoPagina } from './pagina';
 import DocumentoPublico from './documento-publico';
 import { GoogleLoginButton } from './google-login-button';
 import HistoricoEnvios from './historico-envios';
+import { CabecalhoPagina, ContainerPagina } from './pagina';
 import Paginacao from './paginacao';
 import RodapePublico from './rodape-publico';
 import SecaoFormulario from './secao-formulario';

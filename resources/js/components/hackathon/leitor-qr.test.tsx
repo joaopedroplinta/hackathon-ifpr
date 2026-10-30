@@ -4,7 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import LeitorQr from './leitor-qr';
 
-const scanner = vi.hoisted(() => ({ instancias: [] as { cb: (r: { data: string }) => void; start: () => Promise<void>; stop: () => void; destroy: () => void }[] }));
+const scanner = vi.hoisted(() => ({
+    instancias: [] as { cb: (r: { data: string }) => void; start: () => Promise<void>; stop: () => void; destroy: () => void }[],
+}));
 
 vi.mock('qr-scanner', () => ({
     default: class {

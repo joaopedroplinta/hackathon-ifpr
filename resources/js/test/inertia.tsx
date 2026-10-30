@@ -86,11 +86,16 @@ export const router = {
 };
 
 export const inertiaMock = {
-    Link: ({ href, children, method: _m, as: _a, ...resto }: Record<string, unknown> & { href: string; children?: React.ReactNode }) => (
-        <a href={href} {...(resto as object)}>
-            {children}
-        </a>
-    ),
+    // Props próprias do Link do Inertia não existem em <a>: descartadas aqui para não vazar no DOM.
+    Link: ({ href, children, ...resto }: Record<string, unknown> & { href: string; children?: React.ReactNode }) => {
+        const { method, as, prefetch, preserveScroll, preserveState, replace, ...html } = resto;
+        void [method, as, prefetch, preserveScroll, preserveState, replace];
+        return (
+            <a href={href} {...(html as object)}>
+                {children}
+            </a>
+        );
+    },
     Head: () => null,
     usePage: () => page,
     useForm,

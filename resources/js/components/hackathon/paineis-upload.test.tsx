@@ -65,8 +65,8 @@ describe('PainelLogoCertificado', () => {
 
 describe('PainelArquivos', () => {
     const itens = [
-        { id: 7, nome: 'slides.pdf', tamanho: '1,2 MB', pode_remover: true },
-        { id: 8, nome: 'codigo.zip', tamanho: '3 MB', pode_remover: false },
+        { id: 7, nome: 'slides.pdf', tamanho: '1,2 MB', versao: 1, pode_remover: true },
+        { id: 8, nome: 'codigo.zip', tamanho: '3 MB', versao: 1, pode_remover: false },
     ];
 
     it('lista arquivos com download e remove só o que pode', async () => {
