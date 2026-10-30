@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Inbox, LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import Paginacao from '@/components/hackathon/paginacao';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
@@ -241,28 +242,9 @@ export default function ListaEquipes({ equipes, filtros, opcoes }: Props) {
                     </div>
                 )}
 
-                {equipes.last_page > 1 && (
-                    <nav aria-label="Paginação" className="mt-4 flex flex-wrap gap-1">
-                        {equipes.links.map((link, i) =>
-                            link.url ? (
-                                <Link
-                                    key={i}
-                                    href={link.url}
-                                    preserveScroll
-                                    aria-current={link.active ? 'page' : undefined}
-                                    className={`rounded-full px-3 py-2 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ) : (
-                                <span
-                                    key={i}
-                                    className="text-muted-foreground bg-card rounded-full px-3 py-2 text-sm opacity-50"
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ),
-                        )}
-                    </nav>
-                )}
+                <div className="mt-4">
+                    <Paginacao links={equipes.links} lastPage={equipes.last_page} />
+                </div>
 
                 <Dialog open={acao !== null} onOpenChange={(aberto) => !aberto && fechar()}>
                     <DialogContent>

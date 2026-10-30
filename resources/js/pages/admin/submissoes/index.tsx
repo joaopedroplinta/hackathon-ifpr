@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Download, FilePlus2, FileText, Inbox, Paperclip, TriangleAlert } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import Paginacao from '@/components/hackathon/paginacao';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -289,28 +290,9 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                     </div>
                 )}
 
-                {submissoes.last_page > 1 && (
-                    <nav aria-label="Paginação" className="mt-4 flex flex-wrap gap-1">
-                        {submissoes.links.map((link, i) =>
-                            link.url ? (
-                                <Link
-                                    key={i}
-                                    href={link.url}
-                                    preserveScroll
-                                    aria-current={link.active ? 'page' : undefined}
-                                    className={`rounded-full px-3 py-2 text-sm ${link.active ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ) : (
-                                <span
-                                    key={i}
-                                    className="text-muted-foreground bg-card rounded-full px-3 py-2 text-sm opacity-50"
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ),
-                        )}
-                    </nav>
-                )}
+                <div className="mt-4">
+                    <Paginacao links={submissoes.links} lastPage={submissoes.last_page} />
+                </div>
             </motion.div>
         </AppLayout>
     );
