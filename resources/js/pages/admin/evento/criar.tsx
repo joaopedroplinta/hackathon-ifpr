@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+import CamposEvento from '@/components/hackathon/campos-evento';
 import ResumoErro from '@/components/hackathon/resumo-erro';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -10,9 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { NovoEventoForm } from '@/types/evento-admin';
-
-const areaTexto =
-    'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 
 /**
  * Brasil não tem mais horário de verão desde 2019 -- América/São_Paulo é
@@ -85,173 +83,12 @@ export default function CriarEvento() {
 
                 <form onSubmit={enviar} className="border-border/70 bg-card/80 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-8" noValidate>
                     <ResumoErro erros={errors} />
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Nome do evento</Label>
-                        <Input
-                            id="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            placeholder="Ex.: Hackathon IFPR Pinhais 2026"
-                            maxLength={120}
-                            aria-describedby={errors.name ? 'name-erro' : undefined}
-                        />
-                        <InputError id="name-erro" message={errors.name} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="description">Tema / desafio</Label>
-                        <textarea
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
-                            rows={4}
-                            placeholder="Ex.: soluções inovadoras para mobilidade urbana"
-                            className={areaTexto}
-                            aria-describedby={errors.description ? 'description-erro' : undefined}
-                        />
-                        <InputError id="description-erro" message={errors.description} />
-                    </div>
-
-                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
-                        <legend className="bg-card px-2 text-sm font-medium">Inscrições</legend>
-                        <div className="grid gap-2">
-                            <Label htmlFor="registration_opens_at">Abre em</Label>
-                            <Input
-                                id="registration_opens_at"
-                                type="datetime-local"
-                                value={data.registration_opens_at}
-                                onChange={(e) => setData('registration_opens_at', e.target.value)}
-                                aria-describedby={errors.registration_opens_at ? 'registration_opens_at-erro' : undefined}
-                            />
-                            <InputError id="registration_opens_at-erro" message={errors.registration_opens_at} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="registration_closes_at">Fecha em</Label>
-                            <Input
-                                id="registration_closes_at"
-                                type="datetime-local"
-                                value={data.registration_closes_at}
-                                onChange={(e) => setData('registration_closes_at', e.target.value)}
-                                aria-describedby={errors.registration_closes_at ? 'registration_closes_at-erro' : undefined}
-                            />
-                            <InputError id="registration_closes_at-erro" message={errors.registration_closes_at} />
-                        </div>
-                    </fieldset>
-
-                    <fieldset className="border-border/70 bg-muted/20 grid gap-3 rounded-2xl border p-4">
-                        <legend className="bg-card px-2 text-sm font-medium">Dados solicitados na inscrição</legend>
-                        <p className="text-muted-foreground text-sm">Ative somente o que este evento realmente vai oferecer.</p>
-                        <label className="flex min-h-11 items-center gap-3 text-sm">
-                            <input
-                                type="checkbox"
-                                checked={data.collect_shirt_size}
-                                onChange={(e) => setData('collect_shirt_size', e.target.checked)}
-                                className="accent-primary size-4"
-                            />
-                            Solicitar tamanho de camiseta
-                        </label>
-                        <label className="flex min-h-11 items-center gap-3 text-sm">
-                            <input
-                                type="checkbox"
-                                checked={data.collect_dietary_notes}
-                                onChange={(e) => setData('collect_dietary_notes', e.target.checked)}
-                                className="accent-primary size-4"
-                            />
-                            Solicitar restrições alimentares
-                        </label>
-                    </fieldset>
-
-                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
-                        <legend className="bg-card px-2 text-sm font-medium">Evento</legend>
-                        <div className="grid gap-2">
-                            <Label htmlFor="starts_at">Início</Label>
-                            <Input
-                                id="starts_at"
-                                type="datetime-local"
-                                value={data.starts_at}
-                                onChange={(e) => setData('starts_at', e.target.value)}
-                                aria-describedby={errors.starts_at ? 'starts_at-erro' : undefined}
-                            />
-                            <InputError id="starts_at-erro" message={errors.starts_at} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="ends_at">Fim</Label>
-                            <Input
-                                id="ends_at"
-                                type="datetime-local"
-                                value={data.ends_at}
-                                onChange={(e) => setData('ends_at', e.target.value)}
-                                aria-describedby={errors.ends_at ? 'ends_at-erro' : undefined}
-                            />
-                            <InputError id="ends_at-erro" message={errors.ends_at} />
-                        </div>
-                    </fieldset>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="submission_deadline">Prazo de submissão</Label>
-                        <Input
-                            id="submission_deadline"
-                            type="datetime-local"
-                            value={data.submission_deadline}
-                            onChange={(e) => setData('submission_deadline', e.target.value)}
-                            aria-describedby={errors.submission_deadline ? 'submission_deadline-erro' : undefined}
-                        />
-                        <InputError id="submission_deadline-erro" message={errors.submission_deadline} />
-                    </div>
-
-                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
-                        <legend className="bg-card px-2 text-sm font-medium">Votação popular</legend>
-                        <div className="grid gap-2">
-                            <Label htmlFor="voting_opens_at">Abre em</Label>
-                            <Input
-                                id="voting_opens_at"
-                                type="datetime-local"
-                                value={data.voting_opens_at}
-                                onChange={(e) => setData('voting_opens_at', e.target.value)}
-                                aria-describedby={errors.voting_opens_at ? 'voting_opens_at-erro' : undefined}
-                            />
-                            <InputError id="voting_opens_at-erro" message={errors.voting_opens_at} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="voting_closes_at">Fecha em</Label>
-                            <Input
-                                id="voting_closes_at"
-                                type="datetime-local"
-                                value={data.voting_closes_at}
-                                onChange={(e) => setData('voting_closes_at', e.target.value)}
-                                aria-describedby={errors.voting_closes_at ? 'voting_closes_at-erro' : undefined}
-                            />
-                            <InputError id="voting_closes_at-erro" message={errors.voting_closes_at} />
-                        </div>
-                    </fieldset>
-
-                    <fieldset className="border-border/70 bg-muted/20 grid gap-4 rounded-2xl border p-4 sm:grid-cols-2">
-                        <legend className="bg-card px-2 text-sm font-medium">Tamanho da equipe</legend>
-                        <div className="grid gap-2">
-                            <Label htmlFor="min_team_size">Mínimo</Label>
-                            <Input
-                                id="min_team_size"
-                                type="number"
-                                min={1}
-                                value={data.min_team_size}
-                                onChange={(e) => setData('min_team_size', e.target.value)}
-                                aria-describedby={errors.min_team_size ? 'min_team_size-erro' : undefined}
-                            />
-                            <InputError id="min_team_size-erro" message={errors.min_team_size} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="max_team_size">Máximo</Label>
-                            <Input
-                                id="max_team_size"
-                                type="number"
-                                min={1}
-                                value={data.max_team_size}
-                                onChange={(e) => setData('max_team_size', e.target.value)}
-                                aria-describedby={errors.max_team_size ? 'max_team_size-erro' : undefined}
-                            />
-                            <InputError id="max_team_size-erro" message={errors.max_team_size} />
-                        </div>
-                    </fieldset>
+                    <CamposEvento
+                        data={data}
+                        errors={errors}
+                        setData={(campo, valor) => setData(campo, valor as never)}
+                        exemplos={{ nome: 'Ex.: Hackathon IFPR Pinhais 2026', tema: 'Ex.: soluções inovadoras para mobilidade urbana' }}
+                    />
 
                     <div className="grid gap-2">
                         <Label htmlFor="regulamento">Regulamento em PDF (opcional)</Label>
