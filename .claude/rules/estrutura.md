@@ -68,3 +68,9 @@ Métodos de regra moram no enum quando dependem só dele:
 
 `tests/Feature/` espelha a estrutura dos controllers.
 `tests/Unit/` para o que não precisa de HTTP nem banco: enums, cálculo, Support.
+
+**Front:** teste Vitest fica ao lado do arquivo (`campo-senha.test.tsx`). Página
+e componente com Inertia usam `@/test/inertia`: o mock já vem ligado em
+`vitest.setup.tsx`, `setPage()` define as props compartilhadas e `visits`
+registra o que foi enviado (post, patch, delete). Teste procura por papel e
+texto em português, como a pessoa usuária.

@@ -48,6 +48,9 @@ jobs:
       - name: TypeScript
         run: npx tsc --noEmit
 
+      - name: Vitest
+        run: npm test
+
   testes:
     name: Testes
     runs-on: ubuntu-latest
