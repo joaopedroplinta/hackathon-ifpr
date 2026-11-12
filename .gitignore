@@ -40,3 +40,6 @@ Thumbs.db
 *.sql.gz
 *.tar.gz
 submissoes-*.csv
+
+# Lagune audit state: findings must not reach the public repo
+/.lagune/

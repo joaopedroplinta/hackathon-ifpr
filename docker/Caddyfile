@@ -1,0 +1,28 @@
+# FrankenPHP for the Railway web service. Railway terminates TLS at its edge
+# and forwards plain HTTP to $PORT, so Caddy's automatic HTTPS and admin API
+# stay off. Security headers come from the SecurityHeaders middleware.
+{
+	admin off
+	auto_https off
+	frankenphp
+}
+
+:{$PORT:8080} {
+	root * /var/www/html/public
+	encode zstd gzip
+	header -Server
+
+	# Spelled out instead of php_server, which runs any *.php under public/.
+	# Only the front controller executes: real non-PHP files are served
+	# statically, everything else (a stray public/storage/x.php included)
+	# is rewritten to index.php and answered by Laravel.
+	route {
+		@static {
+			file {path}
+			not path */ *.php
+		}
+		file_server @static
+		rewrite * /index.php
+		php
+	}
+}

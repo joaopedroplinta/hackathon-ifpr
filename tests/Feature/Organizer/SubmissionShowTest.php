@@ -66,7 +66,7 @@ class SubmissionShowTest extends TestCase
             );
     }
 
-    /** SubmissionPolicy::view: participante de outra equipe não enxerga. */
+    /** SubmissionPolicy::viewAny: participante de outra equipe não enxerga. */
     public function test_a_participant_from_another_team_gets_forbidden(): void
     {
         $event = Event::factory()->create();
@@ -83,8 +83,11 @@ class SubmissionShowTest extends TestCase
             ->assertForbidden();
     }
 
-    /** A própria equipe pode ver -- SubmissionPolicy::view não é só para staff. */
-    public function test_a_member_of_the_team_can_see_its_own_submission(): void
+    /**
+     * Nem a própria equipe entra na tela do organizador: ela mostra quem
+     * decidiu e o motivo. A equipe vê a submissão em /submissao.
+     */
+    public function test_a_member_of_the_team_gets_forbidden_on_the_organizer_view(): void
     {
         $event = Event::factory()->create();
         $team = Team::factory()->for($event)->create();
@@ -96,7 +99,7 @@ class SubmissionShowTest extends TestCase
 
         $this->actingAs($membro)
             ->get(route('painel.submissions.show', $submission))
-            ->assertOk();
+            ->assertForbidden();
     }
 
     public function test_a_guest_is_redirected_to_login(): void

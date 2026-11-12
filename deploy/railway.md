@@ -36,7 +36,7 @@ Um projeto novo, com 5 recursos dentro dele:
 |---|---|---|
 | `Postgres` | Database (addon) | Banco — substitui o Supabase |
 | `Redis` | Database (addon) | Fila (`queue:work`) e, se decidido depois, cache |
-| `web` | Service (este repo) | `php artisan serve`, recebe tráfego HTTP |
+| `web` | Service (este repo) | FrankenPHP (como `www-data`), recebe tráfego HTTP |
 | `worker` | Service (este repo) | `php artisan queue:work` |
 | `scheduler` | Service (este repo) | `php artisan schedule:run`, via Cron Schedule do Railway |
 
@@ -122,9 +122,11 @@ redigitar tudo três vezes.
 7. **Settings → Deploy → Healthcheck Path**: `/up`, **Healthcheck
    Timeout**: `300`. Só neste serviço — é dashboard, não `railway.json`.
 
-CMD do `Dockerfile` já serve sem alteração: `storage:link` + `migrate
---force` + `php artisan serve --port ${PORT}` — o Railway injeta `$PORT`
-automaticamente, igual a Render.
+CMD do `Dockerfile` já serve sem alteração (sem Custom Start Command neste
+serviço): o `ENTRYPOINT` (`app-entrypoint`) entra como root só para passar o
+volume de §7 para `www-data` e cai para `www-data` com `su-exec`; depois o
+CMD roda `migrate --force` e o FrankenPHP em `${PORT}` — o Railway injeta
+`$PORT` automaticamente.
 
 ## 4. Serviço `worker`
 
@@ -141,8 +143,10 @@ automaticamente, igual a Render.
    Laravel — bug real já visto em produção (Épico 13 do backlog).
 3. **Settings → Deploy → Custom Start Command**:
    ```
-   php artisan queue:work --tries=3 --max-time=3600
+   app-entrypoint php artisan queue:work --tries=3 --max-time=3600
    ```
+   O prefixo `app-entrypoint` importa: no Railway o Custom Start Command
+   substitui o `ENTRYPOINT` da imagem, e sem ele o processo roda como root.
    Sem `storage:link`/`migrate` aqui — só o `web` roda isso, pra não ter
    dois serviços tentando migrar ao mesmo tempo no boot.
 4. **Networking**: não gerar domínio — este serviço não recebe HTTP.
@@ -154,8 +158,9 @@ automaticamente, igual a Render.
    `APP_URL`**, pelo mesmo motivo do passo 2 do `worker`.
 3. **Settings → Deploy → Custom Start Command**:
    ```
-   php artisan schedule:run
+   app-entrypoint php artisan schedule:run
    ```
+   Mesmo motivo do prefixo `app-entrypoint` do `worker`.
 4. **Settings → Cron Schedule**: `* * * * *` (a cada minuto — é assim que
    o agendador do Laravel funciona: `schedule:run` roda toda vez e decide
    sozinho se algo precisa disparar naquele minuto, não fica em loop).
@@ -203,10 +208,10 @@ container e some a cada novo deploy; com ele, sobrevive.
 
 Confirmar que pegou: nos logs do serviço (`railway logs --service
 hackathon-ifpr`) deve aparecer `Mounting volume on: ...` antes do boot do
-Laravel. Não montar o volume num caminho que ainda não existe na imagem —
-o Railway cria o diretório, mas o dono/permissão do mount pode não bater
-com o que o `Dockerfile` preparou (`chmod -R a+w storage`) se a imagem
-mudar de usuário no futuro.
+Laravel. O Railway monta o volume com dono root; o processo web roda como
+`www-data`, então o `app-entrypoint` (`docker/entrypoint.sh`) faz `chown -R`
+do mount a cada boot antes de largar o root. Não use `RAILWAY_RUN_UID=0`:
+ele resolve a permissão rodando tudo como root.
 
 ## 8. Ambientes: homologação → produção
 

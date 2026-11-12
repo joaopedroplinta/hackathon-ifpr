@@ -6,6 +6,8 @@ public/build
 public/hot
 public/storage
 storage/app/private
+# Local pg_dump archives (scripts/backup.sh): personal data, never in an image.
+backups
 storage/logs
 storage/framework/cache/*
 storage/framework/sessions/*
@@ -20,5 +22,7 @@ coverage
 tests
 docs
 .claude
+# Lagune audit memory: local only, never in an image.
+.lagune
 .idea
 .vscode

@@ -20,7 +20,7 @@ use Illuminate\Auth\Access\Response;
  */
 class SubmissionPolicy
 {
-    /** Listagem do painel do organizador. */
+    /** Painel do organizador: listagem e detalhe (só staff). */
     public function viewAny(User $user): bool
     {
         return $user->isStaff();

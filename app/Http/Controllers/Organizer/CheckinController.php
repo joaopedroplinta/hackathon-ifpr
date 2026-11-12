@@ -35,7 +35,8 @@ class CheckinController extends Controller
         $this->authorize('create', Attendance::class);
 
         $event = $this->currentEventOrFail();
-        $busca = trim((string) $request->query('busca', ''));
+        // A list-shaped ?busca[x]=y falls back to no filter instead of a 500.
+        $busca = is_string($busca = $request->query('busca')) ? trim($busca) : '';
 
         return Inertia::render('admin/checkin/index', [
             'checkpoints' => $this->checkpointsPayload($event),
