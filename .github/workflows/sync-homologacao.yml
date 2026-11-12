@@ -14,13 +14,16 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    # The only job that pushes; write scope stays here, not workflow-wide.
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: homologacao
           fetch-depth: 0
