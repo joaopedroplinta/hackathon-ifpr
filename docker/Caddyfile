@@ -11,5 +11,18 @@
 	root * /var/www/html/public
 	encode zstd gzip
 	header -Server
-	php_server
+
+	# Spelled out instead of php_server, which runs any *.php under public/.
+	# Only the front controller executes: real non-PHP files are served
+	# statically, everything else (a stray public/storage/x.php included)
+	# is rewritten to index.php and answered by Laravel.
+	route {
+		@static {
+			file {path}
+			not path */ *.php
+		}
+		file_server @static
+		rewrite * /index.php
+		php
+	}
 }

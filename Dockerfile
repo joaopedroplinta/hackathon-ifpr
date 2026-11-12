@@ -78,8 +78,11 @@ RUN composer dump-autoload --optimize $([ "$INSTALL_DEV" = 1 ] || echo --no-dev)
 # so it goes back to root. The public/storage link is made here with ln
 # (what storage:link does) so public/ stays root-owned. The binding
 # capability is dropped: $PORT is above 1024, and a file capability breaks
-# exec under no-new-privileges.
+# exec under no-new-privileges. Composer's dist archives come out with
+# 0777 directories (unzip keeps the archive's modes), so every world-writable
+# bit under the app root is cleared: www-data writes only where it owns.
 RUN chown root:root /var/www/html && chmod 755 /var/www/html \
+    && find /var/www/html -xdev -perm -0002 ! -type l -exec chmod o-w {} + \
     && chown -R www-data:www-data storage bootstrap/cache /data/caddy /config/caddy \
     && ln -sfn /var/www/html/storage/app/public public/storage \
     && setcap -r /usr/local/bin/frankenphp

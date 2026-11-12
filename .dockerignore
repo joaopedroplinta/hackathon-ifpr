@@ -22,5 +22,7 @@ coverage
 tests
 docs
 .claude
+# Lagune audit memory: local only, never in an image.
+.lagune
 .idea
 .vscode
