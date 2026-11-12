@@ -22,7 +22,8 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $busca = trim((string) $request->query('busca', ''));
+        // A list-shaped ?busca[x]=y falls back to no filter instead of a 500.
+        $busca = is_string($busca = $request->query('busca')) ? trim($busca) : '';
 
         $usuarios = User::query()
             ->when($busca !== '', fn ($query) => $query->where(

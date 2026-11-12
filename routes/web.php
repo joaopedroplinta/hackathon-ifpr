@@ -79,7 +79,10 @@ Route::get('projetos', [SubmissionShowcaseController::class, 'index'])->name('pr
 // Validação pública de certificado. whereUuid: código mal formado devolve
 // 404 de rota, não erro de sintaxe do Postgres -- mesmo motivo do
 // checkin/{user:qr_token} (ver comentário lá embaixo).
+// Own prefix: a guest throttle keys on the IP, and the campus NAT must not
+// spend its register/forgot-password budget on certificate checks.
 Route::get('validar/{code}', [CertificateValidationController::class, 'show'])
+    ->middleware('throttle:30,1,validar')
     ->name('certificates.validate')
     ->whereUuid('code');
 
@@ -118,7 +121,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // de fora (e-mail) e o token já identifica o convite -- ver
     // TeamInviteController.
     Route::post('equipe/convites', [TeamInviteController::class, 'store'])->middleware('throttle:10,1')->name('team-invites.store');
-    Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->name('team-invites.accept');
+    Route::get('convites/{invite:token}/aceitar', [TeamInviteController::class, 'accept'])->middleware('throttle:10,1')->name('team-invites.accept');
 
     // Submissao do projeto. Salvar rascunho e enviar sao rotas separadas
     // porque as exigencias sao outras: rascunho aceita campo em branco, o
@@ -220,8 +223,10 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
     Route::get('submissoes/lancar', [ManualSubmissionController::class, 'create'])->name('painel.submissions.record.create');
     Route::post('submissoes/lancar', [ManualSubmissionController::class, 'store'])->name('painel.submissions.record.store');
 
+    // Staff-only: this view shows organizer decisions and their reasons.
+    // Team members see their own submission at /submissao, not here.
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
-        ->can('view', 'submission')
+        ->can('viewAny', Submission::class)
         ->name('painel.submissions.show');
 
     // Decisão sobre envio fora do prazo -- autorização no controller (decideLate).
