@@ -5,7 +5,7 @@
 # worker, scheduler) — só muda o "Custom Start Command" de cada um no
 # painel, ver deploy/railway.md.
 
-FROM node:20-alpine AS assets
+FROM node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS assets
 
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -19,7 +19,7 @@ ARG VITE_APP_NAME="Hackathon IFPR"
 ENV VITE_APP_NAME=$VITE_APP_NAME
 RUN npm run build
 
-FROM php:8.4-cli-alpine AS app
+FROM php:8.4-cli-alpine@sha256:b9014f1cc1983827459faed83b315a40ead9860bdadefc042b31f1540ef8c746 AS app
 
 RUN apk add --no-cache \
     postgresql-dev \
@@ -46,8 +46,20 @@ RUN { \
     echo 'opcache.memory_consumption=128'; \
     echo 'opcache.max_accelerated_files=20000'; \
     } > /usr/local/etc/php/conf.d/opcache-prod.ini
+# Production runtime: no PHP version banner, errors to the log (stderr)
+# instead of the response. Upload limits sit above the largest Form Request
+# limit (25 MB submission file) so oversized files reach Laravel's
+# validation and get a Portuguese message instead of being dropped by PHP.
+RUN { \
+    echo 'expose_php=Off'; \
+    echo 'display_errors=Off'; \
+    echo 'display_startup_errors=Off'; \
+    echo 'log_errors=On'; \
+    echo 'upload_max_filesize=30M'; \
+    echo 'post_max_size=32M'; \
+    } > /usr/local/etc/php/conf.d/zz-production.ini
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2@sha256:ca11f643d7791ebdd90a34fc20caf11380d434007ae539a9ea75cd9212e13dca /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
