@@ -15,6 +15,11 @@ updates:
     groups:
       composer:
         update-types: [minor, patch]
+    ignore:
+      # Inertia v2 is a locked decision (PLANO.md); the Laravel adapter and
+      # the React client must move together, so a v3 bump is planned by hand.
+      - dependency-name: inertiajs/inertia-laravel
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: npm
     directory: /
@@ -23,9 +28,16 @@ updates:
     groups:
       npm:
         update-types: [minor, patch]
+    ignore:
+      - dependency-name: "@inertiajs/*"
+        update-types: [version-update:semver-major]
 
   # Base images are pinned by digest in the Dockerfile; this keeps them patched.
   - package-ecosystem: docker
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # Dependabot proposes odd (non-LTS) Node majors; move to the next LTS by hand.
+      - dependency-name: node
+        update-types: [version-update:semver-major]
