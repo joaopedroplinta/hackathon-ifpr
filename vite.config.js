@@ -15,9 +15,6 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
-    esbuild: {
-        jsx: 'automatic',
-    },
     server: {
         // permite abrir o dev server pelo IP da rede local (celular no
         // mesmo wi-fi), não só localhost.
