@@ -49,6 +49,8 @@ export default [
             // copias completas do projeto. Sem isto o eslint varre tudo de
             // novo, node_modules incluso.
             '.claude/worktrees',
+            // Scripts Node (.cjs) de skills: nao sao codigo do app.
+            '.claude/skills',
         ],
     },
     prettier, // Turn off all rules that might conflict with Prettier
