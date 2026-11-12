@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.svg" alt="Logo do Hackathon IFPR" width="96">
+</p>
+
 # Hackathon IFPR
 
 [![CI](https://github.com/joaopedroplinta/hackathon-ifpr/actions/workflows/ci.yml/badge.svg)](https://github.com/joaopedroplinta/hackathon-ifpr/actions/workflows/ci.yml)
