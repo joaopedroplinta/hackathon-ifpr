@@ -3,7 +3,7 @@
 # the three Railway services (web, worker, scheduler) -- only each one's
 # "Custom Start Command" changes, see deploy/railway.md.
 
-FROM node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS assets
+FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS assets
 
 WORKDIR /app
 COPY package.json package-lock.json ./
