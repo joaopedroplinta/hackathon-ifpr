@@ -160,7 +160,7 @@ class SubmissionController extends Controller
      */
     public function show(Request $request, Submission $submission): Response
     {
-        $this->authorize('view', $submission);
+        $this->authorize('viewAny', Submission::class);
 
         $submission->load(['team:id,name,slug,track_id,status', 'team.track:id,name,color']);
 

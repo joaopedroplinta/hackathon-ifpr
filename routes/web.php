@@ -220,8 +220,10 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
     Route::get('submissoes/lancar', [ManualSubmissionController::class, 'create'])->name('painel.submissions.record.create');
     Route::post('submissoes/lancar', [ManualSubmissionController::class, 'store'])->name('painel.submissions.record.store');
 
+    // Staff-only: this view shows organizer decisions and their reasons.
+    // Team members see their own submission at /submissao, not here.
     Route::get('submissoes/{submission}', [OrganizerSubmissionController::class, 'show'])
-        ->can('view', 'submission')
+        ->can('viewAny', Submission::class)
         ->name('painel.submissions.show');
 
     // Decisão sobre envio fora do prazo -- autorização no controller (decideLate).
