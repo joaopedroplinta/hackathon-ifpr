@@ -2,18 +2,19 @@
 
 namespace App\Jobs;
 
+use App\Actions\Certificates\RenderCertificatePdf;
 use App\Models\Certificate;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * PDF sempre em fila -- .claude/rules e PLANO.md são explícitos: nada
  * bloqueia o request nem o comando de emissão em lote esperando o dompdf.
+ * Exceção: o download renderiza de novo quando o arquivo não está no disco
+ * do web (worker e web não compartilham disco em produção, issue #222).
  */
 class GenerateCertificatePdf implements ShouldQueue
 {
@@ -24,23 +25,15 @@ class GenerateCertificatePdf implements ShouldQueue
         //
     }
 
-    public function handle(): void
+    public function handle(RenderCertificatePdf $render): void
     {
-        $certificate = Certificate::with(['event', 'user'])->find($this->certificateId);
+        $certificate = Certificate::find($this->certificateId);
 
         if (! $certificate) {
             return;
         }
 
-        // Nunca foi definido antes -- sem isso, o dompdf cai no padrão dele
-        // (carta, retrato), errado pro formato usual de certificado.
-        $pdf = Pdf::loadView('certificates.pdf', ['certificate' => $certificate])
-            ->setPaper('a4', 'landscape');
-
-        $path = "certificates/{$certificate->event_id}/{$certificate->code}.pdf";
-        Storage::disk('local')->put($path, $pdf->output());
-
-        $certificate->path = $path;
+        $certificate->path = $render->handle($certificate);
         $certificate->save();
     }
 }

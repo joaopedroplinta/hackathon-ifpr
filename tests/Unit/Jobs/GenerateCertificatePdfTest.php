@@ -23,7 +23,7 @@ class GenerateCertificatePdfTest extends TestCase
             ->for(User::factory()->create())
             ->create();
 
-        (new GenerateCertificatePdf($certificate->id))->handle();
+        app()->call([new GenerateCertificatePdf($certificate->id), 'handle']);
 
         $certificate->refresh();
 
