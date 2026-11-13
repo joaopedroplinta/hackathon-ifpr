@@ -10,6 +10,76 @@ bump manual a cada tag.
 
 ## [Não lançado]
 
+## [1.3.5] - 2026-11-13
+
+Fecha a auditoria de segurança feita com o Lagune e põe as dependências em dia: o
+container de produção passa a rodar FrankenPHP sem root, o front vai para o
+Vite 8, e o download do certificado em produção volta a funcionar.
+
+Atenção no deploy (Railway, produção, **depois** do deploy desta versão):
+
+- `worker`: `app-entrypoint php artisan queue:work --tries=3 --max-time=3600 --memory=224`
+- `scheduler`: `app-entrypoint php artisan schedule:run`
+- Restart policy `On Failure`/5 no painel dos três serviços, porque o
+  `railway.json` deixou de existir
+
+Os três itens já foram aplicados em produção.
+
+### Corrigido
+
+- Página de reset de senha não dá mais 500 com `?email[x]=y`, e as buscas
+  do painel de usuários e do check-in ignoram parâmetro em formato de lista (#224)
+- Detalhe da submissão no painel do organizador passa a ser só para staff:
+  um integrante da equipe via o nome de quem decidiu e o motivo interno (#224)
+- Limite de tentativas em confirmar senha, troca de senha, edição e exclusão
+  de conta, validação de certificado e aceite de convite (#224)
+- Download do certificado em produção dava 404: o worker gravava o PDF no
+  disco dele, sem o volume. Agora o download gera o PDF no `web` quando o
+  arquivo não está lá (#222, #248)
+- Emitir certificados para o evento todo estourava a memória do PHP no
+  dompdf. `memory_limit` sobe para 256M, e o worker recicla em 224 MB (#248)
+- `hackathon:demo` apaga do disco os arquivos da edição de demonstração,
+  e só depois do commit do reset (#248)
+- `tabIndex` positivos no login e no cadastro, `<title>` no PDF do
+  certificado e erro tratado na inicialização do Inertia (#210)
+
+### Segurança
+
+- Container de produção: FrankenPHP no lugar do `php artisan serve`, processo
+  como `www-data` sem capabilities, nenhum caminho com escrita liberada para
+  todos, PHP executa só `public/index.php`, `php.ini` de produção
+  (`expose_php` e `display_errors` desligados) e imagens base fixadas por
+  digest (#224)
+- Actions do CI fixadas por SHA, token com `contents: read` por padrão e
+  Dependabot para actions, composer, npm e docker (#223)
+- Dependências com alertas publicados atualizadas (`laravel/framework`,
+  `symfony/*`, `phpseclib`, `follow-redirects`, `vite`, `qs`), e `minimatch`
+  forçado no 11 sob o `typescript-eslint`. `composer audit` e `npm audit`
+  sem nenhum alerta (#224, #248)
+- Relatórios da revisão de segurança de outubro em `docs/` (#221)
+
+### Alterado
+
+- Vite 8, com `@vitejs/plugin-react` 6, `laravel-vite-plugin` 3 e
+  `@tailwindcss/vite` 4.3; estágio de assets do Docker no Node 24 LTS (#240)
+- Lotes do Dependabot: grupos composer e npm, `laravel/tinker` 3,
+  `concurrently` 10, actions novas, `@inertiajs/react` 2.3, `globals` 17,
+  `eslint-plugin-react-hooks` 7 e `typescript` 5.9 (#240, #246, #247).
+  Majors de Inertia, TypeScript, ESLint e Node ficam ignorados até haver
+  plano ou suporte dos plugins
+- `railway.json` removido antes do fim do Config as Code no Railway
+  (2026-12-01); o Dockerfile é detectado sozinho e a restart policy vive no
+  painel (#248)
+- Campos do formulário de evento e paginação compartilhados no front (#214)
+- Logo do projeto no README e imagem de prévia social (#217)
+
+### Testes
+
+- Front inteiro coberto com Vitest e Testing Library: 366 testes em 50
+  arquivos (#211)
+- Pest para os controllers com menor cobertura (#213); a suíte chega a 687
+  testes
+
 ## [1.3.4] - 2026-10-22
 
 Correção de segurança apontada pelo Burp na homologação: o cabeçalho HSTS
@@ -471,7 +541,8 @@ e do organizador, do cadastro ao resultado publicado.
 - Número de versão exibido no rodapé da sidebar (`v0.6.0` em produção,
   `v0.6.0-dev+<commit>` fora dela)
 
-[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.4...HEAD
+[Não lançado]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.5...HEAD
+[1.3.5]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/joaopedroplinta/hackathon-ifpr/compare/v1.3.1...v1.3.2
