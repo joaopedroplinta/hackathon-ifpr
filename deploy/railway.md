@@ -143,10 +143,13 @@ CMD roda `migrate --force` e o FrankenPHP em `${PORT}` — o Railway injeta
    Laravel — bug real já visto em produção (Épico 13 do backlog).
 3. **Settings → Deploy → Custom Start Command**:
    ```
-   app-entrypoint php artisan queue:work --tries=3 --max-time=3600
+   app-entrypoint php artisan queue:work --tries=3 --max-time=3600 --memory=224
    ```
    O prefixo `app-entrypoint` importa: no Railway o Custom Start Command
    substitui o `ENTRYPOINT` da imagem, e sem ele o processo roda como root.
+   `--memory=224` acompanha o `memory_limit=256M` do PHP: o padrão (128)
+   faz o worker se encerrar no meio de uma emissão de certificados, porque
+   o dompdf acumula ~120 MB, e o Railway só reinicia 5 vezes.
    Sem `storage:link`/`migrate` aqui — só o `web` roda isso, pra não ter
    dois serviços tentando migrar ao mesmo tempo no boot.
 4. **Networking**: não gerar domínio — este serviço não recebe HTTP.
