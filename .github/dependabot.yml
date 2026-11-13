@@ -31,6 +31,15 @@ updates:
     ignore:
       - dependency-name: "@inertiajs/*"
         update-types: [version-update:semver-major]
+      # Blocked by the lint tool chain: typescript-eslint caps typescript
+      # below 6.1 and eslint-plugin-react caps eslint at 9. Revisit when
+      # those plugins support the new majors.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
+      - dependency-name: "@eslint/js"
+        update-types: [version-update:semver-major]
 
   # Base images are pinned by digest in the Dockerfile; this keeps them patched.
   - package-ecosystem: docker
