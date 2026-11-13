@@ -44,7 +44,11 @@ RUN { \
 # instead of the response. Upload limits sit above the largest Form Request
 # limit (25 MB submission file) so oversized files reach Laravel's
 # validation and get a Portuguese message instead of being dropped by PHP.
+# memory_limit: dompdf keeps ~8 MB per rendered certificate in a long-lived
+# process and plateaus near 120 MB, past PHP's 128 MB default, so a batch
+# issue in queue:work (or the sync queue on homologação) ran out of memory.
 RUN { \
+    echo 'memory_limit=256M'; \
     echo 'expose_php=Off'; \
     echo 'display_errors=Off'; \
     echo 'display_startup_errors=Off'; \

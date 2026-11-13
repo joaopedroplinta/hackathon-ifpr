@@ -99,14 +99,14 @@ redigitar tudo três vezes.
 ## 3. Serviço `web`
 
 1. **New → GitHub Repo**, conectar `joaopedroplinta/hackathon-ifpr`,
-   branch `main`. O Railway detecta o `Dockerfile` sozinho e lê
-   `railway.json` pra política de restart — mas **não** pra healthcheck:
-   `railway.json` é compartilhado pelos três serviços deste repositório
-   (`web`, `worker`, `scheduler`), e um `healthcheckPath` ali viraria
-   herança automática pro `worker`/`scheduler` também, que não servem HTTP
-   nenhum e nunca passariam no healthcheck (loop de crash já visto em
-   produção — ver Épico 13 do backlog). Healthcheck é configurado só no
-   dashboard deste serviço.
+   branch `main`. O Railway detecta o `Dockerfile` da raiz sozinho. Não
+   há mais `railway.json`: o Railway descontinuou o Config as Code (corte
+   em 2026-12-01), então tudo fica no dashboard de cada serviço.
+   **Settings → Deploy → Restart Policy**: `On Failure`, máximo `5`, nos
+   três serviços (`web`, `worker`, `scheduler`). Healthcheck só neste
+   serviço: o `worker`/`scheduler` não servem HTTP nenhum e nunca
+   passariam no healthcheck (loop de crash já visto em produção — ver
+   Épico 13 do backlog).
 2. Adicionar as Shared Variables do passo 2.
 3. **Networking → Generate Domain** pra ganhar uma URL `*.up.railway.app`.
 4. Voltar nas variáveis (agora só neste serviço, não precisa propagar pros
@@ -120,7 +120,7 @@ redigitar tudo três vezes.
    Checks Pass" que a Render tinha: o Railway só builda depois que
    `ci.yml` (Pint, ESLint, Prettier, tsc, Pest) reportar sucesso pro commit.
 7. **Settings → Deploy → Healthcheck Path**: `/up`, **Healthcheck
-   Timeout**: `300`. Só neste serviço — é dashboard, não `railway.json`.
+   Timeout**: `300`. Só neste serviço.
 
 CMD do `Dockerfile` já serve sem alteração (sem Custom Start Command neste
 serviço): o `ENTRYPOINT` (`app-entrypoint`) entra como root só para passar o
@@ -143,10 +143,13 @@ CMD roda `migrate --force` e o FrankenPHP em `${PORT}` — o Railway injeta
    Laravel — bug real já visto em produção (Épico 13 do backlog).
 3. **Settings → Deploy → Custom Start Command**:
    ```
-   app-entrypoint php artisan queue:work --tries=3 --max-time=3600
+   app-entrypoint php artisan queue:work --tries=3 --max-time=3600 --memory=224
    ```
    O prefixo `app-entrypoint` importa: no Railway o Custom Start Command
    substitui o `ENTRYPOINT` da imagem, e sem ele o processo roda como root.
+   `--memory=224` acompanha o `memory_limit=256M` do PHP: o padrão (128)
+   faz o worker se encerrar no meio de uma emissão de certificados, porque
+   o dompdf acumula ~120 MB, e o Railway só reinicia 5 vezes.
    Sem `storage:link`/`migrate` aqui — só o `web` roda isso, pra não ter
    dois serviços tentando migrar ao mesmo tempo no boot.
 4. **Networking**: não gerar domínio — este serviço não recebe HTTP.

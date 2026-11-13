@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Participant;
 
+use App\Actions\Certificates\RenderCertificatePdf;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\Storage;
@@ -37,14 +38,19 @@ class CertificateController extends Controller
      * Único caminho de saída do PDF -- storage fora do webroot, sem link
      * direto (.claude/rules/security.md, mesmo padrão de SubmissionFile).
      */
-    public function download(Certificate $certificate): StreamedResponse
+    public function download(Certificate $certificate, RenderCertificatePdf $render): StreamedResponse
     {
         $this->authorize('download', $certificate);
 
         abort_if($certificate->isRevoked(), 404);
         abort_unless($certificate->isReady(), 404);
-        abort_unless(Storage::disk('local')->exists($certificate->path), 404);
 
-        return Storage::disk('local')->download($certificate->path, "certificado-{$certificate->type->value}.pdf");
+        // The worker renders on its own disk, which the web service cannot
+        // see in production (issue #222). Render here when the file is missing.
+        $path = Storage::disk('local')->exists($certificate->path)
+            ? $certificate->path
+            : $render->handle($certificate);
+
+        return Storage::disk('local')->download($path, "certificado-{$certificate->type->value}.pdf");
     }
 }

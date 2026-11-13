@@ -20,8 +20,11 @@ use App\Models\User;
 use App\Notifications\TeamDisqualified;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use Tests\TestCase;
 
 class DemoCommandTest extends TestCase
@@ -199,6 +202,45 @@ class DemoCommandTest extends TestCase
         $this->assertSame(0, Team::forEvent($evento)->where('status', TeamStatus::Disqualified)->count());
     }
 
+    public function test_going_back_to_the_start_removes_the_demo_uploads_from_disk(): void
+    {
+        Storage::fake('local');
+        $real = Submission::factory()->for(Event::factory()->create(['edition' => 1, 'slug' => 'edicao-real']))->create();
+        Storage::disk('local')->put("submissions/{$real->id}/real.pdf", 'real');
+
+        $this->preparar('submissoes');
+        $demo = Submission::forEvent($this->demo())->firstOrFail();
+        Storage::disk('local')->put("submissions/{$demo->id}/enviado.png", 'png');
+        Storage::disk('local')->put("certificates/{$this->demo()->id}/abc.pdf", 'pdf');
+
+        $this->preparar('inicio');
+
+        Storage::disk('local')->assertMissing("submissions/{$demo->id}/enviado.png");
+        Storage::disk('local')->assertMissing("certificates/{$this->demo()->id}/abc.pdf");
+        Storage::disk('local')->assertExists("submissions/{$real->id}/real.pdf");
+    }
+
+    public function test_a_reset_that_rolls_back_keeps_the_demo_uploads(): void
+    {
+        Storage::fake('local');
+        $this->preparar('submissoes');
+        $demo = Submission::forEvent($this->demo())->firstOrFail();
+        Storage::disk('local')->put("submissions/{$demo->id}/enviado.png", 'png');
+
+        try {
+            DB::transaction(function () {
+                $this->preparar('inicio');
+
+                throw new RuntimeException('falha depois do reset');
+            });
+        } catch (RuntimeException) {
+            // The rows come back with the rollback, so the files must stay.
+        }
+
+        $this->assertModelExists($demo);
+        Storage::disk('local')->assertExists("submissions/{$demo->id}/enviado.png");
+    }
+
     public function test_it_never_touches_another_edition(): void
     {
         $real = Event::factory()->create(['edition' => 1, 'slug' => 'edicao-real']);
@@ -229,7 +271,7 @@ class DemoCommandTest extends TestCase
     {
         $this->app->detectEnvironment(fn () => 'production');
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         app(PrepareDemoStage::class)->handle('inicio', self::SENHA);
     }

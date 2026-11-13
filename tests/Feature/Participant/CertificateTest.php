@@ -41,6 +41,29 @@ class CertificateTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Production: the worker marks the certificate ready but writes the PDF
+     * to its own disk, which the web service cannot see (issue #222).
+     */
+    public function test_a_ready_certificate_missing_from_this_disk_is_rendered_on_download(): void
+    {
+        Storage::fake('local');
+
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $certificate = Certificate::factory()
+            ->for(Event::factory()->create())
+            ->for($user)
+            ->create(['path' => 'certificates/1/rendered-by-the-worker.pdf']);
+
+        $response = $this->actingAs($user)
+            ->get(route('certificates.download', $certificate))
+            ->assertOk()
+            ->assertDownload("certificado-{$certificate->type->value}.pdf");
+
+        $this->assertStringStartsWith('%PDF', $response->streamedContent());
+        Storage::disk('local')->assertExists("certificates/{$certificate->event_id}/{$certificate->code}.pdf");
+    }
+
     public function test_a_user_cannot_download_someone_elses_certificate(): void
     {
         $dono = User::factory()->create(['email_verified_at' => now()]);
