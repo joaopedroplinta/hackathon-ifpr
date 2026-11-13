@@ -37,6 +37,7 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -228,6 +229,11 @@ class PrepareDemoStage
         ConflictOfInterest::whereIn('team_id', $equipes)->delete();
 
         $submissoes = Submission::withTrashed()->where('event_id', $id)->pluck('id');
+        // The rows go below; without this their uploads stay on the volume
+        // as orphans after every reset.
+        $disco = Storage::disk('local');
+        $submissoes->each(fn (int $submissao) => $disco->deleteDirectory("submissions/{$submissao}"));
+        $disco->deleteDirectory("certificates/{$id}");
         SubmissionFile::withTrashed()->whereIn('submission_id', $submissoes)->forceDelete();
         SubmissionVersion::whereIn('submission_id', $submissoes)->delete();
         Submission::withTrashed()->whereIn('id', $submissoes)->forceDelete();
