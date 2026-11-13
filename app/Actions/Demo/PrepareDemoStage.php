@@ -230,10 +230,12 @@ class PrepareDemoStage
 
         $submissoes = Submission::withTrashed()->where('event_id', $id)->pluck('id');
         // The rows go below; without this their uploads stay on the volume
-        // as orphans after every reset.
-        $disco = Storage::disk('local');
-        $submissoes->each(fn (int $submissao) => $disco->deleteDirectory("submissions/{$submissao}"));
-        $disco->deleteDirectory("certificates/{$id}");
+        // as orphans after every reset. Deleting a file cannot be rolled
+        // back, so it waits for the reset transaction to commit.
+        $pastas = $submissoes->map(fn (int $submissao) => "submissions/{$submissao}")
+            ->push("certificates/{$id}")
+            ->all();
+        DB::afterCommit(fn () => array_map(Storage::disk('local')->deleteDirectory(...), $pastas));
         SubmissionFile::withTrashed()->whereIn('submission_id', $submissoes)->forceDelete();
         SubmissionVersion::whereIn('submission_id', $submissoes)->delete();
         Submission::withTrashed()->whereIn('id', $submissoes)->forceDelete();
