@@ -446,4 +446,12 @@ describe('Versoes', () => {
         expect(screen.getByRole('heading', { level: 3, name: 'Corrigido' })).toBeTruthy();
         expect(screen.getByText('y').tagName).toBe('CODE');
     });
+
+    it('abre a versão recolhida apontada pelo hash da URL', () => {
+        window.location.hash = '#v1.0.0';
+        render(<Versoes versoes={[versao('1.1.0'), versao('1.0.0')]} atual="1.1.0" />);
+
+        expect((document.getElementById('v1.0.0') as HTMLDetailsElement).open).toBe(true);
+        window.location.hash = '';
+    });
 });
