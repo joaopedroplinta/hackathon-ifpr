@@ -25,7 +25,7 @@ const sharedPadrao = (): SharedData => ({
     flash: {},
 });
 
-export const page: { props: Record<string, unknown>; url: string } = { props: sharedPadrao(), url: '/' };
+export const page: { props: Record<string, unknown>; url: string; component: string } = { props: sharedPadrao(), url: '/', component: '' };
 
 /** Cada chamada de visita (post/put/delete/router.*) fica registrada para os testes conferirem. */
 export const visits: { method: string; url: string; data?: unknown }[] = [];
@@ -36,6 +36,7 @@ export function setPage(props: Record<string, unknown> = {}, url = '/') {
     // `auth.user` também é mesclado: o teste muda só o campo que importa (ex.: email_verified_at).
     page.props = { ...base, ...props, auth: { ...base.auth, ...auth, user: auth.user === null ? null : { ...base.auth.user, ...auth.user } } };
     page.url = url;
+    page.component = '';
     visits.length = 0;
 }
 

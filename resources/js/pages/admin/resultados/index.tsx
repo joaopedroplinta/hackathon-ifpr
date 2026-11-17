@@ -71,7 +71,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" onClick={recalcular} disabled={recalculando}>
+                        <Button data-tour="recalcular" variant="outline" onClick={recalcular} disabled={recalculando}>
                             {recalculando ? (
                                 <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
                             ) : (
@@ -79,7 +79,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                             )}
                             Recalcular
                         </Button>
-                        <Button onClick={clicarPublicar} disabled={publicando}>
+                        <Button data-tour="acao" onClick={clicarPublicar} disabled={publicando}>
                             {publicando ? (
                                 <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
                             ) : (
@@ -182,7 +182,7 @@ export default function ResultadosIndex({ resultados, pendencias, publicado_em, 
                     </div>
                 ) : (
                     <div className="border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm">
-                        <table className="w-full min-w-[36rem] text-sm">
+                        <table data-tour="tabela" className="w-full min-w-[36rem] text-sm">
                             <thead>
                                 <tr className="text-muted-foreground border-border bg-muted/40 border-b text-left">
                                     <th className="px-4 py-3 text-xs font-medium">Geral</th>

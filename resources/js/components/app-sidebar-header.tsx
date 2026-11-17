@@ -1,5 +1,6 @@
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import BotaoTutorial from '@/components/hackathon/botao-tutorial';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
@@ -10,6 +11,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <SidebarTrigger className="hover:bg-muted -ml-1 size-10 rounded-xl" aria-label="Alternar navegação" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
+            <BotaoTutorial />
             <AppearanceToggleDropdown />
         </header>
     );

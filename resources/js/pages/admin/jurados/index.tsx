@@ -102,7 +102,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                         </p>
                     </div>
 
-                    <Button onClick={distribuir} disabled={distribuindo}>
+                    <Button data-tour="acao" onClick={distribuir} disabled={distribuindo}>
                         {distribuindo ? (
                             <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
                         ) : (
@@ -147,7 +147,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                     )}
                 </section>
 
-                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                <section data-tour="formulario" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
                     <h2 className="text-lg font-medium">Atribuir manualmente</h2>
                     <form onSubmit={atribuirManual} className="mt-3 grid gap-3" noValidate>
                         <ResumoErro erros={atribuirForm.errors} />
@@ -195,7 +195,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                 {submissoes.length === 0 ? (
                     <p className="text-muted-foreground mb-6 text-sm">Nenhuma submissão enviada ainda.</p>
                 ) : (
-                    <ul className="mb-6 flex flex-col gap-3">
+                    <ul data-tour="lista" className="mb-6 flex flex-col gap-3">
                         {submissoes.map((submissao) => (
                             <li key={submissao.id} className="border-border/70 bg-card/80 rounded-3xl border p-4 shadow-sm sm:p-6">
                                 <p className="font-semibold">{submissao.titulo}</p>

@@ -103,7 +103,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                     </DialogContent>
                 </Dialog>
 
-                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                <section data-tour="formulario" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
                     <h2 className="text-lg font-medium">Declarar incidente</h2>
                     <form onSubmit={declarar} className="mt-3 grid gap-4" noValidate>
                         <ResumoErro erros={form.errors} />
@@ -173,7 +173,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                         <p className="text-muted-foreground text-sm">Que continue assim até o fim do evento.</p>
                     </div>
                 ) : (
-                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
+                    <ul data-tour="lista" className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {incidentes.map((i) => (
                             <li key={i.id} className="hover:bg-muted/30 p-4 transition-colors sm:p-5">
                                 <div className="flex items-center justify-between gap-2">

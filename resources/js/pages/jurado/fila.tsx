@@ -66,7 +66,7 @@ export default function FilaJurado({ submissoes, progresso }: Props) {
                         <p className="text-muted-foreground text-sm">O organizador ainda não distribuiu as avaliações deste evento.</p>
                     </div>
                 ) : (
-                    <ul className="grid gap-4 md:grid-cols-2">
+                    <ul data-tour="lista" className="grid gap-4 md:grid-cols-2">
                         {submissoes.map((s) => (
                             <motion.li key={s.submission_id} className="h-full">
                                 <Link

@@ -59,6 +59,7 @@ class HandleInertiaRequests extends Middleware
                     'email_verified_at' => $request->user()->email_verified_at,
                     'created_at' => $request->user()->created_at,
                     'updated_at' => $request->user()->updated_at,
+                    'tours_seen' => $request->user()->tours_seen ?? [],
                 ] : null,
                 // Só decide o que a navegação mostra. Cada rota do painel
                 // continua passando pela Policy -- esconder o link nunca é
