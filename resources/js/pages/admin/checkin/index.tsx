@@ -151,6 +151,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                         </div>
 
                         <form
+                            data-tour="busca"
                             onSubmit={buscar}
                             className="border-border/70 bg-card/80 mb-6 flex flex-col gap-3 rounded-3xl border p-4 shadow-sm sm:flex-row"
                         >

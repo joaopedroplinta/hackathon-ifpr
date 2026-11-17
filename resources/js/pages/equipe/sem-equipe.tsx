@@ -23,7 +23,7 @@ export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
             <Head title="Equipe" />
 
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-4xl p-4 sm:p-8">
-                <section data-tour="acao" className="border-border bg-card overflow-hidden rounded-2xl border">
+                <section className="border-border bg-card overflow-hidden rounded-2xl border">
                     <div className="bg-primary/10 border-border flex min-h-36 items-end border-b p-6 sm:p-8">
                         <span className="bg-background flex size-14 items-center justify-center rounded-2xl shadow-sm">
                             <Users className="text-primary size-7" aria-hidden="true" />
@@ -37,7 +37,7 @@ export default function SemEquipe({ pode_criar, inscricoes_abertas }: Props) {
                                 <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-relaxed">
                                     Comece uma nova equipe e convide outras pessoas, ou use o código de uma equipe que já existe.
                                 </p>
-                                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                                <div data-tour="acao" className="mt-6 grid gap-3 sm:grid-cols-2">
                                     <Button asChild>
                                         <Link href={route('teams.create')}>
                                             Criar uma equipe <ArrowRight className="size-4" aria-hidden="true" />
