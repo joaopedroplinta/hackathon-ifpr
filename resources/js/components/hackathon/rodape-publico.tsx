@@ -18,6 +18,7 @@ const colunas = [
         links: [
             { href: 'projetos.index', label: 'Projetos' },
             { href: 'edicoes.index', label: 'Edições anteriores' },
+            { href: 'versoes.index', label: 'Versões' },
         ],
     },
     {
@@ -86,7 +87,12 @@ export default function RodapePublico() {
 
                 <div className="border-border flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-xs">
                     <p className="text-muted-foreground">© {new Date().getFullYear()} Instituto Federal do Paraná.</p>
-                    <span className="text-muted-foreground font-mono">{app_version}</span>
+                    <Link
+                        href={route('versoes.index')}
+                        className="text-muted-foreground hover:text-foreground focus-visible:outline-ring inline-flex min-h-11 items-center font-mono focus-visible:outline-2"
+                    >
+                        {app_version}
+                    </Link>
                 </div>
             </div>
         </footer>
