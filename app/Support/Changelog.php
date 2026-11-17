@@ -20,6 +20,8 @@ class Changelog
     /** Markdown → HTML inline; HTML cru escapado e link inseguro (javascript:) sem href. */
     private const MARKDOWN = ['html_input' => 'escape', 'allow_unsafe_links' => false];
 
+    private ?MarkdownConverter $conversor = null;
+
     /**
      * @return list<array{numero: string, data: string, resumo: ?string, secoes: list<array{titulo: string, itens: list<string>}>}>
      */
@@ -122,8 +124,6 @@ class Changelog
 
         return $versoes;
     }
-
-    private ?MarkdownConverter $conversor = null;
 
     /**
      * Mesmo ambiente de Str::inlineMarkdown(), mas criado uma vez só: montar o

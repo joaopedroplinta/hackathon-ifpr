@@ -153,7 +153,7 @@ public function index(Changelog $changelog): Response
 - [x] Rota, `Support\Changelog`, controller, página, tipos
 - [x] Links no rodapé público e na sidebar
 - [x] Testes Unit, Feature e Vitest passando; Pint, ESLint, Prettier, `tsc`
-- [ ] Conferido no celular (375 px) sem rolagem horizontal
+- [x] Conferido no celular (375 px) sem rolagem horizontal
 - [ ] Validado em homologação antes da `main`
 - [x] Entrada em `## [Não lançado]` → `### Adicionado` no CHANGELOG
 
