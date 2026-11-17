@@ -107,8 +107,8 @@ public function index(Changelog $changelog): Response
 "Versões" e descrição curta ("O que mudou no sistema a cada atualização.").
 
 - Uma `<section id="v1.3.5">` por versão, para link direto (`/versoes#v1.3.5`).
-- Cabeçalho da seção: `v1.3.5`, data em `America/Sao_Paulo` por extenso
-  ("13 de novembro de 2026"), selo "Versão atual" (texto, não só cor) na
+- Cabeçalho da seção: `v1.3.5`, data por extenso ("13 de novembro de 2026"),
+  formatada em UTC: é data pura (`AAAA-MM-DD`), e o fuso de São Paulo recuaria um dia, selo "Versão atual" (texto, não só cor) na
   versão igual a `atual`.
 - Resumo em parágrafo; cada seção como `<h3>` + `<ul>`. HTML vindo do servidor
   via `dangerouslySetInnerHTML` — seguro porque o servidor escapa HTML cru.
@@ -150,12 +150,12 @@ public function index(Changelog $changelog): Response
 
 ## Definição de pronto
 
-- [ ] Rota, `Support\Changelog`, controller, página, tipos
-- [ ] Links no rodapé público e na sidebar
-- [ ] Testes Unit, Feature e Vitest passando; Pint, ESLint, Prettier, `tsc`
+- [x] Rota, `Support\Changelog`, controller, página, tipos
+- [x] Links no rodapé público e na sidebar
+- [x] Testes Unit, Feature e Vitest passando; Pint, ESLint, Prettier, `tsc`
 - [ ] Conferido no celular (375 px) sem rolagem horizontal
 - [ ] Validado em homologação antes da `main`
-- [ ] Entrada em `## [Não lançado]` → `### Adicionado` no CHANGELOG
+- [x] Entrada em `## [Não lançado]` → `### Adicionado` no CHANGELOG
 
 ## Em aberto
 

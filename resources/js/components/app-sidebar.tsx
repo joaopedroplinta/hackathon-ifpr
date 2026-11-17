@@ -190,7 +190,12 @@ export function AppSidebar() {
             <SidebarFooter className="border-sidebar-border/70 border-t px-3 pt-3 pb-3">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
-                <span className="text-sidebar-foreground/40 px-2 pb-1 font-mono text-[10px] group-data-[collapsible=icon]:hidden">{app_version}</span>
+                <Link
+                    href={route('versoes.index')}
+                    className="text-sidebar-foreground/40 hover:text-sidebar-foreground focus-visible:outline-ring px-2 pb-1 font-mono text-[10px] group-data-[collapsible=icon]:hidden focus-visible:outline-2"
+                >
+                    {app_version}
+                </Link>
             </SidebarFooter>
         </Sidebar>
     );

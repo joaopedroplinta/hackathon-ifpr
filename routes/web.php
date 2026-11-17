@@ -28,6 +28,7 @@ use App\Http\Controllers\Participant\TeamLeadershipController;
 use App\Http\Controllers\Participant\TeamMembershipController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\CertificateValidationController;
+use App\Http\Controllers\Public\ChangelogController;
 use App\Http\Controllers\Public\CookiePolicyController;
 use App\Http\Controllers\Public\EditionController;
 use App\Http\Controllers\Public\LandingController;
@@ -59,6 +60,9 @@ Route::get('regulamento/download', [RegulationController::class, 'download'])->n
 
 // Destino do link "Saiba quais" do aviso de cookies (issue #73).
 Route::get('cookies', [CookiePolicyController::class, 'show'])->name('cookies.show');
+
+// Notas de versão, lidas do CHANGELOG.md -- ver Support\Changelog.
+Route::get('versoes', [ChangelogController::class, 'index'])->name('versoes.index');
 
 // LGPD exige acesso fácil, sem login (issue #78).
 Route::get('privacidade', [PrivacyPolicyController::class, 'show'])->name('privacidade.show');
