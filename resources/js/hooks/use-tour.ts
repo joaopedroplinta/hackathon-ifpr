@@ -35,14 +35,28 @@ export function useTour() {
     const jaVisto = !!tour && !!user?.tours_seen?.includes(tour.id);
     const ativo = useRef<Driver | null>(null);
     const autoIniciado = useRef<string | null>(null);
+    const timerAuto = useRef<number | undefined>(undefined);
+    const montado = useRef(true);
+    // Fechar por troca de página não é "ver o tutorial": não grava como visto.
+    const descartando = useRef(false);
 
     const iniciar = useCallback(async () => {
         if (!tour) return;
+        // Início manual (ou automático) cancela a abertura automática pendente.
+        window.clearTimeout(timerAuto.current);
+        autoIniciado.current = tour.id;
+
+        const [{ driver }] = await Promise.all([import('driver.js'), import('driver.js/dist/driver.css')]);
+        // Saiu da página enquanto o chunk carregava: os alvos são da tela antiga.
+        if (!montado.current) return;
+
+        // Montados só depois do import: o DOM pode ter mudado durante a espera.
         const steps = montarPassos(tour);
         if (steps.length === 0) return;
 
-        const [{ driver }] = await Promise.all([import('driver.js'), import('driver.js/dist/driver.css')]);
+        descartando.current = true;
         ativo.current?.destroy();
+        descartando.current = false;
 
         const reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const instancia = driver({
@@ -67,7 +81,7 @@ export function useTour() {
             },
             onDestroyed: () => {
                 ativo.current = null;
-                if (user && !jaVisto) {
+                if (!descartando.current && user && !jaVisto) {
                     router.post(route('tours.seen', tour.id), {}, { preserveScroll: true, preserveState: true, only: ['auth'] });
                 }
             },
@@ -77,23 +91,22 @@ export function useTour() {
     }, [tour, user, jaVisto]);
 
     useEffect(() => {
-        if (!tour || !user || jaVisto || autoIniciado.current === tour.id) return;
-        const timer = window.setTimeout(() => {
-            autoIniciado.current = tour.id;
-            void iniciar();
-        }, ATRASO_AUTO_MS);
-        return () => window.clearTimeout(timer);
+        // `manual`: telas de uso crítico no evento só abrem o tutorial pelo botão.
+        if (!tour || tour.manual || !user || jaVisto || autoIniciado.current === tour.id) return;
+        timerAuto.current = window.setTimeout(() => void iniciar(), ATRASO_AUTO_MS);
+        return () => window.clearTimeout(timerAuto.current);
     }, [tour, user, jaVisto, iniciar]);
 
-    // Sai da página com o tour aberto: fecha sem marcar como visto.
-    useEffect(
-        () => () => {
+    useEffect(() => {
+        montado.current = true;
+        return () => {
+            montado.current = false;
             const d = ativo.current;
             ativo.current = null;
+            descartando.current = true;
             d?.destroy();
-        },
-        [],
-    );
+        };
+    }, []);
 
     return { temTour: !!tour, iniciar };
 }

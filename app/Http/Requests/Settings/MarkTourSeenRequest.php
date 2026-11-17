@@ -17,15 +17,16 @@ class MarkTourSeenRequest extends FormRequest
     }
 
     /**
-     * Sem lista fixa no backend: o catálogo de tours vive no front. O formato
-     * basta para ninguém gravar lixo (ou um payload grande) na coluna.
+     * No fixed list on the backend: the tour catalog lives in the frontend.
+     * The format alone keeps junk (or a large payload) out of the column.
+     * \z, not $: $ would accept a trailing newline.
      *
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'tour' => ['required', 'string', 'regex:/^[a-z0-9.\-]{1,64}$/'],
+            'tour' => ['required', 'string', 'regex:/^[a-z0-9.\-]{1,64}\z/'],
         ];
     }
 

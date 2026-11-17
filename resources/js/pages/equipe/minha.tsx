@@ -55,7 +55,7 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     };
 
     return (
-        <div className="border-border bg-card overflow-hidden rounded-2xl border">
+        <div data-tour="convite" className="border-border bg-card overflow-hidden rounded-2xl border">
             <div className="bg-primary/10 border-border border-b p-5 sm:px-8">
                 <h2 className="font-semibold">Código de convite</h2>
                 <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>

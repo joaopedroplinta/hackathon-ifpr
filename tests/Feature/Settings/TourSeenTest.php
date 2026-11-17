@@ -39,7 +39,7 @@ class TourSeenTest extends TestCase
     {
         $user = User::factory()->create();
 
-        foreach (['Dashboard', 'a b', str_repeat('a', 65), 'x_y'] as $tour) {
+        foreach (['Dashboard', 'a b', str_repeat('a', 65), 'x_y', "dashboard\n"] as $tour) {
             $this->actingAs($user)->from('/dashboard')->post('/tours/'.rawurlencode($tour))->assertSessionHasErrors('tour');
         }
 

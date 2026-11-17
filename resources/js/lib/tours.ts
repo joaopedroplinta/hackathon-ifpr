@@ -12,7 +12,8 @@
  * Formato aceito pelo servidor: /^[a-z0-9.\-]{1,64}$/.
  */
 export type TourStep = { target: string; title: string; description: string };
-export type TourDefinition = { id: string; steps: TourStep[] };
+/** `manual`: nunca abre sozinho (telas de uso crítico no dia do evento); só pelo botão. */
+export type TourDefinition = { id: string; manual?: boolean; steps: TourStep[] };
 
 const conteudo = (title: string, description: string): TourStep => ({ target: 'titulo', title, description });
 const menu = (url: string, title: string, description: string): TourStep => ({ target: `nav:${url}`, title, description });
@@ -35,11 +36,8 @@ export const tours: Record<string, TourDefinition> = {
         id: 'equipe.minha',
         steps: [
             conteudo('Sua equipe', 'Aqui você vê os integrantes e o status da equipe.'),
-            passo(
-                'equipe',
-                'Convite e integrantes',
-                'Compartilhe o código de convite para chamar colegas. Quem lidera a equipe também gerencia os integrantes.',
-            ),
+            passo('convite', 'Código de convite', 'Compartilhe este código para chamar colegas para a equipe.'),
+            passo('equipe', 'Integrantes', 'Quem lidera a equipe também gerencia os integrantes.'),
             menu('/submissao', 'Próximo passo', 'Com a equipe formada, envie o projeto em "Meu projeto".'),
         ],
     },
@@ -81,6 +79,7 @@ export const tours: Record<string, TourDefinition> = {
     },
     'jurado/avaliar': {
         id: 'jurado.avaliar',
+        manual: true,
         steps: [
             conteudo('Avaliar projeto', 'Leia o projeto e dê uma nota para cada critério da rubrica.'),
             passo('resumo', 'Resumo do projeto', 'Descrição e arquivos enviados pela equipe.'),
@@ -140,6 +139,7 @@ export const tours: Record<string, TourDefinition> = {
     },
     'admin/checkin/index': {
         id: 'painel.checkin',
+        manual: true,
         steps: [
             conteudo('Check-in', 'Registre a presença no dia do evento, inclusive pelo celular.'),
             passo('formulario', 'Pontos de check-in', 'Crie os pontos de check-in do evento, como entrada e encerramento.'),

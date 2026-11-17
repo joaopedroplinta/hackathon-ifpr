@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Ids dos tutoriais guiados já vistos (catálogo vive no front).
+            // Ids of the guided tours already seen (the catalog lives in the frontend).
             $table->jsonb('tours_seen')->default('[]');
         });
     }

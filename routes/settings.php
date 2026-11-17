@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
     Route::put('settings/password', [PasswordController::class, 'update'])->middleware('throttle:6,1')->name('password.update');
 
-    // Tutorial guiado: marca o tour como visto (idempotente). Vale para todos os papéis.
+    // Guided tour: marks a tour as seen (idempotent). Applies to every role.
     Route::post('tours/{tour}', TourController::class)->middleware('throttle:60,1')->name('tours.seen');
 
     Route::get('settings/appearance', function () {

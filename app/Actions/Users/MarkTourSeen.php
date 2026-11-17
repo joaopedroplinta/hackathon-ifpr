@@ -3,27 +3,33 @@
 namespace App\Actions\Users;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class MarkTourSeen
 {
-    /** Teto da coluna: o catálogo de tours é pequeno, isto só impede crescimento sem fim. */
+    /** Column cap: the tour catalog is small, this only stops unbounded growth. */
     public const LIMIT = 200;
 
     /**
-     * Idempotente. Passando do limite, descarta os ids mais antigos.
+     * Idempotent. Past the limit, the oldest ids are dropped. The row is locked
+     * so two concurrent marks (two tabs) cannot overwrite each other.
      */
     public function handle(User $user, string $tour): void
     {
-        $seen = $user->tours_seen ?? [];
+        DB::transaction(function () use ($user, $tour) {
+            $locked = User::query()->lockForUpdate()->findOrFail($user->id);
+            $seen = $locked->tours_seen ?? [];
 
-        if (in_array($tour, $seen, true)) {
-            return;
-        }
+            if (! in_array($tour, $seen, true)) {
+                $seen[] = $tour;
 
-        $seen[] = $tour;
+                // tours_seen stays out of $fillable: only this Action writes it.
+                $locked->tours_seen = array_slice($seen, -self::LIMIT);
+                $locked->save();
+            }
 
-        // tours_seen fica fora do $fillable: só esta Action grava.
-        $user->tours_seen = array_slice($seen, -self::LIMIT);
-        $user->save();
+            $user->tours_seen = $locked->tours_seen;
+            $user->syncOriginal();
+        });
     }
 }

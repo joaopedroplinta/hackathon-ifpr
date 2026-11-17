@@ -22,3 +22,10 @@ describe('catálogo de tutoriais', () => {
         }
     });
 });
+
+describe('tutoriais manuais', () => {
+    it('telas de uso crítico no evento não abrem sozinhas', () => {
+        expect(tours['admin/checkin/index'].manual).toBe(true);
+        expect(tours['jurado/avaliar'].manual).toBe(true);
+    });
+});

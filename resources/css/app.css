@@ -345,7 +345,7 @@
     color: var(--foreground);
 }
 
-.tour-popover .driver-popover-footer button {
+.driver-popover.tour-popover .driver-popover-footer button {
     min-height: 2.5rem;
     border-radius: 0.625rem;
     padding: 0.25rem 0.875rem;
@@ -356,18 +356,25 @@
     text-shadow: none;
 }
 
-.tour-popover .driver-popover-footer button:focus-visible {
+.driver-popover.tour-popover .driver-popover-footer button:hover,
+.driver-popover.tour-popover .driver-popover-footer button:focus {
+    background: var(--muted);
+}
+
+.driver-popover.tour-popover .driver-popover-footer button:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
 }
 
-.tour-popover .driver-popover-footer .driver-popover-next-btn {
+.driver-popover.tour-popover .driver-popover-footer .driver-popover-next-btn,
+.driver-popover.tour-popover .driver-popover-footer .driver-popover-next-btn:hover,
+.driver-popover.tour-popover .driver-popover-footer .driver-popover-next-btn:focus {
     background: var(--primary);
     border-color: var(--primary);
     color: var(--primary-foreground);
 }
 
-.tour-popover .tour-skip-btn {
+.driver-popover.tour-popover .tour-skip-btn {
     margin-right: auto;
     border-color: transparent !important;
     background: transparent !important;

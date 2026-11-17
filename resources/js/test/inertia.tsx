@@ -36,6 +36,7 @@ export function setPage(props: Record<string, unknown> = {}, url = '/') {
     // `auth.user` também é mesclado: o teste muda só o campo que importa (ex.: email_verified_at).
     page.props = { ...base, ...props, auth: { ...base.auth, ...auth, user: auth.user === null ? null : { ...base.auth.user, ...auth.user } } };
     page.url = url;
+    page.component = '';
     visits.length = 0;
 }
 
