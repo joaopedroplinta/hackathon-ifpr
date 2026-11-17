@@ -115,7 +115,7 @@ export default function MinhaSubmissao({ equipe, submissao, arquivos, versoes, p
                 )}
 
                 {pode_editar ? (
-                    <form onSubmit={enviar} className="space-y-6" noValidate>
+                    <form data-tour="formulario" onSubmit={enviar} className="space-y-6" noValidate>
                         <ResumoErro erros={errors} />
                         <div className="border-border bg-card grid gap-7 rounded-2xl border p-6 sm:p-8">
                             <div className="grid gap-2">

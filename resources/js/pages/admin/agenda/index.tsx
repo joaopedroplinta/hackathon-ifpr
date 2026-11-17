@@ -60,7 +60,7 @@ export default function ListaAgenda({ itens }: Props) {
                         </p>
                     </div>
 
-                    <Button asChild>
+                    <Button data-tour="acao" asChild>
                         <Link href={route('painel.agenda.create')}>Novo item</Link>
                     </Button>
                 </header>
@@ -74,7 +74,7 @@ export default function ListaAgenda({ itens }: Props) {
                         <p className="text-muted-foreground text-sm">Crie o primeiro item para começar a montar a programação.</p>
                     </div>
                 ) : (
-                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
+                    <ul data-tour="lista" className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {itens.map((item) => (
                             <li key={item.id} className="hover:bg-muted/30 p-4 transition-colors sm:p-5">
                                 <div className="flex flex-wrap items-start justify-between gap-3">

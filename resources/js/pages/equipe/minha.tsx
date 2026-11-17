@@ -55,7 +55,7 @@ function CodigoConvite({ codigo }: { codigo: string }) {
     };
 
     return (
-        <div className="border-border bg-card overflow-hidden rounded-2xl border">
+        <div data-tour="convite" className="border-border bg-card overflow-hidden rounded-2xl border">
             <div className="bg-primary/10 border-border border-b p-5 sm:px-8">
                 <h2 className="font-semibold">Código de convite</h2>
                 <p className="text-muted-foreground mt-1 text-sm">Quem tiver este código entra na equipe.</p>
@@ -204,7 +204,7 @@ export default function MinhaEquipe({ equipe, limites, pode_transferir }: Props)
 
                 <CodigoConvite codigo={equipe.codigo_convite} />
 
-                <section className="border-border bg-card rounded-2xl border p-6 sm:p-8">
+                <section data-tour="equipe" className="border-border bg-card rounded-2xl border p-6 sm:p-8">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <h2 className="font-semibold">Integrantes</h2>
                         <span className="text-muted-foreground text-sm">

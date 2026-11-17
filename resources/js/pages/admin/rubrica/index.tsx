@@ -56,7 +56,12 @@ export default function ListaRubricas({ rubricas }: Props) {
                     <p className="text-muted-foreground mt-1 text-sm">Só a rubrica ativa conta pro cálculo e aparece pro jurado e pro público.</p>
                 </header>
 
-                <form onSubmit={criar} className="border-border/70 bg-card/80 mb-8 grid gap-3 rounded-3xl border p-5 shadow-sm" noValidate>
+                <form
+                    data-tour="formulario"
+                    onSubmit={criar}
+                    className="border-border/70 bg-card/80 mb-8 grid gap-3 rounded-3xl border p-5 shadow-sm"
+                    noValidate
+                >
                     <ResumoErro erros={errors} />
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div className="flex-1">
@@ -85,7 +90,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                         <p className="text-muted-foreground text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
                     </div>
                 ) : (
-                    <ul className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
+                    <ul data-tour="lista" className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">
                         {rubricas.map((rubrica) => (
                             <li key={rubrica.id} className="p-4">
                                 <div className="flex flex-wrap items-start justify-between gap-3">

@@ -104,7 +104,12 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                     </p>
                 </header>
 
-                <form onSubmit={enviar} className="border-border/70 bg-card/80 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-8" noValidate>
+                <form
+                    data-tour="formulario"
+                    onSubmit={enviar}
+                    className="border-border/70 bg-card/80 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-8"
+                    noValidate
+                >
                     <ResumoErro erros={errors} />
                     <CamposEvento
                         data={data}

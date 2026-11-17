@@ -63,6 +63,8 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
+    /** Ids dos tutoriais guiados já vistos (catálogo em lib/tours.ts). */
+    tours_seen?: string[];
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
