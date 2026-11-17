@@ -2,7 +2,10 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Str;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
+use League\CommonMark\MarkdownConverter;
 
 /**
  * Lê o CHANGELOG.md (fonte única das notas de versão) e devolve só o que
@@ -120,8 +123,21 @@ class Changelog
         return $versoes;
     }
 
+    private ?MarkdownConverter $conversor = null;
+
+    /**
+     * Mesmo ambiente de Str::inlineMarkdown(), mas criado uma vez só: montar o
+     * Environment por item custava ~80 ms por request com 112 itens.
+     */
     private function html(string $texto): string
     {
-        return trim(Str::inlineMarkdown(trim($texto), self::MARKDOWN));
+        if ($this->conversor === null) {
+            $ambiente = new Environment(self::MARKDOWN);
+            $ambiente->addExtension(new GithubFlavoredMarkdownExtension);
+            $ambiente->addExtension(new InlinesOnlyExtension);
+            $this->conversor = new MarkdownConverter($ambiente);
+        }
+
+        return trim($this->conversor->convert(trim($texto))->getContent());
     }
 }

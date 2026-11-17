@@ -12,9 +12,9 @@ const formatarData = (data: string) =>
 
 type Props = { versoes: Versao[]; atual: string };
 
-/** Link direto (#v1.3.4) abre a versão recolhida e rola até ela. */
+/** Link direto (#v1.3.4) abre a versão recolhida e rola até ela. Sem decodeURIComponent: hash malformado (#%) lançaria URIError e a página ficaria em branco. */
 function abrirVersaoDoHash() {
-    const alvo = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    const alvo = document.getElementById(window.location.hash.slice(1));
     if (alvo instanceof HTMLDetailsElement && !alvo.open) {
         alvo.open = true;
         alvo.scrollIntoView();

@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { setPage, visits } from '@/test/inertia';
 import { type EventoPublico, type ItemAgenda, type Versao } from '@/types/publico';
@@ -447,11 +447,23 @@ describe('Versoes', () => {
         expect(screen.getByText('y').tagName).toBe('CODE');
     });
 
-    it('abre a versão recolhida apontada pelo hash da URL', () => {
-        window.location.hash = '#v1.0.0';
-        render(<Versoes versoes={[versao('1.1.0'), versao('1.0.0')]} atual="1.1.0" />);
+    describe('hash da URL', () => {
+        afterEach(() => {
+            window.location.hash = '';
+        });
 
-        expect((document.getElementById('v1.0.0') as HTMLDetailsElement).open).toBe(true);
-        window.location.hash = '';
+        it('abre a versão recolhida apontada pelo hash', () => {
+            window.location.hash = '#v1.0.0';
+            render(<Versoes versoes={[versao('1.1.0'), versao('1.0.0')]} atual="1.1.0" />);
+
+            expect((document.getElementById('v1.0.0') as HTMLDetailsElement).open).toBe(true);
+        });
+
+        it('hash malformado não derruba a página', () => {
+            window.location.hash = '#%';
+            render(<Versoes versoes={[versao('1.1.0')]} atual="1.1.0" />);
+
+            expect(screen.getByRole('heading', { level: 2, name: /v1\.1\.0/ })).toBeTruthy();
+        });
     });
 });
