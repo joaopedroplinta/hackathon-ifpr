@@ -36,3 +36,14 @@ export type EstatisticasEvento = {
     equipes: number;
     trilhas: number;
 };
+
+export type SecaoVersao = { titulo: string; itens: string[] };
+
+/** `resumo` e `itens` são HTML inline já escapado no servidor (Support\Changelog). */
+export type Versao = {
+    numero: string;
+    /** AAAA-MM-DD, sem hora. */
+    data: string;
+    resumo: string | null;
+    secoes: SecaoVersao[];
+};

@@ -1,9 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { setPage, visits } from '@/test/inertia';
-import { type EventoPublico, type ItemAgenda } from '@/types/publico';
+import { type EventoPublico, type ItemAgenda, type Versao } from '@/types/publico';
 
 import Agenda from './agenda';
 import Cookies from './cookies';
@@ -15,6 +15,7 @@ import Regulamento from './regulamento';
 import Resultados from './resultados';
 import Rubrica from './rubrica';
 import ValidarCertificado from './validar';
+import Versoes from './versoes';
 
 const h1 = (nome: string | RegExp) => screen.getByRole('heading', { level: 1, name: nome });
 
@@ -416,5 +417,53 @@ describe('ValidarCertificado', () => {
         expect(screen.getByRole('heading', { name: 'Ana Lima' })).toBeTruthy();
         expect(screen.getByText('8 horas')).toBeTruthy();
         expect(screen.getByText('Participação')).toBeTruthy();
+    });
+});
+
+describe('Versoes', () => {
+    const versao = (numero: string, extra: Partial<Versao> = {}): Versao => ({ numero, data: '2026-11-13', resumo: null, secoes: [], ...extra });
+
+    it('sem versões mostra o estado vazio', () => {
+        render(<Versoes versoes={[]} atual="1.0.0" />);
+        expect(screen.getByText('Nenhuma versão publicada ainda')).toBeTruthy();
+    });
+
+    it('mostra versão, data por extenso e o selo só na versão atual', () => {
+        render(
+            <Versoes
+                versoes={[
+                    versao('1.1.0', { resumo: 'Resumo <code>x</code>', secoes: [{ titulo: 'Corrigido', itens: ['Item <code>y</code>'] }] }),
+                    versao('1.0.0', { data: '2026-01-01' }),
+                ]}
+                atual="1.1.0"
+            />,
+        );
+
+        expect(screen.getByRole('heading', { level: 2, name: /v1\.1\.0/ })).toBeTruthy();
+        expect(screen.getByText('13 de novembro de 2026')).toBeTruthy();
+        expect(screen.getByText('1 de janeiro de 2026')).toBeTruthy();
+        expect(screen.getAllByText('Versão atual')).toHaveLength(1);
+        expect(screen.getByRole('heading', { level: 3, name: 'Corrigido' })).toBeTruthy();
+        expect(screen.getByText('y').tagName).toBe('CODE');
+    });
+
+    describe('hash da URL', () => {
+        afterEach(() => {
+            window.location.hash = '';
+        });
+
+        it('abre a versão recolhida apontada pelo hash', () => {
+            window.location.hash = '#v1.0.0';
+            render(<Versoes versoes={[versao('1.1.0'), versao('1.0.0')]} atual="1.1.0" />);
+
+            expect((document.getElementById('v1.0.0') as HTMLDetailsElement).open).toBe(true);
+        });
+
+        it('hash malformado não derruba a página', () => {
+            window.location.hash = '#%';
+            render(<Versoes versoes={[versao('1.1.0')]} atual="1.1.0" />);
+
+            expect(screen.getByRole('heading', { level: 2, name: /v1\.1\.0/ })).toBeTruthy();
+        });
     });
 });
