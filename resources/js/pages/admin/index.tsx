@@ -64,7 +64,7 @@ export default function AdminDashboard({ evento, ...dados }: PainelOrganizador) 
                     </Button>
                 </header>
 
-                <section aria-labelledby="pendencias">
+                <section data-tour="pendencias" aria-labelledby="pendencias">
                     <h2 id="pendencias" className="mb-3 text-sm font-semibold">
                         Precisa de atenção
                     </h2>

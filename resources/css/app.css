@@ -307,3 +307,85 @@
     bottom: -35%;
     background: rgb(214 236 172 / 5%);
 }
+
+/* Tutorial guiado (driver.js): popover com os tokens do tema, claro e escuro. */
+.driver-popover.tour-popover {
+    background: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    max-width: min(22rem, calc(100vw - 2rem));
+    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35);
+}
+
+.tour-popover .driver-popover-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--popover-foreground);
+}
+
+.tour-popover .driver-popover-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+}
+
+.tour-popover .driver-popover-progress-text {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.tour-popover .driver-popover-close-btn {
+    color: var(--muted-foreground);
+}
+
+.tour-popover .driver-popover-close-btn:hover,
+.tour-popover .driver-popover-close-btn:focus-visible {
+    color: var(--foreground);
+}
+
+.tour-popover .driver-popover-footer button {
+    min-height: 2.5rem;
+    border-radius: 0.625rem;
+    padding: 0.25rem 0.875rem;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    text-shadow: none;
+}
+
+.tour-popover .driver-popover-footer button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.tour-popover .driver-popover-footer .driver-popover-next-btn {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.tour-popover .tour-skip-btn {
+    margin-right: auto;
+    border-color: transparent !important;
+    background: transparent !important;
+    color: var(--muted-foreground) !important;
+}
+
+.tour-popover .driver-popover-arrow-side-left.driver-popover-arrow {
+    border-left-color: var(--popover);
+}
+
+.tour-popover .driver-popover-arrow-side-right.driver-popover-arrow {
+    border-right-color: var(--popover);
+}
+
+.tour-popover .driver-popover-arrow-side-top.driver-popover-arrow {
+    border-top-color: var(--popover);
+}
+
+.tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+    border-bottom-color: var(--popover);
+}

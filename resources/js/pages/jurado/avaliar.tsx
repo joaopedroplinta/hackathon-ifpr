@@ -150,7 +150,10 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                     Abaixo disso (retrato de tablet e celular) empilha: cada
                     critério precisa da largura toda pra caber comentário. */}
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-                    <section className="border-border bg-card flex shrink-0 flex-col gap-4 rounded-xl border p-6 lg:sticky lg:top-20 lg:w-80">
+                    <section
+                        data-tour="resumo"
+                        className="border-border bg-card flex shrink-0 flex-col gap-4 rounded-xl border p-6 lg:sticky lg:top-20 lg:w-80"
+                    >
                         <div>
                             <h2 className="text-xl font-bold tracking-tight">{submissao.titulo}</h2>
                             <p className="text-muted-foreground text-sm">{submissao.equipe}</p>
@@ -180,7 +183,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                         </div>
                     </section>
 
-                    <section className="flex min-w-0 flex-1 flex-col gap-4">
+                    <section data-tour="formulario" className="flex min-w-0 flex-1 flex-col gap-4">
                         <ResumoErro titulo="Revise a avaliação antes de enviar" erros={errosPorIndice} />
                         {criterios.length === 0 ? (
                             <div className="border-border bg-card rounded-xl border p-6 text-sm">
@@ -287,7 +290,7 @@ export default function AvaliarSubmissao({ submissao, criterios, avaliacao, some
                                       ? 'Todos os critérios foram preenchidos. Você já pode enviar.'
                                       : 'Preencha uma nota em todos os critérios para liberar o envio.'}
                         </p>
-                        <Button onClick={enviar} disabled={form.processing || !todasPreenchidas} size="lg" className="w-full">
+                        <Button data-tour="acao" onClick={enviar} disabled={form.processing || !todasPreenchidas} size="lg" className="w-full">
                             {form.processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
                             Enviar avaliação
                         </Button>

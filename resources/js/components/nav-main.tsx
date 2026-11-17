@@ -39,7 +39,7 @@ export function NavMain({ items = [], label = 'Navegação' }: { items: NavItem[
                             tooltip={item.title}
                             className="group/nav-item text-sidebar-foreground/75 after:bg-primary hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary relative h-11 rounded-xl px-3 transition-colors after:absolute after:top-1/2 after:left-0 after:h-5 after:w-0.5 after:-translate-y-1/2 after:scale-y-0 after:rounded-full after:transition-transform data-[active=true]:font-semibold data-[active=true]:after:scale-y-100"
                         >
-                            <Link href={item.url} prefetch aria-current={item === itemAtivo ? 'page' : undefined}>
+                            <Link href={item.url} prefetch data-tour={`nav:${item.url}`} aria-current={item === itemAtivo ? 'page' : undefined}>
                                 {item.icon && <item.icon />}
                                 <span>{item.title}</span>
                             </Link>

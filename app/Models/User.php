@@ -86,6 +86,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'tipo_vinculo' => TipoVinculo::class,
+            'tours_seen' => 'array',
         ];
     }
 

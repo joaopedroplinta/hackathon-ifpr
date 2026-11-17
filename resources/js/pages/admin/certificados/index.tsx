@@ -51,7 +51,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     </p>
                 </header>
 
-                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                <section data-tour="formulario" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
                     <h2 className="text-lg font-medium">Emitir certificado avulso</h2>
                     <form onSubmit={emitir} className="mt-3 grid gap-3" noValidate>
                         <ResumoErro erros={form.errors} />
@@ -122,7 +122,7 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                     </div>
                 ) : (
                     <div className="border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm">
-                        <table className="w-full min-w-[32rem] text-sm">
+                        <table data-tour="tabela" className="w-full min-w-[32rem] text-sm">
                             <thead>
                                 <tr className="text-muted-foreground border-border bg-muted/40 border-b text-left">
                                     <th className="px-4 py-3 text-xs font-medium">Pessoa</th>

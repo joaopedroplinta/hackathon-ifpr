@@ -121,7 +121,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                     </div>
                 </header>
 
-                <section aria-label="Resumo" className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                <section data-tour="resumo" aria-label="Resumo" className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
                     {resumo.por_status.map((item) => (
                         <button
                             key={item.valor}
@@ -160,6 +160,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                 )}
 
                 <form
+                    data-tour="filtros"
                     onSubmit={buscar}
                     className="border-border/70 bg-card/80 mb-4 flex flex-col gap-3 rounded-3xl border p-4 shadow-sm md:flex-row md:items-end"
                 >
@@ -226,7 +227,7 @@ export default function ListaSubmissoes({ submissoes, filtros, opcoes, resumo }:
                     <div
                         className={`border-border/70 bg-card/80 overflow-x-auto rounded-3xl border shadow-sm transition-opacity ${carregando ? 'opacity-60' : ''}`}
                     >
-                        <table className="w-full min-w-[48rem] text-sm">
+                        <table data-tour="tabela" className="w-full min-w-[48rem] text-sm">
                             <caption className="sr-only">Submissões do evento</caption>
                             <thead className="bg-muted/40 text-left">
                                 <tr>

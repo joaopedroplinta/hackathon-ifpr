@@ -38,7 +38,7 @@ export default function MeusCertificados({ certificados }: Props) {
                         <p className="text-muted-foreground text-sm">Eles aparecem aqui depois que a organização emitir, geralmente após o evento.</p>
                     </div>
                 ) : (
-                    <ul className="grid gap-4 md:grid-cols-2">
+                    <ul data-tour="lista" className="grid gap-4 md:grid-cols-2">
                         {certificados.map((c) => (
                             <li key={c.id} className="border-border bg-card relative flex min-h-56 flex-col overflow-hidden rounded-2xl border p-6">
                                 <span className="bg-primary/10 absolute -top-10 -right-10 size-36 rounded-full" aria-hidden="true" />

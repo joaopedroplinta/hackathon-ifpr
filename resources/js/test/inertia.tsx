@@ -25,7 +25,7 @@ const sharedPadrao = (): SharedData => ({
     flash: {},
 });
 
-export const page: { props: Record<string, unknown>; url: string } = { props: sharedPadrao(), url: '/' };
+export const page: { props: Record<string, unknown>; url: string; component: string } = { props: sharedPadrao(), url: '/', component: '' };
 
 /** Cada chamada de visita (post/put/delete/router.*) fica registrada para os testes conferirem. */
 export const visits: { method: string; url: string; data?: unknown }[] = [];

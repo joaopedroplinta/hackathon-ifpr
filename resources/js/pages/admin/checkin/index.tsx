@@ -81,7 +81,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                 </header>
 
                 {checkpoints.length === 0 ? (
-                    <section className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-8">
+                    <section data-tour="formulario" className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-8">
                         <h2 className="font-semibold">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
                             Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
@@ -135,7 +135,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                             ))}
                         </section>
 
-                        <div className="mb-6">
+                        <div data-tour="leitor" className="mb-6">
                             <LeitorQr onDecode={lerQrCode} />
                             {erroLeitura && (
                                 <p role="alert" className="text-destructive mt-3 text-sm">
