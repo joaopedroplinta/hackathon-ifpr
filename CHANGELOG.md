@@ -15,6 +15,11 @@ bump manual a cada tag.
 - Página pública `/versoes` com as notas de cada versão, lidas do `CHANGELOG.md`;
   a versão no rodapé público e na sidebar leva até ela (#254)
 
+### Corrigido
+
+- `CHANGELOG.md` deixava de ir para o deploy (`export-ignore` no
+  `.gitattributes`), e `/versoes` ficava vazia em homologação e produção
+
 ## [1.3.5] - 2026-11-13
 
 Fecha a auditoria de segurança feita com o Lagune e põe as dependências em dia: o
