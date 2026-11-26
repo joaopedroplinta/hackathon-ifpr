@@ -127,7 +127,7 @@ class JudgePanelTest extends TestCase
         $this->actingAs($this->organizador())
             ->post(route('painel.jurados.distribute'))
             ->assertRedirect(route('painel.jurados.index'))
-            ->assertSessionHas('erro', '0 atribuições criadas, mas faltou jurado elegível pra: Projeto Órfão.');
+            ->assertSessionHas('erro', '0 atribuições criadas, mas faltou jurado elegível para: Projeto Órfão.');
     }
 
     public function test_distribution_reports_how_many_assignments_were_created(): void

@@ -14,6 +14,20 @@ bump manual a cada tag.
 
 - Página pública `/versoes` com as notas de cada versão, lidas do `CHANGELOG.md`;
   a versão no rodapé público e na sidebar leva até ela (#254)
+- Botão "Emitir certificados do evento" em `/painel/certificados`: o mesmo
+  lote do `hackathon:issue-certificates`, sem precisar de terminal
+- Manual do usuário por perfil, com glossário de situações e mensagens
+  (`docs/manual-usuario.md`), e requisitos de navegador e dispositivo no README
+
+### Corrigido
+
+- Achados da avaliação MEDE-PROS: o cabeçalho público chama `/rubrica` de
+  "Rubrica", como o rodapé; o formulário da agenda mostra os campos em
+  português e não acusa término antes do início com os campos vazios;
+  textos das telas sem "pra" e "pro"
+- Documentação alinhada ao sistema: hospedagem no Railway e e-mail
+  anonimizado com UUID no RoPA, CPF no certificado e Redis no PLANO.md,
+  nome e descrição do projeto no `composer.json`
 
 ## [1.3.5] - 2026-11-13
 

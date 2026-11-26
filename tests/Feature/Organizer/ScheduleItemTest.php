@@ -112,6 +112,23 @@ class ScheduleItemTest extends TestCase
         $this->assertSame(0, ScheduleItem::count());
     }
 
+    /** Achado da avaliação MEDE-PROS: campo em inglês e "término antes do início" com tudo vazio. */
+    public function test_an_empty_form_reports_each_field_in_portuguese(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->organizador())
+            ->post(route('painel.agenda.store'), [])
+            ->assertSessionHasErrors([
+                'type' => 'O campo tipo é obrigatório.',
+                'starts_at' => 'O campo início é obrigatório.',
+                'ends_at' => 'O campo término é obrigatório.',
+            ]);
+
+        $erros = session('errors')->getBag('default');
+        $this->assertCount(1, $erros->get('ends_at'));
+    }
+
     /** Trilha só pode ser do próprio evento -- mesma regra do filtro de submissões. */
     public function test_a_track_from_another_event_is_rejected(): void
     {

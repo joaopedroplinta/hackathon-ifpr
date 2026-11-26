@@ -30,6 +30,13 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
         });
     };
 
+    const lote = useForm({});
+
+    const emitirLote: FormEventHandler = (e) => {
+        e.preventDefault();
+        lote.post(route('painel.certificados.batch'), { preserveScroll: true });
+    };
+
     const reduzMovimento = useReducedMotion();
 
     const fadeIn: Variants = {
@@ -45,11 +52,24 @@ export default function CertificadosIndex({ certificados, pessoas, tipos }: Prop
                 <header className="border-border/70 mb-8 border-b pb-6">
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Certificados</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
-                        Participação, jurado, organizador e colocação saem em lote com{' '}
-                        <code className="text-xs">php artisan hackathon:issue-certificates</code>. Aqui é só a emissão avulsa — mentoria ou correção
+                        Participação, jurado, organização e colocação saem todos de uma vez no lote. A emissão avulsa serve para mentoria ou correção
                         pontual.
                     </p>
                 </header>
+
+                <section className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
+                    <h2 className="text-lg font-medium">Emitir certificados do evento</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                        Participação para quem teve presença registrada, jurado para quem enviou avaliação, organização para a comissão e colocação
+                        para o pódio, depois que o resultado for publicado. Pode emitir de novo: ninguém recebe certificado repetido.
+                    </p>
+                    <form onSubmit={emitirLote} className="mt-4">
+                        <Button type="submit" disabled={lote.processing}>
+                            <Award aria-hidden="true" />
+                            {lote.processing ? 'Emitindo...' : 'Emitir certificados do evento'}
+                        </Button>
+                    </form>
+                </section>
 
                 <section data-tour="formulario" className="border-border/70 bg-card/80 mb-8 rounded-3xl border p-5 shadow-sm sm:p-6">
                     <h2 className="text-lg font-medium">Emitir certificado avulso</h2>

@@ -17,10 +17,13 @@ passa pela organização, não só por quem mexe no schema.
   `hackathon@ifpr.edu.br`. Nomeação formal em documento institucional é a
   issue #83, ainda pendente; este RoPA já assume esse contato como ponto
   de entrada pra qualquer pedido do art. 18.
-- **Hospedagem:** decisão travada em PLANO.md §7 — banco em qualquer
-  ambiente é Postgres, sem SQLite. A região do servidor de produção é a
-  issue #71 (ainda aberta), mas o requisito já registrado é **dado no
-  Brasil** — não há transferência internacional prevista.
+- **Hospedagem:** Railway, aplicação e banco (Postgres 17), em região
+  fora do Brasil. O requisito original era dado no Brasil; a orientadora
+  aceitou formalmente a hospedagem no exterior em 2026-08-22 (issue #71,
+  fechada). Há, portanto, transferência internacional de dados (LGPD,
+  art. 33), registrada em `deploy/railway.md` ("Limitações conhecidas").
+  A homologação roda só com dados fictícios: dado de produção nunca vai
+  para lá.
 
 ## 2. Categorias de titulares
 
@@ -69,7 +72,7 @@ Nenhuma outra coluna do sistema se enquadra como dado sensível.
 de conta (art. 18, VI):
 
 - `users`: nome vira "Usuário removido", e-mail vira
-  `removido-{id}@removido.local`, `google_id`, `avatar_url`, `cpf`,
+  `removido-{uuid}@removido.invalid` (UUID aleatório, sem ligação com o id), `google_id`, `avatar_url`, `cpf`,
   `tipo_vinculo`, `matricula_suap` e `matricula_siape` zerados. Se a foto
   de perfil era um upload nosso (não uma URL do Google), o arquivo também
   é apagado de `storage/app/public` -- zerar só a coluna deixaria a

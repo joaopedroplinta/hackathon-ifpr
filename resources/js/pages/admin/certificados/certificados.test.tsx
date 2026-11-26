@@ -63,4 +63,13 @@ describe('CertificadosIndex (organização)', () => {
 
         expect(visits[0].data).toMatchObject({ type: 'colocacao', colocacao: '1º lugar geral' });
     });
+
+    it('emite o lote do evento pela tela, sem terminal', async () => {
+        render(<CertificadosIndex {...props} />);
+        expect(screen.queryByText(/php artisan/)).toBeNull();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Emitir certificados do evento' }));
+
+        expect(visits).toEqual([{ method: 'post', url: '/painel/certificados/batch', data: {} }]);
+    });
 });

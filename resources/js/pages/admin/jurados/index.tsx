@@ -267,7 +267,7 @@ export default function JuradosIndex({ submissoes, jurados, conflitos, jurados_p
                                                 id={`motivo-reabertura-${jurado.atribuicao_id}`}
                                                 value={reabrirForm.data.reason}
                                                 onChange={(e) => reabrirForm.setData('reason', e.target.value)}
-                                                placeholder="Ex.: Jurado pediu pra revisar a nota do critério de impacto."
+                                                placeholder="Ex.: Jurado pediu para revisar a nota do critério de impacto."
                                                 rows={2}
                                                 className={campo}
                                             />

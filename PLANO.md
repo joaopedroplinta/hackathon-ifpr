@@ -49,8 +49,8 @@ laravel new hackathon --react     # starter kit React = Inertia v2 + TS + Tailwi
 
 ### Ambiente
 
-`docker-compose.yml` com Postgres 17 e Mailpit (captura e-mails em dev, sem
-mandar nada pro mundo real). PHP, Composer e Node rodam na máquina — já estão
+`docker-compose.yml` com Postgres 17, Redis 7 (filas) e Mailpit (captura
+e-mails em dev, sem mandar nada para o mundo real). PHP, Composer e Node rodam na máquina — já estão
 instalados e é mais rápido que containerizar tudo.
 
 ---
@@ -148,10 +148,10 @@ team_invites                  # convidar quem ainda não tem conta
   exige `matricula_siape`; trocar de vínculo limpa a matrícula do vínculo
   anterior. CPF valida os dois dígitos verificadores de verdade
   (`App\Rules\CpfValido`), não só o formato
-- **Pendente:** nada hoje impede emitir certificado pra quem não preencheu
-  CPF — a coleta existe (issue a abrir), mas travar a emissão sem CPF (ou
-  incluí-lo no PDF) é decisão de design ainda não tomada. Ver `docs/ropa.md`
-  pra base legal e retenção do dado
+- **Decidido:** o PDF do certificado traz o CPF formatado e a matrícula
+  (`resources/views/certificates/`). Quem não preencheu o CPF recebe o
+  certificado do mesmo jeito, com "CPF: não informado" — a emissão nunca
+  trava por falta do dado. Ver `docs/ropa.md` para base legal e retenção
 
 ### Submissões
 
