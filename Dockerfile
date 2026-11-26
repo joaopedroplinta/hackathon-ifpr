@@ -17,7 +17,7 @@ ARG VITE_APP_NAME="Hackathon IFPR"
 ENV VITE_APP_NAME=$VITE_APP_NAME
 RUN npm run build
 
-FROM dunglas/frankenphp:1.13.5-php8.4-alpine@sha256:0b9e020d7c3c17157d8fb051f67ce329b816fcbba456a19c45613fe0ef9fcb78 AS app
+FROM dunglas/frankenphp:1.14.0-php8.4-alpine@sha256:f81693fa548684eb12964eeab78d86325b75c5cd91289c09ffc4dd4404a641e5 AS app
 
 RUN apk add --no-cache \
     postgresql-dev \
