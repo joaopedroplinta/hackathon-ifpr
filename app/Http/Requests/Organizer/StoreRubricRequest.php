@@ -28,7 +28,7 @@ class StoreRubricRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Dê um nome pra rubrica.',
+            'name.required' => 'Dê um nome à rubrica.',
         ];
     }
 }

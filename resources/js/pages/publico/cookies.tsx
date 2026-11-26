@@ -6,7 +6,7 @@ import PublicLayout from '@/layouts/public-layout';
 
 export default function Cookies() {
     return (
-        <PublicLayout titulo="Cookies" descricao="O sistema usa só cookies necessários pro funcionamento — nenhum de rastreamento ou publicidade.">
+        <PublicLayout titulo="Cookies" descricao="O sistema usa só cookies necessários para o funcionamento — nenhum de rastreamento ou publicidade.">
             <DocumentoPublico
                 secoes={[
                     { id: 'secao-1', titulo: 'Sessão e segurança' },

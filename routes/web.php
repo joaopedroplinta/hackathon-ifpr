@@ -287,10 +287,11 @@ Route::middleware(['auth', 'verified', EnsureEventExists::class])->prefix('paine
     Route::post('resultados/recalcular', [ResultController::class, 'recompute'])->name('painel.resultados.recompute');
     Route::post('resultados/publicar', [ResultController::class, 'publish'])->name('painel.resultados.publish');
 
-    // Certificados. Emissão em lote é o comando hackathon:issue-certificates;
-    // aqui só a emissão avulsa (mentor, correção pontual) -- ver CertificateController.
+    // Certificados. Lote = mesma regra do comando hackathon:issue-certificates;
+    // avulso = mentor ou correção pontual -- ver CertificateController.
     Route::get('certificados', [OrganizerCertificateController::class, 'index'])->name('painel.certificados.index');
     Route::post('certificados', [OrganizerCertificateController::class, 'store'])->name('painel.certificados.store');
+    Route::post('certificados/lote', [OrganizerCertificateController::class, 'issueBatch'])->name('painel.certificados.batch');
 });
 
 require __DIR__.'/settings.php';

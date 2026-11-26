@@ -164,7 +164,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                             <InputError id="certificate_signer_role-erro" message={errors.certificate_signer_role} />
                         </div>
                         <p className="text-muted-foreground text-xs sm:col-span-2">
-                            Aparece no rodapé do certificado em PDF. Deixe em branco pra não mostrar nenhuma assinatura.
+                            Aparece no rodapé do certificado em PDF. Deixe em branco para não mostrar nenhuma assinatura.
                         </p>
                     </fieldset>
 
@@ -191,7 +191,7 @@ export default function EditarEvento({ evento, status_opcoes, regulamento, certi
                                 />
                             </div>
                             <InputError id="certificate_accent_color-erro" message={errors.certificate_accent_color} />
-                            <p className="text-muted-foreground text-xs">Usada na borda e nos rótulos do PDF. Deixe em branco pra usar o padrão.</p>
+                            <p className="text-muted-foreground text-xs">Usada na borda e nos rótulos do PDF. Deixe em branco para usar o padrão.</p>
                         </div>
                     </fieldset>
 

@@ -1,12 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "joaopedroplinta/hackathon-ifpr",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistema de apoio ao 1º Hackathon do IFPR Campus Pinhais: inscrições, equipes, submissões, avaliação, resultados e certificados.",
     "version": "1.3.5",
     "keywords": [
         "laravel",
-        "framework"
+        "inertia",
+        "react",
+        "hackathon",
+        "ifpr"
     ],
     "license": "MIT",
     "require": {

@@ -25,7 +25,7 @@ export default function MostrarCredencial({ nome, qr_svg, token, papel }: Creden
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Seu crachá digital</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
-                            Mostre este código pra organização em cada entrada e oficina. É pessoal e não muda durante o evento.
+                            Mostre este código para a organização em cada entrada e oficina. É pessoal e não muda durante o evento.
                         </p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@ export default function MostrarCredencial({ nome, qr_svg, token, papel }: Creden
                     </div>
 
                     <p className="text-muted-foreground border-border w-full border-t pt-4 text-center text-xs break-all">
-                        Câmera não lê? Peça pra organização buscar seu nome na lista, ou informe este código: {token}
+                        Câmera não lê? Peça para a organização buscar seu nome na lista, ou informe este código: {token}
                     </p>
                 </motion.div>
             </div>

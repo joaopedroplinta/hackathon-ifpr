@@ -35,11 +35,11 @@ export default function Privacidade() {
                         </li>
                         <li>
                             <strong className="text-foreground">Identidade institucional (opcional):</strong> CPF, vínculo com o IFPR (aluno,
-                            professor ou externo) e matrícula do SUAP ou SIAPE — preenchido em Configurações, não na inscrição. Usado pra dar validade
-                            legal ao certificado e confirmar vínculo institucional quando declarado
+                            professor ou externo) e matrícula do SUAP ou SIAPE — preenchido em Configurações, não na inscrição. Usado para dar
+                            validade legal ao certificado e confirmar vínculo institucional quando declarado
                         </li>
                         <li>
-                            <strong className="text-foreground">Crachá digital:</strong> um código único pro check-in por QR na entrada
+                            <strong className="text-foreground">Crachá digital:</strong> um código único para o check-in por QR na entrada
                         </li>
                         <li>
                             <strong className="text-foreground">Atividade sensível:</strong> alteração de nota, desqualificação e publicação de
@@ -55,7 +55,7 @@ export default function Privacidade() {
                     </h2>
                     <p className="text-muted-foreground mt-2 text-sm">
                         Informar restrição alimentar na inscrição é <strong className="text-foreground">opcional</strong>. Esse campo pode revelar
-                        condição de saúde ou convicção religiosa — por isso a LGPD trata como dado sensível (art. 5º, II). Usamos só pra logística de
+                        condição de saúde ou convicção religiosa — por isso a LGPD trata como dado sensível (art. 5º, II). Usamos só para logística de
                         alimentação do evento, e ele é apagado se você excluir sua conta.
                     </p>
                 </section>
@@ -78,7 +78,7 @@ export default function Privacidade() {
                         Com quem compartilhamos
                     </h2>
                     <p className="text-muted-foreground mt-2 text-sm">
-                        Jurado só enxerga a submissão atribuída a ele — nunca a lista completa de equipes. Organizador vê o necessário pra operar o
+                        Jurado só enxerga a submissão atribuída a ele — nunca a lista completa de equipes. Organizador vê o necessário para operar o
                         evento. Nunca vendemos nem compartilhamos seu dado com anúncio ou rastreamento de terceiros.
                     </p>
                 </section>

@@ -53,7 +53,9 @@ export default function ListaRubricas({ rubricas }: Props) {
             <motion.div initial="oculto" animate="visivel" variants={fadeIn} className="mx-auto w-full max-w-3xl p-4 sm:p-6 lg:p-8">
                 <header className="border-border/70 mb-8 border-b pb-6">
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Rubrica</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">Só a rubrica ativa conta pro cálculo e aparece pro jurado e pro público.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">
+                        Só a rubrica ativa conta para o cálculo e aparece para o jurado e para o público.
+                    </p>
                 </header>
 
                 <form
@@ -87,7 +89,7 @@ export default function ListaRubricas({ rubricas }: Props) {
                             <ClipboardList className="text-muted-foreground size-5" aria-hidden="true" />
                         </span>
                         <p className="font-semibold">Nenhuma rubrica cadastrada</p>
-                        <p className="text-muted-foreground text-sm">Crie a primeira acima pra começar a montar os critérios.</p>
+                        <p className="text-muted-foreground text-sm">Crie a primeira acima para começar a montar os critérios.</p>
                     </div>
                 ) : (
                     <ul data-tour="lista" className="border-border/70 bg-card/80 flex flex-col divide-y overflow-hidden rounded-3xl border shadow-sm">

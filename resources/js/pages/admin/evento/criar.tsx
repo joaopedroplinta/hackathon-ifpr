@@ -101,7 +101,7 @@ export default function CriarEvento() {
                         />
                         <InputError id="regulamento-erro" message={errors.regulamento} />
                         <p className="text-muted-foreground text-xs">
-                            Sem o PDF em mãos agora? Sem problema — dá pra anexar depois em Editar evento.
+                            Sem o PDF em mãos agora? Sem problema — dá para anexar depois em Editar evento.
                         </p>
                     </div>
 

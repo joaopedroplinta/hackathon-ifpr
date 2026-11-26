@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Organizer;
 
 use App\Actions\Certificates\IssueCertificate;
+use App\Actions\Certificates\IssueEventCertificates;
 use App\Enums\CertificateType;
 use App\Http\Controllers\Concerns\ResolvesParticipation;
 use App\Http\Controllers\Controller;
@@ -70,5 +71,28 @@ class CertificateController extends Controller
         $issue->handle($event, $user, $type, $payload);
 
         return to_route('painel.certificados.index')->with('sucesso', "Certificado de {$user->name} emitido.");
+    }
+
+    /**
+     * Mesmo lote do comando hackathon:issue-certificates, sem terminal: a
+     * comissão não tem acesso ao servidor. Reemitir é seguro -- cada pessoa
+     * tem um certificado por tipo e o PDF sai na fila.
+     */
+    public function issueBatch(IssueEventCertificates $issue): RedirectResponse
+    {
+        $this->authorize('issue', Certificate::class);
+
+        $event = $this->currentEventOrFail();
+        $emitidos = $issue->handle($event);
+        $total = array_sum($emitidos);
+
+        $mensagem = "{$total} certificados emitidos: {$emitidos['participacao']} de participação, "
+            ."{$emitidos['jurado']} de jurado, {$emitidos['organizador']} de organização e {$emitidos['colocacao']} de colocação.";
+
+        if (! $event->resultsArePublished()) {
+            $mensagem .= ' Os de colocação saem depois que o resultado for publicado.';
+        }
+
+        return to_route('painel.certificados.index')->with('sucesso', $mensagem);
     }
 }

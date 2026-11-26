@@ -37,7 +37,7 @@ class StoreCriterionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Dê um nome pro critério.',
+            'name.required' => 'Dê um nome ao critério.',
             'weight.required' => 'Informe o peso do critério.',
             'weight.min' => 'O peso precisa ser maior que zero.',
             'max_score.required' => 'Informe a nota máxima do critério.',

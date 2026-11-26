@@ -76,7 +76,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                 <header className="border-border/70 mb-8 border-b pb-6">
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Check-in</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
-                        Peça pra pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
+                        Peça para a pessoa mostrar o crachá e escaneie com a câmera do celular. Sem QR? Busque o nome aqui embaixo.
                     </p>
                 </header>
 
@@ -84,7 +84,7 @@ export default function CheckinIndex({ checkpoints, opcoes, busca, resultados }:
                     <section data-tour="formulario" className="border-border/70 bg-card/80 rounded-3xl border p-5 shadow-sm sm:p-8">
                         <h2 className="font-semibold">Nenhum checkpoint cadastrado ainda</h2>
                         <p className="text-muted-foreground mt-1 mb-4 text-sm">
-                            Sem um checkpoint, não dá pra confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
+                            Sem um checkpoint, não dá para confirmar presença nenhuma. Crie o primeiro (ex.: "Entrada").
                         </p>
 
                         <form onSubmit={criarCheckpoint} className="flex flex-col gap-3" noValidate>
