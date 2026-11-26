@@ -109,7 +109,7 @@ class JudgeAssignmentController extends Controller
 
             return to_route('painel.jurados.index')->with(
                 'erro',
-                "{$resultado['criadas']} atribuições criadas, mas faltou jurado elegível pra: {$lista}."
+                "{$resultado['criadas']} atribuições criadas, mas faltou jurado elegível para: {$lista}."
             );
         }
 

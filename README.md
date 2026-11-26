@@ -17,6 +17,24 @@ operável nos momentos mais críticos do evento.
 
 Desenvolvida para o **1º Hackathon do IFPR Campus Pinhais**.
 
+**Versão atual:** 1.3.5, de 13/11/2026. Notas de cada versão em
+[CHANGELOG.md](CHANGELOG.md) e na página pública `/versoes`.
+
+## Sumário
+
+- [O que a plataforma resolve](#o-que-a-plataforma-resolve)
+- [Requisitos para usar](#requisitos-para-usar)
+- [Comece em poucos minutos](#comece-em-poucos-minutos)
+- [Operação local](#operação-local)
+- [Arquitetura](#arquitetura)
+- [Stack](#stack)
+- [Qualidade](#qualidade)
+- [Comandos úteis](#comandos-úteis)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Segurança e continuidade operacional](#segurança-e-continuidade-operacional)
+- [Documentação](#documentação)
+- [Equipe](#equipe)
+
 **Protótipo navegável:** [abrir no Figma](https://www.figma.com/proto/HmNfkGSzJc69l9gDzchqD1/Hackathon-IFPR-%E2%80%94-Prot%C3%B3tipo?node-id=12-1169&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=12%3A1169&show-proto-sidebar=1)
 — 43 telas dos fluxos de visitante, participante, jurado, organização e administração.
 
@@ -41,6 +59,24 @@ fictícios, para validar mudanças antes de ir para produção — fluxo em
 Também estão incluídas uma trilha de auditoria para operações sensíveis, o
 versionamento de submissões, notificações em fila e alternativas de
 contingência para o dia do evento.
+
+## Requisitos para usar
+
+Para quem acessa o sistema (participante, jurado, organização):
+
+- Navegador atualizado: Chrome, Edge ou Firefox das versões de 2023 em
+  diante, ou Safari 16.4 ou mais novo. Funciona em Windows, macOS, Linux,
+  Android e iOS.
+- Tela a partir de 360 px de largura: todas as telas funcionam no celular.
+- Conexão com a internet. Login com Google é opcional; e-mail e senha também
+  funcionam.
+- Check-in por QR Code: celular ou notebook com câmera, e permissão de
+  câmera liberada no navegador. Sem câmera, a busca manual pelo nome resolve.
+
+Para quem hospeda: PHP 8.2 ou superior com `memory_limit` de 256 MB (o PDF
+de certificado precisa), PostgreSQL 17, Redis 7 e um worker de fila ativo.
+O guia de uso de cada perfil está em
+[docs/manual-usuario.md](docs/manual-usuario.md).
 
 ## Comece em poucos minutos
 
@@ -154,6 +190,7 @@ Essas verificações também são executadas no CI para cada push e pull request
 
 ```bash
 php artisan hackathon:compute-results {event}
+php artisan hackathon:issue-certificates {event}   # o mesmo lote do botão em /painel/certificados
 php artisan hackathon:import-submissions {csv}
 php artisan queue:work
 ```
@@ -200,6 +237,7 @@ serviço e as instruções de instalação estão em [deploy/README.md](deploy/R
 
 | Documento | Descrição |
 | --- | --- |
+| [docs/manual-usuario.md](docs/manual-usuario.md) | como usar o sistema em cada perfil, glossário de situações e mensagens |
 | [PLANO.md](PLANO.md) | escopo, decisões de produto, modelo de dados e plano de contingência |
 | [docs/diagramas.md](docs/diagramas.md) | diagramas do sistema |
 | [docs/backlog.md](docs/backlog.md) | itens em acompanhamento |
