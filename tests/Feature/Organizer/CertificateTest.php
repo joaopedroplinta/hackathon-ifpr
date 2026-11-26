@@ -93,6 +93,42 @@ class CertificateTest extends TestCase
             ->assertForbidden();
     }
 
+    /** Achado da avaliação MEDE-PROS: o lote só existia como comando de terminal. */
+    public function test_staff_issues_the_event_batch_from_the_panel(): void
+    {
+        Queue::fake();
+
+        $event = Event::factory()->create(['results_published_at' => null]);
+        $organizador = $this->organizador();
+
+        $this->actingAs($organizador)
+            ->post(route('painel.certificados.batch'))
+            ->assertRedirect(route('painel.certificados.index'))
+            ->assertSessionHas('sucesso', fn (string $msg) => str_contains($msg, '1 de organização')
+                && str_contains($msg, 'depois que o resultado for publicado'));
+
+        $this->assertDatabaseHas('certificates', [
+            'event_id' => $event->id,
+            'user_id' => $organizador->id,
+            'type' => CertificateType::Organizador->value,
+        ]);
+
+        // Rodar de novo não duplica: um certificado por pessoa e tipo.
+        $this->actingAs($organizador)->post(route('painel.certificados.batch'));
+        $this->assertSame(1, Certificate::count());
+    }
+
+    public function test_a_participant_cannot_issue_the_event_batch(): void
+    {
+        Event::factory()->create();
+
+        $this->actingAs($this->participante())
+            ->post(route('painel.certificados.batch'))
+            ->assertForbidden();
+
+        $this->assertSame(0, Certificate::count());
+    }
+
     public function test_a_guest_is_redirected_to_login(): void
     {
         Event::factory()->create();

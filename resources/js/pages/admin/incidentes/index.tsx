@@ -64,7 +64,7 @@ export default function IncidentesIndex({ incidentes, tipos, prazo_original, pra
                 <header className="border-border/70 mb-8 border-b pb-6">
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Incidentes</h1>
                     <p className="text-muted-foreground mt-1 text-sm">
-                        Declarar um incidente com extensão de prazo vale pra <strong>todas as equipes</strong>, nunca só pra quem avisou.
+                        Declarar um incidente com extensão de prazo vale para <strong>todas as equipes</strong>, nunca só para quem avisou.
                     </p>
                 </header>
 

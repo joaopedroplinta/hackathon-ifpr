@@ -56,7 +56,7 @@ export default function ListaAgenda({ itens }: Props) {
                     <div>
                         <h1 className="text-3xl font-medium tracking-[-0.03em]">Agenda</h1>
                         <p className="text-muted-foreground mt-1 text-sm">
-                            {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece pro público.
+                            {itens.length === 1 ? '1 item' : `${itens.length} itens`} — só o que estiver publicado aparece para o público.
                         </p>
                     </div>
 

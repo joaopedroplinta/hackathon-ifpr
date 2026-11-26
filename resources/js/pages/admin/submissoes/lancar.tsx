@@ -73,8 +73,8 @@ export default function LancarSubmissao({ equipes, fontes }: Props) {
                     <p className="text-muted-foreground mb-2 text-sm">Plano de contingência</p>
                     <h1 className="text-3xl font-medium tracking-[-0.03em]">Lançar submissão manualmente</h1>
                     <p className="text-muted-foreground mt-2 max-w-2xl text-sm leading-relaxed">
-                        Só pra quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano
-                        B, degraus 3 e 4). Fica marcada pra conferência no painel.
+                        Só para quando a equipe não conseguiu usar o formulário web de jeito nenhum -- recebeu por e-mail ou entregou no papel (plano
+                        B, degraus 3 e 4). Fica marcada para conferência no painel.
                     </p>
                 </header>
 

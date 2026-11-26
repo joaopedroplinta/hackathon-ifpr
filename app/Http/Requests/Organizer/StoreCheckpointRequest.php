@@ -31,7 +31,7 @@ class StoreCheckpointRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Dê um nome pro checkpoint.',
+            'name.required' => 'Dê um nome ao checkpoint.',
             'type.required' => 'Escolha o tipo do checkpoint.',
         ];
     }
